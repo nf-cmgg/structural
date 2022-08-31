@@ -3,7 +3,7 @@
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     y/nfcmggstructural
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    Github : https://github.com/y/nfcmggstructural
+    Github : https://github.com/CenterForMedicalGeneticsGhent/nf-cmgg-structural
 ----------------------------------------------------------------------------------------
 */
 
@@ -28,7 +28,7 @@ include { NFCMGGSTRUCTURAL } from './workflows/nfcmggstructural'
 //
 // WORKFLOW: Run main y/nfcmggstructural analysis pipeline
 //
-workflow Y_NFCMGGSTRUCTURAL {
+workflow NFCMGGSTRUCTURAL {
     NFCMGGSTRUCTURAL ()
 }
 
@@ -43,7 +43,7 @@ workflow Y_NFCMGGSTRUCTURAL {
 // See: https://github.com/nf-core/rnaseq/issues/619
 //
 workflow {
-    Y_NFCMGGSTRUCTURAL ()
+    NFCMGGSTRUCTURAL ()
 }
 
 /*

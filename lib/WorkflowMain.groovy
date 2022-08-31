@@ -1,5 +1,5 @@
 //
-// This file holds several functions specific to the main.nf workflow in the y/nfcmggstructural pipeline
+// This file holds several functions specific to the main.nf workflow in the nfcmggstructural pipeline
 //
 
 class WorkflowMain {

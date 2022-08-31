@@ -11,7 +11,7 @@ Contributions to the code are even more welcome ;)
 
 ## Contribution workflow
 
-If you'd like to write some code for y/nfcmggstructural, the standard workflow is as follows:
+If you'd like to write some code for CenterForMedicalGeneticsGhent/nf-cmgg-structural, the standard workflow is as follows:
 
 1. Check that there isn't already an issue about your idea in the [CenterForMedicalGeneticsGhent/nf-cmgg-structural issues](https://github.com/CenterForMedicalGeneticsGhent/nf-cmgg-structural/issues) to avoid duplicating work. If there isn't one already, please create one so that others know you're working on this
 2. [Fork](https://help.github.com/en/github/getting-started-with-github/fork-a-repo) the [CenterForMedicalGeneticsGhent/nf-cmgg-structural repository](https://github.com/CenterForMedicalGeneticsGhent/nf-cmgg-structural) to your GitHub account
@@ -52,7 +52,7 @@ These tests are run both with the latest available version of `Nextflow` and als
 
 ## Pipeline contribution conventions
 
-To make the y/nfcmggstructural code and processing logic more understandable for new contributors and to ensure quality, we semi-standardise the way the code and other contributions are written.
+To make the CenterForMedicalGeneticsGhent/nf-cmgg-structural code and processing logic more understandable for new contributors and to ensure quality, we semi-standardise the way the code and other contributions are written.
 
 ### Adding a new step
 

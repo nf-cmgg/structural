@@ -1,6 +1,6 @@
 {
-    "name": "y/nfcmggstructural",
-    "homePage": "https://github.com/y/nfcmggstructural",
+    "name": "CenterForMedicalGeneticsGhent/nf-cmgg-structural",
+    "homePage": "https://github.com/CenterForMedicalGeneticsGhent/nf-cmgg-structural",
     "repos": {
         "nf-core/modules": {
             "git_url": "https://github.com/nf-core/modules.git",

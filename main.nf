@@ -1,7 +1,7 @@
 #!/usr/bin/env nextflow
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    y/nfcmggstructural
+    CenterForMedicalGeneticsGhent/nf-cmgg-structural
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     Github : https://github.com/CenterForMedicalGeneticsGhent/nf-cmgg-structural
 ----------------------------------------------------------------------------------------
@@ -26,9 +26,9 @@ WorkflowMain.initialise(workflow, params, log)
 include { NFCMGGSTRUCTURAL } from './workflows/nfcmggstructural'
 
 //
-// WORKFLOW: Run main y/nfcmggstructural analysis pipeline
+// WORKFLOW: Run main CenterForMedicalGeneticsGhent/nf-cmgg-structural analysis pipeline
 //
-workflow NFCMGGSTRUCTURAL {
+workflow CENTERFORMEDICALGENETICS_NFCMGGSTRUCTURAL {
     NFCMGGSTRUCTURAL ()
 }
 
@@ -43,7 +43,7 @@ workflow NFCMGGSTRUCTURAL {
 // See: https://github.com/nf-core/rnaseq/issues/619
 //
 workflow {
-    NFCMGGSTRUCTURAL ()
+    CENTERFORMEDICALGENETICS_NFCMGGSTRUCTURAL ()
 }
 
 /*

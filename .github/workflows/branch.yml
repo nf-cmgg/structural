@@ -11,7 +11,7 @@ jobs:
     steps:
       # PRs to the nf-core repo master branch are only ok if coming from the nf-core repo `dev` or any `patch` branches
       - name: Check PRs
-        if: github.repository == 'y/nfcmggstructural'
+        if: github.repository == 'CenterForMedicalGeneticsGhent/nf-cmgg-structural'
         run: |
           { [[ ${{github.event.pull_request.head.repo.full_name }} == y/nfcmggstructural ]] && [[ $GITHUB_HEAD_REF = "dev" ]]; } || [[ $GITHUB_HEAD_REF == "patch" ]]
 

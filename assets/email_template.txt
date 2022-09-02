@@ -1,10 +1,10 @@
 Run Name: $runName
 
 <% if (success){
-    out << "## nfcmggstructural execution completed successfully! ##"
+    out << "## CenterForMedicalGeneticsGhent/nf-cmgg-structural execution completed successfully! ##"
 } else {
     out << """####################################################
-## nfcmggstructural execution completed unsuccessfully! ##
+## CenterForMedicalGeneticsGhent/nf-cmgg-structural execution completed unsuccessfully! ##
 ####################################################
 The exit status of the task that caused the workflow execution to fail was: $exitStatus.
 The full error message was:

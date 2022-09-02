@@ -11,11 +11,23 @@ WorkflowNfcmggstructural.initialise(params, log)
 
 // TODO nf-core: Add all file path parameters for the pipeline to the list below
 // Check input path parameters to see if they exist
-def checkPathParamList = [ params.input, params.multiqc_config, params.fasta ]
+def checkPathParamList = [ 
+    params.input, 
+    params.multiqc_config, 
+    params.fasta,
+    params.fasta_fai,
+    params.dict,
+]
 for (param in checkPathParamList) { if (param) { file(param, checkIfExists: true) } }
 
 // Check mandatory parameters
 if (params.input) { ch_input = file(params.input, checkIfExists: true) } else { exit 1, 'Input samplesheet not specified!' }
+
+// Parse parameters
+fasta     = params.fasta
+fasta_fai = params.fasta_fai
+dict      = params.dict
+callers   = params.callers.split(",")
 
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -35,7 +47,7 @@ ch_multiqc_custom_config = params.multiqc_config ? Channel.fromPath(params.multi
 //
 // SUBWORKFLOW: Consisting of a mix of local and nf-core/modules
 //
-include { INPUT_CHECK } from '../subworkflows/local/input_check'
+include { GATHER_SAMPLE_EVIDENCE      } from '../subworkflows/local/gather-sample-evidence'
 
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -46,6 +58,7 @@ include { INPUT_CHECK } from '../subworkflows/local/input_check'
 //
 // MODULE: Installed directly from nf-core/modules
 //
+include { TABIX_BGZIPTABIX            } from '../modules/nf-core/modules/tabix/bgziptabix/main'
 include { MULTIQC                     } from '../modules/nf-core/modules/multiqc/main'
 include { CUSTOM_DUMPSOFTWAREVERSIONS } from '../modules/nf-core/modules/custom/dumpsoftwareversions/main'
 
@@ -58,12 +71,31 @@ include { CUSTOM_DUMPSOFTWAREVERSIONS } from '../modules/nf-core/modules/custom/
 // Info required for completion email and summary
 def multiqc_report = []
 
-workflow NFCMGGSTRUCTURAL {
+workflow NF_CMGG_STRUCTURAL {
 
     ch_versions = Channel.empty()
 
-    input = parse_input(ch_input).view()
+    inputs = parse_input(ch_input).multiMap({ meta, cram, crai, bed ->
+        bed: [ meta, bed ]
+        crams: [ meta, cram, crai ]
+    })
 
+    TABIX_BGZIPTABIX(
+        inputs.bed
+    )
+
+    beds = inputs.bed.combine(TABIX_BGZIPTABIX.out.gz_tbi, by:0)
+
+    GATHER_SAMPLE_EVIDENCE(
+        inputs.crams,
+        beds,
+        fasta,
+        fasta_fai,
+        dict,
+        callers
+    )
+
+    GATHER_SAMPLE_EVIDENCE.out.vcfs.view()
 
     // MULTIQC (
     //     ch_multiqc_files.collect()
@@ -96,6 +128,10 @@ def parse_input(input_csv) {
                 'content': 'file',
                 'pattern': '^.*\\.crai$',
             ],
+            'bed': [
+                'content': 'file',
+                'pattern': '^.*\\.bed$',
+            ]
         ],
         'required': ['sample','cram','crai'],
     ]    
@@ -119,7 +155,7 @@ def parse_input(input_csv) {
                 for(diff : diffs){
                     diff in all_columns ? missing_columns.add(diff) : wrong_columns.add(diff)
                 }
-                if(missing_columns.size > 0){
+                if(missing_columns.size() > 0){
                     exit 1, "[Samplesheet Error] The column(s) $missing_columns is/are not present. The header should look like: $all_columns"
                 }
                 else {

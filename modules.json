@@ -5,9 +5,9 @@
         "nf-core/modules": {
             "git_url": "https://github.com/nf-core/modules.git",
             "modules": {
-                "bcftools/convert": {
+                "bcftools/concat": {
                     "branch": "master",
-                    "git_sha": "8656636f0d0a86aa3966052b5c2cd06141647c70"
+                    "git_sha": "682f789f93070bd047868300dd018faf3d434e7c"
                 },
                 "custom/dumpsoftwareversions": {
                     "branch": "master",
@@ -15,7 +15,11 @@
                 },
                 "delly/call": {
                     "branch": "master",
-                    "git_sha": "49825425bbfbc7510a6260bcf9783e0845290d03"
+                    "git_sha": "5a30294eec8eb30c8c3d569cdcdb04a4cfbe150d"
+                },
+                "gatk4/collectreadcounts": {
+                    "branch": "master",
+                    "git_sha": "09acfad211be75e964bc268ad7c45713733210c7"
                 },
                 "manta/germline": {
                     "branch": "master",
@@ -36,6 +40,10 @@
                 "tabix/bgziptabix": {
                     "branch": "master",
                     "git_sha": "9dbaffff88013bc21460a989cde7a5aa172c2e0b"
+                },
+                "tabix/tabix": {
+                    "branch": "master",
+                    "git_sha": "b3e9b88e80880f450ad79a95b2b7aa05e1de5484"
                 },
                 "whamg": {
                     "branch": "master",

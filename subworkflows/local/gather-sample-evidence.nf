@@ -1,47 +1,50 @@
 //
 // Gather Sample Evidence
 //
-include { WHAMG            } from '../../modules/nf-core/modules/whamg/main'
-include { DELLY_CALL       } from '../../modules/nf-core/modules/delly/call/main'
-include { BCFTOOLS_CONVERT } from '../../modules/nf-core/modules/bcftools/convert/main'
-include { MANTA_GERMLINE   } from '../../modules/nf-core/modules/manta/germline/main'
-include { SAMTOOLS_CONVERT } from '../../modules/nf-core/modules/samtools/convert/main'
+
+// Import subworkflows
+include { RUN_DELLY                                     } from '../../subworkflows/local/run-delly'
+
+// Import modules
+include { GATK4_COLLECTREADCOUNTS as COLLECTREADCOUNTS  } from '../../modules/nf-core/modules/gatk4/collectreadcounts/main'
+include { WHAMG                                         } from '../../modules/nf-core/modules/whamg/main'
+include { MANTA_GERMLINE                                } from '../../modules/nf-core/modules/manta/germline/main'
+include { SAMTOOLS_CONVERT                              } from '../../modules/nf-core/modules/samtools/convert/main'
 
 workflow GATHER_SAMPLE_EVIDENCE {
     take:
-        crams       // channel: [mandatory] [ meta, cram, crai, bed ] => The aligned CRAMs per sample with the regions they should be called on
-        beds        // channel: [optional]  [ meta, bed, bed_gz, bed_gz_tbi ] => A channel containing the normal BED, the bgzipped BED and its index file
-        fasta       // channel: [mandatory] [ fasta ] => The fasta reference file
-        fasta_fai   // channel: [mandatory] [ fasta_fai ] => The index of the fasta reference file
-        dict        // channel: [mandatory] [ dict ] => The dictionary of the fasta reference file
-
-        callers     // array:   [mandatory] => A list of callers to use for variant calling, should be one of these: delly|manta|whamg
+        crams                   // channel: [mandatory] [ meta, cram, crai, bed ] => The aligned CRAMs per sample with the regions they should be called on
+        beds                    // channel: [optional]  [ meta, bed, bed_gz, bed_gz_tbi ] => A channel containing the normal BED, the bgzipped BED and its index file
+        fasta                   // channel: [mandatory] [ fasta ] => The fasta reference file
+        fasta_fai               // channel: [mandatory] [ fasta_fai ] => The index of the fasta reference file
+        dict                    // channel: [mandatory] [ dict ] => The dictionary of the fasta reference file
 
     main:
 
+    callers = params.callers.split(",")
+
     called_vcfs = Channel.empty()
 
+    collectreadcounts_input = crams.combine(
+        beds.map({meta, bed, bed_gz, bed_gz_tbi -> [meta, bed]}), by:0
+    )
+
+    COLLECTREADCOUNTS(
+        collectreadcounts_input,
+        fasta,
+        fasta_fai,
+        dict
+    )
+
     if("delly" in callers){
-        DELLY_CALL(
+        RUN_DELLY(
             crams,
+            beds,
             fasta,
             fasta_fai
         )
 
-        BCFTOOLS_CONVERT(
-            DELLY_CALL.out.bcf.map({ meta, bcf -> [ meta, bcf, [] ]}),
-            [],
-            fasta
-        )
-
-        called_vcfs = called_vcfs.mix(
-            BCFTOOLS_CONVERT.out.vcf_gz.map({ meta, vcf -> 
-                new_meta = meta.clone()
-                new_meta.caller = "delly"
-                [ new_meta, vcf ]
-            })
-        )
-
+        called_vcfs = called_vcfs.mix(RUN_DELLY.out.delly_vcfs)
     }
 
     if("manta" in callers){
@@ -87,6 +90,7 @@ workflow GATHER_SAMPLE_EVIDENCE {
     }
 
     emit:
-    vcfs = called_vcfs
+    vcfs            = called_vcfs
+    coverage_counts = COLLECTREADCOUNTS.out.tsv
 
 }

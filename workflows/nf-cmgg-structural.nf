@@ -27,7 +27,6 @@ if (params.input) { ch_input = file(params.input, checkIfExists: true) } else { 
 fasta     = params.fasta
 fasta_fai = params.fasta_fai
 dict      = params.dict
-callers   = params.callers.split(",")
 
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -91,11 +90,11 @@ workflow NF_CMGG_STRUCTURAL {
         beds,
         fasta,
         fasta_fai,
-        dict,
-        callers
+        dict
     )
 
     GATHER_SAMPLE_EVIDENCE.out.vcfs.view()
+
 
     // MULTIQC (
     //     ch_multiqc_files.collect()

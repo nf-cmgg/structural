@@ -93,8 +93,6 @@ workflow NF_CMGG_STRUCTURAL {
         dict
     )
 
-    GATHER_SAMPLE_EVIDENCE.out.vcfs.view()
-
 
     // MULTIQC (
     //     ch_multiqc_files.collect()
@@ -116,7 +114,7 @@ def parse_input(input_csv) {
         'columns': [
             'sample': [
                 'content': 'meta',
-                'meta_name': 'id',
+                'meta_name': 'id,sample',
                 'pattern': '',
             ],
             'cram': [
@@ -196,7 +194,9 @@ def parse_input(input_csv) {
                 output.add(content ? file(content, checkIfExists:true) : [])
             }
             else if(col.value['content'] == 'meta'){
-                meta[col.value['meta_name']] = content
+                for(meta_name : col.value['meta_name'].split(",")){
+                    meta[meta_name] = content
+                }
             }
         }
 

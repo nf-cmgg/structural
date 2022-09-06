@@ -4,6 +4,7 @@
 include { DELLY_CALL         } from '../../modules/nf-core/modules/delly/call/main'
 include { REVERSE_BED        } from '../../modules/local/reversebed/main'
 include { BCFTOOLS_CONCAT    } from '../../modules/nf-core/modules/bcftools/concat/main'
+include { BEDTOOLS_SPLIT     } from '../../modules/nf-core/modules/bedtools/split/main'
 include { TABIX_TABIX        } from '../../modules/nf-core/modules/tabix/tabix/main'
 
 workflow RUN_DELLY {
@@ -15,18 +16,44 @@ workflow RUN_DELLY {
 
     main:
 
-    sv_types = params.sv_types ? params.sv_types.split(",") : ["DEL","DUP","INV"]
+    //TODO add scatter count support => check CPUS as scatter count
+
+    sv_types        = params.sv_types.split(",")
+    scatter_count   = params.delly_scatter_count
+
+    single_beds     = beds.map({ meta, bed, bed_gz, bed_gz_tbi -> [ meta, bed ]})
+
+
+    if(scatter_count > 1){
+        BEDTOOLS_SPLIT(
+            single_beds,
+            scatter_count
+        )
+
+        split_beds = BEDTOOLS_SPLIT.out.beds.transpose().map({ meta, bed ->
+                            new_meta = meta.clone()
+                            new_meta.id = bed.baseName
+                            [ new_meta, bed ]
+                        })
+    } else {
+        split_beds = single_beds
+    }
 
     REVERSE_BED(
-        beds.map({ meta, bed, bed_gz, bed_gz_tbi -> [ meta, bed ]}),
+        split_beds,
         fasta_fai
     )
 
-    delly_input = crams.combine(REVERSE_BED.out.bed, by:0)
+    delly_input = crams.combine(REVERSE_BED.out.bed.map({ meta, bed -> 
+                                new_meta = meta.clone()
+                                new_meta.id = meta.sample
+                                [ new_meta, bed ]
+                            }), by:0)
                        .combine(sv_types)
                        .map({ meta, cram, crai, bed, type ->
                             new_meta = meta.clone()
                             new_meta.sv_type = type
+                            new_meta.id = bed.baseName.replace("_reversed","")
                             [ new_meta, cram, crai, bed ]
                         })
 
@@ -39,7 +66,8 @@ workflow RUN_DELLY {
     concat_input = DELLY_CALL.out.bcf.combine(DELLY_CALL.out.csi, by:0)
                             .map({ meta, bcf, csi ->
                                 new_meta = [:]
-                                new_meta.id = meta.id
+                                new_meta.id = meta.sample
+                                new_meta.sample = meta.sample
                                 [ new_meta, bcf, csi ]
                             }).groupTuple()
 

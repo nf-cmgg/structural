@@ -16,7 +16,7 @@ workflow RUN_DELLY {
 
     main:
 
-    //TODO add scatter count support => check CPUS as scatter count
+    ch_versions     = Channel.empty()
 
     sv_types        = params.sv_types.split(",")
     scatter_count   = params.delly_scatter_count
@@ -35,6 +35,8 @@ workflow RUN_DELLY {
                             new_meta.id = bed.baseName
                             [ new_meta, bed ]
                         })
+        ch_versions = ch_versions.mix(BEDTOOLS_SPLIT.out.versions)
+
     } else {
         split_beds = single_beds
     }
@@ -43,6 +45,7 @@ workflow RUN_DELLY {
         split_beds,
         fasta_fai
     )
+    ch_versions = ch_versions.mix(REVERSE_BED.out.versions)
 
     delly_input = crams.combine(REVERSE_BED.out.bed.map({ meta, bed -> 
                                 new_meta = meta.clone()
@@ -62,6 +65,7 @@ workflow RUN_DELLY {
         fasta,
         fasta_fai
     )
+    ch_versions = ch_versions.mix(DELLY_CALL.out.versions)
 
     concat_input = DELLY_CALL.out.bcf.combine(DELLY_CALL.out.csi, by:0)
                             .map({ meta, bcf, csi ->
@@ -74,10 +78,12 @@ workflow RUN_DELLY {
     BCFTOOLS_CONCAT(
         concat_input
     )
+    ch_versions = ch_versions.mix(BCFTOOLS_CONCAT.out.versions)
 
     TABIX_TABIX(
         BCFTOOLS_CONCAT.out.vcf
     )
+    ch_versions = ch_versions.mix(TABIX_TABIX.out.versions)
 
     delly_vcfs = BCFTOOLS_CONCAT.out.vcf.combine(TABIX_TABIX.out.tbi, by:0)
                                 .map({ meta, vcf, tbi -> 
@@ -88,4 +94,5 @@ workflow RUN_DELLY {
 
     emit:
     delly_vcfs
+    versions = ch_versions
 }

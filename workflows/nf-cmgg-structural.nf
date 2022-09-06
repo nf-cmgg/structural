@@ -73,17 +73,31 @@ def multiqc_report = []
 workflow NF_CMGG_STRUCTURAL {
 
     ch_versions = Channel.empty()
+    ch_reports  = Channel.empty()
+
+    //
+    // Create the input channel
+    //
 
     inputs = parse_input(ch_input).multiMap({ meta, cram, crai, bed ->
         bed: [ meta, bed ]
         crams: [ meta, cram, crai ]
     })
 
+    //
+    // Prepare the BED files
+    //
+
     TABIX_BGZIPTABIX(
         inputs.bed
     )
+    ch_versions = ch_versions.mix(TABIX_BGZIPTABIX.out.versions)
 
     beds = inputs.bed.combine(TABIX_BGZIPTABIX.out.gz_tbi, by:0)
+
+    //
+    // Gather sample evidence
+    //
 
     GATHER_SAMPLE_EVIDENCE(
         inputs.crams,
@@ -93,12 +107,36 @@ workflow NF_CMGG_STRUCTURAL {
         dict
     )
 
+    ch_versions = ch_versions.mix(GATHER_SAMPLE_EVIDENCE.out.versions)
+    ch_reports  = ch_reports.mix(GATHER_SAMPLE_EVIDENCE.out.reports)
 
-    // MULTIQC (
-    //     ch_multiqc_files.collect()
-    // )
-    // multiqc_report = MULTIQC.out.report.toList()
-    // ch_versions    = ch_versions.mix(MULTIQC.out.versions)
+    //
+    // Dump the software versions
+    //
+
+    CUSTOM_DUMPSOFTWAREVERSIONS(
+        ch_versions.unique().collectFile(name: 'collated_versions.yml')
+    )
+
+    ch_versions_yaml = CUSTOM_DUMPSOFTWAREVERSIONS.out.mqc_yml.collect()
+
+    //
+    // Perform multiQC on all QC data
+    //
+
+    ch_multiqc_files = Channel.empty()
+    
+    ch_multiqc_files = ch_multiqc_files.mix(
+                                        ch_versions_yaml,
+                                        ch_reports.collect(),
+                                        ch_multiqc_custom_config
+                                        )
+
+    MULTIQC (
+        ch_multiqc_files.collect()
+    )
+
+    multiqc_report = MULTIQC.out.report.toList()
 }
 
 /*

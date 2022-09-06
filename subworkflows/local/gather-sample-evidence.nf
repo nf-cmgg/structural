@@ -23,6 +23,8 @@ workflow GATHER_SAMPLE_EVIDENCE {
 
     callers = params.callers.split(",")
 
+    ch_versions = Channel.empty()
+    ch_reports  = Channel.empty()
     called_vcfs = Channel.empty()
 
     collectreadcounts_input = crams.combine(
@@ -36,6 +38,8 @@ workflow GATHER_SAMPLE_EVIDENCE {
         dict
     )
 
+    ch_versions = ch_versions.mix(COLLECTREADCOUNTS.out.versions)
+
     if("delly" in callers){
         RUN_DELLY(
             crams,
@@ -45,6 +49,7 @@ workflow GATHER_SAMPLE_EVIDENCE {
         )
 
         called_vcfs = called_vcfs.mix(RUN_DELLY.out.delly_vcfs)
+        ch_versions = ch_versions.mix(RUN_DELLY.out.versions)
     }
 
     if("manta" in callers){
@@ -66,6 +71,7 @@ workflow GATHER_SAMPLE_EVIDENCE {
                 [ new_meta, vcf ]
             })
         )        
+        ch_versions = ch_versions.mix(MANTA_GERMLINE.out.versions)
     }
 
     if("whamg" in callers){
@@ -74,6 +80,7 @@ workflow GATHER_SAMPLE_EVIDENCE {
             fasta,
             fasta_fai
         )
+        ch_versions = ch_versions.mix(SAMTOOLS_CONVERT.out.versions)
 
         WHAMG(
             SAMTOOLS_CONVERT.out.alignment_index,
@@ -87,10 +94,12 @@ workflow GATHER_SAMPLE_EVIDENCE {
                 [ new_meta, vcf ]
             })
         )        
+        ch_versions = ch_versions.mix(WHAMG.out.versions)
     }
 
     emit:
     vcfs            = called_vcfs
     coverage_counts = COLLECTREADCOUNTS.out.tsv
-
+    versions        = ch_versions
+    reports         = ch_reports
 }

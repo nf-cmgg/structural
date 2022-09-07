@@ -1,4 +1,4 @@
 @HD	VN:1.6
+@SQ	SN:chr3	LN:98400	M5:0924ad1afd484c2c60ef8c8c6d0f4adc	UR:genome.fasta
+@SQ	SN:chr11	LN:19680	M5:d992104611a10814a3535ce75edc8239	UR:genome.fasta
 @SQ	SN:chr21	LN:46709983	M5:974dc7aec0b755b19f031418fdedf293	UR:genome.fasta
-@SQ	SN:chr3	LN:100000	M5:603a89e3f7ed74caeafae410da1a51fb	UR:genome.fasta
-@SQ	SN:chr11	LN:20000	M5:72e48c0fc7448b14518da40a34e27443	UR:genome.fasta

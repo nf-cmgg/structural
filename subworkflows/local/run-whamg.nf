@@ -48,9 +48,13 @@ workflow RUN_WHAMG {
         fasta
     )
 
+    ch_versions = ch_versions.mix(WHAMG.out.versions)
+
     TABIX_BGZIPTABIX(
         WHAMG.out.vcf
     )
+
+    ch_versions = ch_versions.mix(TABIX_BGZIPTABIX.out.versions)
 
     if(include_bed_file){
         concat_input = TABIX_BGZIPTABIX.out.gz_tbi.map({ meta, vcf, tbi -> 
@@ -62,10 +66,14 @@ workflow RUN_WHAMG {
         BCFTOOLS_CONCAT(
             concat_input
         )
+    
+        ch_versions = ch_versions.mix(BCFTOOLS_CONCAT.out.versions)
 
         TABIX_TABIX(
             BCFTOOLS_CONCAT.out.vcf
         )
+
+        ch_versions = ch_versions.mix(TABIX_TABIX.out.versions)
 
         whamg_vcfs = BCFTOOLS_CONCAT.out.vcf.combine(TABIX_TABIX.out.tbi, by: 0)
     } else {

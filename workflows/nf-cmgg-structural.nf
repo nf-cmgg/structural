@@ -46,7 +46,7 @@ ch_multiqc_custom_config = params.multiqc_config ? Channel.fromPath(params.multi
 //
 // SUBWORKFLOW: Consisting of a mix of local and nf-core/modules
 //
-include { GATHER_SAMPLE_EVIDENCE      } from '../subworkflows/local/gather-sample-evidence'
+include { GATHER_SAMPLE_EVIDENCE      } from '../subworkflows/local/gather-sample-evidence/main'
 
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -57,9 +57,12 @@ include { GATHER_SAMPLE_EVIDENCE      } from '../subworkflows/local/gather-sampl
 //
 // MODULE: Installed directly from nf-core/modules
 //
-include { TABIX_BGZIPTABIX            } from '../modules/nf-core/modules/tabix/bgziptabix/main'
-include { MULTIQC                     } from '../modules/nf-core/modules/multiqc/main'
-include { CUSTOM_DUMPSOFTWAREVERSIONS } from '../modules/nf-core/modules/custom/dumpsoftwareversions/main'
+include { TABIX_BGZIPTABIX                  } from '../modules/nf-core/modules/tabix/bgziptabix/main'
+include { BEDTOOLS_SORT                     } from '../modules/nf-core/modules/bedtools/sort/main'
+include { GATK4_CREATESEQUENCEDICTIONARY    } from '../modules/nf-core/modules/gatk4/createsequencedictionary/main'
+include { SAMTOOLS_FAIDX                    } from '../modules/nf-core/modules/samtools/faidx/main'
+include { MULTIQC                           } from '../modules/nf-core/modules/multiqc/main'
+include { CUSTOM_DUMPSOFTWAREVERSIONS       } from '../modules/nf-core/modules/custom/dumpsoftwareversions/main'
 
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -76,6 +79,28 @@ workflow NF_CMGG_STRUCTURAL {
     ch_reports  = Channel.empty()
 
     //
+    // Create optional inputs
+    //
+
+    if(!fasta_fai){
+        SAMTOOLS_FAIDX(
+            [ [], fasta ]
+        )
+
+        ch_versions = ch_versions.mix(SAMTOOLS_FAIDX.out.versions)
+        fasta_fai   = SAMTOOLS_FAIDX.out.fai
+    }
+
+    if(!dict) {
+        GATK4_CREATESEQUENCEDICTIONARY(
+            fasta
+        )
+
+        ch_versions = ch_versions.mix(GATK4_CREATESEQUENCEDICTIONARY.out.versions)
+        dict        = GATK4_CREATESEQUENCEDICTIONARY.out.dict
+    }
+
+    //
     // Create the input channel
     //
 
@@ -88,12 +113,19 @@ workflow NF_CMGG_STRUCTURAL {
     // Prepare the BED files
     //
 
+    BEDTOOLS_SORT(
+        inputs.bed,
+        "bed"
+    )
+
+    ch_versions = ch_versions.mix(BEDTOOLS_SORT.out.versions)
+
     TABIX_BGZIPTABIX(
-        inputs.bed
+        BEDTOOLS_SORT.out.sorted
     )
     ch_versions = ch_versions.mix(TABIX_BGZIPTABIX.out.versions)
 
-    beds = inputs.bed.combine(TABIX_BGZIPTABIX.out.gz_tbi, by:0)
+    beds = BEDTOOLS_SORT.out.sorted.combine(TABIX_BGZIPTABIX.out.gz_tbi, by:0)
 
     //
     // Gather sample evidence

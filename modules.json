@@ -9,6 +9,10 @@
                     "branch": "master",
                     "git_sha": "682f789f93070bd047868300dd018faf3d434e7c"
                 },
+                "bedtools/sort": {
+                    "branch": "master",
+                    "git_sha": "e745e167c1020928ef20ea1397b6b4d230681b4d"
+                },
                 "bedtools/split": {
                     "branch": "master",
                     "git_sha": "6342f5b0996c1debb23037efdd1ad7029e801a7f"
@@ -25,6 +29,10 @@
                     "branch": "master",
                     "git_sha": "09acfad211be75e964bc268ad7c45713733210c7"
                 },
+                "gatk4/createsequencedictionary": {
+                    "branch": "master",
+                    "git_sha": "169b2b96c1167f89ab07127b7057c1d90a6996c7"
+                },
                 "manta/convertinversion": {
                     "branch": "master",
                     "git_sha": "b8ff8e32e305587ac2c7909db3058fbbba2a859a"
@@ -40,6 +48,18 @@
                 "samtools/convert": {
                     "branch": "master",
                     "git_sha": "da79396f066a96450d9cc9f115c17c9d738595fd"
+                },
+                "samtools/faidx": {
+                    "branch": "master",
+                    "git_sha": "5e7b1ef9a5a2d9258635bcbf70fcf37dacd1b247"
+                },
+                "scramble/clusteranalysis": {
+                    "branch": "master",
+                    "git_sha": "f2264c105216163fddf0db78fb33e1d191a7372a"
+                },
+                "scramble/clusteridentifier": {
+                    "branch": "master",
+                    "git_sha": "f2264c105216163fddf0db78fb33e1d191a7372a"
                 },
                 "tabix/bgziptabix": {
                     "branch": "master",

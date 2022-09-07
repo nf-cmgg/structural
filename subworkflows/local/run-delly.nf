@@ -69,9 +69,8 @@ workflow RUN_DELLY {
 
     concat_input = DELLY_CALL.out.bcf.combine(DELLY_CALL.out.csi, by:0)
                             .map({ meta, bcf, csi ->
-                                new_meta = [:]
-                                new_meta.id = meta.sample
-                                new_meta.sample = meta.sample
+                                new_meta = meta.clone()
+                                new_meta.remove('sv_type')
                                 [ new_meta, bcf, csi ]
                             }).groupTuple()
 

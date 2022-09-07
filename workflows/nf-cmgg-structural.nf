@@ -107,6 +107,8 @@ workflow NF_CMGG_STRUCTURAL {
         dict
     )
 
+    GATHER_SAMPLE_EVIDENCE.out.vcfs.view()
+
     ch_versions = ch_versions.mix(GATHER_SAMPLE_EVIDENCE.out.versions)
     ch_reports  = ch_reports.mix(GATHER_SAMPLE_EVIDENCE.out.reports)
 

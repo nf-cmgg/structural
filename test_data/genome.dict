@@ -1,4 +1,4 @@
 @HD	VN:1.6
-@SQ	SN:chr3	LN:98400	M5:0924ad1afd484c2c60ef8c8c6d0f4adc	UR:genome.fasta
-@SQ	SN:chr11	LN:19680	M5:d992104611a10814a3535ce75edc8239	UR:genome.fasta
-@SQ	SN:chr21	LN:46709983	M5:974dc7aec0b755b19f031418fdedf293	UR:genome.fasta
+@SQ	SN:chr3	LN:98400	M5:0924ad1afd484c2c60ef8c8c6d0f4adc	UR:file:/home/nvnieuwk/Documents/cmgg/nf-cmgg-structural/test_data/genome.fasta
+@SQ	SN:chr11	LN:19680	M5:d992104611a10814a3535ce75edc8239	UR:file:/home/nvnieuwk/Documents/cmgg/nf-cmgg-structural/test_data/genome.fasta
+@SQ	SN:chr21	LN:46709983	M5:974dc7aec0b755b19f031418fdedf293	UR:file:/home/nvnieuwk/Documents/cmgg/nf-cmgg-structural/test_data/genome.fasta

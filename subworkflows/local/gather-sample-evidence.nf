@@ -3,7 +3,8 @@
 //
 
 // Import subworkflows
-include { RUN_DELLY                                     } from '../../subworkflows/local/run-delly'
+include { RUN_DELLY                                     } from './run-delly'
+include { RUN_MANTA                                     } from './run-manta'
 
 // Import modules
 include { GATK4_COLLECTREADCOUNTS as COLLECTREADCOUNTS  } from '../../modules/nf-core/modules/gatk4/collectreadcounts/main'
@@ -53,25 +54,15 @@ workflow GATHER_SAMPLE_EVIDENCE {
     }
 
     if("manta" in callers){
-        // TODO add a check for germline or somatic
-        manta_input = crams.combine(beds, by: 0).map({ meta, cram, crai, bed, bed_gz, bed_gz_tbi ->
-            [ meta, cram, crai, bed_gz, bed_gz_tbi ]
-        })
-
-        MANTA_GERMLINE(
-            manta_input,
+        RUN_MANTA(
+            crams,
+            beds,
             fasta,
             fasta_fai
         )
 
-        called_vcfs = called_vcfs.mix(
-            MANTA_GERMLINE.out.diploid_sv_vcf.map({ meta, vcf -> 
-                new_meta = meta.clone()
-                new_meta.caller = "manta"
-                [ new_meta, vcf ]
-            })
-        )        
-        ch_versions = ch_versions.mix(MANTA_GERMLINE.out.versions)
+        called_vcfs = called_vcfs.mix(RUN_MANTA.out.manta_vcfs)
+        ch_versions = ch_versions.mix(RUN_MANTA.out.versions)
     }
 
     if("whamg" in callers){
@@ -98,7 +89,7 @@ workflow GATHER_SAMPLE_EVIDENCE {
     }
 
     emit:
-    vcfs            = called_vcfs
+    vcfs            = called_vcfs.view()
     coverage_counts = COLLECTREADCOUNTS.out.tsv
     versions        = ch_versions
     reports         = ch_reports

@@ -76,16 +76,18 @@ workflow GATHER_SAMPLE_EVIDENCE {
         ch_versions = ch_versions.mix(RUN_WHAMG.out.versions)
     }
 
-    if("scramble" in callers){
-        RUN_SCRAMBLE(
-            crams,
-            beds,
-            fasta
-        )
+    // Scramble is unfinished. It needs a lot of improvements if we were to add it
 
-        called_vcfs = called_vcfs.mix(RUN_SCRAMBLE.out.scramble_vcfs)
-        ch_versions = ch_versions.mix(RUN_SCRAMBLE.out.versions)
-    }
+    // if("scramble" in callers){
+    //     RUN_SCRAMBLE(
+    //         crams,
+    //         beds,
+    //         fasta
+    //     )
+
+    //     called_vcfs = called_vcfs.mix(RUN_SCRAMBLE.out.scramble_vcfs)
+    //     ch_versions = ch_versions.mix(RUN_SCRAMBLE.out.versions)
+    // }
 
     emit:
     vcfs            = called_vcfs

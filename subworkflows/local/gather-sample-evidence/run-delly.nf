@@ -18,7 +18,7 @@ workflow RUN_DELLY {
 
     ch_versions     = Channel.empty()
 
-    sv_types        = params.sv_types.split(",")
+    sv_types        = params.delly_sv_types.split(",")
     scatter_count   = params.delly_scatter_count
 
     single_beds     = beds.map({ meta, bed, bed_gz, bed_gz_tbi -> [ meta, bed ]})

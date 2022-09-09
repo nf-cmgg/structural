@@ -12,11 +12,13 @@ include { GATHER_SAMPLE_EVIDENCE_METRICS                } from './gather-metrics
 // Import modules
 include { GATK4_COLLECTREADCOUNTS as COLLECTREADCOUNTS  } from '../../../modules/nf-core/modules/gatk4/collectreadcounts/main'
 include { GATK4_COLLECTSVEVIDENCE as COLLECTSVEVIDENCE  } from '../../../modules/nf-core/modules/gatk4/collectsvevidence/main'
+include { TABIX_TABIX                                   } from '../../../modules/nf-core/modules/tabix/tabix/main'
 
 workflow GATHER_SAMPLE_EVIDENCE {
     take:
         crams                   // channel: [mandatory] [ meta, cram, crai, bed ] => The aligned CRAMs per sample with the regions they should be called on
         beds                    // channel: [optional]  [ meta, bed, bed_gz, bed_gz_tbi ] => A channel containing the normal BED, the bgzipped BED and its index file
+        allele_loci_vcf         // channel: [optional]  [ vcf ] => A channel containing the VCF and its index for counting the alleles
         fasta                   // channel: [mandatory] [ fasta ] => The fasta reference file
         fasta_fai               // channel: [mandatory] [ fasta_fai ] => The index of the fasta reference file
         dict                    // channel: [mandatory] [ dict ] => The dictionary of the fasta reference file
@@ -27,6 +29,7 @@ workflow GATHER_SAMPLE_EVIDENCE {
 
     ch_versions = Channel.empty()
     ch_reports  = Channel.empty()
+    ch_metrics  = Channel.empty()
     called_vcfs = Channel.empty()
 
     collectreadcounts_input = crams.combine(
@@ -91,8 +94,22 @@ workflow GATHER_SAMPLE_EVIDENCE {
     //     ch_versions = ch_versions.mix(RUN_SCRAMBLE.out.versions)
     // }
 
+    if(allele_loci_vcf){
+        TABIX_TABIX(
+            [ [], allele_loci_vcf ]
+        )
+
+        collectsvevidence_input = crams.combine(TABIX_TABIX.out.tbi)
+                                    .map({ meta, cram, crai, tbi ->
+                                        [ meta, cram, crai, allele_loci_vcf, tbi ]
+                                    })
+    } else {
+        collectsvevidence_input = crams.map({ meta, cram, crai -> [ meta, cram, crai, [], [] ] })
+    }
+
+
     COLLECTSVEVIDENCE(
-        crams.map({ meta, cram, crai -> [ meta, cram, crai, [], [] ]}),
+        collectsvevidence_input,
         fasta,
         fasta_fai,
         dict
@@ -105,15 +122,27 @@ workflow GATHER_SAMPLE_EVIDENCE {
             called_vcfs,
             COLLECTSVEVIDENCE.out.split_read_evidence,
             COLLECTSVEVIDENCE.out.paired_end_evidence,
+            COLLECTSVEVIDENCE.out.allele_counts,
             fasta_fai
         )
 
+        ch_metrics  = ch_reports.mix(GATHER_SAMPLE_EVIDENCE_METRICS.out.metrics)
         ch_versions = ch_versions.mix(GATHER_SAMPLE_EVIDENCE_METRICS.out.versions)
     }
 
     emit:
-    vcfs            = called_vcfs
-    coverage_counts = COLLECTREADCOUNTS.out.tsv
-    versions        = ch_versions
-    reports         = ch_reports
+    vcfs                = called_vcfs
+
+    coverage_counts     = COLLECTREADCOUNTS.out.tsv
+
+    split_reads         = COLLECTSVEVIDENCE.out.split_read_evidence
+    split_reads_index   = COLLECTSVEVIDENCE.out.split_read_evidence_index
+    read_pairs          = COLLECTSVEVIDENCE.out.paired_end_evidence
+    read_pairs_index    = COLLECTSVEVIDENCE.out.paired_end_evidence_index
+    allele_counts       = COLLECTSVEVIDENCE.out.allele_counts
+    allele_counts_index = COLLECTSVEVIDENCE.out.allele_counts_index
+
+    versions            = ch_versions
+    metrics             = ch_metrics
+    reports             = ch_reports
 }

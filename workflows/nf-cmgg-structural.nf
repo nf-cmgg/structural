@@ -17,6 +17,7 @@ def checkPathParamList = [
     params.fasta,
     params.fasta_fai,
     params.dict,
+    params.allele_loci_vcf
 ]
 for (param in checkPathParamList) { if (param) { file(param, checkIfExists: true) } }
 
@@ -24,9 +25,10 @@ for (param in checkPathParamList) { if (param) { file(param, checkIfExists: true
 if (params.input) { ch_input = file(params.input, checkIfExists: true) } else { exit 1, 'Input samplesheet not specified!' }
 
 // Parse parameters
-fasta     = params.fasta
-fasta_fai = params.fasta_fai
-dict      = params.dict
+fasta           = params.fasta
+fasta_fai       = params.fasta_fai
+dict            = params.dict
+allele_loci_vcf = params.allele_loci_vcf ?: []
 
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -134,6 +136,7 @@ workflow NF_CMGG_STRUCTURAL {
     GATHER_SAMPLE_EVIDENCE(
         inputs.crams,
         beds,
+        allele_loci_vcf,
         fasta,
         fasta_fai,
         dict

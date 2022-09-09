@@ -104,7 +104,7 @@ workflow NF_CMGG_STRUCTURAL {
     // Create the input channel
     //
 
-    inputs = parse_input(ch_input).multiMap({ meta, cram, crai, bed ->
+    inputs = parse_input(ch_input).multiMap({ meta, cram, crai, bed=[], baseline=[] ->
         bed: [ meta, bed ]
         crams: [ meta, cram, crai ]
     })
@@ -139,7 +139,7 @@ workflow NF_CMGG_STRUCTURAL {
         dict
     )
 
-    GATHER_SAMPLE_EVIDENCE.out.vcfs.view()
+    // GATHER_SAMPLE_EVIDENCE.out.vcfs.view()
 
     ch_versions = ch_versions.mix(GATHER_SAMPLE_EVIDENCE.out.versions)
     ch_reports  = ch_reports.mix(GATHER_SAMPLE_EVIDENCE.out.reports)
@@ -200,7 +200,7 @@ def parse_input(input_csv) {
             'bed': [
                 'content': 'file',
                 'pattern': '^.*\\.bed$',
-            ]
+            ],
         ],
         'required': ['sample','cram','crai'],
     ]    

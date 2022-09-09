@@ -7,9 +7,11 @@ include { RUN_DELLY                                     } from './run-delly'
 include { RUN_MANTA                                     } from './run-manta'
 include { RUN_WHAMG                                     } from './run-whamg'
 include { RUN_SCRAMBLE                                  } from './run-scramble'
+include { GATHER_SAMPLE_EVIDENCE_METRICS                } from './gather-metrics'
 
 // Import modules
 include { GATK4_COLLECTREADCOUNTS as COLLECTREADCOUNTS  } from '../../../modules/nf-core/modules/gatk4/collectreadcounts/main'
+include { GATK4_COLLECTSVEVIDENCE as COLLECTSVEVIDENCE  } from '../../../modules/nf-core/modules/gatk4/collectsvevidence/main'
 
 workflow GATHER_SAMPLE_EVIDENCE {
     take:
@@ -88,6 +90,26 @@ workflow GATHER_SAMPLE_EVIDENCE {
     //     called_vcfs = called_vcfs.mix(RUN_SCRAMBLE.out.scramble_vcfs)
     //     ch_versions = ch_versions.mix(RUN_SCRAMBLE.out.versions)
     // }
+
+    COLLECTSVEVIDENCE(
+        crams.map({ meta, cram, crai -> [ meta, cram, crai, [], [] ]}),
+        fasta,
+        fasta_fai,
+        dict
+    )
+
+    ch_versions = ch_versions.mix(COLLECTSVEVIDENCE.out.versions)
+
+    if(params.run_module_metrics) {
+        GATHER_SAMPLE_EVIDENCE_METRICS(
+            called_vcfs,
+            COLLECTSVEVIDENCE.out.split_read_evidence,
+            COLLECTSVEVIDENCE.out.paired_end_evidence,
+            fasta_fai
+        )
+
+        ch_versions = ch_versions.mix(GATHER_SAMPLE_EVIDENCE_METRICS.out.versions)
+    }
 
     emit:
     vcfs            = called_vcfs

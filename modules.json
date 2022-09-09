@@ -29,6 +29,10 @@
                     "branch": "master",
                     "git_sha": "09acfad211be75e964bc268ad7c45713733210c7"
                 },
+                "gatk4/collectsvevidence": {
+                    "branch": "master",
+                    "git_sha": "65800cee759ab4cd615e3fa37ac83401e57aacd3"
+                },
                 "gatk4/createsequencedictionary": {
                     "branch": "master",
                     "git_sha": "169b2b96c1167f89ab07127b7057c1d90a6996c7"
@@ -60,6 +64,10 @@
                 "scramble/clusteridentifier": {
                     "branch": "master",
                     "git_sha": "f2264c105216163fddf0db78fb33e1d191a7372a"
+                },
+                "svtk/standardize": {
+                    "branch": "master",
+                    "git_sha": "bf09fdf8921797428d462e44d8e495cf2029889d"
                 },
                 "tabix/bgziptabix": {
                     "branch": "master",

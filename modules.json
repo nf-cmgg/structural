@@ -1,21 +1,85 @@
 {
-    "name": "y/nfcmggstructural",
-    "homePage": "https://github.com/y/nfcmggstructural",
+    "name": "CenterForMedicalGeneticsGhent/nf-cmgg-structural",
+    "homePage": "https://github.com/CenterForMedicalGeneticsGhent/nf-cmgg-structural",
     "repos": {
         "nf-core/modules": {
             "git_url": "https://github.com/nf-core/modules.git",
             "modules": {
-                "custom/dumpsoftwareversions": {
-                    "git_sha": "e745e167c1020928ef20ea1397b6b4d230681b4d",
-                    "branch": "master"
+                "bcftools/concat": {
+                    "branch": "master",
+                    "git_sha": "682f789f93070bd047868300dd018faf3d434e7c"
                 },
-                "fastqc": {
-                    "git_sha": "e745e167c1020928ef20ea1397b6b4d230681b4d",
-                    "branch": "master"
+                "bedtools/sort": {
+                    "branch": "master",
+                    "git_sha": "e745e167c1020928ef20ea1397b6b4d230681b4d"
+                },
+                "bedtools/split": {
+                    "branch": "master",
+                    "git_sha": "6342f5b0996c1debb23037efdd1ad7029e801a7f"
+                },
+                "custom/dumpsoftwareversions": {
+                    "branch": "master",
+                    "git_sha": "e745e167c1020928ef20ea1397b6b4d230681b4d"
+                },
+                "delly/call": {
+                    "branch": "master",
+                    "git_sha": "5a30294eec8eb30c8c3d569cdcdb04a4cfbe150d"
+                },
+                "gatk4/collectreadcounts": {
+                    "branch": "master",
+                    "git_sha": "09acfad211be75e964bc268ad7c45713733210c7"
+                },
+                "gatk4/collectsvevidence": {
+                    "branch": "master",
+                    "git_sha": "65800cee759ab4cd615e3fa37ac83401e57aacd3"
+                },
+                "gatk4/createsequencedictionary": {
+                    "branch": "master",
+                    "git_sha": "169b2b96c1167f89ab07127b7057c1d90a6996c7"
+                },
+                "manta/convertinversion": {
+                    "branch": "master",
+                    "git_sha": "b8ff8e32e305587ac2c7909db3058fbbba2a859a"
+                },
+                "manta/germline": {
+                    "branch": "master",
+                    "git_sha": "ffedf09b6e84b479c9c901274f74bb33f3777243"
                 },
                 "multiqc": {
-                    "git_sha": "e745e167c1020928ef20ea1397b6b4d230681b4d",
-                    "branch": "master"
+                    "branch": "master",
+                    "git_sha": "e745e167c1020928ef20ea1397b6b4d230681b4d"
+                },
+                "samtools/convert": {
+                    "branch": "master",
+                    "git_sha": "da79396f066a96450d9cc9f115c17c9d738595fd"
+                },
+                "samtools/faidx": {
+                    "branch": "master",
+                    "git_sha": "5e7b1ef9a5a2d9258635bcbf70fcf37dacd1b247"
+                },
+                "scramble/clusteranalysis": {
+                    "branch": "master",
+                    "git_sha": "f2264c105216163fddf0db78fb33e1d191a7372a"
+                },
+                "scramble/clusteridentifier": {
+                    "branch": "master",
+                    "git_sha": "f2264c105216163fddf0db78fb33e1d191a7372a"
+                },
+                "svtk/standardize": {
+                    "branch": "master",
+                    "git_sha": "bf09fdf8921797428d462e44d8e495cf2029889d"
+                },
+                "tabix/bgziptabix": {
+                    "branch": "master",
+                    "git_sha": "9dbaffff88013bc21460a989cde7a5aa172c2e0b"
+                },
+                "tabix/tabix": {
+                    "branch": "master",
+                    "git_sha": "b3e9b88e80880f450ad79a95b2b7aa05e1de5484"
+                },
+                "whamg": {
+                    "branch": "master",
+                    "git_sha": "a509eda8a4328bf6ca93e73234c8be157ec52615"
                 }
             }
         }

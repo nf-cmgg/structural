@@ -1,5 +1,5 @@
 process ZPASTE {
-    tag "$meta.id"
+    tag "zpaste"
     label 'process_low'
 
     conda (params.enable_conda ? 'bioconda::tabix=1.11' : null)
@@ -8,34 +8,23 @@ process ZPASTE {
         'quay.io/biocontainers/tabix:1.11--hdfd78af_0' }"
 
     input:
-    tuple val(meta), path(counts_file)
+    path column_files
 
     output:
-    tuple val(meta), path("") , emit: matrix
-    path "versions.yml"                     , emit: versions
+    path "*.RD.txt.gz"          , emit: matrix_file
+    path "*.RD.txt.gz.tbi"      , emit: matrix_file_index
+    path "versions.yml"         , emit: versions
 
     when:
     task.ext.when == null || task.ext.when
 
     script:
-    def prefix = task.ext.prefix ?: "${meta.id}"
-
-    def binsize = task.ext.binsize ?: "NOT_DEFINED"
+    def prefix = task.ext.prefix ?: "batch"
 
     """
-    # Use named pipes to stream unzipped column files in memory
-    mkdir -p column_file_fifos
-    FILE_NUM=0
-    while read -r COLUMN_FILE; do
-      FIFO=$(printf "column_file_fifos/%08d" $FILE_NUM)
-      mkfifo "$FIFO"
-      bgzip -@$(nproc) -cd "$COLUMN_FILE" > "$FIFO" &
-      ((++FILE_NUM))
-    done < ~{write_lines(column_files)}
-
     # paste unzipped files and compress
-    paste column_file_fifos/* | bgzip -@$(nproc) -c > "~{matrix_file_name}"
-    tabix -p bed "~{matrix_file_name}"
+    paste ${column_files} | bgzip -@\$(nproc) -c > "${prefix}.RD.txt.gz"
+    tabix -p bed "${prefix}.RD.txt.gz"
 
 
     cat <<-END_VERSIONS > versions.yml

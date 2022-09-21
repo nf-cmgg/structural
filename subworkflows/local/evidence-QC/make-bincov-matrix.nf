@@ -1,8 +1,10 @@
 //
-// Gather Sample Evidence
+// Make Bincov Matrix
 //
+
 include { SET_BINS                      } from '../../../modules/local/bincov-matrix/set-bins/main'
 include { MAKE_BINCOV_MATRIX_COLUMNS    } from '../../../modules/local/bincov-matrix/make-bincov-matrix-columns/main'
+include { ZPASTE                        } from '../../../modules/local/bincov-matrix/zpaste/main'
 
 workflow MAKE_BINCOV_MATRIX {
     take:
@@ -25,8 +27,21 @@ workflow MAKE_BINCOV_MATRIX {
     )
 
     ch_versions = ch_versions.mix(MAKE_BINCOV_MATRIX_COLUMNS.out.versions)
-    MAKE_BINCOV_MATRIX_COLUMNS.out.bincov.view()
+
+    zpaste_input = MAKE_BINCOV_MATRIX_COLUMNS.out.bincov
+                    .map({ meta, bincov -> [ bincov ]})
+                    .collect()
+
+    ZPASTE(
+        zpaste_input
+    )
+
+    ch_versions = ch_versions.mix(ZPASTE.out.versions)
+
 
     emit:
-    versions = ch_versions
+    merged_bincov       = ZPASTE.out.matrix_file
+    merged_bincov_index = ZPASTE.out.matrix_file_index
+
+    versions            = ch_versions
 }

@@ -13,8 +13,8 @@ process MAKE_BINCOV_MATRIX_COLUMNS {
     path bin_locs
 
     output:
-    tuple val(meta), path("*_bincov.RD.txt.gz")   , emit: bincov
-    path "versions.yml"                         , emit: versions
+    tuple val(meta), path("*_bincov.RD.txt")   , emit: bincov
+    path "versions.yml"                           , emit: versions
 
     when:
     task.ext.when == null || task.ext.when
@@ -43,7 +43,7 @@ process MAKE_BINCOV_MATRIX_COLUMNS {
         'BEGIN{OFS="\t"}{\$2=\$2-x; if (\$3-\$2==b) print \$0}' \\
       >> "\$TMP_BED"
 
-    cut -f4- "\$TMP_BED" | bgzip -c >> "${prefix}_bincov.RD.txt.gz"
+    cut -f4- "\$TMP_BED" >> "${prefix}_bincov.RD.txt"
 
 
     cat <<-END_VERSIONS > versions.yml

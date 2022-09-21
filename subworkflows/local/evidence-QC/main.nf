@@ -65,7 +65,7 @@ workflow EVIDENCE_QC {
     if(params.run_ploidy) {
             
         BUILD_PLOIDY_MATRIX(
-            bincov_matrix_gz
+            bincov_matrix
         )
 
         ploidy_matrix   = ploidy_matrix.mix(BUILD_PLOIDY_MATRIX.out.ploidy_matrix)

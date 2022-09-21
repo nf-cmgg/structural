@@ -152,7 +152,8 @@ workflow NF_CMGG_STRUCTURAL {
 
     EVIDENCE_QC(
         GATHER_SAMPLE_EVIDENCE.out.vcfs,
-        GATHER_SAMPLE_EVIDENCE.out.coverage_counts
+        GATHER_SAMPLE_EVIDENCE.out.coverage_counts,
+        []
     )
 
     //

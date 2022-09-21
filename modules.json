@@ -9,6 +9,10 @@
                     "branch": "master",
                     "git_sha": "682f789f93070bd047868300dd018faf3d434e7c"
                 },
+                "bcftools/reheader": {
+                    "branch": "master",
+                    "git_sha": "682f789f93070bd047868300dd018faf3d434e7c"
+                },
                 "bedtools/intersect": {
                     "branch": "master",
                     "git_sha": "90aef30f432332bdf0ce9f4b9004aa5d5c4960bb"
@@ -72,6 +76,10 @@
                 "svtk/standardize": {
                     "branch": "master",
                     "git_sha": "bf09fdf8921797428d462e44d8e495cf2029889d"
+                },
+                "tabix/bgzip": {
+                    "branch": "master",
+                    "git_sha": "5e7b1ef9a5a2d9258635bcbf70fcf37dacd1b247"
                 },
                 "tabix/bgziptabix": {
                     "branch": "master",

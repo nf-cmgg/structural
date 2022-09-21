@@ -27,7 +27,7 @@ process SET_BINS {
     # make the CollectReadCounts output consistent with the old bincov code
     # determine what format this is
 
-    firstchar=\$(cat ${counts_file} | head -c 1)
+    firstchar=\$(head -c 1 ${counts_file})
 
     if [ \$firstchar == '@' ]; then
       shift=1  # GATK CollectReadCounts (to convert from 1-based closed intervals)

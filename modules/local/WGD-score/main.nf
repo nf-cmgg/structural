@@ -8,8 +8,8 @@ process WGD_SCORE {
     tuple path(wgd_matrix), path(wgd_scoring_mask) 
 
     output:
-    path "*_WGD_scores.txt.gz"          , emit: wgd_scores
-    path "*_WGD_score_distributions.pdf", emit: wgd_scores
+    path "*_WGD_scores.txt.gz"          , emit: scores
+    path "*_WGD_score_distributions.pdf", emit: dist
     path "versions.yml"                 , emit: versions
 
     when:

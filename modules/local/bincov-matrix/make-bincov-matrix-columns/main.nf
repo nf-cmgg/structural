@@ -23,7 +23,7 @@ process MAKE_BINCOV_MATRIX_COLUMNS {
     def prefix = task.ext.prefix ?: "${meta.id}"
 
     """
-    firstchar=\$(cat ${counts_file} | head -c 1)
+    firstchar=\$(head -c 1 ${counts_file})
 
     if [ \$firstchar == '@' ]; then
       shift=1  # GATK CollectReadCounts (to convert from 1-based closed intervals)

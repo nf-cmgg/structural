@@ -48,7 +48,8 @@ ch_multiqc_custom_config = params.multiqc_config ? Channel.fromPath(params.multi
 //
 // SUBWORKFLOW: Consisting of a mix of local and nf-core/modules
 //
-include { GATHER_SAMPLE_EVIDENCE      } from '../subworkflows/local/gather-sample-evidence/main'
+include { GATHER_SAMPLE_EVIDENCE  } from '../subworkflows/local/gather-sample-evidence/main'
+include { EVIDENCE_QC             } from '../subworkflows/local/evidence-QC/main'
 
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -142,10 +143,18 @@ workflow NF_CMGG_STRUCTURAL {
         dict
     )
 
-    // GATHER_SAMPLE_EVIDENCE.out.vcfs.view()
-
     ch_versions = ch_versions.mix(GATHER_SAMPLE_EVIDENCE.out.versions)
     ch_reports  = ch_reports.mix(GATHER_SAMPLE_EVIDENCE.out.reports)
+
+    //
+    // Evidence QC
+    //
+
+    // EVIDENCE_QC(
+    //     GATHER_SAMPLE_EVIDENCE.out.vcfs,
+    //     GATHER_SAMPLE_EVIDENCE.out.coverage_counts,
+    //     []
+    // )
 
     //
     // Dump the software versions
@@ -261,16 +270,16 @@ def parse_input(input_csv) {
             key = col.key
             content = row[key]
             
-            if(!(content ==~ col.value['pattern']) && col.value['pattern'] != '') {
+            if(!(content ==~ col.value['pattern']) && col.value['pattern'] != '' && content != '') {
                 exit 1, "[Samplesheet Error] The content of column '$key' on line $row_count does not match the pattern '${col.value['pattern']}'"
             }
 
             if(col.value['content'] == 'file'){
                 output.add(content ? file(content, checkIfExists:true) : [])
             }
-            else if(col.value['content'] == 'meta'){
+            else if(col.value['content'] == 'meta' && content != ''){
                 for(meta_name : col.value['meta_name'].split(",")){
-                    meta[meta_name] = content
+                    meta[meta_name] = content.replace(' ', '_')
                 }
             }
         }

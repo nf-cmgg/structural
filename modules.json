@@ -9,6 +9,14 @@
                     "branch": "master",
                     "git_sha": "682f789f93070bd047868300dd018faf3d434e7c"
                 },
+                "bcftools/reheader": {
+                    "branch": "master",
+                    "git_sha": "682f789f93070bd047868300dd018faf3d434e7c"
+                },
+                "bedtools/intersect": {
+                    "branch": "master",
+                    "git_sha": "90aef30f432332bdf0ce9f4b9004aa5d5c4960bb"
+                },
                 "bedtools/sort": {
                     "branch": "master",
                     "git_sha": "e745e167c1020928ef20ea1397b6b4d230681b4d"
@@ -23,7 +31,7 @@
                 },
                 "delly/call": {
                     "branch": "master",
-                    "git_sha": "5a30294eec8eb30c8c3d569cdcdb04a4cfbe150d"
+                    "git_sha": "30102f3b20e4e8e64aceb66cf00c0f10877765f4"
                 },
                 "gatk4/collectreadcounts": {
                     "branch": "master",
@@ -68,6 +76,10 @@
                 "svtk/standardize": {
                     "branch": "master",
                     "git_sha": "bf09fdf8921797428d462e44d8e495cf2029889d"
+                },
+                "tabix/bgzip": {
+                    "branch": "master",
+                    "git_sha": "5e7b1ef9a5a2d9258635bcbf70fcf37dacd1b247"
                 },
                 "tabix/bgziptabix": {
                     "branch": "master",

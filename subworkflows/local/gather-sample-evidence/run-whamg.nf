@@ -1,5 +1,5 @@
 //
-// Gather Sample Evidence
+// Run Whamg
 //
 include { WHAMG                     } from '../../../modules/nf-core/modules/whamg/main'
 include { BCFTOOLS_CONCAT           } from '../../../modules/nf-core/modules/bcftools/concat/main'

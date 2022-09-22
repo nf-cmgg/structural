@@ -1,5 +1,5 @@
 //
-// Gather Sample Evidence
+// Run Delly
 //
 include { DELLY_CALL         } from '../../../modules/nf-core/modules/delly/call/main'
 include { REVERSE_BED        } from '../../../modules/local/reversebed/main'

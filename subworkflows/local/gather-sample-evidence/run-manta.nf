@@ -1,8 +1,9 @@
 //
-// Gather Sample Evidence
+// Run Manta
 //
 include { MANTA_GERMLINE         } from '../../../modules/nf-core/modules/manta/germline/main'
 include { MANTA_CONVERTINVERSION } from '../../../modules/nf-core/modules/manta/convertinversion/main'
+include { BCFTOOLS_REHEADER      } from '../../../modules/nf-core/modules/bcftools/reheader/main'
 
 workflow RUN_MANTA {
     take:
@@ -34,7 +35,13 @@ workflow RUN_MANTA {
 
     ch_versions = ch_versions.mix(MANTA_CONVERTINVERSION.out.versions)
 
-    manta_vcfs = MANTA_CONVERTINVERSION.out.vcf.combine(MANTA_CONVERTINVERSION.out.tbi, by:0)
+    BCFTOOLS_REHEADER(
+        MANTA_CONVERTINVERSION.out.vcf,
+        [],
+        []
+    )
+
+    manta_vcfs = BCFTOOLS_REHEADER.out.vcf.combine(MANTA_CONVERTINVERSION.out.tbi, by:0)
                                                .map({ meta, vcf, tbi -> 
                                                    new_meta = meta.clone()
                                                    new_meta.caller = "manta"

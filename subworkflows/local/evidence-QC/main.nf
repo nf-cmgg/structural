@@ -75,7 +75,7 @@ workflow EVIDENCE_QC {
             ploidy_matrix
         )
 
-        ploidy_plots    = ploidy_plots.mix(PLOIDY_SCORE.ploidy_plots)
+        ploidy_plots    = ploidy_plots.mix(PLOIDY_SCORE.out.ploidy_plots)
         ch_versions     = ch_versions.mix(PLOIDY_SCORE.out.versions)
     
     }

@@ -150,11 +150,11 @@ workflow NF_CMGG_STRUCTURAL {
     // Evidence QC
     //
 
-    EVIDENCE_QC(
-        GATHER_SAMPLE_EVIDENCE.out.vcfs,
-        GATHER_SAMPLE_EVIDENCE.out.coverage_counts,
-        []
-    )
+    // EVIDENCE_QC(
+    //     GATHER_SAMPLE_EVIDENCE.out.vcfs,
+    //     GATHER_SAMPLE_EVIDENCE.out.coverage_counts,
+    //     []
+    // )
 
     //
     // Dump the software versions

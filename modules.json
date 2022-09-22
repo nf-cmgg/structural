@@ -31,7 +31,7 @@
                 },
                 "delly/call": {
                     "branch": "master",
-                    "git_sha": "5a30294eec8eb30c8c3d569cdcdb04a4cfbe150d"
+                    "git_sha": "30102f3b20e4e8e64aceb66cf00c0f10877765f4"
                 },
                 "gatk4/collectreadcounts": {
                     "branch": "master",

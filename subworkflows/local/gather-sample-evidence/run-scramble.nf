@@ -1,5 +1,5 @@
 //
-// Gather Sample Evidence
+// Run Scramble
 //
 include { SCRAMBLE_CLUSTERIDENTIFIER  } from '../../../modules/nf-core/modules/scramble/clusteridentifier/main'
 include { SCRAMBLE_CLUSTERANALYSIS    } from '../../../modules/nf-core/modules/scramble/clusteranalysis/main'

@@ -1,5 +1,5 @@
 //
-// Gather Sample Evidence
+// Run Manta
 //
 include { MANTA_GERMLINE         } from '../../../modules/nf-core/modules/manta/germline/main'
 include { MANTA_CONVERTINVERSION } from '../../../modules/nf-core/modules/manta/convertinversion/main'

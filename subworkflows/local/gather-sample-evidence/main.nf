@@ -4,6 +4,7 @@
 
 // Import subworkflows
 include { RUN_MANTA                                     } from './run-manta'
+include { RUN_DELLY                                     } from './run-delly'
 include { RUN_WHAMG                                     } from './run-whamg'
 include { RUN_SCRAMBLE                                  } from './run-scramble'
 include { GATHER_SAMPLE_EVIDENCE_METRICS                } from './gather-metrics'
@@ -54,6 +55,18 @@ workflow GATHER_SAMPLE_EVIDENCE {
 
         called_vcfs = called_vcfs.mix(RUN_MANTA.out.manta_vcfs)
         ch_versions = ch_versions.mix(RUN_MANTA.out.versions)
+    }
+
+    if("delly" in callers){
+        RUN_DELLY(
+            crams,
+            beds,
+            fasta,
+            fasta_fai
+        )
+
+        called_vcfs = called_vcfs.mix(RUN_DELLY.out.delly_vcfs)
+        ch_versions = ch_versions.mix(RUN_DELLY.out.versions)
     }
 
     // Whamg needs some reheadering (like done in https://github.com/broadinstitute/gatk-sv/blob/90e3e9a221bdfe7ab2cfedeffb704bc6f0e99aa9/wdl/Whamg.wdl#L209)

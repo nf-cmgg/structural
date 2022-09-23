@@ -29,6 +29,34 @@ workflow GATHER_BATCH_EVIDENCE {
         bincov_matrix_index = MAKE_BINCOV_MATRIX.out.merged_bincov_index
     }
 
+    // Ploidy
+
+    // SubsetPedFile
+
+    // AddCaseSampleToBed
+
+    // BatchEvidenceMerging
+
+    // CNMOPS
+
+    // CNMOPSLarge
+
+    // CondenseReadCounts
+
+    // gCNVCase
+
+    // MergeDepth
+
+    // MedianCov
+
+    // PreprocessPESR
+
+    // TinyResolve
+
+    // MatrixQC
+
+    // GatherBatchEvidenceMetrics
+
     ch_versions = Channel.empty()
 
     emit:

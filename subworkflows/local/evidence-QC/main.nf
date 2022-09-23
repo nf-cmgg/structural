@@ -3,7 +3,7 @@
 //
 
 // Import subworkflows
-include { MAKE_BINCOV_MATRIX    } from './make-bincov-matrix'
+include { MAKE_BINCOV_MATRIX    } from '../common-workflows/make-bincov-matrix'
 
 // Import modules
 include { CALCMEDCOV            } from '../../../modules/local/calcmedcov/main'

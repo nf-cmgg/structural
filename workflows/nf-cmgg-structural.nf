@@ -151,13 +151,13 @@ workflow NF_CMGG_STRUCTURAL {
     // Evidence QC
     //
 
-    // EVIDENCE_QC(
-    //     GATHER_SAMPLE_EVIDENCE.out.vcfs,
-    //     GATHER_SAMPLE_EVIDENCE.out.coverage_counts,
-    //     []
-    // )
+    EVIDENCE_QC(
+        GATHER_SAMPLE_EVIDENCE.out.vcfs,
+        GATHER_SAMPLE_EVIDENCE.out.coverage_counts,
+        []
+    )
 
-    // ch_versions = ch_versions.mix(EVIDENCE_QC.out.versions)
+    ch_versions = ch_versions.mix(EVIDENCE_QC.out.versions)
 
     //
     // Gather batch evidence

@@ -43,7 +43,7 @@ process SVTEST_VCF {
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
         svtest: ${VERSION}
-        python: \$(python3 --version | sed -e "s/Python v//g")
+        python: \$(python3 --version | sed -e "s/Python //g")
     END_VERSIONS
     """
 }

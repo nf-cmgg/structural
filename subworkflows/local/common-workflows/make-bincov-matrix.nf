@@ -41,7 +41,7 @@ workflow MAKE_BINCOV_MATRIX {
 
     emit:
     merged_bincov          = ZPASTE.out.matrix_file
-    // merged_bincov_index = ZPASTE.out.matrix_file_gz_index
+    merged_bincov_index    = [] //ZPASTE.out.matrix_file_gz_index
 
     versions               = ch_versions
 }

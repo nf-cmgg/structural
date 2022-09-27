@@ -47,8 +47,8 @@ process MAKE_BINCOV_MATRIX_COLUMNS {
 
 
     cat <<-END_VERSIONS > versions.yml
-    "${task.process}":
-        tabix: \$(echo \$(tabix -h 2>&1) | sed 's/^.*Version: //; s/ .*\$//')
-    END_VERSIONS
+"${task.process}":
+    tabix: \$(echo \$(tabix -h 2>&1) | sed 's/^.*Version: //; s/ .*\$//')
+END_VERSIONS
     """
 }

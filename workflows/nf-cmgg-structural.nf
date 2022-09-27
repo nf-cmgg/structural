@@ -151,11 +151,13 @@ workflow NF_CMGG_STRUCTURAL {
     // Evidence QC
     //
 
-    EVIDENCE_QC(
-        GATHER_SAMPLE_EVIDENCE.out.vcfs,
-        GATHER_SAMPLE_EVIDENCE.out.coverage_counts,
-        []
-    )
+    // EVIDENCE_QC(
+    //     GATHER_SAMPLE_EVIDENCE.out.vcfs,
+    //     GATHER_SAMPLE_EVIDENCE.out.coverage_counts,
+    //     []
+    // )
+
+    // ch_versions = ch_versions.mix(EVIDENCE_QC.out.versions)
 
     //
     // Gather batch evidence
@@ -163,12 +165,15 @@ workflow NF_CMGG_STRUCTURAL {
 
     GATHER_BATCH_EVIDENCE(
         GATHER_SAMPLE_EVIDENCE.out.coverage_counts,
-        EVIDENCE_QC.out.bincov_matrix,
-        EVIDENCE_QC.out.bincov_matrix_index
+        [], //EVIDENCE_QC.out.bincov_matrix,
+        [], //EVIDENCE_QC.out.bincov_matrix_index
+        [],
+        GATHER_SAMPLE_EVIDENCE.out.read_pairs,
+        GATHER_SAMPLE_EVIDENCE.out.split_reads,
+        dict
     )
 
     ch_versions = ch_versions.mix(GATHER_BATCH_EVIDENCE.out.versions)
-    ch_reports  = ch_reports.mix(GATHER_BATCH_EVIDENCE.out.reports)
 
     //
     // Dump the software versions

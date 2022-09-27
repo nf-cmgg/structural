@@ -9,6 +9,10 @@
                     "branch": "master",
                     "git_sha": "682f789f93070bd047868300dd018faf3d434e7c"
                 },
+                "bcftools/convert": {
+                    "branch": "master",
+                    "git_sha": "8656636f0d0a86aa3966052b5c2cd06141647c70"
+                },
                 "bcftools/reheader": {
                     "branch": "master",
                     "git_sha": "682f789f93070bd047868300dd018faf3d434e7c"
@@ -44,6 +48,10 @@
                 "gatk4/createsequencedictionary": {
                     "branch": "master",
                     "git_sha": "169b2b96c1167f89ab07127b7057c1d90a6996c7"
+                },
+                "gatk4/printsvevidence": {
+                    "branch": "master",
+                    "git_sha": "5d8edefb26e81c77659f91d9cbfaea04c9be5765"
                 },
                 "manta/convertinversion": {
                     "branch": "master",

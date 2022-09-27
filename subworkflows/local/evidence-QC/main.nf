@@ -3,12 +3,11 @@
 //
 
 // Import subworkflows
-include { MAKE_BINCOV_MATRIX    } from './make-bincov-matrix'
+include { MAKE_BINCOV_MATRIX    } from '../common-workflows/make-bincov-matrix'
+include { PLOIDY                } from '../common-workflows/ploidy'
 
 // Import modules
 include { CALCMEDCOV            } from '../../../modules/local/calcmedcov/main'
-include { BUILD_PLOIDY_MATRIX   } from '../../../modules/local/ploidy/build-ploidy-matrix/main'
-include { PLOIDY_SCORE          } from '../../../modules/local/ploidy/ploidy-score/main'
 include { WGD_SCORE             } from '../../../modules/local/WGD-score/main'
 include { INDVIDUAL_QC          } from '../../../modules/local/vcf-QC/individual-QC/main'
 include { PICK_OUTLIERS         } from '../../../modules/local/vcf-QC/pick-outliers/main'
@@ -48,14 +47,14 @@ workflow EVIDENCE_QC {
     ch_versions = ch_versions.mix(MAKE_BINCOV_MATRIX.out.versions)
 
     bincov_matrix       = bincov_matrix.mix(MAKE_BINCOV_MATRIX.out.merged_bincov)
-    // bincov_matrix_index = bincov_matrix_index.mix(MAKE_BINCOV_MATRIX.out.bincov_matrix_index)
+    bincov_matrix_index = bincov_matrix_index.mix(MAKE_BINCOV_MATRIX.out.bincov_matrix_index)
 
     // FIX THIS!!
-    CALCMEDCOV(
-        bincov_matrix
-    ).median_cov_file.view()
+    // CALCMEDCOV(
+    //     bincov_matrix
+    // ).median_cov_file.view()
 
-    bincov_median = bincov_median.mix(CALCMEDCOV.out.median_cov_file)
+    // bincov_median = bincov_median.mix(CALCMEDCOV.out.median_cov_file)
 
 
     //
@@ -64,24 +63,18 @@ workflow EVIDENCE_QC {
 
     if(params.run_ploidy) {
             
-        BUILD_PLOIDY_MATRIX(
+        PLOIDY(
             bincov_matrix
         )
 
-        ploidy_matrix   = ploidy_matrix.mix(BUILD_PLOIDY_MATRIX.out.ploidy_matrix)
-        ch_versions     = ch_versions.mix(BUILD_PLOIDY_MATRIX.out.versions)
-
-        PLOIDY_SCORE(
-            ploidy_matrix
-        )
-
-        ploidy_plots    = ploidy_plots.mix(PLOIDY_SCORE.out.ploidy_plots)
-        ch_versions     = ch_versions.mix(PLOIDY_SCORE.out.versions)
+        ploidy_matrix   = ploidy_matrix.mix(PLOIDY.out.ploidy_matrix)
+        ploidy_plots    = ploidy_plots.mix(PLOIDY.out.ploidy_plots)
+        ch_versions     = ch_versions.mix(PLOIDY.out.versions)
     
     }
 
     //
-    // WGD
+    // WGD (untested, but should work)
     //
 
     if(wgd_scoring_mask) {

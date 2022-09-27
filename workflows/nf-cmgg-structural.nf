@@ -50,6 +50,7 @@ ch_multiqc_custom_config = params.multiqc_config ? Channel.fromPath(params.multi
 //
 include { GATHER_SAMPLE_EVIDENCE  } from '../subworkflows/local/gather-sample-evidence/main'
 include { EVIDENCE_QC             } from '../subworkflows/local/evidence-QC/main'
+include { GATHER_BATCH_EVIDENCE   } from '../subworkflows/local/gather-batch-evidence/main'
 
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -150,11 +151,29 @@ workflow NF_CMGG_STRUCTURAL {
     // Evidence QC
     //
 
-    // EVIDENCE_QC(
-    //     GATHER_SAMPLE_EVIDENCE.out.vcfs,
-    //     GATHER_SAMPLE_EVIDENCE.out.coverage_counts,
-    //     []
-    // )
+    EVIDENCE_QC(
+        GATHER_SAMPLE_EVIDENCE.out.vcfs,
+        GATHER_SAMPLE_EVIDENCE.out.coverage_counts,
+        []
+    )
+
+    ch_versions = ch_versions.mix(EVIDENCE_QC.out.versions)
+
+    //
+    // Gather batch evidence
+    //
+
+    GATHER_BATCH_EVIDENCE(
+        GATHER_SAMPLE_EVIDENCE.out.coverage_counts,
+        [], //EVIDENCE_QC.out.bincov_matrix,
+        [], //EVIDENCE_QC.out.bincov_matrix_index
+        [],
+        GATHER_SAMPLE_EVIDENCE.out.read_pairs,
+        GATHER_SAMPLE_EVIDENCE.out.split_reads,
+        dict
+    )
+
+    ch_versions = ch_versions.mix(GATHER_BATCH_EVIDENCE.out.versions)
 
     //
     // Dump the software versions

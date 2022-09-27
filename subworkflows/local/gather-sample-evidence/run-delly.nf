@@ -4,6 +4,7 @@
 include { DELLY_CALL         } from '../../../modules/nf-core/modules/delly/call/main'
 include { REVERSE_BED        } from '../../../modules/local/reversebed/main'
 include { BCFTOOLS_CONCAT    } from '../../../modules/nf-core/modules/bcftools/concat/main'
+include { BCFTOOLS_CONVERT   } from '../../../modules/nf-core/modules/bcftools/convert/main'
 include { BEDTOOLS_SPLIT     } from '../../../modules/nf-core/modules/bedtools/split/main'
 include { TABIX_TABIX        } from '../../../modules/nf-core/modules/tabix/tabix/main'
 
@@ -18,7 +19,6 @@ workflow RUN_DELLY {
 
     ch_versions     = Channel.empty()
 
-    sv_types        = params.delly_sv_types.split(",")
     scatter_count   = params.delly_scatter_count
 
     single_beds     = beds.map({ meta, bed, bed_gz, bed_gz_tbi -> [ meta, bed ]})
@@ -52,10 +52,8 @@ workflow RUN_DELLY {
                                 new_meta.id = meta.sample
                                 [ new_meta, bed ]
                             }), by:0)
-                       .combine(sv_types)
-                       .map({ meta, cram, crai, bed, type ->
+                       .map({ meta, cram, crai, bed ->
                             new_meta = meta.clone()
-                            new_meta.sv_type = type
                             new_meta.id = bed.baseName.replace("_reversed","")
                             [ new_meta, cram, crai, bed ]
                         })
@@ -67,24 +65,41 @@ workflow RUN_DELLY {
     )
     ch_versions = ch_versions.mix(DELLY_CALL.out.versions)
 
-    concat_input = DELLY_CALL.out.bcf.combine(DELLY_CALL.out.csi, by:0)
+    bcftools_input = DELLY_CALL.out.bcf.combine(DELLY_CALL.out.csi, by:0)
                             .map({ meta, bcf, csi ->
                                 new_meta = meta.clone()
-                                new_meta.remove('sv_type')
+                                new_meta.id = meta.sample
                                 [ new_meta, bcf, csi ]
                             }).groupTuple()
 
-    BCFTOOLS_CONCAT(
-        concat_input
-    )
-    ch_versions = ch_versions.mix(BCFTOOLS_CONCAT.out.versions)
+    if(scatter_count > 1){
+    
+        BCFTOOLS_CONCAT(
+            bcftools_input
+        )
+        ch_versions = ch_versions.mix(BCFTOOLS_CONCAT.out.versions)
+
+        tabix_input = BCFTOOLS_CONCAT.out.vcf
+    
+    } else {
+
+        BCFTOOLS_CONVERT(
+            bcftools_input,
+            [],
+            fasta
+        )
+        ch_versions = ch_versions.mix(BCFTOOLS_CONVERT.out.versions)
+
+        tabix_input = BCFTOOLS_CONVERT.out.vcf_gz
+
+    }
 
     TABIX_TABIX(
-        BCFTOOLS_CONCAT.out.vcf
+        tabix_input
     )
     ch_versions = ch_versions.mix(TABIX_TABIX.out.versions)
 
-    delly_vcfs = BCFTOOLS_CONCAT.out.vcf.combine(TABIX_TABIX.out.tbi, by:0)
+    delly_vcfs = tabix_input.combine(TABIX_TABIX.out.tbi, by:0)
                                 .map({ meta, vcf, tbi -> 
                                     new_meta = meta.clone()
                                     new_meta.caller = "delly"

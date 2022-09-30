@@ -1,6 +1,4 @@
 sample,cram,crai,bed
-1234N,https://github.com/nf-core/test-datasets/raw/sarek/testdata/recalcram/1234N.recal.cram,https://github.com/nf-core/test-datasets/raw/sarek/testdata/recalcram/1234N.recal.cram.crai,https://github.com/nf-core/test-datasets/raw/sarek/testdata/target.bed
-9876T,https://github.com/nf-core/test-datasets/raw/sarek/testdata/recalcram/9876T.recal.cram,https://github.com/nf-core/test-datasets/raw/sarek/testdata/recalcram/9876T.recal.cram.crai,https://github.com/nf-core/test-datasets/raw/sarek/testdata/target.bed
 PosCon1,https://github.com/CenterForMedicalGeneticsGhent/nf-cmgg-structural/testdata/nf-cmgg.SVcontrol.PosCon1.cram,https://github.com/CenterForMedicalGeneticsGhent/nf-cmgg-structural/testdata/nf-cmgg.SVcontrol.PosCon1.cram.crai,
 PosCon2,https://github.com/CenterForMedicalGeneticsGhent/nf-cmgg-structural/testdata/nf-cmgg.SVcontrol.PosCon2.cram,https://github.com/CenterForMedicalGeneticsGhent/nf-cmgg-structural/testdata/nf-cmgg.SVcontrol.PosCon2.cram.crai,
 PosCon3,https://github.com/CenterForMedicalGeneticsGhent/nf-cmgg-structural/testdata/nf-cmgg.SVcontrol.PosCon3.cram,https://github.com/CenterForMedicalGeneticsGhent/nf-cmgg-structural/testdata/nf-cmgg.SVcontrol.PosCon3.cram.crai,

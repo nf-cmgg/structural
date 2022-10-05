@@ -10,9 +10,9 @@ include { RUN_SCRAMBLE                                  } from './run-scramble'
 include { GATHER_SAMPLE_EVIDENCE_METRICS                } from './gather-metrics'
 
 // Import modules
-include { GATK4_COLLECTREADCOUNTS as COLLECTREADCOUNTS  } from '../../../modules/nf-core/modules/gatk4/collectreadcounts/main'
-include { GATK4_COLLECTSVEVIDENCE as COLLECTSVEVIDENCE  } from '../../../modules/nf-core/modules/gatk4/collectsvevidence/main'
-include { TABIX_TABIX                                   } from '../../../modules/nf-core/modules/tabix/tabix/main'
+include { GATK4_COLLECTREADCOUNTS as COLLECTREADCOUNTS  } from '../../../modules/nf-core/gatk4/collectreadcounts/main'
+include { GATK4_COLLECTSVEVIDENCE as COLLECTSVEVIDENCE  } from '../../../modules/nf-core/gatk4/collectsvevidence/main'
+include { TABIX_TABIX                                   } from '../../../modules/nf-core/tabix/tabix/main'
 
 workflow GATHER_SAMPLE_EVIDENCE {
     take:

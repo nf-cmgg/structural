@@ -7,7 +7,7 @@ include { MAKE_BINCOV_MATRIX                            } from '../common-workfl
 include { BATCH_EVIDENCE_MERGING                        } from './batch-evidence-merging'
 
 // Import modules
-include { GATK4_COLLECTREADCOUNTS as COLLECTREADCOUNTS  } from '../../../modules/nf-core/modules/gatk4/collectreadcounts/main'
+include { GATK4_COLLECTREADCOUNTS as COLLECTREADCOUNTS  } from '../../../modules/nf-core/gatk4/collectreadcounts/main'
 
 workflow GATHER_BATCH_EVIDENCE {
     take:
@@ -42,7 +42,7 @@ workflow GATHER_BATCH_EVIDENCE {
 
         bincov_matrix       = MAKE_BINCOV_MATRIX.out.merged_bincov
         bincov_matrix_index = MAKE_BINCOV_MATRIX.out.merged_bincov_index
-    
+
     }
 
     //

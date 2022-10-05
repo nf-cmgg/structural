@@ -61,12 +61,12 @@ include { GATHER_BATCH_EVIDENCE   } from '../subworkflows/local/gather-batch-evi
 //
 // MODULE: Installed directly from nf-core/modules
 //
-include { TABIX_BGZIPTABIX                  } from '../modules/nf-core/modules/tabix/bgziptabix/main'
-include { BEDTOOLS_SORT                     } from '../modules/nf-core/modules/bedtools/sort/main'
-include { GATK4_CREATESEQUENCEDICTIONARY    } from '../modules/nf-core/modules/gatk4/createsequencedictionary/main'
-include { SAMTOOLS_FAIDX                    } from '../modules/nf-core/modules/samtools/faidx/main'
-include { MULTIQC                           } from '../modules/nf-core/modules/multiqc/main'
-include { CUSTOM_DUMPSOFTWAREVERSIONS       } from '../modules/nf-core/modules/custom/dumpsoftwareversions/main'
+include { TABIX_BGZIPTABIX                  } from '../modules/nf-core/tabix/bgziptabix/main'
+include { BEDTOOLS_SORT                     } from '../modules/nf-core/bedtools/sort/main'
+include { GATK4_CREATESEQUENCEDICTIONARY    } from '../modules/nf-core/gatk4/createsequencedictionary/main'
+include { SAMTOOLS_FAIDX                    } from '../modules/nf-core/samtools/faidx/main'
+include { MULTIQC                           } from '../modules/nf-core/multiqc/main'
+include { CUSTOM_DUMPSOFTWAREVERSIONS       } from '../modules/nf-core/custom/dumpsoftwareversions/main'
 
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

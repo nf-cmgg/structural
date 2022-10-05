@@ -1,12 +1,13 @@
 //
 // Run Delly
 //
-include { DELLY_CALL         } from '../../../modules/nf-core/modules/delly/call/main'
 include { REVERSE_BED        } from '../../../modules/local/reversebed/main'
-include { BCFTOOLS_CONCAT    } from '../../../modules/nf-core/modules/bcftools/concat/main'
-include { BCFTOOLS_CONVERT   } from '../../../modules/nf-core/modules/bcftools/convert/main'
-include { BEDTOOLS_SPLIT     } from '../../../modules/nf-core/modules/bedtools/split/main'
-include { TABIX_TABIX        } from '../../../modules/nf-core/modules/tabix/tabix/main'
+
+include { DELLY_CALL         } from '../../../modules/nf-core/delly/call/main'
+include { BCFTOOLS_CONCAT    } from '../../../modules/nf-core/bcftools/concat/main'
+include { BCFTOOLS_CONVERT   } from '../../../modules/nf-core/bcftools/convert/main'
+include { BEDTOOLS_SPLIT     } from '../../../modules/nf-core/bedtools/split/main'
+include { TABIX_TABIX        } from '../../../modules/nf-core/tabix/tabix/main'
 
 workflow RUN_DELLY {
     take:
@@ -47,7 +48,7 @@ workflow RUN_DELLY {
     )
     ch_versions = ch_versions.mix(REVERSE_BED.out.versions)
 
-    delly_input = crams.combine(REVERSE_BED.out.bed.map({ meta, bed -> 
+    delly_input = crams.combine(REVERSE_BED.out.bed.map({ meta, bed ->
                                 new_meta = meta.clone()
                                 new_meta.id = meta.sample
                                 [ new_meta, bed ]
@@ -73,14 +74,14 @@ workflow RUN_DELLY {
                             }).groupTuple()
 
     if(scatter_count > 1){
-    
+
         BCFTOOLS_CONCAT(
             bcftools_input
         )
         ch_versions = ch_versions.mix(BCFTOOLS_CONCAT.out.versions)
 
         tabix_input = BCFTOOLS_CONCAT.out.vcf
-    
+
     } else {
 
         BCFTOOLS_CONVERT(
@@ -100,7 +101,7 @@ workflow RUN_DELLY {
     ch_versions = ch_versions.mix(TABIX_TABIX.out.versions)
 
     delly_vcfs = tabix_input.combine(TABIX_TABIX.out.tbi, by:0)
-                                .map({ meta, vcf, tbi -> 
+                                .map({ meta, vcf, tbi ->
                                     new_meta = meta.clone()
                                     new_meta.caller = "delly"
                                     [ new_meta, vcf, tbi ]

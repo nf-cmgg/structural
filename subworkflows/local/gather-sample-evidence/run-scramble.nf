@@ -1,8 +1,8 @@
 //
 // Run Scramble
 //
-include { SCRAMBLE_CLUSTERIDENTIFIER  } from '../../../modules/nf-core/modules/scramble/clusteridentifier/main'
-include { SCRAMBLE_CLUSTERANALYSIS    } from '../../../modules/nf-core/modules/scramble/clusteranalysis/main'
+include { SCRAMBLE_CLUSTERIDENTIFIER  } from '../../../modules/nf-core/scramble/clusteridentifier/main'
+include { SCRAMBLE_CLUSTERANALYSIS    } from '../../../modules/nf-core/scramble/clusteranalysis/main'
 
 workflow RUN_SCRAMBLE {
     take:
@@ -22,7 +22,7 @@ workflow RUN_SCRAMBLE {
     ch_versions = ch_versions.mix(SCRAMBLE_CLUSTERIDENTIFIER.out.versions)
 
     clusteranalysis_input = SCRAMBLE_CLUSTERIDENTIFIER.out.clusters.filter({ meta, clusters -> !clusters.isEmpty() }).view()
-    
+
     SCRAMBLE_CLUSTERANALYSIS(
         clusteranalysis_input,
         fasta,

@@ -12,8 +12,8 @@ include { WGD_SCORE             } from '../../../modules/local/WGD-score/main'
 include { INDVIDUAL_QC          } from '../../../modules/local/vcf-QC/individual-QC/main'
 include { PICK_OUTLIERS         } from '../../../modules/local/vcf-QC/pick-outliers/main'
 
-include { BEDTOOLS_INTERSECT    } from '../../../modules/nf-core/modules/bedtools/intersect/main'
-include { TABIX_BGZIP           } from '../../../modules/nf-core/modules/tabix/bgzip/main'
+include { BEDTOOLS_INTERSECT    } from '../../../modules/nf-core/bedtools/intersect/main'
+include { TABIX_BGZIP           } from '../../../modules/nf-core/tabix/bgzip/main'
 
 workflow EVIDENCE_QC {
     take:
@@ -24,13 +24,13 @@ workflow EVIDENCE_QC {
     main:
 
     ch_versions         = Channel.empty()
-    
+
     low_outliers        = Channel.empty()
     high_outliers       = Channel.empty()
-    
+
     ploidy_matrix       = Channel.empty()
     ploidy_plots        = Channel.empty()
-    
+
     wgd_dist            = Channel.empty()
     wgd_matrix          = Channel.empty()
     wgd_scores          = Channel.empty()
@@ -62,7 +62,7 @@ workflow EVIDENCE_QC {
     //
 
     if(params.run_ploidy) {
-            
+
         PLOIDY(
             bincov_matrix
         )
@@ -70,7 +70,7 @@ workflow EVIDENCE_QC {
         ploidy_matrix   = ploidy_matrix.mix(PLOIDY.out.ploidy_matrix)
         ploidy_plots    = ploidy_plots.mix(PLOIDY.out.ploidy_plots)
         ch_versions     = ch_versions.mix(PLOIDY.out.versions)
-    
+
     }
 
     //
@@ -92,8 +92,8 @@ workflow EVIDENCE_QC {
             wgd_matrix.combine(wgd_scoring_mask)
         )
 
-        wgd_dist    = WGD_SCORE.out.dist 
-        wgd_scores  = WGD_SCORE.out.scores  
+        wgd_dist    = WGD_SCORE.out.dist
+        wgd_scores  = WGD_SCORE.out.scores
         ch_versions = ch_versions.mix(WGD_SCORE.out.versions)
 
     }
@@ -110,7 +110,7 @@ workflow EVIDENCE_QC {
 
         ch_versions = ch_versions.mix(INDVIDUAL_QC.out.versions)
 
-        pick_outliers_input = INDVIDUAL_QC.out.stat.branch({ meta, stat -> 
+        pick_outliers_input = INDVIDUAL_QC.out.stat.branch({ meta, stat ->
                                     valid: stat.countLines() > 1
                                     invalid: stat.countLines() == 1
                                 })

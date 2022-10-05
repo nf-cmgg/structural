@@ -1,8 +1,8 @@
 //
 // Gather Sample Evidence
 //
-include { SVTK_STANDARDIZE } from '../../../modules/nf-core/modules/svtk/standardize/main'
-include { TABIX_TABIX      } from '../../../modules/nf-core/modules/tabix/tabix/main'
+include { SVTK_STANDARDIZE } from '../../../modules/nf-core/svtk/standardize/main'
+include { TABIX_TABIX      } from '../../../modules/nf-core/tabix/tabix/main'
 include { SVTEST_VCF       } from '../../../modules/local/svtest/vcf/main'
 include { SVTEST_SRFILE    } from '../../../modules/local/svtest/sr-file/main'
 include { SVTEST_PEFILE    } from '../../../modules/local/svtest/pe-file/main'

@@ -3,9 +3,9 @@
 //
 
 // Import modules
-include { GATK4_PRINTSVEVIDENCE as PRINTSVEVIDENCE  } from '../../../modules/nf-core/modules/gatk4/printsvevidence/main'
-include { TABIX_TABIX as TABIX                      } from '../../../modules/nf-core/modules/tabix/tabix/main'
-include { BEDTOOLS_SORT                             } from '../../../modules/nf-core/modules/bedtools/sort/main'
+include { GATK4_PRINTSVEVIDENCE as PRINTSVEVIDENCE  } from '../../../modules/nf-core/gatk4/printsvevidence/main'
+include { TABIX_TABIX as TABIX                      } from '../../../modules/nf-core/tabix/tabix/main'
+include { BEDTOOLS_SORT                             } from '../../../modules/nf-core/bedtools/sort/main'
 
 workflow BATCH_EVIDENCE_MERGING {
     take:

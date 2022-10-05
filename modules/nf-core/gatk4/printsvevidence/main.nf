@@ -1,5 +1,5 @@
 process GATK4_PRINTSVEVIDENCE {
-    tag "printsvevidence"
+    tag "${meta.id}"
     label 'process_single'
 
     conda (params.enable_conda ? "bioconda::gatk4=4.2.6.1" : null)
@@ -8,26 +8,26 @@ process GATK4_PRINTSVEVIDENCE {
         'quay.io/biocontainers/gatk4:4.2.6.1--hdfd78af_0' }"
 
     input:
-    tuple path(evidence_files), path(evidence_indices)
+    tuple val(meta), path(evidence_files), path(evidence_indices)
     path bed
     path fasta
     path fasta_fai
     path dict
 
     output:
-    path "*.txt.gz"       , emit: printed_evidence
-    path "*.txt.gz.tbi"   , emit: printed_evidence_index
-    path "versions.yml"   , emit: versions
+    tuple val(meta), path("*.txt.gz")       , emit: printed_evidence
+    tuple val(meta), path("*.txt.gz.tbi")   , emit: printed_evidence_index
+    path "versions.yml"                     , emit: versions
 
     when:
     task.ext.when == null || task.ext.when
 
     script:
     def args = task.ext.args ?: ''
-    def prefix = task.ext.prefix ?: "printsvevidence"
+    def prefix = task.ext.prefix ?: "${meta.id}"
     def intervals = bed ? "--intervals ${bed}" : ""
     def reference = fasta ? "--reference ${fasta}" : ""
-    def input_files = evidence_files.collect({"--evidence-file $it"})join(' ')
+    def input_files = evidence_files.collect({"--evidence-file $it"}).join(' ')
 
     def file_name = evidence_files[0].getFileName()
 
@@ -57,6 +57,7 @@ process GATK4_PRINTSVEVIDENCE {
         --output ${prefix}.${file_type}.txt.gz \\
         --tmp-dir . \\
         ${args}
+
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
         gatk4: \$(echo \$(gatk --version 2>&1) | sed 's/^.*(GATK) v//; s/ .*\$//')

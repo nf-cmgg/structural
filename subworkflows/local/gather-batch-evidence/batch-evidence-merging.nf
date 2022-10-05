@@ -2,19 +2,16 @@
 // Batch Evidence Merging
 //
 
-// Import subworkflows
-include { MAKE_BINCOV_MATRIX                            } from '../common-workflows/make-bincov-matrix'
-
 // Import modules
-include { GATK4_PRINTSVEVIDENCE as PRINTSVEVIDENCE_SR  } from '../../../modules/nf-core/modules/gatk4/printsvevidence/main'
-include { GATK4_PRINTSVEVIDENCE as PRINTSVEVIDENCE_PE  } from '../../../modules/nf-core/modules/gatk4/printsvevidence/main'
-include { GATK4_PRINTSVEVIDENCE as PRINTSVEVIDENCE_BAF } from '../../../modules/nf-core/modules/gatk4/printsvevidence/main'
+include { GATK4_PRINTSVEVIDENCE as PRINTSVEVIDENCE  } from '../../../modules/nf-core/modules/gatk4/printsvevidence/main'
+include { TABIX_TABIX as TABIX                      } from '../../../modules/nf-core/modules/tabix/tabix/main'
+include { BEDTOOLS_SORT                             } from '../../../modules/nf-core/modules/bedtools/sort/main'
 
 workflow BATCH_EVIDENCE_MERGING {
     take:
         BAF_files               // channel: [optional]  [ baf_files ] => The BAF files
-        PE_files                // channel: [mandatory] [ meta, pe_file ] => The paired end evidence files created in GatherSampleEvidence
-        SR_files                // channel: [mandatory] [ meta, sr_file ] => The split read evidence files created in GatherSampleEvidence
+        PE_files                // channel: [mandatory] [ meta, pe_file, index ] => The paired end evidence files created in GatherSampleEvidence
+        SR_files                // channel: [mandatory] [ meta, sr_file, index ] => The split read evidence files created in GatherSampleEvidence
 
         dict                    // channel: [mandatory] [ dict ] => The sequence dictionary of the reference genome
 
@@ -22,21 +19,30 @@ workflow BATCH_EVIDENCE_MERGING {
 
     ch_versions         = Channel.empty()
 
-    // Remove the last line from the merged file
-    merged_pe_files     = PE_files.map({ meta, pe_file -> return pe_file }).collectFile(name: 'merged.pe.txt')
-                                  .map({ merged_file -> [ [id:"pe"], merged_file, [] ]})
-    // merged_sr_files     = SR_files.collectFile(name: 'merged.sr.txt.gz')
+    printsvevidence_input = Channel.empty()
+
+    printsvevidence_input  = printsvevidence_input.mix(PE_files.map({ meta, file, index ->
+                                        [ [type:'pe'], file, index ]
+                                    })
+                                    .groupTuple()
+                                    .map({ meta, files, indices -> [ files, indices ]})
+                                )
+    printsvevidence_input  = printsvevidence_input.mix(SR_files.map({ meta, file, index ->
+                                        [ [type:'sr'], file, index ]
+                                    })
+                                    .groupTuple()
+                                    .map({ meta, files, indices -> [ files, indices ]})
+                                )
+
     // merged_baf_files    = BAF_files.collectFile(name: 'merged.baf.txt.gz')
 
-    printsvevidence_input = merged_pe_files
-
-    PRINTSVEVIDENCE_PE(
+    PRINTSVEVIDENCE(
         printsvevidence_input,
         [],
         [],
         [],
         dict
-    )
+    ).printed_evidence.view()
 
     emit:
     versions            = ch_versions

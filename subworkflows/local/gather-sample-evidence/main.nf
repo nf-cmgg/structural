@@ -136,10 +136,8 @@ workflow GATHER_SAMPLE_EVIDENCE {
 
     coverage_counts     = COLLECTREADCOUNTS.out.tsv
 
-    split_reads         = COLLECTSVEVIDENCE.out.split_read_evidence
-    split_reads_index   = COLLECTSVEVIDENCE.out.split_read_evidence_index
-    read_pairs          = COLLECTSVEVIDENCE.out.paired_end_evidence
-    read_pairs_index    = COLLECTSVEVIDENCE.out.paired_end_evidence_index
+    split_reads         = COLLECTSVEVIDENCE.out.split_read_evidence.combine(COLLECTSVEVIDENCE.out.split_read_evidence_index, by:0)
+    read_pairs          = COLLECTSVEVIDENCE.out.paired_end_evidence.combine(COLLECTSVEVIDENCE.out.paired_end_evidence_index, by:0)
     allele_counts       = COLLECTSVEVIDENCE.out.allele_counts
     allele_counts_index = COLLECTSVEVIDENCE.out.allele_counts_index
 

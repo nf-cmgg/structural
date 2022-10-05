@@ -11,9 +11,9 @@ WorkflowNfcmggstructural.initialise(params, log)
 
 // TODO nf-core: Add all file path parameters for the pipeline to the list below
 // Check input path parameters to see if they exist
-def checkPathParamList = [ 
-    params.input, 
-    params.multiqc_config, 
+def checkPathParamList = [
+    params.input,
+    params.multiqc_config,
     params.fasta,
     params.fasta_fai,
     params.dict,
@@ -151,13 +151,13 @@ workflow NF_CMGG_STRUCTURAL {
     // Evidence QC
     //
 
-    EVIDENCE_QC(
-        GATHER_SAMPLE_EVIDENCE.out.vcfs,
-        GATHER_SAMPLE_EVIDENCE.out.coverage_counts,
-        []
-    )
+    // EVIDENCE_QC(
+    //     GATHER_SAMPLE_EVIDENCE.out.vcfs,
+    //     GATHER_SAMPLE_EVIDENCE.out.coverage_counts,
+    //     []
+    // )
 
-    ch_versions = ch_versions.mix(EVIDENCE_QC.out.versions)
+    // ch_versions = ch_versions.mix(EVIDENCE_QC.out.versions)
 
     //
     // Gather batch evidence
@@ -190,7 +190,7 @@ workflow NF_CMGG_STRUCTURAL {
     //
 
     ch_multiqc_files = Channel.empty()
-    
+
     ch_multiqc_files = ch_multiqc_files.mix(
                                         ch_versions_yaml,
                                         ch_reports.collect(),
@@ -234,9 +234,9 @@ def parse_input(input_csv) {
             ],
         ],
         'required': ['sample','cram','crai'],
-    ]    
+    ]
 
-    // Don't change these variables    
+    // Don't change these variables
     def row_count = 1
     def all_columns = samplesheet_schema.columns.keySet().collect()
     def mandatory_columns = samplesheet_schema.required
@@ -288,7 +288,7 @@ def parse_input(input_csv) {
         for(col : samplesheet_schema.columns) {
             key = col.key
             content = row[key]
-            
+
             if(!(content ==~ col.value['pattern']) && col.value['pattern'] != '' && content != '') {
                 exit 1, "[Samplesheet Error] The content of column '$key' on line $row_count does not match the pattern '${col.value['pattern']}'"
             }
@@ -306,7 +306,7 @@ def parse_input(input_csv) {
         output.add(0, meta)
         return output
     })
-    
+
 }
 
 

@@ -15,9 +15,9 @@ workflow GATHER_BATCH_EVIDENCE {
         bincov_matrix           // channel: [optional]  [ bincov_matrix ] => The bin coverage matrix
         bincov_matrix_index     // channel: [optional]  [ bincov_matrix_index ] => The bin coverage matrix index
 
-        BAF_files               // channel: [optional]  [ baf_files ] => The BAF files
-        PE_files                // channel: [mandatory] [ meta, pe_file ] => The paired end evidence files created in GatherSampleEvidence
-        SR_files                // channel: [mandatory] [ meta, sr_file ] => The split read evidence files created in GatherSampleEvidence
+        BAF_files               // channel: [optional]  [ baf_files, index ] => The BAF files
+        PE_files                // channel: [mandatory] [ meta, pe_file, index ] => The paired end evidence files created in GatherSampleEvidence
+        SR_files                // channel: [mandatory] [ meta, sr_file, index ] => The split read evidence files created in GatherSampleEvidence
 
         dict                    // channel: [mandatory] [ dict ] => The sequence dictionary of the reference genome
 

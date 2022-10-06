@@ -11,7 +11,7 @@ process SET_BINS {
     tuple val(meta), path(counts_file)
 
     output:
-    path "locus.bed.gz"     , emit: bin_locs
+    path "locs.bed.gz"      , emit: bin_locs
     path "binsize.txt"      , emit: binsize
     path "versions.yml"     , emit: versions
 
@@ -55,13 +55,13 @@ process SET_BINS {
       binsize=${binsize}
     fi
 
-    # store binsize 
+    # store binsize
     echo \$binsize > binsize.txt
 
     # write final bed file with header, and compress it
     awk -v FS="\t" -v b=\$binsize 'BEGIN{ print "#Chr\tStart\tEnd" } { if (\$3-\$2==b) print \$0 }' tmp_locs \\
         | bgzip -c \\
-        > "locus.bed.gz"
+        > "locs.bed.gz"
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":

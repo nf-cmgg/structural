@@ -163,17 +163,53 @@ workflow NF_CMGG_STRUCTURAL {
     // Gather batch evidence
     //
 
-    GATHER_BATCH_EVIDENCE(
-        GATHER_SAMPLE_EVIDENCE.out.coverage_counts,
-        [], //EVIDENCE_QC.out.bincov_matrix,
-        [], //EVIDENCE_QC.out.bincov_matrix_index
-        [],
-        GATHER_SAMPLE_EVIDENCE.out.read_pairs,
-        GATHER_SAMPLE_EVIDENCE.out.split_reads,
-        dict
-    )
+    // GATHER_BATCH_EVIDENCE(
+    //     GATHER_SAMPLE_EVIDENCE.out.coverage_counts,
+    //     [], //EVIDENCE_QC.out.bincov_matrix,
+    //     [], //EVIDENCE_QC.out.bincov_matrix_index
+    //     [],
+    //     GATHER_SAMPLE_EVIDENCE.out.read_pairs,
+    //     GATHER_SAMPLE_EVIDENCE.out.split_reads,
+    //     dict
+    // )
 
-    ch_versions = ch_versions.mix(GATHER_BATCH_EVIDENCE.out.versions)
+    // ch_versions = ch_versions.mix(GATHER_BATCH_EVIDENCE.out.versions)
+
+    //
+    // Cluster Batch
+    //
+
+    // CLUSTER_BATCH()
+
+    //
+    // Generate Batch Metrics
+    //
+
+    // GENERATE_BATCH_METRICS()
+
+    //
+    // Filter Batch
+    //
+
+    // FILTER_BATCH()
+
+    //
+    // Merge Batch Sites
+    //
+
+    // MERGE_BATCH_SITES()
+
+    //
+    // Genotype Batch
+    //
+
+    // GENOTYPE_BATCH()
+
+    //
+    // Make Cohort VCF
+    //
+
+    // MAKE_COHORT_VCF()
 
     //
     // Dump the software versions

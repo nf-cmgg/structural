@@ -76,15 +76,15 @@ workflow GATHER_BATCH_EVIDENCE {
         dict
     )
 
-    // CNMOPS
+    // CNMOPS (CNV related)
 
-    // CNMOPSLarge
+    // CNMOPSLarge (CNV related)
 
-    // CondenseReadCounts
+    // CondenseReadCounts (uses GATK CondenseDepthEvidence, which is not in a released version yet)
 
-    // gCNVCase
+    // gCNVCase (CNV related)
 
-    // MergeDepth
+    // MergeDepth (CNV related)
 
     // MedianCov
 

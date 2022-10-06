@@ -20,9 +20,15 @@ workflow MAKE_BINCOV_MATRIX {
 
     ch_versions = ch_versions.mix(SET_BINS.out.versions)
 
+    make_bincov_matrix_input = count_files.combine(SET_BINS.out.binsize.splitText())
+                                        .map({ meta, count_file, binsize ->
+                                            new_meta = meta.clone()
+                                            new_meta.binsize = binsize.replace("\n","")
+                                            [ new_meta, count_file]
+                                        })
+
     MAKE_BINCOV_MATRIX_COLUMNS(
-        count_files,
-        SET_BINS.out.binsize,
+        make_bincov_matrix_input,
         SET_BINS.out.bin_locs
     )
 
@@ -41,7 +47,7 @@ workflow MAKE_BINCOV_MATRIX {
 
     emit:
     merged_bincov          = ZPASTE.out.matrix_file
-    merged_bincov_index    = [] //ZPASTE.out.matrix_file_gz_index
+    merged_bincov_index    = ZPASTE.out.matrix_file_index
 
     versions               = ch_versions
 }

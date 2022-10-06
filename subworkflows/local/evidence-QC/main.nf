@@ -35,8 +35,6 @@ workflow EVIDENCE_QC {
     wgd_matrix          = Channel.empty()
     wgd_scores          = Channel.empty()
 
-    bincov_matrix       = Channel.empty()
-    bincov_matrix_index = Channel.empty()
     bincov_median       = Channel.empty()
 
 
@@ -46,13 +44,13 @@ workflow EVIDENCE_QC {
 
     ch_versions = ch_versions.mix(MAKE_BINCOV_MATRIX.out.versions)
 
-    bincov_matrix       = bincov_matrix.mix(MAKE_BINCOV_MATRIX.out.merged_bincov)
-    bincov_matrix_index = bincov_matrix_index.mix(MAKE_BINCOV_MATRIX.out.bincov_matrix_index)
+    bincov_matrix       = MAKE_BINCOV_MATRIX.out.merged_bincov
+    bincov_matrix_index = MAKE_BINCOV_MATRIX.out.merged_bincov_index
 
     // FIX THIS!!
-    // CALCMEDCOV(
-    //     bincov_matrix
-    // ).median_cov_file.view()
+    CALCMEDCOV(
+        bincov_matrix
+    ).median_cov_file.view()
 
     // bincov_median = bincov_median.mix(CALCMEDCOV.out.median_cov_file)
 

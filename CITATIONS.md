@@ -1,4 +1,4 @@
-# y/nfcmggstructural: Citations
+# nf-core/centerformedicalgeneticsghent-nf-cmgg-structural: Citations
 
 ## [nf-core](https://pubmed.ncbi.nlm.nih.gov/32055031/)
 

@@ -1,4 +1,4 @@
-# y/nfcmggstructural: Output
+# nf-core/centerformedicalgeneticsghent-nf-cmgg-structural: Output
 
 ## Introduction
 

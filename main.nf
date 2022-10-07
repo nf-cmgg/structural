@@ -1,13 +1,24 @@
 #!/usr/bin/env nextflow
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    y/nfcmggstructural
+    nf-core/centerformedicalgeneticsghent-nf-cmgg-structural
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    Github : https://github.com/y/nfcmggstructural
+    Github : https://github.com/nf-core/centerformedicalgeneticsghent-nf-cmgg-structural
+
+    Website: https://nf-co.re/centerformedicalgeneticsghent-nf-cmgg-structural
+    Slack  : https://nfcore.slack.com/channels/centerformedicalgeneticsghent-nf-cmgg-structural
 ----------------------------------------------------------------------------------------
 */
 
 nextflow.enable.dsl = 2
+
+/*
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    GENOME PARAMETER VALUES
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+*/
+
+params.fasta = WorkflowMain.getGenomeAttribute(params, 'fasta')
 
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -23,13 +34,13 @@ WorkflowMain.initialise(workflow, params, log)
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
 
-include { NFCMGGSTRUCTURAL } from './workflows/nfcmggstructural'
+include { CENTERFORMEDICALGENETICSGHENT-NF-CMGG-STRUCTURAL } from './workflows/centerformedicalgeneticsghent-nf-cmgg-structural'
 
 //
-// WORKFLOW: Run main y/nfcmggstructural analysis pipeline
+// WORKFLOW: Run main nf-core/centerformedicalgeneticsghent-nf-cmgg-structural analysis pipeline
 //
-workflow Y_NFCMGGSTRUCTURAL {
-    NFCMGGSTRUCTURAL ()
+workflow NFCORE_CENTERFORMEDICALGENETICSGHENT-NF-CMGG-STRUCTURAL {
+    CENTERFORMEDICALGENETICSGHENT-NF-CMGG-STRUCTURAL ()
 }
 
 /*
@@ -43,7 +54,7 @@ workflow Y_NFCMGGSTRUCTURAL {
 // See: https://github.com/nf-core/rnaseq/issues/619
 //
 workflow {
-    Y_NFCMGGSTRUCTURAL ()
+    NFCORE_CENTERFORMEDICALGENETICSGHENT-NF-CMGG-STRUCTURAL ()
 }
 
 /*

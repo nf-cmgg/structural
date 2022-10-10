@@ -32,6 +32,10 @@ workflow GATHER_SAMPLE_EVIDENCE {
     ch_metrics  = Channel.empty()
     called_vcfs = Channel.empty()
 
+    //
+    // GATK Collect Read Counts
+    //
+
     collectreadcounts_input = crams.combine(
         beds.map({meta, bed, bed_gz, bed_gz_tbi -> [meta, bed]}), by:0
     )
@@ -45,6 +49,10 @@ workflow GATHER_SAMPLE_EVIDENCE {
 
     ch_versions = ch_versions.mix(COLLECTREADCOUNTS.out.versions)
 
+    //
+    // Calling variants using Manta
+    //
+
     if("manta" in callers){
         RUN_MANTA(
             crams,
@@ -57,6 +65,10 @@ workflow GATHER_SAMPLE_EVIDENCE {
         ch_versions = ch_versions.mix(RUN_MANTA.out.versions)
     }
 
+    //
+    // Calling variants using Delly
+    //
+
     if("delly" in callers){
         RUN_DELLY(
             crams,
@@ -68,6 +80,10 @@ workflow GATHER_SAMPLE_EVIDENCE {
         called_vcfs = called_vcfs.mix(RUN_DELLY.out.delly_vcfs)
         ch_versions = ch_versions.mix(RUN_DELLY.out.versions)
     }
+
+    //
+    // Calling variants using Whamg
+    //
 
     // Whamg needs some reheadering (like done in https://github.com/broadinstitute/gatk-sv/blob/90e3e9a221bdfe7ab2cfedeffb704bc6f0e99aa9/wdl/Whamg.wdl#L209)
     if("whamg" in callers){
@@ -82,6 +98,10 @@ workflow GATHER_SAMPLE_EVIDENCE {
         ch_versions = ch_versions.mix(RUN_WHAMG.out.versions)
     }
 
+    //
+    // Calling variants using Scramble (I don't know if calling variants is the correct term here)
+    //
+
     // Scramble is unfinished. It needs a lot of improvements if we were to add it
 
     // if("scramble" in callers){
@@ -94,6 +114,10 @@ workflow GATHER_SAMPLE_EVIDENCE {
     //     called_vcfs = called_vcfs.mix(RUN_SCRAMBLE.out.scramble_vcfs)
     //     ch_versions = ch_versions.mix(RUN_SCRAMBLE.out.versions)
     // }
+
+    //
+    // GATK Collect Structural Variant Evidence
+    //
 
     if(allele_loci_vcf){
         TABIX_TABIX(
@@ -117,6 +141,10 @@ workflow GATHER_SAMPLE_EVIDENCE {
     )
 
     ch_versions = ch_versions.mix(COLLECTSVEVIDENCE.out.versions)
+
+    //
+    // Create the metrics for all produced files
+    //
 
     if(params.run_module_metrics) {
         GATHER_SAMPLE_EVIDENCE_METRICS(

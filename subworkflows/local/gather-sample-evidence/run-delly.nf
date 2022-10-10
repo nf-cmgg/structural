@@ -1,6 +1,7 @@
 //
 // Run Delly
 //
+
 include { REVERSE_BED        } from '../../../modules/local/reversebed/main'
 
 include { DELLY_CALL         } from '../../../modules/nf-core/delly/call/main'
@@ -22,8 +23,11 @@ workflow RUN_DELLY {
 
     scatter_count   = params.delly_scatter_count
 
-    single_beds     = beds.map({ meta, bed, bed_gz, bed_gz_tbi -> [ meta, bed ]})
+    //
+    // Split the BED files if the scatter count is bigger than 1
+    //
 
+    single_beds     = beds.map({ meta, bed, bed_gz, bed_gz_tbi -> [ meta, bed ]})
 
     if(scatter_count > 1){
         BEDTOOLS_SPLIT(
@@ -36,24 +40,34 @@ workflow RUN_DELLY {
                             new_meta.id = bed.baseName
                             [ new_meta, bed ]
                         })
+
         ch_versions = ch_versions.mix(BEDTOOLS_SPLIT.out.versions)
 
     } else {
         split_beds = single_beds
     }
 
+    //
+    // Reverse the BED file (It will only contain the regions that aren't of interest now)
+    //
+
     REVERSE_BED(
         split_beds,
         fasta_fai
     )
+
     ch_versions = ch_versions.mix(REVERSE_BED.out.versions)
+
+    //
+    // Calling variants using Delly
+    //
 
     delly_input = crams.combine(REVERSE_BED.out.bed.map({ meta, bed ->
                                 new_meta = meta.clone()
                                 new_meta.id = meta.sample
                                 [ new_meta, bed ]
                             }), by:0)
-                       .map({ meta, cram, crai, bed ->
+                        .map({ meta, cram, crai, bed ->
                             new_meta = meta.clone()
                             new_meta.id = bed.baseName.replace("_reversed","")
                             [ new_meta, cram, crai, bed ]
@@ -64,7 +78,12 @@ workflow RUN_DELLY {
         fasta,
         fasta_fai
     )
+
     ch_versions = ch_versions.mix(DELLY_CALL.out.versions)
+
+    //
+    // Concatenate the BCF files if the scatter count is bigger than 1 and convert the BCF to VCF
+    //
 
     bcftools_input = DELLY_CALL.out.bcf.combine(DELLY_CALL.out.csi, by:0)
                             .map({ meta, bcf, csi ->
@@ -78,6 +97,7 @@ workflow RUN_DELLY {
         BCFTOOLS_CONCAT(
             bcftools_input
         )
+
         ch_versions = ch_versions.mix(BCFTOOLS_CONCAT.out.versions)
 
         tabix_input = BCFTOOLS_CONCAT.out.vcf
@@ -89,11 +109,16 @@ workflow RUN_DELLY {
             [],
             fasta
         )
+
         ch_versions = ch_versions.mix(BCFTOOLS_CONVERT.out.versions)
 
         tabix_input = BCFTOOLS_CONVERT.out.vcf_gz
 
     }
+
+    //
+    // Index the VCF file
+    //
 
     TABIX_TABIX(
         tabix_input

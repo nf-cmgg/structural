@@ -166,8 +166,7 @@ workflow GATHER_SAMPLE_EVIDENCE {
 
     split_reads         = COLLECTSVEVIDENCE.out.split_read_evidence.combine(COLLECTSVEVIDENCE.out.split_read_evidence_index, by:0)
     read_pairs          = COLLECTSVEVIDENCE.out.paired_end_evidence.combine(COLLECTSVEVIDENCE.out.paired_end_evidence_index, by:0)
-    allele_counts       = COLLECTSVEVIDENCE.out.allele_counts
-    allele_counts_index = COLLECTSVEVIDENCE.out.allele_counts_index
+    site_depths         = COLLECTSVEVIDENCE.out.site_depths.combine(COLLECTSVEVIDENCE.out.site_depths_index, by:0)
 
     versions            = ch_versions
     metrics             = ch_metrics

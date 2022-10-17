@@ -19,6 +19,11 @@ workflow GATHER_BATCH_EVIDENCE {
         PE_files                // channel: [mandatory] [ meta, pe_file, index ] => The paired end evidence files created in GatherSampleEvidence
         SR_files                // channel: [mandatory] [ meta, sr_file, index ] => The split read evidence files created in GatherSampleEvidence
 
+        SD_files                // channel: [optional]  [ meta, sd_file, index ] => The site depth evidence files created in GatherSampleEvidence
+        allele_loci_vcf         // channel: [optional]  [ vcf, tbi ] => VCF of SNPs marking loci for allele count
+
+        fasta                   // channel: [mandatory] [ fasta ] => The reference FASTA file
+        fasta_fai               // channel: [mandatory] [ fasta_fai ] => The index of the FASTA reference file
         dict                    // channel: [mandatory] [ dict ] => The sequence dictionary of the reference genome
 
 
@@ -73,6 +78,10 @@ workflow GATHER_BATCH_EVIDENCE {
         BAF_files,
         PE_files,
         SR_files,
+        SD_files,
+        allele_loci_vcf,
+        fasta,
+        fasta_fai,
         dict
     )
 

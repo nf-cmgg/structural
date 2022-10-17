@@ -151,7 +151,7 @@ workflow GATHER_SAMPLE_EVIDENCE {
             called_vcfs,
             COLLECTSVEVIDENCE.out.split_read_evidence,
             COLLECTSVEVIDENCE.out.paired_end_evidence,
-            COLLECTSVEVIDENCE.out.allele_counts,
+            COLLECTSVEVIDENCE.out.site_depths,
             fasta_fai
         )
 

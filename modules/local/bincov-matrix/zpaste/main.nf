@@ -12,6 +12,7 @@ process ZPASTE {
 
     output:
     path "*.RD.txt.gz"          , emit: matrix_file
+    path "*.RD.txt.gz.tbi"      , emit: matrix_file_index
     path "versions.yml"         , emit: versions
 
     when:
@@ -23,6 +24,7 @@ process ZPASTE {
     """
     # paste unzipped files and compress
     paste ${column_files} | bgzip --threads ${task.cpus} -c > "${prefix}.RD.txt.gz"
+    tabix -p bed ${prefix}.RD.txt.gz
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":

@@ -11,9 +11,9 @@ WorkflowNfcmggstructural.initialise(params, log)
 
 // TODO nf-core: Add all file path parameters for the pipeline to the list below
 // Check input path parameters to see if they exist
-def checkPathParamList = [ 
-    params.input, 
-    params.multiqc_config, 
+def checkPathParamList = [
+    params.input,
+    params.multiqc_config,
     params.fasta,
     params.fasta_fai,
     params.dict,
@@ -61,12 +61,12 @@ include { GATHER_BATCH_EVIDENCE   } from '../subworkflows/local/gather-batch-evi
 //
 // MODULE: Installed directly from nf-core/modules
 //
-include { TABIX_BGZIPTABIX                  } from '../modules/nf-core/modules/tabix/bgziptabix/main'
-include { BEDTOOLS_SORT                     } from '../modules/nf-core/modules/bedtools/sort/main'
-include { GATK4_CREATESEQUENCEDICTIONARY    } from '../modules/nf-core/modules/gatk4/createsequencedictionary/main'
-include { SAMTOOLS_FAIDX                    } from '../modules/nf-core/modules/samtools/faidx/main'
-include { MULTIQC                           } from '../modules/nf-core/modules/multiqc/main'
-include { CUSTOM_DUMPSOFTWAREVERSIONS       } from '../modules/nf-core/modules/custom/dumpsoftwareversions/main'
+include { TABIX_BGZIPTABIX                  } from '../modules/nf-core/tabix/bgziptabix/main'
+include { BEDTOOLS_SORT                     } from '../modules/nf-core/bedtools/sort/main'
+include { GATK4_CREATESEQUENCEDICTIONARY    } from '../modules/nf-core/gatk4/createsequencedictionary/main'
+include { SAMTOOLS_FAIDX                    } from '../modules/nf-core/samtools/faidx/main'
+include { MULTIQC                           } from '../modules/nf-core/multiqc/main'
+include { CUSTOM_DUMPSOFTWAREVERSIONS       } from '../modules/nf-core/custom/dumpsoftwareversions/main'
 
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -151,29 +151,68 @@ workflow NF_CMGG_STRUCTURAL {
     // Evidence QC
     //
 
-    EVIDENCE_QC(
-        GATHER_SAMPLE_EVIDENCE.out.vcfs,
-        GATHER_SAMPLE_EVIDENCE.out.coverage_counts,
-        []
-    )
+    // EVIDENCE_QC(
+    //     GATHER_SAMPLE_EVIDENCE.out.vcfs,
+    //     GATHER_SAMPLE_EVIDENCE.out.coverage_counts,
+    //     []
+    // )
 
-    ch_versions = ch_versions.mix(EVIDENCE_QC.out.versions)
+    // ch_versions = ch_versions.mix(EVIDENCE_QC.out.versions)
 
     //
     // Gather batch evidence
     //
 
-    GATHER_BATCH_EVIDENCE(
-        GATHER_SAMPLE_EVIDENCE.out.coverage_counts,
-        [], //EVIDENCE_QC.out.bincov_matrix,
-        [], //EVIDENCE_QC.out.bincov_matrix_index
-        [],
-        GATHER_SAMPLE_EVIDENCE.out.read_pairs,
-        GATHER_SAMPLE_EVIDENCE.out.split_reads,
-        dict
-    )
+    // GATHER_BATCH_EVIDENCE(
+    //     GATHER_SAMPLE_EVIDENCE.out.coverage_counts,
+    //     [], //EVIDENCE_QC.out.bincov_matrix,
+    //     [], //EVIDENCE_QC.out.bincov_matrix_index
+    //     [], // BAF files
+    //     GATHER_SAMPLE_EVIDENCE.out.read_pairs,
+    //     GATHER_SAMPLE_EVIDENCE.out.split_reads,
+    //     GATHER_SAMPLE_EVIDENCE.out.site_depths,
+    //     fasta,
+    //     fasta_fai,
+    //     dict
+    // )
 
-    ch_versions = ch_versions.mix(GATHER_BATCH_EVIDENCE.out.versions)
+    // ch_versions = ch_versions.mix(GATHER_BATCH_EVIDENCE.out.versions)
+
+    //
+    // Cluster Batch
+    //
+
+    // CLUSTER_BATCH()
+
+    //
+    // Generate Batch Metrics
+    //
+
+    // GENERATE_BATCH_METRICS()
+
+    //
+    // Filter Batch
+    //
+
+    // FILTER_BATCH()
+
+    //
+    // Merge Batch Sites
+    //
+
+    // MERGE_BATCH_SITES()
+
+    //
+    // Genotype Batch
+    //
+
+    // GENOTYPE_BATCH()
+
+    //
+    // Make Cohort VCF
+    //
+
+    // MAKE_COHORT_VCF()
 
     //
     // Dump the software versions
@@ -190,7 +229,7 @@ workflow NF_CMGG_STRUCTURAL {
     //
 
     ch_multiqc_files = Channel.empty()
-    
+
     ch_multiqc_files = ch_multiqc_files.mix(
                                         ch_versions_yaml,
                                         ch_reports.collect(),
@@ -232,11 +271,15 @@ def parse_input(input_csv) {
                 'content': 'file',
                 'pattern': '^.*\\.bed$',
             ],
+            'ped': [
+                'content': 'file',
+                'pattern': '^.*\\.ped$',
+            ]
         ],
         'required': ['sample','cram','crai'],
-    ]    
+    ]
 
-    // Don't change these variables    
+    // Don't change these variables
     def row_count = 1
     def all_columns = samplesheet_schema.columns.keySet().collect()
     def mandatory_columns = samplesheet_schema.required
@@ -288,7 +331,7 @@ def parse_input(input_csv) {
         for(col : samplesheet_schema.columns) {
             key = col.key
             content = row[key]
-            
+
             if(!(content ==~ col.value['pattern']) && col.value['pattern'] != '' && content != '') {
                 exit 1, "[Samplesheet Error] The content of column '$key' on line $row_count does not match the pattern '${col.value['pattern']}'"
             }
@@ -306,7 +349,7 @@ def parse_input(input_csv) {
         output.add(0, meta)
         return output
     })
-    
+
 }
 
 

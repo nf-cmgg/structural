@@ -8,13 +8,12 @@ process MAKE_BINCOV_MATRIX_COLUMNS {
         'quay.io/biocontainers/tabix:1.11--hdfd78af_0' }"
 
     input:
-    tuple val(meta), path(counts_file)
-    path binsize
+    tuple val(meta), path(count_file)
     path bin_locs
 
     output:
-    tuple val(meta), path("*_bincov.RD.txt")   , emit: bincov
-    path "versions.yml"                           , emit: versions
+    tuple val(meta), path("*_bincov.RD.txt.gz")    , emit: bincov
+    path "versions.yml"                            , emit: versions
 
     when:
     task.ext.when == null || task.ext.when
@@ -22,8 +21,10 @@ process MAKE_BINCOV_MATRIX_COLUMNS {
     script:
     def prefix = task.ext.prefix ?: "${meta.id}"
 
+    def binsize = meta.binsize
+
     """
-    firstchar=\$(head -c 1 ${counts_file})
+    firstchar=\$(head -c 1 ${count_file})
 
     if [ \$firstchar == '@' ]; then
       shift=1  # GATK CollectReadCounts (to convert from 1-based closed intervals)
@@ -31,19 +32,24 @@ process MAKE_BINCOV_MATRIX_COLUMNS {
       shift=0  # bincov sample or matrix
     fi
 
-    binsize=\$(cat ${binsize})
-
+    # Turn the counts file into a 0-based interval file (BED format)
     TMP_BED="${prefix}.tmp.bed"
-    printf "#Chr\tStart\tEnd\t%s\n" "${prefix}" > \$TMP_BED
-    cat "${counts_file}" \\
+    printf "#Chr\\tStart\\tEnd\\t${prefix}\\n" > \$TMP_BED
+    cat "${count_file}" \\
       | sed '/^@/d' \\
       | sed '/^CONTIG	START	END	COUNT\$/d' \\
       | sed '/^#/d' \\
-      | awk -v x=\$shift -v b=\$binsize \\
-        'BEGIN{OFS="\t"}{\$2=\$2-x; if (\$3-\$2==b) print \$0}' \\
+      | awk -v x=\$shift \\
+        'BEGIN{OFS="\\t"}{\$2=\$2-x; if (\$3-\$2==${binsize}) print \$0}' \\
       >> "\$TMP_BED"
 
-    cut -f4- "\$TMP_BED" >> "${prefix}_bincov.RD.txt"
+    if ! cut -f1-3 "\$TMP_BED" | cmp <(bgzip -cd ${bin_locs}); then
+      echo "${count_file} has different intervals than ${bin_locs}"
+      exit 1
+    fi
+
+    cut -f4- "\$TMP_BED" | bgzip -c >> ${prefix}.RD.txt.gz
+
 
 
     cat <<-END_VERSIONS > versions.yml

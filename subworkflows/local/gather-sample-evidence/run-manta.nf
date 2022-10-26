@@ -1,9 +1,9 @@
 //
 // Run Manta
 //
-include { MANTA_GERMLINE         } from '../../../modules/nf-core/modules/manta/germline/main'
-include { MANTA_CONVERTINVERSION } from '../../../modules/nf-core/modules/manta/convertinversion/main'
-include { BCFTOOLS_REHEADER      } from '../../../modules/nf-core/modules/bcftools/reheader/main'
+include { MANTA_GERMLINE         } from '../../../modules/nf-core/manta/germline/main'
+include { MANTA_CONVERTINVERSION } from '../../../modules/nf-core/manta/convertinversion/main'
+include { BCFTOOLS_REHEADER      } from '../../../modules/nf-core/bcftools/reheader/main'
 
 workflow RUN_MANTA {
     take:
@@ -18,6 +18,10 @@ workflow RUN_MANTA {
 
     gzipped_beds = beds.map({ meta, bed, bed_gz, bed_gz_tbi -> [ meta, bed_gz, bed_gz_tbi ]})
 
+    //
+    // Calling variants using Manta
+    //
+
     manta_input = crams.combine(gzipped_beds, by: 0)
 
     MANTA_GERMLINE(
@@ -28,12 +32,20 @@ workflow RUN_MANTA {
 
     ch_versions = ch_versions.mix(MANTA_GERMLINE.out.versions)
 
+    //
+    // Reformat the inversions into single inverted sequence junctions
+    //
+
     MANTA_CONVERTINVERSION(
         MANTA_GERMLINE.out.diploid_sv_vcf,
         fasta
     )
 
     ch_versions = ch_versions.mix(MANTA_CONVERTINVERSION.out.versions)
+
+    //
+    // Change the header of the VCF to let it match the specifications
+    //
 
     BCFTOOLS_REHEADER(
         MANTA_CONVERTINVERSION.out.vcf,
@@ -42,11 +54,11 @@ workflow RUN_MANTA {
     )
 
     manta_vcfs = BCFTOOLS_REHEADER.out.vcf.combine(MANTA_CONVERTINVERSION.out.tbi, by:0)
-                                               .map({ meta, vcf, tbi -> 
-                                                   new_meta = meta.clone()
-                                                   new_meta.caller = "manta"
-                                                   [ new_meta, vcf, tbi ]
-                                               })
+                                            .map({ meta, vcf, tbi ->
+                                                new_meta = meta.clone()
+                                                new_meta.caller = "manta"
+                                                [ new_meta, vcf, tbi ]
+                                            })
 
     emit:
     manta_vcfs

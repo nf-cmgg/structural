@@ -2,42 +2,90 @@
 // Batch Evidence Merging
 //
 
-// Import subworkflows
-include { MAKE_BINCOV_MATRIX                            } from '../common-workflows/make-bincov-matrix'
-
 // Import modules
-include { GATK4_PRINTSVEVIDENCE as PRINTSVEVIDENCE_SR  } from '../../../modules/nf-core/modules/gatk4/printsvevidence/main'
-include { GATK4_PRINTSVEVIDENCE as PRINTSVEVIDENCE_PE  } from '../../../modules/nf-core/modules/gatk4/printsvevidence/main'
-include { GATK4_PRINTSVEVIDENCE as PRINTSVEVIDENCE_BAF } from '../../../modules/nf-core/modules/gatk4/printsvevidence/main'
+include { GATK4_PRINTSVEVIDENCE as PRINTSVEVIDENCE  } from '../../../modules/nf-core/gatk4/printsvevidence/main'
+include { GATK4_SITEDEPTHTOBAF as SITEDEPTHTOBAF    } from '../../../modules/nf-core/gatk4/sitedepthtobaf/main'
+include { TABIX_TABIX as TABIX_EVIDENCE             } from '../../../modules/nf-core/tabix/tabix/main'
+include { BEDTOOLS_SORT                             } from '../../../modules/nf-core/bedtools/sort/main'
 
 workflow BATCH_EVIDENCE_MERGING {
     take:
         BAF_files               // channel: [optional]  [ baf_files ] => The BAF files
-        PE_files                // channel: [mandatory] [ meta, pe_file ] => The paired end evidence files created in GatherSampleEvidence
-        SR_files                // channel: [mandatory] [ meta, sr_file ] => The split read evidence files created in GatherSampleEvidence
+        PE_files                // channel: [mandatory] [ meta, pe_file, index ] => The paired end evidence files created in GatherSampleEvidence
+        SR_files                // channel: [mandatory] [ meta, sr_file, index ] => The split read evidence files created in GatherSampleEvidence
 
+        SD_files                // channel: [optional]  [ meta, sd_file, index ] => The site depth evidence files created in GatherSampleEvidence
+        allele_loci_vcf         // channel: [optional]  [ vcf, tbi ] => VCF of SNPs marking loci for allele count
+
+        fasta                   // channel: [mandatory] [ fasta ] => The reference FASTA file
+        fasta_fai               // channel: [mandatory] [ fasta_fai ] => The index of the FASTA reference file
         dict                    // channel: [mandatory] [ dict ] => The sequence dictionary of the reference genome
 
     main:
 
-    ch_versions         = Channel.empty()
+    ch_versions             = Channel.empty()
 
-    // Remove the last line from the merged file
-    merged_pe_files     = PE_files.map({ meta, pe_file -> return pe_file }).collectFile(name: 'merged.pe.txt')
-                                  .map({ merged_file -> [ [id:"pe"], merged_file, [] ]})
-    // merged_sr_files     = SR_files.collectFile(name: 'merged.sr.txt.gz')
-    // merged_baf_files    = BAF_files.collectFile(name: 'merged.baf.txt.gz')
+    printsvevidence_input   = Channel.empty()
 
-    printsvevidence_input = merged_pe_files
+    printsvevidence_input = printsvevidence_input.mix(
+                            PE_files.map({ meta, file, index ->
+                                new_meta = [:]
+                                new_meta.id = 'paired_end_evidence'
+                                [ new_meta, file, index ]
+                            })
+                        )
 
-    PRINTSVEVIDENCE_PE(
-        printsvevidence_input,
-        [],
-        [],
-        [],
-        dict
-    )
+    printsvevidence_input = printsvevidence_input.mix(
+                            SR_files.map({ meta, file, index ->
+                                new_meta = [:]
+                                new_meta.id = 'split_read_evidence'
+                                [ new_meta, file, index ]
+                            })
+                        )
+
+    if(BAF_files){
+
+        printsvevidence_input = printsvevidence_input.mix(
+                                BAF_files.map({ meta, file, index ->
+                                    new_meta = [:]
+                                    new_meta.id = 'baf_evidence'
+                                    [ new_meta, file, index ]
+                                })
+                            )
+
+    }
+
+    // TODO find a way to fix the 'file not sorted' error in PRINTSVEVIDENCE
+
+    // PRINTSVEVIDENCE(
+    //     printsvevidence_input.groupTuple(),
+    //     [],
+    //     [],
+    //     [],
+    //     dict
+    // )
+
+    if(!SD_files){
+
+        sitedepthtobaf_input = SD_files.map({ meta, file, index ->
+                                    new_meta = [:]
+                                    new_meta.id = 'site_depth_evidence'
+                                    [ new_meta, file, index ]
+                                }).groupTuple()
+
+        SITEDEPTHTOBAF(
+            sitedepthtobaf_input,
+            allele_loci_vcf,
+            fasta,
+            fasta_fai,
+            dict
+        )
+
+    }
+
 
     emit:
-    versions            = ch_versions
+    // merged_evidence_files           = PRINTSVEVIDENCE.out.printed_evidence
+    // merged_evidence_files_indices   = PRINTSVEVIDENCE.out.printed_evidence_index
+    versions                        = ch_versions
 }

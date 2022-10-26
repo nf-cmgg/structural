@@ -50,6 +50,10 @@ These tests are run both with the latest available version of `Nextflow` and als
 - Fix the bug, and bump version (X.Y.Z+1).
 - A PR should be made on `master` from patch to directly this particular bug.
 
+## Getting help
+
+For further information/help, please consult the [nf-core/centerformedicalgeneticsghent-nf-cmgg-structural documentation](https://nf-co.re/centerformedicalgeneticsghent-nf-cmgg-structural/usage) and don't hesitate to get in touch on the nf-core Slack [#centerformedicalgeneticsghent-nf-cmgg-structural](https://nfcore.slack.com/channels/centerformedicalgeneticsghent-nf-cmgg-structural) channel ([join our Slack here](https://nf-co.re/join/slack)).
+
 ## Pipeline contribution conventions
 
 To make the CenterForMedicalGeneticsGhent/nf-cmgg-structural code and processing logic more understandable for new contributors and to ensure quality, we semi-standardise the way the code and other contributions are written.

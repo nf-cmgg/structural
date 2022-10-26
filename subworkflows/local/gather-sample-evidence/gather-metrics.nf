@@ -1,8 +1,8 @@
 //
 // Gather Sample Evidence
 //
-include { SVTK_STANDARDIZE } from '../../../modules/nf-core/modules/svtk/standardize/main'
-include { TABIX_TABIX      } from '../../../modules/nf-core/modules/tabix/tabix/main'
+include { SVTK_STANDARDIZE } from '../../../modules/nf-core/svtk/standardize/main'
+include { TABIX_TABIX      } from '../../../modules/nf-core/tabix/tabix/main'
 include { SVTEST_VCF       } from '../../../modules/local/svtest/vcf/main'
 include { SVTEST_SRFILE    } from '../../../modules/local/svtest/sr-file/main'
 include { SVTEST_PEFILE    } from '../../../modules/local/svtest/pe-file/main'
@@ -13,7 +13,7 @@ workflow GATHER_SAMPLE_EVIDENCE_METRICS {
         called_vcfs             // channel: [mandatory] [ meta, vcf, tbi ] => The VCFs from all used variant callers
         split_read_evidence     // channel: [mandatory] [ meta, split_read_evidence ] => The split read evidence
         paired_end_evidence     // channel: [mandatory] [ meta, paired_end_evidence ] => The paired end evidence
-        allele_counts           // channel: [optional]  [ meta, allele_counts ] => The allele counts
+        site_depths             // channel: [optional]  [ meta, site_depths ] => The site depths
         fasta_fai               // channel: [mandatory] [ fasta_fai ] => The index of the fasta reference file
 
     main:
@@ -59,7 +59,7 @@ workflow GATHER_SAMPLE_EVIDENCE_METRICS {
     ch_versions = ch_versions.mix(SVTEST_PEFILE.out.versions)
 
     SVTEST_RAWCOUNTS(
-        allele_counts
+        site_depths
     )
 
     ch_metrics  = ch_metrics.mix(SVTEST_RAWCOUNTS.out.metrics)

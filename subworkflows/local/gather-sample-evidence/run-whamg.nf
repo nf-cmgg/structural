@@ -1,11 +1,11 @@
 //
 // Run Whamg
 //
-include { WHAMG                     } from '../../../modules/nf-core/modules/whamg/main'
-include { BCFTOOLS_CONCAT           } from '../../../modules/nf-core/modules/bcftools/concat/main'
-include { SAMTOOLS_CONVERT          } from '../../../modules/nf-core/modules/samtools/convert/main'
-include { TABIX_BGZIPTABIX          } from '../../../modules/nf-core/modules/tabix/bgziptabix/main'
-include { TABIX_TABIX               } from '../../../modules/nf-core/modules/tabix/tabix/main'
+include { WHAMG                     } from '../../../modules/nf-core/whamg/main'
+include { BCFTOOLS_CONCAT           } from '../../../modules/nf-core/bcftools/concat/main'
+include { SAMTOOLS_CONVERT          } from '../../../modules/nf-core/samtools/convert/main'
+include { TABIX_BGZIPTABIX          } from '../../../modules/nf-core/tabix/bgziptabix/main'
+include { TABIX_TABIX               } from '../../../modules/nf-core/tabix/tabix/main'
 
 workflow RUN_WHAMG {
     take:
@@ -19,6 +19,10 @@ workflow RUN_WHAMG {
     ch_versions      = Channel.empty()
     include_bed_file = params.whamg_include_bed_file
 
+    //
+    // Convert the CRAMs to BAMs
+    //
+
     SAMTOOLS_CONVERT(
         crams,
         fasta,
@@ -28,10 +32,14 @@ workflow RUN_WHAMG {
     bams        = SAMTOOLS_CONVERT.out.alignment_index
     ch_versions = ch_versions.mix(SAMTOOLS_CONVERT.out.versions)
 
+    //
+    // Calling variants using Whamg (BED file support isn't present in Whamg, the `include_bed_file` option splits the BED file and runs the caller for every region)
+    //
+
     if(include_bed_file){
         stringified_beds = beds.map({ meta, bed, bed_gz, bed_gz_tbi -> [ meta, bed ]})
                                .splitText()
-        
+
         whamg_input = bams.combine(stringified_beds, by: 0)
                                 .map({ meta, bam, bai, region ->
                                     new_meta = meta.clone()
@@ -49,14 +57,22 @@ workflow RUN_WHAMG {
 
     ch_versions = ch_versions.mix(WHAMG.out.versions)
 
+    //
+    // Gzip and index the resulting VCF
+    //
+
     TABIX_BGZIPTABIX(
         WHAMG.out.vcf
     )
 
     ch_versions = ch_versions.mix(TABIX_BGZIPTABIX.out.versions)
 
+    //
+    // Concatenate and re-index the VCFs if the `include_bed_file` option was used
+    //
+
     if(include_bed_file){
-        concat_input = TABIX_BGZIPTABIX.out.gz_tbi.map({ meta, vcf, tbi -> 
+        concat_input = TABIX_BGZIPTABIX.out.gz_tbi.map({ meta, vcf, tbi ->
                             new_meta = meta.clone()
                             new_meta.remove('region')
                             [ new_meta, vcf, tbi ]
@@ -65,7 +81,7 @@ workflow RUN_WHAMG {
         BCFTOOLS_CONCAT(
             concat_input
         )
-    
+
         ch_versions = ch_versions.mix(BCFTOOLS_CONCAT.out.versions)
 
         TABIX_TABIX(

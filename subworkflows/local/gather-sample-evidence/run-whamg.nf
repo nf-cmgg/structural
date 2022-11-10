@@ -29,7 +29,7 @@ workflow RUN_WHAMG {
         fasta_fai
     )
 
-    bams        = SAMTOOLS_CONVERT.out.alignment_index
+    SAMTOOLS_CONVERT.out.alignment_index.set { bams }
     ch_versions = ch_versions.mix(SAMTOOLS_CONVERT.out.versions)
 
     //
@@ -37,18 +37,31 @@ workflow RUN_WHAMG {
     //
 
     if(include_bed_file){
-        stringified_beds = beds.map({ meta, bed, bed_gz, bed_gz_tbi -> [ meta, bed ]})
-                               .splitText()
+        beds
+            .map(
+                { meta, bed, bed_gz, bed_gz_tbi ->
+                    [ meta, bed ]
+                }
+            )
+            .splitText()
+            .set { stringified_beds }
 
-        whamg_input = bams.combine(stringified_beds, by: 0)
-                                .map({ meta, bam, bai, region ->
-                                    new_meta = meta.clone()
-                                    new_meta.region = region.replace("\n","").replaceFirst("\t",":").replace("\t","-")
-                                    [ new_meta, bam, bai ]
-                                })
+        bams
+            .combine(stringified_beds, by: 0)
+            .map(
+                { meta, bam, bai, region ->
+                    new_meta = meta.clone()
+                    new_meta.region = region.replace("\n","").replaceFirst("\t",":").replace("\t","-")
+                    [ new_meta, bam, bai ]
+                }
+            )
+            .set { whamg_input }
+
     } else {
-        whamg_input = bams
+        bams.set { whamg_input }
     }
+
+    whamg_input.dump(tag: 'whamg_input', pretty: true)
 
     WHAMG(
         whamg_input,
@@ -72,11 +85,17 @@ workflow RUN_WHAMG {
     //
 
     if(include_bed_file){
-        concat_input = TABIX_BGZIPTABIX.out.gz_tbi.map({ meta, vcf, tbi ->
-                            new_meta = meta.clone()
-                            new_meta.remove('region')
-                            [ new_meta, vcf, tbi ]
-                        }).groupTuple()
+        TABIX_BGZIPTABIX.out.gz_tbi
+            .map(
+                { meta, vcf, tbi ->
+                    new_meta = meta.clone()
+                    new_meta.remove('region')
+                    [ new_meta, vcf, tbi ]
+                }
+            )
+            .groupTuple() // TODO set group size with groupKey
+            .dump(tag: 'concat_input', pretty: true)
+            .set { concat_input }
 
         BCFTOOLS_CONCAT(
             concat_input
@@ -90,16 +109,23 @@ workflow RUN_WHAMG {
 
         ch_versions = ch_versions.mix(TABIX_TABIX.out.versions)
 
-        whamg_vcfs = BCFTOOLS_CONCAT.out.vcf.combine(TABIX_TABIX.out.tbi, by: 0)
+        BCFTOOLS_CONCAT.out.vcf
+            .combine(TABIX_TABIX.out.tbi, by: 0)
+            .set { whamg_vcfs }
     } else {
-        whamg_vcfs = TABIX_BGZIPTABIX.out.gz_tbi
+        TABIX_BGZIPTABIX.out.gz_tbi.set { whamg_vcfs }
     }
 
-    whamg_vcfs = whamg_vcfs.map({ meta, vcf, tbi ->
-        new_meta = meta.clone()
-        new_meta.caller = "whamg"
-        [ new_meta, vcf, tbi ]
-    })
+    whamg_vcfs
+        .map(
+            { meta, vcf, tbi ->
+                new_meta = meta.clone()
+                new_meta.caller = "whamg"
+                [ new_meta, vcf, tbi ]
+            }
+        )
+        .dump(tag: 'whamg_vcfs', pretty: true)
+        .set { whamg_vcfs }
 
     emit:
     whamg_vcfs

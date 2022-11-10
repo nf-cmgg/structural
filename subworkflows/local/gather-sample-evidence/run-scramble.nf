@@ -21,7 +21,13 @@ workflow RUN_SCRAMBLE {
 
     ch_versions = ch_versions.mix(SCRAMBLE_CLUSTERIDENTIFIER.out.versions)
 
-    clusteranalysis_input = SCRAMBLE_CLUSTERIDENTIFIER.out.clusters.filter({ meta, clusters -> !clusters.isEmpty() }).view()
+    SCRAMBLE_CLUSTERIDENTIFIER.out.clusters
+        .filter(
+            { meta, clusters ->
+                !clusters.isEmpty()
+            }
+        )
+        .set { clusteranalysis_input }
 
     SCRAMBLE_CLUSTERANALYSIS(
         clusteranalysis_input,

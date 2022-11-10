@@ -37,7 +37,11 @@ workflow GATHER_SAMPLE_EVIDENCE_METRICS {
     SVTEST_VCF(
         SVTK_STANDARDIZE.out.standardized_vcf
             .combine(TABIX_TABIX.out.tbi, by:0)
-            .map({ meta, vcf, tbi -> [ meta, vcf, tbi, [] ]}),
+            .map(
+                { meta, vcf, tbi ->
+                    [ meta, vcf, tbi, [] ]
+                }
+            ),
         fasta_fai
     )
 
@@ -64,6 +68,8 @@ workflow GATHER_SAMPLE_EVIDENCE_METRICS {
 
     ch_metrics  = ch_metrics.mix(SVTEST_RAWCOUNTS.out.metrics)
     ch_versions = ch_versions.mix(SVTEST_RAWCOUNTS.out.versions)
+
+    ch_metrics.dump(tag: 'gathersampleevidence_metrics', pretty: true)
 
     emit:
     metrics  = ch_metrics

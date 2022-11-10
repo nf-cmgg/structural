@@ -27,33 +27,46 @@ workflow BATCH_EVIDENCE_MERGING {
 
     printsvevidence_input   = Channel.empty()
 
-    printsvevidence_input = printsvevidence_input.mix(
-                            PE_files.map({ meta, file, index ->
-                                new_meta = [:]
-                                new_meta.id = 'paired_end_evidence'
-                                [ new_meta, file, index ]
-                            })
-                        )
-
-    printsvevidence_input = printsvevidence_input.mix(
-                            SR_files.map({ meta, file, index ->
-                                new_meta = [:]
-                                new_meta.id = 'split_read_evidence'
-                                [ new_meta, file, index ]
-                            })
-                        )
+    printsvevidence_input
+        .mix(
+            PE_files
+                .map(
+                    { meta, file, index ->
+                        new_meta = [:]
+                        new_meta.id = 'paired_end_evidence'
+                        [ new_meta, file, index ]
+                    }
+                )
+        )
+        .mix(
+            SR_files
+                .map(
+                    { meta, file, index ->
+                        new_meta = [:]
+                        new_meta.id = 'split_read_evidence'
+                        [ new_meta, file, index ]
+                    }
+                )
+        )
+        .set { printsvevidence_input }
 
     if(BAF_files){
 
-        printsvevidence_input = printsvevidence_input.mix(
-                                BAF_files.map({ meta, file, index ->
-                                    new_meta = [:]
-                                    new_meta.id = 'baf_evidence'
-                                    [ new_meta, file, index ]
-                                })
-                            )
-
+        printsvevidence_input
+            .mix(
+                BAF_files
+                    .map(
+                        { meta, file, index ->
+                            new_meta = [:]
+                            new_meta.id = 'baf_evidence'
+                            [ new_meta, file, index ]
+                        }
+                    )
+            )
+        .set { printsvevidence_input }
     }
+
+    printsvevidence_input.dump(tag: 'printsvevidence_input', pretty: true)
 
     // TODO find a way to fix the 'file not sorted' error in PRINTSVEVIDENCE
 
@@ -67,11 +80,17 @@ workflow BATCH_EVIDENCE_MERGING {
 
     if(!SD_files){
 
-        sitedepthtobaf_input = SD_files.map({ meta, file, index ->
-                                    new_meta = [:]
-                                    new_meta.id = 'site_depth_evidence'
-                                    [ new_meta, file, index ]
-                                }).groupTuple()
+        SD_files
+            .map(
+                { meta, file, index ->
+                    new_meta = [:]
+                    new_meta.id = 'site_depth_evidence'
+                    [ new_meta, file, index ]
+                }
+            )
+            .groupTuple() // TODO set group size
+            .dump(tag: 'sitedepthtobaf_input', pretty: true)
+            .set { sitedepthtobaf_input }
 
         SITEDEPTHTOBAF(
             sitedepthtobaf_input,

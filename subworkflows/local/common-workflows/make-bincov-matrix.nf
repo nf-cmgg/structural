@@ -20,12 +20,17 @@ workflow MAKE_BINCOV_MATRIX {
 
     ch_versions = ch_versions.mix(SET_BINS.out.versions)
 
-    make_bincov_matrix_input = count_files.combine(SET_BINS.out.binsize.splitText())
-                                        .map({ meta, count_file, binsize ->
-                                            new_meta = meta.clone()
-                                            new_meta.binsize = binsize.replace("\n","")
-                                            [ new_meta, count_file]
-                                        })
+    count_files
+        .combine(SET_BINS.out.binsize.splitText())
+        .map(
+            { meta, count_file, binsize ->
+                new_meta = meta.clone()
+                new_meta.binsize = binsize.replace("\n","")
+                [ new_meta, count_file]
+            }
+        )
+        .dump(tag: 'make_bincov_matrix_input', pretty:true)
+        .set { make_bincov_matrix_input }
 
     MAKE_BINCOV_MATRIX_COLUMNS(
         make_bincov_matrix_input,
@@ -34,9 +39,11 @@ workflow MAKE_BINCOV_MATRIX {
 
     ch_versions = ch_versions.mix(MAKE_BINCOV_MATRIX_COLUMNS.out.versions)
 
-    zpaste_input = MAKE_BINCOV_MATRIX_COLUMNS.out.bincov
-                    .map({ meta, bincov -> [ bincov ]})
-                    .collect()
+    MAKE_BINCOV_MATRIX_COLUMNS.out.bincov
+        .map({ meta, bincov -> [ bincov ]})
+        .collect()
+        .dump(tag: 'zpaste_input', pretty: true)
+        .set { zpaste_input }
 
     ZPASTE(
         zpaste_input

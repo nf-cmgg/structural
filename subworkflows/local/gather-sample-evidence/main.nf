@@ -36,9 +36,12 @@ workflow GATHER_SAMPLE_EVIDENCE {
     // GATK Collect Read Counts
     //
 
-    collectreadcounts_input = crams.combine(
-        beds.map({meta, bed, bed_gz, bed_gz_tbi -> [meta, bed]}), by:0
-    )
+    crams
+        .combine(
+            beds.map({meta, bed, bed_gz, bed_gz_tbi -> [meta, bed]})
+        , by:0)
+    .dump(tag: 'collectreadcounts_input', pretty: true)
+    .set { collectreadcounts_input }
 
     COLLECTREADCOUNTS(
         collectreadcounts_input,
@@ -124,14 +127,26 @@ workflow GATHER_SAMPLE_EVIDENCE {
             [ [], allele_loci_vcf ]
         )
 
-        collectsvevidence_input = crams.combine(TABIX_TABIX.out.tbi)
-                                    .map({ meta, cram, crai, tbi ->
-                                        [ meta, cram, crai, allele_loci_vcf, tbi ]
-                                    })
+        crams
+            .combine(TABIX_TABIX.out.tbi)
+            .map(
+                { meta, cram, crai, tbi ->
+                    [ meta, cram, crai, allele_loci_vcf, tbi ]
+                }
+            )
+            .set { collectsvevidence_input }
+
     } else {
-        collectsvevidence_input = crams.map({ meta, cram, crai -> [ meta, cram, crai, [], [] ] })
+        crams
+            .map(
+                { meta, cram, crai ->
+                    [ meta, cram, crai, [], [] ]
+                }
+            )
+            .set { collectsvevidence_input }
     }
 
+    collectsvevidence_input.dump(tag: 'collectsvevidence_input', pretty: true)
 
     COLLECTSVEVIDENCE(
         collectsvevidence_input,

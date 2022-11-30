@@ -52,7 +52,8 @@ workflow RUN_WHAMG {
 
     WHAMG(
         whamg_input,
-        fasta
+        fasta,
+        fasta_fai
     )
 
     ch_versions = ch_versions.mix(WHAMG.out.versions)

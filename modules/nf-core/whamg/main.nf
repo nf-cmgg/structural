@@ -13,7 +13,7 @@ process WHAMG {
     path(fasta_fai)
 
     output:
-    tuple val(meta), path("*.vcf")   , emit: vcf
+    tuple val(meta), path("*.vcf.gz"), emit: vcf
     path("*.txt")                    , emit: graph, optional: true
     path "versions.yml"              , emit: versions
 
@@ -31,6 +31,8 @@ process WHAMG {
         -a $fasta \\
         $args \\
         > ${prefix}.vcf
+
+        gzip ${prefix}.vcf
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":

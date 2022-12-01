@@ -66,29 +66,19 @@ workflow RUN_WHAMG {
     ch_versions = ch_versions.mix(WHAMG.out.versions)
 
     //
-    // index the resulting VCF
-    //
-
-    TABIX_WHAMG(
-        WHAMG.out.vcf
-    )
-
-    ch_versions = ch_versions.mix(TABIX_WHAMG.out.versions)
-
-    //
     // Concatenate and re-index the VCFs if the `include_bed_file` option was used
     //
 
     if(include_bed_file){
         WHAMG.out.vcf
-            .join(TABIX_WHAMG.out.tbi)
+            .join(WHAMG.out.tbi)
             .map(
                 { meta, vcf, tbi ->
                     new_meta = meta.clone()
                     new_meta.remove('region')
                     [ new_meta, vcf, tbi ]
                 }
-            )
+            ) // TODO Improve grouping with groupKey
             .groupTuple()
             .set { concat_input }
 
@@ -109,7 +99,7 @@ workflow RUN_WHAMG {
             .set { whamg_vcfs }
     } else {
         WHAMG.out.vcf
-            .join(TABIX_WHAMG.out.tbi)
+            .join(WHAMG.out.tbi)
             .set { whamg_vcfs }
     }
 

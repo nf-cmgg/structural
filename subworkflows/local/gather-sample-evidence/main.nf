@@ -40,14 +40,14 @@ workflow GATHER_SAMPLE_EVIDENCE {
         beds.map({meta, bed, bed_gz, bed_gz_tbi -> [meta, bed]}), by:0
     )
 
-    COLLECTREADCOUNTS(
-        collectreadcounts_input,
-        fasta,
-        fasta_fai,
-        dict
-    )
+    // COLLECTREADCOUNTS(
+    //     collectreadcounts_input,
+    //     fasta,
+    //     fasta_fai,
+    //     dict
+    // )
 
-    ch_versions = ch_versions.mix(COLLECTREADCOUNTS.out.versions)
+    // ch_versions = ch_versions.mix(COLLECTREADCOUNTS.out.versions)
 
     //
     // Calling variants using Manta
@@ -162,7 +162,7 @@ workflow GATHER_SAMPLE_EVIDENCE {
     emit:
     vcfs                = called_vcfs
 
-    coverage_counts     = COLLECTREADCOUNTS.out.tsv
+    // coverage_counts     = COLLECTREADCOUNTS.out.tsv
 
     split_reads         = COLLECTSVEVIDENCE.out.split_read_evidence.combine(COLLECTSVEVIDENCE.out.split_read_evidence_index, by:0)
     read_pairs          = COLLECTSVEVIDENCE.out.paired_end_evidence.combine(COLLECTSVEVIDENCE.out.paired_end_evidence_index, by:0)

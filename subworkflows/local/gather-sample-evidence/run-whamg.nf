@@ -53,9 +53,12 @@ workflow RUN_WHAMG {
                 }
             )
             .set { whamg_input }
+
     } else {
-        whamg_input = bams
+        bams.set { whamg_input }
     }
+
+    whamg_input.dump(tag: 'whamg_input', pretty: true)
 
     WHAMG(
         whamg_input,
@@ -103,11 +106,16 @@ workflow RUN_WHAMG {
             .set { whamg_vcfs }
     }
 
-    whamg_vcfs = whamg_vcfs.map({ meta, vcf, tbi ->
-        new_meta = meta.clone()
-        new_meta.caller = "whamg"
-        [ new_meta, vcf, tbi ]
-    })
+    whamg_vcfs
+        .map(
+            { meta, vcf, tbi ->
+                new_meta = meta.clone()
+                new_meta.caller = "whamg"
+                [ new_meta, vcf, tbi ]
+            }
+        )
+        .dump(tag: 'whamg_vcfs', pretty: true)
+        .set { whamg_vcfs }
 
     emit:
     whamg_vcfs

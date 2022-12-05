@@ -45,8 +45,8 @@ workflow GATHER_BATCH_EVIDENCE {
 
         ch_versions = ch_versions.mix(MAKE_BINCOV_MATRIX.out.versions)
 
-        bincov_matrix       = MAKE_BINCOV_MATRIX.out.merged_bincov
-        bincov_matrix_index = MAKE_BINCOV_MATRIX.out.merged_bincov_index
+        MAKE_BINCOV_MATRIX.out.merged_bincov.set { bincov_matrix }
+        MAKE_BINCOV_MATRIX.out.merged_bincov_index.set { bincov_matrix_index }
 
     }
 

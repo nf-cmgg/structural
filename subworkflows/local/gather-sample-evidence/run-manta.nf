@@ -16,13 +16,23 @@ workflow RUN_MANTA {
 
     ch_versions     = Channel.empty()
 
-    gzipped_beds = beds.map({ meta, bed, bed_gz, bed_gz_tbi -> [ meta, bed_gz, bed_gz_tbi ]})
+    beds
+        .map(
+            { meta, bed, bed_gz, bed_gz_tbi ->
+                [ meta, bed_gz, bed_gz_tbi ]
+            }
+        )
+        .dump(tag: 'gzipped_beds', pretty: true)
+        .set { gzipped_beds }
 
     //
     // Calling variants using Manta
     //
 
-    manta_input = crams.combine(gzipped_beds, by: 0)
+    crams
+        .combine(gzipped_beds, by: 0)
+        .dump(tag: 'manta_input', pretty: true)
+        .set { manta_input }
 
     MANTA_GERMLINE(
         manta_input,
@@ -53,12 +63,17 @@ workflow RUN_MANTA {
         []
     )
 
-    manta_vcfs = BCFTOOLS_REHEADER.out.vcf.combine(MANTA_CONVERTINVERSION.out.tbi, by:0)
-                                            .map({ meta, vcf, tbi ->
-                                                new_meta = meta.clone()
-                                                new_meta.caller = "manta"
-                                                [ new_meta, vcf, tbi ]
-                                            })
+    BCFTOOLS_REHEADER.out.vcf
+        .combine(MANTA_CONVERTINVERSION.out.tbi, by:0)
+        .map(
+            { meta, vcf, tbi ->
+                new_meta = meta.clone()
+                new_meta.caller = "manta"
+                [ new_meta, vcf, tbi ]
+            }
+        )
+        .dump(tag: 'manta_vcfs', pretty: true)
+        .set { manta_vcfs }
 
     emit:
     manta_vcfs

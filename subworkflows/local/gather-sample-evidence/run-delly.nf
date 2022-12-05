@@ -27,7 +27,13 @@ workflow RUN_DELLY {
     // Split the BED files if the scatter count is bigger than 1
     //
 
-    single_beds     = beds.map({ meta, bed, bed_gz, bed_gz_tbi -> [ meta, bed ]})
+    beds
+        .map(
+            { meta, bed, bed_gz, bed_gz_tbi ->
+                [ meta, bed ]
+            }
+        )
+        .set { single_beds }
 
     if(scatter_count > 1){
         BEDTOOLS_SPLIT(
@@ -35,17 +41,24 @@ workflow RUN_DELLY {
             scatter_count
         )
 
-        split_beds = BEDTOOLS_SPLIT.out.beds.transpose().map({ meta, bed ->
-                            new_meta = meta.clone()
-                            new_meta.id = bed.baseName
-                            [ new_meta, bed ]
-                        })
+        BEDTOOLS_SPLIT.out.beds
+            .transpose()
+            .map(
+                { meta, bed ->
+                    new_meta = meta.clone()
+                    new_meta.id = bed.baseName
+                    [ new_meta, bed ]
+                }
+            )
+            .set { split_beds }
 
         ch_versions = ch_versions.mix(BEDTOOLS_SPLIT.out.versions)
 
     } else {
         split_beds = single_beds
     }
+
+    split_beds.dump(tag: 'split_beds', pretty: true)
 
     //
     // Reverse the BED file (It will only contain the regions that aren't of interest now)
@@ -62,16 +75,26 @@ workflow RUN_DELLY {
     // Calling variants using Delly
     //
 
-    delly_input = crams.combine(REVERSE_BED.out.bed.map({ meta, bed ->
-                                new_meta = meta.clone()
-                                new_meta.id = meta.sample
-                                [ new_meta, bed ]
-                            }), by:0)
-                        .map({ meta, cram, crai, bed ->
-                            new_meta = meta.clone()
-                            new_meta.id = bed.baseName.replace("_reversed","")
-                            [ new_meta, cram, crai, bed ]
-                        })
+    crams
+        .combine(
+            REVERSE_BED.out.bed
+                .map(
+                    { meta, bed ->
+                        new_meta = meta.clone()
+                        new_meta.id = meta.sample
+                        [ new_meta, bed ]
+                    }
+                )
+        , by:0)
+        .map(
+            { meta, cram, crai, bed ->
+                new_meta = meta.clone()
+                new_meta.id = bed.baseName.replace("_reversed","")
+                [ new_meta, cram, crai, bed ]
+            }
+        )
+        .dump(tag: 'delly_input', pretty: true)
+        .set { delly_input }
 
     DELLY_CALL(
         delly_input,
@@ -85,12 +108,20 @@ workflow RUN_DELLY {
     // Concatenate the BCF files if the scatter count is bigger than 1 and convert the BCF to VCF
     //
 
-    bcftools_input = DELLY_CALL.out.bcf.combine(DELLY_CALL.out.csi, by:0)
-                            .map({ meta, bcf, csi ->
-                                new_meta = meta.clone()
-                                new_meta.id = meta.sample
-                                [ new_meta, bcf, csi ]
-                            }).groupTuple()
+    // TODO: fix the group size for when the BED file couldn't be split enough to reach the scatter count (see germline pipeline)
+
+    DELLY_CALL.out.bcf
+        .combine(DELLY_CALL.out.csi, by:0)
+        .map(
+            { meta, bcf, csi ->
+                new_meta = meta.clone()
+                new_meta.id = meta.sample
+                [ new_meta, bcf, csi ]
+            }
+        )
+        .groupTuple(size: scatter_count, remainder: true)
+        .dump(tag: 'bcftools_input', pretty: true)
+        .set { bcftools_input }
 
     if(scatter_count > 1){
 
@@ -100,7 +131,7 @@ workflow RUN_DELLY {
 
         ch_versions = ch_versions.mix(BCFTOOLS_CONCAT.out.versions)
 
-        tabix_input = BCFTOOLS_CONCAT.out.vcf
+        BCFTOOLS_CONCAT.out.vcf.set { tabix_input }
 
     } else {
 
@@ -112,7 +143,7 @@ workflow RUN_DELLY {
 
         ch_versions = ch_versions.mix(BCFTOOLS_CONVERT.out.versions)
 
-        tabix_input = BCFTOOLS_CONVERT.out.vcf_gz
+        BCFTOOLS_CONVERT.out.vcf_gz.set { tabix_input }
 
     }
 
@@ -125,12 +156,17 @@ workflow RUN_DELLY {
     )
     ch_versions = ch_versions.mix(TABIX_TABIX.out.versions)
 
-    delly_vcfs = tabix_input.combine(TABIX_TABIX.out.tbi, by:0)
-                                .map({ meta, vcf, tbi ->
-                                    new_meta = meta.clone()
-                                    new_meta.caller = "delly"
-                                    [ new_meta, vcf, tbi ]
-                                })
+    tabix_input
+        .combine(TABIX_TABIX.out.tbi, by:0)
+        .map(
+            { meta, vcf, tbi ->
+                new_meta = meta.clone()
+                new_meta.caller = "delly"
+                [ new_meta, vcf, tbi ]
+            }
+        )
+        .dump(tag: 'delly_vcfs', pretty: true)
+        .set { delly_vcfs }
 
     emit:
     delly_vcfs

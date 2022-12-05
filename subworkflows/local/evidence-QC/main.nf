@@ -44,8 +44,8 @@ workflow EVIDENCE_QC {
 
     ch_versions = ch_versions.mix(MAKE_BINCOV_MATRIX.out.versions)
 
-    bincov_matrix       = MAKE_BINCOV_MATRIX.out.merged_bincov
-    bincov_matrix_index = MAKE_BINCOV_MATRIX.out.merged_bincov_index
+    MAKE_BINCOV_MATRIX.out.merged_bincov.set { bincov_matrix }
+    MAKE_BINCOV_MATRIX.out.merged_bincov_index.set { bincov_matrix_index }
 
     // FIX THIS!!
     CALCMEDCOV(
@@ -78,7 +78,13 @@ workflow EVIDENCE_QC {
     if(wgd_scoring_mask) {
 
         BEDTOOLS_INTERSECT(
-            bincov_matrix.combine(wgd_scoring_mask).map({ bincov, wgd_mask -> [ [], bincov, wgd_mask ]}),
+            bincov_matrix
+                .combine(wgd_scoring_mask)
+                .map(
+                    { bincov, wgd_mask ->
+                        [ [], bincov, wgd_mask ]
+                    }
+                ),
             'bed'
         )
 
@@ -90,8 +96,8 @@ workflow EVIDENCE_QC {
             wgd_matrix.combine(wgd_scoring_mask)
         )
 
-        wgd_dist    = WGD_SCORE.out.dist
-        wgd_scores  = WGD_SCORE.out.scores
+        WGD_SCORE.out.dist.set { wgd_dist }
+        WGD_SCORE.out.scores.set { wgd_scores }
         ch_versions = ch_versions.mix(WGD_SCORE.out.versions)
 
     }
@@ -108,10 +114,17 @@ workflow EVIDENCE_QC {
 
         ch_versions = ch_versions.mix(INDVIDUAL_QC.out.versions)
 
-        pick_outliers_input = INDVIDUAL_QC.out.stat.branch({ meta, stat ->
-                                    valid: stat.countLines() > 1
-                                    invalid: stat.countLines() == 1
-                                })
+        INDVIDUAL_QC.out.stat
+            .branch(
+                { meta, stat ->
+                    valid: stat.countLines() > 1
+                    invalid: stat.countLines() == 1
+                }
+            )
+            .set { pick_outliers_input }
+
+        pick_outliers_input.valid.dump(tag: 'pick_outliers_input_valid', pretty: true)
+        pick_outliers_input.invalid.dump(tag: 'pick_outliers_input_invalid', pretty: true)
 
         PICK_OUTLIERS(
             pick_outliers_input.valid

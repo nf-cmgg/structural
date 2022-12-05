@@ -15,7 +15,7 @@ workflow RUN_SCRAMBLE {
     ch_versions     = Channel.empty()
 
     SCRAMBLE_CLUSTERIDENTIFIER(
-        crams.view(),
+        crams,
         fasta
     )
 

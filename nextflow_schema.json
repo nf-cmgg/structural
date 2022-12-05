@@ -294,7 +294,8 @@
                     "enum": [
                         "delly",
                         "manta",
-                        "whamg"
+                        "whamg",
+                        "scramble"
                     ]
                 },
                 "delly_sv_types": {
@@ -323,11 +324,6 @@
             "description": "",
             "default": "",
             "properties": {
-                "fasta": {
-                    "type": "string",
-                    "default": null,
-                    "pattern": "^.*\\.fa(sta)?$"
-                },
                 "fasta_fai": {
                     "type": "string",
                     "default": null,
@@ -338,10 +334,7 @@
                     "default": null,
                     "pattern": "^.*\\.dict$"
                 }
-            },
-            "required": [
-                "fasta"
-            ]
+            }
         }
     },
     "allOf": [
@@ -359,6 +352,9 @@
         },
         {
             "$ref": "#/definitions/gather_sample_evidence_options"
+        },
+        {
+            "$ref": "#/definitions/reference_genome_options"
         },
         {
             "$ref": "#/definitions/new_group_2"

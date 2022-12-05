@@ -7,7 +7,7 @@
                 "nf-core": {
                     "bcftools/concat": {
                         "branch": "master",
-                        "git_sha": "5e34754d42cd2d5d248ca8673c0a53cdf5624905",
+                        "git_sha": "ce723d4eac38d1c0bde98e29c503b51a3022bffc",
                         "installed_by": [
                             "modules"
                         ]
@@ -29,6 +29,13 @@
                     "bedtools/intersect": {
                         "branch": "master",
                         "git_sha": "5e34754d42cd2d5d248ca8673c0a53cdf5624905",
+                        "installed_by": [
+                            "modules"
+                        ]
+                    },
+                    "bedtools/merge": {
+                        "branch": "master",
+                        "git_sha": "4bb1d4e362a38642e877afe41aaf58ded9e56c86",
                         "installed_by": [
                             "modules"
                         ]

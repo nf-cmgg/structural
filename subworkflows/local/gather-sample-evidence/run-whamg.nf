@@ -3,6 +3,7 @@
 //
 include { WHAMG                       } from '../../../modules/nf-core/whamg/main'
 include { BCFTOOLS_CONCAT             } from '../../../modules/nf-core/bcftools/concat/main'
+include { BEDTOOLS_MERGE              } from '../../../modules/nf-core/bedtools/merge/main'
 include { SAMTOOLS_CONVERT            } from '../../../modules/nf-core/samtools/convert/main'
 include { TABIX_TABIX as TABIX_CONCAT } from '../../../modules/nf-core/tabix/tabix/main'
 include { TABIX_TABIX as TABIX_WHAMG  } from '../../../modules/nf-core/tabix/tabix/main'
@@ -38,10 +39,23 @@ workflow RUN_WHAMG {
 
     if(include_bed_file){
 
-        beds
-            .map({ meta, bed, bed_gz, bed_gz_tbi -> [ meta, bed ]})
+        BEDTOOLS_MERGE{
+            beds.map({ meta, bed, bed_gz, bed_gz_tbi -> [ meta, bed ]})
+        }
+
+        ch_versions = ch_versions.mix(BEDTOOLS_MERGE.out.versions)
+
+        BEDTOOLS_MERGE.out.bed
             .splitText()
-            .set { stringified_beds }
+            .dump(tag:'stringified_beds', pretty:true)
+            .tap { stringified_beds }
+            .groupTuple()
+            .map(
+                { meta, regions ->
+                    [ meta, regions.size() ]
+                }
+            )
+            .set { region_count }
 
         bams
             .combine(stringified_beds, by: 0)
@@ -77,11 +91,16 @@ workflow RUN_WHAMG {
             .join(WHAMG.out.tbi)
             .map(
                 { meta, vcf, tbi ->
-                    new_meta = meta.clone()
-                    new_meta.remove('region')
-                    [ new_meta, vcf, tbi ]
+                    meta.remove('region')
+                    [ meta, vcf, tbi ]
                 }
-            ) // TODO Improve grouping with groupKey
+            )
+            .combine(region_count, by:0)
+            .map(
+                { meta, vcf, tbi, region_count ->
+                    [ groupKey(meta, region_count), vcf, tbi ]
+                }
+            )
             .groupTuple()
             .set { concat_input }
 

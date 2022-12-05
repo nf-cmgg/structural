@@ -290,13 +290,7 @@
                 "callers": {
                     "type": "string",
                     "default": "manta",
-                    "description": "A comma-delimited list of the callers to be used. (must be one or more of these: delly,manta,whamg)",
-                    "enum": [
-                        "delly",
-                        "manta",
-                        "whamg",
-                        "scramble"
-                    ]
+                    "description": "A comma-delimited list of the callers to be used. (must be one or more of these: delly,manta,whamg)"
                 },
                 "delly_sv_types": {
                     "type": "string",

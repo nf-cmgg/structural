@@ -61,8 +61,7 @@ workflow RUN_WHAMG {
             .combine(stringified_beds, by: 0)
             .map(
                 { meta, bam, bai, region ->
-                    new_meta = meta.clone()
-                    new_meta.region = region.replace("\n","").replaceFirst("\t",":").replace("\t","-")
+                    new_meta = meta.clone() + [region:region.replace("\n","").replaceFirst("\t",":").replace("\t","-")]
                     [ new_meta, bam, bai ]
                 }
             )
@@ -91,8 +90,9 @@ workflow RUN_WHAMG {
             .join(WHAMG.out.tbi)
             .map(
                 { meta, vcf, tbi ->
-                    meta.remove('region')
-                    [ meta, vcf, tbi ]
+                    new_meta = meta.clone()
+                    new_meta.remove('region')
+                    [ new_meta, vcf, tbi ]
                 }
             )
             .combine(region_count, by:0)
@@ -128,8 +128,7 @@ workflow RUN_WHAMG {
     whamg_vcfs
         .map(
             { meta, vcf, tbi ->
-                new_meta = meta.clone()
-                new_meta.caller = "whamg"
+                new_meta = meta.findAll {true}[0] + [caller:"whamg"]
                 [ new_meta, vcf, tbi ]
             }
         )

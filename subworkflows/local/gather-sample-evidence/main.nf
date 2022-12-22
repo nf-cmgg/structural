@@ -175,7 +175,7 @@ workflow GATHER_SAMPLE_EVIDENCE {
         ch_versions = ch_versions.mix(GATHER_SAMPLE_EVIDENCE_METRICS.out.versions)
     }
 
-    if(callers.tokenize(",").size > 1){
+    if(callers.size > 1){
         MERGE_VCFS(
             called_vcfs.map { it[0..1] },
             fasta,

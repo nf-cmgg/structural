@@ -1,36 +1,37 @@
 {
     "$schema": "http://json-schema.org/draft-07/schema",
-    "$id": "https://raw.githubusercontent.com/CenterForMedicalGeneticsGhent/nfcmggstructural/master/assets/schema_input.json",
-    "title": "nfcmggstructural pipeline - params.input schema",
-    "description": "Schema for the file provided with params.input",
+    "$id": "https://raw.githubusercontent.com/CenterForMedicalGeneticsGhent/nf-cmgg-structural/master/assets/samplesheet_schema.json",
+    "title": "Samplesheet validation schema",
+    "description": "Schema for the samplesheet used in this pipeline",
     "type": "array",
     "items": {
         "type": "object",
-        "properties": {
+        "definitions": {
             "sample": {
                 "type": "string",
-                "pattern": "^\\S+$",
-                "errorMessage": "Sample name must be provided and cannot contain spaces"
+                "meta": "id,sample"
             },
-            "fastq_1": {
+            "cram": {
                 "type": "string",
-                "pattern": "^\\S+\\.f(ast)?q\\.gz$",
-                "errorMessage": "FastQ file for reads 1 must be provided, cannot contain spaces and must have extension '.fq.gz' or '.fastq.gz'"
+                "pattern": "^\\S+\\.cram$",
+                "format": "file-path"
             },
-            "fastq_2": {
-                "errorMessage": "FastQ file for reads 2 cannot contain spaces and must have extension '.fq.gz' or '.fastq.gz'",
-                "anyOf": [
-                    {
-                        "type": "string",
-                        "pattern": "^\\S+\\.f(ast)?q\\.gz$"
-                    },
-                    {
-                        "type": "string",
-                        "maxLength": 0
-                    }
-                ]
+            "crai": {
+                "type": "string",
+                "pattern": "^\\S+\\.crai$",
+                "format": "file-path"
+            },
+            "bed": {
+                "type": "string",
+                "pattern": "^\\S+\\.bed$",
+                "format": "file-path"
+            },
+            "ped": {
+                "type": "string",
+                "pattern": "^\\S+\\.ped$",
+                "format": "file-path"
             }
         },
-        "required": ["sample", "fastq_1"]
+        "required": ["sample", "cram"]
     }
 }

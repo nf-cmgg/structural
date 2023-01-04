@@ -108,10 +108,12 @@ workflow NF_CMGG_STRUCTURAL {
     // Create the input channel
     //
 
-    inputs = parse_input(ch_input).multiMap({ meta, cram, crai, bed=[], baseline=[] ->
-        bed: [ meta, bed ]
-        crams: [ meta, cram, crai ]
-    })
+    SamplesheetConversion.convert(ch_input, file("assets/schema_input.json"))
+        .multiMap({ meta, cram, crai, bed, oed ->
+            bed: [ meta, bed ]
+            crams: [ meta, cram, crai ]
+        })
+        .set { inputs }
 
     //
     // Prepare the BED files
@@ -242,117 +244,6 @@ workflow NF_CMGG_STRUCTURAL {
 
     multiqc_report = MULTIQC.out.report.toList()
 }
-
-/*
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    Functions used in the pipeline
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-*/
-
-def parse_input(input_csv) {
-
-    // The samplesheet schema (change this to adjust the input check)
-    def samplesheet_schema = [
-        'columns': [
-            'sample': [
-                'content': 'meta',
-                'meta_name': 'id,sample',
-                'pattern': '',
-            ],
-            'cram': [
-                'content': 'file',
-                'pattern': '^.*\\.cram$',
-            ],
-            'crai': [
-                'content': 'file',
-                'pattern': '^.*\\.crai$',
-            ],
-            'bed': [
-                'content': 'file',
-                'pattern': '^.*\\.bed$',
-            ],
-            'ped': [
-                'content': 'file',
-                'pattern': '^.*\\.ped$',
-            ]
-        ],
-        'required': ['sample','cram','crai'],
-    ]
-
-    // Don't change these variables
-    def row_count = 1
-    def all_columns = samplesheet_schema.columns.keySet().collect()
-    def mandatory_columns = samplesheet_schema.required
-
-    // Header checks
-    Channel.value(input_csv).splitCsv(strip:true).first().map({ row ->
-
-        if(row != all_columns) {
-            def commons = all_columns.intersect(row)
-            def diffs = all_columns.plus(row)
-            diffs.removeAll(commons)
-
-            if(diffs.size() > 0){
-                def missing_columns = []
-                def wrong_columns = []
-                for(diff : diffs){
-                    diff in all_columns ? missing_columns.add(diff) : wrong_columns.add(diff)
-                }
-                if(missing_columns.size() > 0){
-                    exit 1, "[Samplesheet Error] The column(s) $missing_columns is/are not present. The header should look like: $all_columns"
-                }
-                else {
-                    exit 1, "[Samplesheet Error] The column(s) $wrong_columns should not be in the header. The header should look like: $all_columns"
-                }
-            }
-            else {
-                exit 1, "[Samplesheet Error] The columns $row are not in the right order. The header should look like: $all_columns"
-            }
-
-        }
-    })
-
-    // Field checks + returning the channels
-    Channel.value(input_csv).splitCsv(header:true, strip:true).map({ row ->
-
-        row_count++
-
-        // Check the mandatory columns
-        def missing_mandatory_columns = []
-        for(column : mandatory_columns) {
-            row[column] ?: missing_mandatory_columns.add(column)
-        }
-        if(missing_mandatory_columns.size > 0){
-            exit 1, "[Samplesheet Error] The mandatory column(s) $missing_mandatory_columns is/are empty on line $row_count"
-        }
-
-        def output = []
-        def meta = [:]
-        for(col : samplesheet_schema.columns) {
-            key = col.key
-            content = row[key]
-
-            if(!(content ==~ col.value['pattern']) && col.value['pattern'] != '' && content != '') {
-                exit 1, "[Samplesheet Error] The content of column '$key' on line $row_count does not match the pattern '${col.value['pattern']}'"
-            }
-
-            if(col.value['content'] == 'file'){
-                output.add(content ? file(content, checkIfExists:true) : [])
-            }
-            else if(col.value['content'] == 'meta' && content != ''){
-                for(meta_name : col.value['meta_name'].split(",")){
-                    meta[meta_name] = content.replace(' ', '_')
-                }
-            }
-        }
-
-        output.add(0, meta)
-        return output
-    })
-
-}
-
-
 
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

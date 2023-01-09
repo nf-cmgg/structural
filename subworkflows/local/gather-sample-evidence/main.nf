@@ -8,6 +8,7 @@ include { RUN_DELLY                                     } from './run-delly'
 include { RUN_WHAMG                                     } from './run-whamg'
 include { RUN_SCRAMBLE                                  } from './run-scramble'
 include { GATHER_SAMPLE_EVIDENCE_METRICS                } from './gather-metrics'
+include { MERGE_VCFS                                    } from './merge_vcfs'
 
 // Import modules
 include { GATK4_COLLECTREADCOUNTS as COLLECTREADCOUNTS  } from '../../../modules/nf-core/gatk4/collectreadcounts/main'
@@ -25,7 +26,7 @@ workflow GATHER_SAMPLE_EVIDENCE {
 
     main:
 
-    callers = params.callers.split(",")
+    callers = params.callers.tokenize(",")
 
     ch_versions = Channel.empty()
     ch_reports  = Channel.empty()
@@ -50,7 +51,7 @@ workflow GATHER_SAMPLE_EVIDENCE {
         dict
     )
 
-    ch_versions = ch_versions.mix(COLLECTREADCOUNTS.out.versions)
+    // ch_versions = ch_versions.mix(COLLECTREADCOUNTS.out.versions)
 
     //
     // Calling variants using Manta
@@ -172,6 +173,18 @@ workflow GATHER_SAMPLE_EVIDENCE {
 
         ch_metrics  = ch_reports.mix(GATHER_SAMPLE_EVIDENCE_METRICS.out.metrics)
         ch_versions = ch_versions.mix(GATHER_SAMPLE_EVIDENCE_METRICS.out.versions)
+    }
+
+    if(callers.size > 1){
+        MERGE_VCFS(
+            called_vcfs.map { it[0..1] },
+            fasta,
+            fasta_fai,
+        )
+
+        MERGE_VCFS.out.merged_vcfs.set { merged_vcfs }
+    } else {
+        called_vcfs.set { merged_vcfs }
     }
 
     emit:

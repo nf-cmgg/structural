@@ -1,11 +1,12 @@
 //
 // Run Whamg
 //
-include { WHAMG                     } from '../../../modules/nf-core/whamg/main'
-include { BCFTOOLS_CONCAT           } from '../../../modules/nf-core/bcftools/concat/main'
-include { SAMTOOLS_CONVERT          } from '../../../modules/nf-core/samtools/convert/main'
-include { TABIX_BGZIPTABIX          } from '../../../modules/nf-core/tabix/bgziptabix/main'
-include { TABIX_TABIX               } from '../../../modules/nf-core/tabix/tabix/main'
+include { WHAMG                       } from '../../../modules/nf-core/whamg/main'
+include { BCFTOOLS_CONCAT             } from '../../../modules/nf-core/bcftools/concat/main'
+include { BEDTOOLS_MERGE              } from '../../../modules/nf-core/bedtools/merge/main'
+include { SAMTOOLS_CONVERT            } from '../../../modules/nf-core/samtools/convert/main'
+include { TABIX_TABIX as TABIX_CONCAT } from '../../../modules/nf-core/tabix/tabix/main'
+include { TABIX_TABIX as TABIX_WHAMG  } from '../../../modules/nf-core/tabix/tabix/main'
 
 workflow RUN_WHAMG {
     take:
@@ -37,21 +38,30 @@ workflow RUN_WHAMG {
     //
 
     if(include_bed_file){
-        beds
+
+        BEDTOOLS_MERGE{
+            beds.map({ meta, bed, bed_gz, bed_gz_tbi -> [ meta, bed ]})
+        }
+
+        ch_versions = ch_versions.mix(BEDTOOLS_MERGE.out.versions)
+
+        BEDTOOLS_MERGE.out.bed
+            .splitText()
+            .dump(tag:'stringified_beds', pretty:true)
+            .tap { stringified_beds }
+            .groupTuple()
             .map(
-                { meta, bed, bed_gz, bed_gz_tbi ->
-                    [ meta, bed ]
+                { meta, regions ->
+                    [ meta, regions.size() ]
                 }
             )
-            .splitText()
-            .set { stringified_beds }
+            .set { region_count }
 
         bams
             .combine(stringified_beds, by: 0)
             .map(
                 { meta, bam, bai, region ->
-                    new_meta = meta.clone()
-                    new_meta.region = region.replace("\n","").replaceFirst("\t",":").replace("\t","-")
+                    new_meta = meta.clone() + [region:region.replace("\n","").replaceFirst("\t",":").replace("\t","-")]
                     [ new_meta, bam, bai ]
                 }
             )
@@ -65,27 +75,19 @@ workflow RUN_WHAMG {
 
     WHAMG(
         whamg_input,
-        fasta
+        fasta,
+        fasta_fai
     )
 
     ch_versions = ch_versions.mix(WHAMG.out.versions)
-
-    //
-    // Gzip and index the resulting VCF
-    //
-
-    TABIX_BGZIPTABIX(
-        WHAMG.out.vcf
-    )
-
-    ch_versions = ch_versions.mix(TABIX_BGZIPTABIX.out.versions)
 
     //
     // Concatenate and re-index the VCFs if the `include_bed_file` option was used
     //
 
     if(include_bed_file){
-        TABIX_BGZIPTABIX.out.gz_tbi
+        WHAMG.out.vcf
+            .join(WHAMG.out.tbi)
             .map(
                 { meta, vcf, tbi ->
                     new_meta = meta.clone()
@@ -93,8 +95,13 @@ workflow RUN_WHAMG {
                     [ new_meta, vcf, tbi ]
                 }
             )
-            .groupTuple() // TODO set group size with groupKey
-            .dump(tag: 'concat_input', pretty: true)
+            .combine(region_count, by:0)
+            .map(
+                { meta, vcf, tbi, region_count ->
+                    [ groupKey(meta, region_count), vcf, tbi ]
+                }
+            )
+            .groupTuple()
             .set { concat_input }
 
         BCFTOOLS_CONCAT(
@@ -103,24 +110,25 @@ workflow RUN_WHAMG {
 
         ch_versions = ch_versions.mix(BCFTOOLS_CONCAT.out.versions)
 
-        TABIX_TABIX(
+        TABIX_CONCAT(
             BCFTOOLS_CONCAT.out.vcf
         )
 
-        ch_versions = ch_versions.mix(TABIX_TABIX.out.versions)
+        ch_versions = ch_versions.mix(TABIX_CONCAT.out.versions)
 
         BCFTOOLS_CONCAT.out.vcf
-            .combine(TABIX_TABIX.out.tbi, by: 0)
+            .join(TABIX_CONCAT.out.tbi)
             .set { whamg_vcfs }
     } else {
-        TABIX_BGZIPTABIX.out.gz_tbi.set { whamg_vcfs }
+        WHAMG.out.vcf
+            .join(WHAMG.out.tbi)
+            .set { whamg_vcfs }
     }
 
     whamg_vcfs
         .map(
             { meta, vcf, tbi ->
-                new_meta = meta.clone()
-                new_meta.caller = "whamg"
+                new_meta = meta.findAll {true}[0] + [caller:"whamg"]
                 [ new_meta, vcf, tbi ]
             }
         )

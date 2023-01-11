@@ -58,9 +58,8 @@ workflow RUN_MANTA {
     //
 
     BCFTOOLS_REHEADER(
-        MANTA_CONVERTINVERSION.out.vcf,
+        MANTA_CONVERTINVERSION.out.vcf.map{meta, vcf -> [meta, vcf, []]},
         [],
-        []
     )
 
     BCFTOOLS_REHEADER.out.vcf

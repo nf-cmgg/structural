@@ -1,16 +1,16 @@
-name: bcftools_reheader
-description: Reheader a VCF file
+name: bcftools_sort
+description: Sorts VCF files
 keywords:
-  - reheader
-  - vcf
-  - update header
+  - sorting
+  - VCF
+  - variant calling
 tools:
-  - reheader:
-      description: |
-        Modify header of VCF/BCF files, change sample names.
+  - sort:
+      description: Sort VCF files by coordinates.
       homepage: http://samtools.github.io/bcftools/bcftools.html
-      documentation: http://samtools.github.io/bcftools/bcftools.html#reheader
-      doi: 10.1093/gigascience/giab008
+      documentation: http://www.htslib.org/doc/bcftools.html
+      tool_dev_url: https://github.com/samtools/bcftools
+      doi: "10.1093/bioinformatics/btp352"
       licence: ["MIT"]
 
 input:
@@ -21,16 +21,8 @@ input:
         e.g. [ id:'test', single_end:false ]
   - vcf:
       type: file
-      description: VCF/BCF file
+      description: The VCF/BCF file to be sorted
       pattern: "*.{vcf.gz,vcf,bcf}"
-  - header:
-      type: file
-      description: New header to add to the VCF
-      pattern: "*.{header.txt}"
-  - fai:
-      type: file
-      description: Fasta index to update header sequences with
-      pattern: "*.{fai}"
 
 output:
   - meta:
@@ -44,8 +36,8 @@ output:
       pattern: "versions.yml"
   - vcf:
       type: file
-      description: VCF with updated header
+      description: Sorted VCF file
       pattern: "*.{vcf.gz}"
 
 authors:
-  - "@bjohnnyd"
+  - "@Gwennid"

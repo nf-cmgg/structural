@@ -125,7 +125,7 @@ workflow GATHER_SAMPLE_EVIDENCE {
 
     if(allele_loci_vcf){
         TABIX_TABIX(
-            [ [], allele_loci_vcf ]
+            allele_loci_vcf.map{[[id:"allele_loci_vcf"], it]}
         )
 
         crams

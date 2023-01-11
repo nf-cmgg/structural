@@ -1,6 +1,6 @@
-process BCFTOOLS_REHEADER {
+process BCFTOOLS_SORT {
     tag "$meta.id"
-    label 'process_low'
+    label 'process_medium'
 
     conda "bioconda::bcftools=1.16"
     container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
@@ -8,12 +8,11 @@ process BCFTOOLS_REHEADER {
         'quay.io/biocontainers/bcftools:1.16--hfe4b78e_1' }"
 
     input:
-    tuple val(meta), path(vcf), path(header)
-    path fai
+    tuple val(meta), path(vcf)
 
     output:
-    tuple val(meta), path("*.vcf.gz"), emit: vcf
-    path "versions.yml"              , emit: versions
+    tuple val(meta), path("*.gz"), emit: vcf
+    path "versions.yml"           , emit: versions
 
     when:
     task.ext.when == null || task.ext.when
@@ -21,16 +20,11 @@ process BCFTOOLS_REHEADER {
     script:
     def args = task.ext.args ?: ''
     def prefix = task.ext.prefix ?: "${meta.id}"
-    def update_sequences = fai ? "-f $fai" : ""
-    def new_header       = header ? "-h $header" : ""
     """
     bcftools \\
-        reheader \\
-        $update_sequences \\
-        $new_header \\
+        sort \\
+        --output ${prefix}.vcf.gz \\
         $args \\
-        --threads $task.cpus \\
-        -o ${prefix}.vcf.gz \\
         $vcf
 
     cat <<-END_VERSIONS > versions.yml

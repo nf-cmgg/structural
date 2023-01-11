@@ -25,10 +25,10 @@ for (param in checkPathParamList) { if (param) { file(param, checkIfExists: true
 if (params.input) { ch_input = file(params.input, checkIfExists: true) } else { exit 1, 'Input samplesheet not specified!' }
 
 // Parse parameters
-fasta           = params.fasta
-fasta_fai       = params.fasta_fai
-dict            = params.dict
-allele_loci_vcf = params.allele_loci_vcf ?: []
+fasta           = Channel.value(file(params.fasta))
+fasta_fai       = params.fasta_fai ? Channel.value(file(params.fasta_fai)) : []
+dict            = params.dict ? Channel.value(file(params.dict)) : []
+allele_loci_vcf = params.allele_loci_vcf ? Channel.value(file(params.allele_loci_vcf)) : []
 
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -88,11 +88,11 @@ workflow NF_CMGG_STRUCTURAL {
 
     if(!fasta_fai){
         SAMTOOLS_FAIDX(
-            [ [], fasta ]
+            fasta.map{[[], it]}
         )
 
         ch_versions = ch_versions.mix(SAMTOOLS_FAIDX.out.versions)
-        fasta_fai   = SAMTOOLS_FAIDX.out.fai
+        fasta_fai   = SAMTOOLS_FAIDX.out.fai.map{it[1]}
     }
 
     if(!dict) {
@@ -109,7 +109,7 @@ workflow NF_CMGG_STRUCTURAL {
     //
 
     SamplesheetConversion.convert(ch_input, file("${projectDir}/assets/schema_input.json"))
-        .multiMap({ meta, cram, crai, bed, oed ->
+        .multiMap({ meta, cram, crai, bed, ped ->
             bed: [ meta, bed ]
             crams: [ meta, cram, crai ]
         })
@@ -121,7 +121,7 @@ workflow NF_CMGG_STRUCTURAL {
 
     BEDTOOLS_SORT(
         inputs.bed,
-        "bed"
+        []
     )
 
     ch_versions = ch_versions.mix(BEDTOOLS_SORT.out.versions)
@@ -238,8 +238,12 @@ workflow NF_CMGG_STRUCTURAL {
                                         ch_multiqc_custom_config
                                         )
 
+    // TODO fix the multiqc inputs
     MULTIQC (
-        ch_multiqc_files.collect()
+        ch_multiqc_files.collect(),
+        [],
+        [],
+        []
     )
 
     multiqc_report = MULTIQC.out.report.toList()

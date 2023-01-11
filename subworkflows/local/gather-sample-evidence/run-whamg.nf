@@ -128,7 +128,7 @@ workflow RUN_WHAMG {
     whamg_vcfs
         .map(
             { meta, vcf, tbi ->
-                new_meta = meta.findAll {true}[0] + [caller:"whamg"]
+                new_meta = meta.findAll {true} + [caller:"whamg"]
                 [ new_meta, vcf, tbi ]
             }
         )

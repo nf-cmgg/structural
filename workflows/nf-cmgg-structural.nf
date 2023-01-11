@@ -108,7 +108,7 @@ workflow NF_CMGG_STRUCTURAL {
     // Create the input channel
     //
 
-    SamplesheetConversion.convert(ch_input, file("assets/schema_input.json"))
+    SamplesheetConversion.convert(ch_input, file("${projectDir}/assets/schema_input.json"))
         .multiMap({ meta, cram, crai, bed, oed ->
             bed: [ meta, bed ]
             crams: [ meta, cram, crai ]

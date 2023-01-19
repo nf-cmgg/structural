@@ -1,0 +1,25 @@
+nextflow_pipeline {
+
+    name "Tests using only Delly"
+    script "main.nf"
+
+    test("Success") {
+        when {
+            params {
+                callers = "delly"
+            }
+        }
+
+        then {
+            assert workflow.success
+            assert file("${outputDir}/PosCon1/PosCon1.vcf.gz").exists()
+            assert file("${outputDir}/PosCon1/PosCon1.vcf.gz.tbi").exists()
+            assert file("${outputDir}/Poscon2/Poscon2.vcf.gz").exists()
+            assert file("${outputDir}/Poscon2/Poscon2.vcf.gz.tbi").exists()
+            assert file("${outputDir}/Poscon3/Poscon3.vcf.gz").exists()
+            assert file("${outputDir}/Poscon3/Poscon3.vcf.gz.tbi").exists()
+            assert file("${outputDir}/Poscon4/Poscon4.vcf.gz").exists()
+            assert file("${outputDir}/Poscon4/Poscon4.vcf.gz.tbi").exists()
+        }
+    }
+}

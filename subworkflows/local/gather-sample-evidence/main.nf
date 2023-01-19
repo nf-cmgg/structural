@@ -6,6 +6,7 @@
 include { RUN_MANTA                                     } from './run-manta'
 include { RUN_DELLY                                     } from './run-delly'
 include { RUN_WHAMG                                     } from './run-whamg'
+include { RUN_SMOOVE                                    } from './run-smoove'
 include { RUN_SCRAMBLE                                  } from './run-scramble'
 include { GATHER_SAMPLE_EVIDENCE_METRICS                } from './gather-metrics'
 include { MERGE_VCFS                                    } from './merge_vcfs'
@@ -100,6 +101,22 @@ workflow GATHER_SAMPLE_EVIDENCE {
 
         called_vcfs = called_vcfs.mix(RUN_WHAMG.out.whamg_vcfs)
         ch_versions = ch_versions.mix(RUN_WHAMG.out.versions)
+    }
+
+    //
+    // Calling variants using Smoove
+    //
+
+    if("smoove" in callers){
+        RUN_SMOOVE(
+            crams,
+            beds,
+            fasta,
+            fasta_fai
+        )
+
+        called_vcfs = called_vcfs.mix(RUN_SMOOVE.out.smoove_vcfs)
+        ch_versions = ch_versions.mix(RUN_SMOOVE.out.versions)
     }
 
     //

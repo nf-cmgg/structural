@@ -3,6 +3,8 @@
 //
 
 include { TABIX_BGZIP                                   } from '../../../modules/nf-core/tabix/bgzip/main'
+include { TABIX_BGZIP as BGZIP_MERGED                   } from '../../../modules/nf-core/tabix/bgzip/main'
+include { TABIX_TABIX                                   } from '../../../modules/nf-core/tabix/tabix/main'
 include { JASMINESV                                     } from '../../../modules/nf-core/jasminesv/main'
 
 workflow MERGE_VCFS {
@@ -18,6 +20,8 @@ workflow MERGE_VCFS {
     TABIX_BGZIP(
         vcfs
     )
+
+    ch_versions = ch_versions.mix(TABIX_BGZIP.out.versions)
 
     TABIX_BGZIP.out.output
         .map { meta, vcf ->
@@ -37,7 +41,25 @@ workflow MERGE_VCFS {
         []
     )
 
+    ch_versions = ch_versions.mix(JASMINESV.out.versions)
+
+    BGZIP_MERGED(
+        JASMINESV.out.vcf
+    )
+
+    ch_versions = ch_versions.mix(BGZIP_MERGED.out.versions)
+
+    TABIX_TABIX(
+        BGZIP_MERGED.out.output
+    )
+
+    ch_versions = ch_versions.mix(TABIX_TABIX.out.versions)
+
+    BGZIP_MERGED.out.output
+        .join(TABIX_TABIX.out.tbi)
+        .set { merged_vcfs }
+
     emit:
-    merged_vcfs = JASMINESV.out.vcf
+    merged_vcfs
     versions = ch_versions
 }

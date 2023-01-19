@@ -65,11 +65,11 @@
                 },
                 "fasta_fai": {
                     "type": "string",
-                    "default": null
+                    "default": "None"
                 },
                 "dict": {
                     "type": "string",
-                    "default": null
+                    "default": "None"
                 },
                 "igenomes_base": {
                     "type": "string",
@@ -293,8 +293,8 @@
             "default": "",
             "properties": {
                 "run_module_metrics": {
-                    "type": "string",
-                    "default": "true",
+                    "type": "boolean",
+                    "default": true,
                     "description": "Set to true if metrics have to be run on the VCFs"
                 },
                 "callers": {
@@ -311,8 +311,7 @@
                     "default": 2
                 },
                 "whamg_include_bed_file": {
-                    "type": "string",
-                    "default": "false",
+                    "type": "boolean",
                     "description": "Whether or not to include the BED files when using Whamg (this can lead to thousands of processes and is only suggested for small BED files)"
                 },
                 "whamg_bed_overlap": {
@@ -322,16 +321,14 @@
                 },
                 "allele_loci_vcf": {
                     "type": "string",
-                    "default": null
+                    "default": "None"
                 },
                 "run_ploidy": {
-                    "type": "string",
-                    "default": "false",
+                    "type": "boolean",
                     "description": "Whether or not to run ploidy"
                 },
                 "run_vcf_qc": {
-                    "type": "string",
-                    "default": "false",
+                    "type": "boolean",
                     "description": "Whether or not to run VCF quality control"
                 }
             }

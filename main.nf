@@ -1,12 +1,9 @@
 #!/usr/bin/env nextflow
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    nf-core/centerformedicalgeneticsghent-nf-cmgg-structural
+    CenterForMedicalGeneticsGhent/nf-cmgg-structural
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    Github : https://github.com/nf-core/centerformedicalgeneticsghent-nf-cmgg-structural
-
-    Website: https://nf-co.re/centerformedicalgeneticsghent-nf-cmgg-structural
-    Slack  : https://nfcore.slack.com/channels/centerformedicalgeneticsghent-nf-cmgg-structural
+    Github : https://github.com/CenterForMedicalGeneticsGhent/nf-cmgg-structural
 ----------------------------------------------------------------------------------------
 */
 
@@ -34,13 +31,13 @@ WorkflowMain.initialise(workflow, params, log)
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
 
-include { CENTERFORMEDICALGENETICSGHENT-NF-CMGG-STRUCTURAL } from './workflows/centerformedicalgeneticsghent-nf-cmgg-structural'
+include { NF-CMGG-STRUCTURAL } from './workflows/nf-cmgg-structural'
 
 //
-// WORKFLOW: Run main nf-core/centerformedicalgeneticsghent-nf-cmgg-structural analysis pipeline
+// WORKFLOW: Run main CenterForMedicalGeneticsGhent/nf-cmgg-structural analysis pipeline
 //
-workflow NFCORE_CENTERFORMEDICALGENETICSGHENT-NF-CMGG-STRUCTURAL {
-    CENTERFORMEDICALGENETICSGHENT-NF-CMGG-STRUCTURAL ()
+workflow CENTERFORMEDICALGENETICSGHENT_NF-CMGG-STRUCTURAL {
+    NF-CMGG-STRUCTURAL ()
 }
 
 /*
@@ -54,7 +51,7 @@ workflow NFCORE_CENTERFORMEDICALGENETICSGHENT-NF-CMGG-STRUCTURAL {
 // See: https://github.com/nf-core/rnaseq/issues/619
 //
 workflow {
-    NFCORE_CENTERFORMEDICALGENETICSGHENT-NF-CMGG-STRUCTURAL ()
+    CENTERFORMEDICALGENETICSGHENT_NF-CMGG-STRUCTURAL ()
 }
 
 /*

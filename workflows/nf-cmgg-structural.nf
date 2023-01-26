@@ -7,7 +7,7 @@
 def summary_params = NfcoreSchema.paramsSummaryMap(workflow, params)
 
 // Validate input parameters
-WorkflowCenterformedicalgeneticsghent-nf-cmgg-structural.initialise(params, log)
+WorkflowNf-cmgg-structural.initialise(params, log)
 
 // TODO nf-core: Add all file path parameters for the pipeline to the list below
 // Check input path parameters to see if they exist
@@ -61,7 +61,7 @@ include { CUSTOM_DUMPSOFTWAREVERSIONS } from '../modules/nf-core/custom/dumpsoft
 // Info required for completion email and summary
 def multiqc_report = []
 
-workflow CENTERFORMEDICALGENETICSGHENT-NF-CMGG-STRUCTURAL {
+workflow NF-CMGG-STRUCTURAL {
 
     ch_versions = Channel.empty()
 
@@ -88,10 +88,10 @@ workflow CENTERFORMEDICALGENETICSGHENT-NF-CMGG-STRUCTURAL {
     //
     // MODULE: MultiQC
     //
-    workflow_summary    = WorkflowCenterformedicalgeneticsghent-nf-cmgg-structural.paramsSummaryMultiqc(workflow, summary_params)
+    workflow_summary    = WorkflowNf-cmgg-structural.paramsSummaryMultiqc(workflow, summary_params)
     ch_workflow_summary = Channel.value(workflow_summary)
 
-    methods_description    = WorkflowCenterformedicalgeneticsghent-nf-cmgg-structural.methodsDescriptionText(workflow, ch_multiqc_custom_methods_description)
+    methods_description    = WorkflowNf-cmgg-structural.methodsDescriptionText(workflow, ch_multiqc_custom_methods_description)
     ch_methods_description = Channel.value(methods_description)
 
     ch_multiqc_files = Channel.empty()
@@ -102,12 +102,11 @@ workflow CENTERFORMEDICALGENETICSGHENT-NF-CMGG-STRUCTURAL {
 
     MULTIQC (
         ch_multiqc_files.collect(),
-        ch_multiqc_config.collect().ifEmpty([]),
-        ch_multiqc_custom_config.collect().ifEmpty([]),
-        ch_multiqc_logo.collect().ifEmpty([])
+        ch_multiqc_config.toList(),
+        ch_multiqc_custom_config.toList(),
+        ch_multiqc_logo.toList()
     )
     multiqc_report = MULTIQC.out.report.toList()
-    ch_versions    = ch_versions.mix(MULTIQC.out.versions)
 }
 
 /*
@@ -122,7 +121,7 @@ workflow.onComplete {
     }
     NfcoreTemplate.summary(workflow, params, log)
     if (params.hook_url) {
-        NfcoreTemplate.adaptivecard(workflow, params, summary_params, projectDir, log)
+        NfcoreTemplate.IM_notification(workflow, params, summary_params, projectDir, log)
     }
 }
 

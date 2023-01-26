@@ -1,10 +1,10 @@
 //
-// This file holds several functions specific to the workflow/centerformedicalgeneticsghent-nf-cmgg-structural.nf in the nf-core/centerformedicalgeneticsghent-nf-cmgg-structural pipeline
+// This file holds several functions specific to the workflow/nf-cmgg-structural.nf in the CenterForMedicalGeneticsGhent/nf-cmgg-structural pipeline
 //
 
 import groovy.text.SimpleTemplateEngine
 
-class WorkflowCenterformedicalgeneticsghent-nf-cmgg-structural {
+class WorkflowNf-cmgg-structural {
 
     //
     // Check and validate parameters

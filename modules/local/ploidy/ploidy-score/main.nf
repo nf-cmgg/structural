@@ -5,7 +5,7 @@ process PLOIDY_SCORE {
     container "nicolasvnk/optparse-ubuntu:latest"
 
     input:
-    path ploidy_matrix 
+    path ploidy_matrix
 
     output:
     path "*_ploidy_plots.tar.gz"   , emit: ploidy_plots

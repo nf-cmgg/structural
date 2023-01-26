@@ -4,18 +4,18 @@
 Collect vcf metrics. Writes metrics to stdout.
 
 Metrics:
-  <prefix>_vcf_<type>_count   : variants of a type in the test set
-  <prefix>_vcf_<type>_tp      : variants with at least one matching variant in the baseline set (if baseline-vcf provided)
-  <prefix>_vcf_<type>_fp      : variants with no matching variants in the baseline set (if baseline-vcf provided)
-  <prefix>_vcf_<type>_fn      : variants in baseline set that had no matching variants in the test set (if baseline-vcf provided)
-  <prefix>_vcf_<type>_size_X_Y     : variants with size >= X and < Y
-  <prefix>_vcf_<type>_size_gte_X   : variants with size >= X
-  <prefix>_vcf_<type>_vargq_X_Y    : variants with varGQ >= X and < Y (if varGQ present)
-  <prefix>_vcf_<type>_vargq_gte_X  : variants with varGQ >= X (if varGQ present)
-  <prefix>_vcf_<type>_af_X_Y     : variants with allele frequency >= X and < Y (if EV present)
-  <prefix>_vcf_<type>_af_gte_X   : variants with allele frequency >= X (if EV present)
-  <prefix>_vcf_<type>_ac_1       : singleton variants (if EV present)
-  <prefix>_vcf_<type>_evidence_<evidence> : variants supported by evidence type (if EVIDENCE present)
+    <prefix>_vcf_<type>_count   : variants of a type in the test set
+    <prefix>_vcf_<type>_tp      : variants with at least one matching variant in the baseline set (if baseline-vcf provided)
+    <prefix>_vcf_<type>_fp      : variants with no matching variants in the baseline set (if baseline-vcf provided)
+    <prefix>_vcf_<type>_fn      : variants in baseline set that had no matching variants in the test set (if baseline-vcf provided)
+    <prefix>_vcf_<type>_size_X_Y     : variants with size >= X and < Y
+    <prefix>_vcf_<type>_size_gte_X   : variants with size >= X
+    <prefix>_vcf_<type>_vargq_X_Y    : variants with varGQ >= X and < Y (if varGQ present)
+    <prefix>_vcf_<type>_vargq_gte_X  : variants with varGQ >= X (if varGQ present)
+    <prefix>_vcf_<type>_af_X_Y     : variants with allele frequency >= X and < Y (if EV present)
+    <prefix>_vcf_<type>_af_gte_X   : variants with allele frequency >= X (if EV present)
+    <prefix>_vcf_<type>_ac_1       : singleton variants (if EV present)
+    <prefix>_vcf_<type>_evidence_<evidence> : variants supported by evidence type (if EVIDENCE present)
 
 """
 
@@ -44,7 +44,7 @@ EVIDENCE_TYPES = ["RD", "BAF", "PE", "SR"]
 
 # Accepted "passing" filters
 PASSING_FILTERS = ["PASS", "BOTHSIDES_SUPPORT",
-                   "MULTIALLELIC", "HIGH_SR_BACKGROUND"]
+                    "MULTIALLELIC", "HIGH_SR_BACKGROUND"]
 
 INVALID_CHR2_STR = "invalid_chr2"
 INVALID_END_STR = "invalid_end"
@@ -71,7 +71,7 @@ def main(argv):
                         help='Baseline vcf to provide evaluation metrics against')
     parser.add_argument('--baseline-bed', type=str,
                         help='Baseline bed file to provide evaluation metrics against. Must have header beginning with "' +
-                             BED_FILE_HEADER_CHAR + '" and the following columns: "' +
+                                BED_FILE_HEADER_CHAR + '" and the following columns: "' +
                         '", "'.join([BED_FILE_CHROM_COL, BED_FILE_START_COL, BED_FILE_END_COL, BED_FILE_SVTYPE_COL]) + '"')
     parser.add_argument('--min-reciprocal-overlap', type=float, default=0.5,
                         help='Minimum reciprocal overlap for validation metrics [0.5]')
@@ -259,7 +259,7 @@ def add_error_count_metrics(metrics, error_counts, metric_prefix):
 
 
 def add_evaluation_metrics(metrics, test_tree, base_tree, variant_types, min_ro, padding,
-                           metric_prefix, metric_suffix=""):
+                            metric_prefix, metric_suffix=""):
     tp_test = {}
     fp_test = {}
     fp_intervals_test = {}
@@ -383,7 +383,7 @@ def check_header_format_field(vcf, name):
 def check_header(vcf, expected_samples):
     vcf_samples = vcf.header.samples
     tu.test_sets_equal(vcf_samples, expected_samples, item_str="sample",
-                       name_a="VCF header", name_b="samples list")
+                        name_a="VCF header", name_b="samples list")
 
 
 def collect_evidence_fields(records, variant_types):

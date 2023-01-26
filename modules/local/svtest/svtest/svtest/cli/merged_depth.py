@@ -8,15 +8,15 @@ Note --test-hits and --baseline-hits files can be generated with bedtools inters
     bedtools intersect -wa -u -f 0.5 -r -b ${test_bed} -a ${baseline_bed} | cut -f4 > overlap.base.list
 
 Metrics:
- merged_depth_<TYPE>_count : total variant count
- merged_depth_<TYPE>_tp    : count of variants in test set that had at least one matching variant in the baseline set
-                             (if baseline-bed specified)
- merged_depth_<TYPE>_fp    : count of variants in test set that had no matching variants in the baseline set
-                             (if baseline-bed specified)
- merged_depth_<TYPE>_tp    : count of variants in baseline set that had no matching variants in the test set
-                             (if baseline-bed specified)
- merged_depth_<TYPE>_X_Y     : variants with size >= X and < Y
- merged_depth_<TYPE>_gte_X   : variants with size >= X
+    merged_depth_<TYPE>_count : total variant count
+    merged_depth_<TYPE>_tp    : count of variants in test set that had at least one matching variant in the baseline set
+                                (if baseline-bed specified)
+    merged_depth_<TYPE>_fp    : count of variants in test set that had no matching variants in the baseline set
+                                (if baseline-bed specified)
+    merged_depth_<TYPE>_tp    : count of variants in baseline set that had no matching variants in the test set
+                                (if baseline-bed specified)
+    merged_depth_<TYPE>_X_Y     : variants with size >= X and < Y
+    merged_depth_<TYPE>_gte_X   : variants with size >= X
 
 """
 
@@ -54,8 +54,8 @@ def main(argv):
     args = parser.parse_args(argv)
 
     if (bool(args.baseline_bed) ^ bool(args.test_hits)) or \
-       (bool(args.baseline_bed) ^ bool(args.baseline_hits)) or \
-       (bool(args.test_hits) ^ bool(args.baseline_hits)):
+        (bool(args.baseline_bed) ^ bool(args.baseline_hits)) or \
+        (bool(args.test_hits) ^ bool(args.baseline_hits)):
         raise ValueError(
             "Inconsistent arguments specified: --baseline-bed, --test-hits, and --baseline-hits must be specified together.")
 
@@ -65,7 +65,7 @@ def main(argv):
     with gzip.open(args.test_bed, mode='rb') as ftest:
         if args.baseline_bed is None:
             metrics = get_metrics(ftest, None, contigs,
-                                  args.type, args.test_hits, args.baseline_hits)
+                                    args.type, args.test_hits, args.baseline_hits)
         else:
             with gzip.open(args.baseline_bed, mode='rb') as fbase:
                 metrics = get_metrics(
@@ -110,7 +110,7 @@ def get_baseline_metrics(metrics, fbase, test_hits_path, base_hits_path, test_he
     base_header, base_ids, _, num_baseline_records = parse_bed(
         fbase, type, contigs)
     tu.test_sets_equal(test_header, base_header, item_str="header column",
-                       name_a="test file header", name_b="baseline file header")
+                        name_a="test file header", name_b="baseline file header")
     if len(base_header) != len(test_header):
         raise ValueError('Files have different column header sizes')
 

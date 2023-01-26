@@ -4,9 +4,9 @@
 Collect medcov metrics. Writes stats to stdout.
 
 Metrics:
-  medcov_mean     : mean median coverage
-  medcov_mean_err : mean absolute deviation from baseline profile (if --baseline specified)
-  medcov_max_err  : max absolute deviation from baseline profile (if --baseline specified)
+    medcov_mean     : mean median coverage
+    medcov_mean_err : mean absolute deviation from baseline profile (if --baseline specified)
+    medcov_max_err  : max absolute deviation from baseline profile (if --baseline specified)
 
 """
 
@@ -59,7 +59,7 @@ def get_metrics(test_file, baseline_file, samples):
     tu.test_iterable_sizes_equal(
         test_header, test_data, name_a="test file header", name_b="test file data row")
     tu.test_sets_equal(test_header, samples, item_str="sample id",
-                       name_a="test file header", name_b="sample list")
+                        name_a="test file header", name_b="sample list")
     metrics = {
         MEAN_KEY: float(sum(test_data)) / len(test_header)
     }
@@ -72,9 +72,9 @@ def get_metrics(test_file, baseline_file, samples):
 def get_baseline_metrics(metrics, baseline_file, test_data, samples):
     baseline_header, baseline_data = get_medcov_file_data(baseline_file)
     tu.test_iterable_sizes_equal(baseline_header, baseline_data,
-                                 name_a="baseline file header", name_b="baseline file data row")
+                                    name_a="baseline file header", name_b="baseline file data row")
     tu.test_sets_equal(baseline_header, samples, item_str="sample id",
-                       name_a="test file header", name_b="sample list")
+                        name_a="test file header", name_b="sample list")
     n = len(baseline_header)
     error_list = [abs(test_data[i] - baseline_data[i]) for i in range(n)]
     metrics[MEAN_ERROR_KEY] = float(sum(error_list)) / n

@@ -10,7 +10,7 @@ import pandas
 _zero_svs_are_outliers = True
 _outlier_std_threshold = 5.0
 _column_order = ["CHROM", "SVTYPE", "Mean", "Median", "STD",
-                 "Outlier_Sample", "Outlier_Number", "Outlier_Cate"]
+                    "Outlier_Sample", "Outlier_Number", "Outlier_Cate"]
 
 
 def read_statfile(statfile: str) -> pandas.DataFrame:
@@ -197,7 +197,7 @@ def calc_num_svs_pick_outlier(
     """
     stats_data = read_statfile(statfile)
     outliers = pick_outliers(stats_data, zero_svs_are_outliers=zero_svs_are_outliers,
-                             outlier_std_threshold=outlier_std_threshold)
+                                outlier_std_threshold=outlier_std_threshold)
     write_outliers_file(outliers, outname, "low")
     write_outliers_file(outliers, outname, "high")
 
@@ -221,5 +221,5 @@ def _parse_arguments(argv: Sequence[str]) -> argparse.Namespace:
 if __name__ == "__main__":
     args = _parse_arguments(sys.argv)
     calc_num_svs_pick_outlier(statfile=args.statfile, outname=args.outname,
-                              zero_svs_are_outliers=not args.zero_counts_are_not_outliers,
-                              outlier_std_threshold=args.outlier_std_threshold)
+                                zero_svs_are_outliers=not args.zero_counts_are_not_outliers,
+                                outlier_std_threshold=args.outlier_std_threshold)

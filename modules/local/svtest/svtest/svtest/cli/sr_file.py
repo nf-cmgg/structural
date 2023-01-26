@@ -4,8 +4,8 @@
 Collect SR file metrics. Writes stats to stdout.
 
 Metrics:
-  sr_left_<sample>  : number of left records
-  sr_right_<sample> : number of right records
+    sr_left_<sample>  : number of left records
+    sr_right_<sample> : number of right records
 
 If the provided sample list has more than one id, <sample> will be "_merged".
 

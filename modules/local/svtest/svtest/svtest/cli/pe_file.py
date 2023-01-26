@@ -4,10 +4,10 @@
 Collect PE file metrics. Writes stats to stdout.
 
 Metrics:
-  pe_LL_<sample>     : number of records with LL orientation
-  pe_RR_<sample>     : number of records with RR orientation
-  pe_RL_<sample>     : number of records with RL orientation
-  pe_LR_<sample>     : number of records with LR orientation
+    pe_LL_<sample>     : number of records with LL orientation
+    pe_RR_<sample>     : number of records with RR orientation
+    pe_RL_<sample>     : number of records with RL orientation
+    pe_LR_<sample>     : number of records with LR orientation
 
 If the provided sample list has more than one id, <sample> will be "_merged".
 
@@ -73,7 +73,7 @@ def get_metrics(file, sample_list):
             data[3] += 1
         else:
             raise ValueError("Unrecognized orientation: %s / %s" %
-                             (first, second))
+                                (first, second))
 
     if len(samples) == 1:
         metric_suffix = "_" + samples[0]

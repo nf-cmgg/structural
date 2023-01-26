@@ -24,9 +24,9 @@ def create_header(contigs: List[Text]) -> Text:
 
 
 def convert_ped_record(ped_record: Text,
-                       contigs: List[Text],
-                       chr_x: Text = 'chrX',
-                       chr_y: Text = 'chrY') -> Text:
+                        contigs: List[Text],
+                        chr_x: Text = 'chrX',
+                        chr_y: Text = 'chrY') -> Text:
     """
     Converts a ped file record to a table record.
 

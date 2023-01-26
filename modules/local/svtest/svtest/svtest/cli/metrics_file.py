@@ -4,9 +4,9 @@
 Collect metric file metrics. Writes stats to stdout.
 
 Metrics:
-  metrics_<common>_num_records   : Number of records
-  metrics_<common>_mean_<metric> : Mean metric value
-  metrics_<common>_num_empty_<metric> : Number of metric N/A entries
+    metrics_<common>_num_records   : Number of records
+    metrics_<common>_mean_<metric> : Mean metric value
+    metrics_<common>_num_empty_<metric> : Number of metric N/A entries
 
 """
 
@@ -86,9 +86,9 @@ def write_metrics(metrics):
 
 def get_metrics(df, contigs, feature_cols, common):
     tu.test_sets_equal(df["chrom"], contigs, item_str="contig",
-                       name_a="metric file contigs", name_b="contigs list")
+                        name_a="metric file contigs", name_b="contigs list")
     tu.test_sets_equal(df.columns, EXPECTED_COLUMNS, item_str="column",
-                       name_a="metric file header", name_b="expected columns")
+                        name_a="metric file header", name_b="expected columns")
     metric_means = get_column_means(df, feature_cols)
     metric_empty_counts = get_columns_num_empty(df, feature_cols)
 

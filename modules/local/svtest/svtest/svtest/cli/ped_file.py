@@ -4,8 +4,8 @@
 Collect ped file metrics. Writes stats to stdout.
 
 Metrics:
-  ped_file_count : Number of records
-  ped_file_<family> : Number of families of each type
+    ped_file_count : Number of records
+    ped_file_<family> : Number of families of each type
 
 """
 
@@ -107,7 +107,7 @@ def get_family_counts(df):
     for id in family_ids:
         counts_by_id[id] = family_id_col[family_id_col == id].size
     counts_by_size = {SINGLETON_STR: 0, DUO_STR: 0,
-                      TRIO_STR: 0, QUAD_STR: 0, QUINTET_PLUS_STR: 0}
+                        TRIO_STR: 0, QUAD_STR: 0, QUINTET_PLUS_STR: 0}
     for id in counts_by_id:
         if counts_by_id[id] == 1:
             counts_by_size[SINGLETON_STR] += 1

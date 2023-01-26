@@ -18,7 +18,7 @@ process SVTEST_PEFILE {
     def prefix = task.ext.prefix ?: "${meta.id}"
 
     def VERSION = "0.1"
-    
+
     """
     echo "${meta.id}" > samples.txt
 

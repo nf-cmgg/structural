@@ -4,13 +4,13 @@
 Collect bincov matrix metrics. Writes stats to stdout.
 
 Metrics:
-  bincov_matrix_intervals : number of intervals (rows)
-  bincov_matrix_intervals_all_samples_zero : number of intervals that were 0 across all samples
-  bincov_matrix_intervals_at_least_one_zero : number of intervals with 0 in at least one sample
-  bincov_matrix_q25 : 25th percentile count
-  bincov_matrix_q50: 50th percentile count
-  bincov_matrix_q75: 75th percentile count
-  bincov_matrix_mean_<SAMPLE>: mean count per sample
+    bincov_matrix_intervals : number of intervals (rows)
+    bincov_matrix_intervals_all_samples_zero : number of intervals that were 0 across all samples
+    bincov_matrix_intervals_at_least_one_zero : number of intervals with 0 in at least one sample
+    bincov_matrix_q25 : 25th percentile count
+    bincov_matrix_q50: 50th percentile count
+    bincov_matrix_q75: 75th percentile count
+    bincov_matrix_mean_<SAMPLE>: mean count per sample
 
 """
 
@@ -66,7 +66,7 @@ def get_metrics(matrix_file, sample_list, low_mem_mode):
     header = matrix_file.readline().decode().strip().split('\t')
     header_samples_set = set(header[3:])
     tu.test_sets_equal(header_samples_set, samples_set,
-                       item_str="sample", name_a="header", name_b="samples list")
+                        item_str="sample", name_a="header", name_b="samples list")
 
     data = []
     interval_size = None

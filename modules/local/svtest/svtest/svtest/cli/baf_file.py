@@ -4,8 +4,8 @@
 Collect BAF file metrics. Writes stats to stdout.
 
 Metrics:
-  baf_qN_<sample>    : Nth percentile BAF
-  baf_count_<sample> : total BAF record count
+    baf_qN_<sample>    : Nth percentile BAF
+    baf_count_<sample> : total BAF record count
 
 If the provided sample list has more than one id, <sample> will be "_merged".
 

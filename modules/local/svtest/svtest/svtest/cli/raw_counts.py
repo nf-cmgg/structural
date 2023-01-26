@@ -4,9 +4,9 @@
 Collect raw read count metrics. Writes stats to stdout.
 
 Metrics:
-  counts_qN             : Nth percentile
-  counts_num_intervals  : number of records
-  counts_intervals_size : sum of interval sizes
+    counts_qN             : Nth percentile
+    counts_num_intervals  : number of records
+    counts_intervals_size : sum of interval sizes
 
 """
 

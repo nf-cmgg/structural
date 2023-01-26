@@ -30,29 +30,29 @@ process SET_BINS {
     firstchar=\$(head -c 1 ${counts_file})
 
     if [ \$firstchar == '@' ]; then
-      shift=1  # GATK CollectReadCounts (to convert from 1-based closed intervals)
+        shift=1  # GATK CollectReadCounts (to convert from 1-based closed intervals)
     else
-      shift=0  # bincov sample or matrix
+        shift=0  # bincov sample or matrix
     fi
 
     # kill the dictionary | kill the header | adjust to bed format: 0-based half-open intervals
     cat ${counts_file} \\
-      | sed '/^@/d' \\
-      | sed '/^CONTIG	START	END	COUNT\$/d' \\
-      | sed '/^#/d' \\
-      | awk -v x="\${shift}" 'BEGIN{OFS="\t"}{\$2=\$2-x; print \$1,\$2,\$3}' > tmp_locs
+        | sed '/^@/d' \\
+        | sed '/^CONTIG	START	END	COUNT\$/d' \\
+        | sed '/^#/d' \\
+        | awk -v x="\${shift}" 'BEGIN{OFS="\t"}{\$2=\$2-x; print \$1,\$2,\$3}' > tmp_locs
 
     # determine bin size, and drop all bins not exactly equal to this size
     if [ ${binsize} == 'NOT_DEFINED' ]; then
-      # use the most common bin size from the bins
-      binsize=\$(
+        # use the most common bin size from the bins
+        binsize=\$(
         sed -n '1,1000p' tmp_locs | awk '{ print \$3-\$2 }' \\
         | sort | uniq -c | sort -nrk1,1 \\
         | sed -n '1p' | awk '{ print \$2 }'
-      )
+        )
     else
-      # use the provided bin size
-      binsize=${binsize}
+        # use the provided bin size
+        binsize=${binsize}
     fi
 
     # store binsize

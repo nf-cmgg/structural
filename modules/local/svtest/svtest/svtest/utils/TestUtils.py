@@ -27,7 +27,7 @@ def test_iterable_sizes_equal(iterable_a, iterable_b, name_a="iterable A", name_
 def test_iterable_size(iterable, size):
     if len(iterable) != size:
         raise ValueError("Expected %d values but found %d in: %s" %
-                         (size, len(iterable), str(iterable)))
+                            (size, len(iterable), str(iterable)))
 
 
 def test_column_equals(columns, idx, val):
@@ -53,13 +53,13 @@ def test_is_not_empty(list, name):
 def test_is_float(columns, idx):
     if not is_float(columns[idx]):
         raise ValueError("Column %d was not a float: %s" %
-                         (idx + 1, str(columns)))
+                            (idx + 1, str(columns)))
 
 
 def test_is_int(columns, idx):
     if not is_int(columns[idx]):
         raise ValueError("Column %d was not an int: %s" %
-                         (idx + 1, str(columns)))
+                            (idx + 1, str(columns)))
 
 
 def is_float(str):

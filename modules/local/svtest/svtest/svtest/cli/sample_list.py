@@ -4,7 +4,7 @@
 Collect sample list metrics. Writes stats to stdout.
 
 Metrics:
-  sample_list_count   : Number of samples
+    sample_list_count   : Number of samples
 
 """
 

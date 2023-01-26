@@ -50,7 +50,7 @@ def write_output(output_name, stat_hash, sv_types, sample_name):
                     '\t'.join([str(k) for k in [j, i, stat_hash[j][i], sample_name]]), file=fo)
             else:
                 print('\t'.join([str(k)
-                                 for k in [j, i, 0, sample_name]]), file=fo)
+                                    for k in [j, i, 0, sample_name]]), file=fo)
     fo.close()
 
 

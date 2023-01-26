@@ -17,10 +17,6 @@ concurrency:
   group: "${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}"
   cancel-in-progress: true
 
-concurrency:
-  group: "${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}"
-  cancel-in-progress: true
-
 jobs:
   test_all:
     name: Run nf-test with ${{ matrix.test }}-${{ matrix.NXF_VER }}

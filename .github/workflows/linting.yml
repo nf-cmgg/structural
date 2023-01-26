@@ -42,7 +42,7 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
-      - name: Activate Black
+      - name: Check code lints with Black
         uses: psf/black@stable
 
       # If the above check failed, post a comment on the PR explaining the failure

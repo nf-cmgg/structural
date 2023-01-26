@@ -8,8 +8,16 @@ lint:
     - .github/ISSUE_TEMPLATE/config.yml
     - .github/workflows/awstest.yml
     - .github/workflows/awsfulltest.yml
+    - lib/WorkflowNf-cmgg-structural.groovy
   nextflow_config:
     - manifest.name
     - manifest.homePage
   multiqc_config:
     - report_comment
+  files_unchanged:
+    - .github/CONTRIBUTING.md
+    - .github/ISSUE_TEMPLATE/bug_report.yml
+    - assets/email_template.txt
+    - docs/README.md
+  actions_ci: false
+  pipeline_name_conventions: false

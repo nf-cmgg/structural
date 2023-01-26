@@ -65,11 +65,13 @@
                 },
                 "fasta_fai": {
                     "type": "string",
-                    "default": "None"
+                    "default": "None",
+                    "description": "Path to the index of the FASTA genome file"
                 },
                 "dict": {
                     "type": "string",
-                    "default": "None"
+                    "default": "None",
+                    "description": "Path to the sequence dictionary of the FASTA genome file"
                 },
                 "igenomes_base": {
                     "type": "string",
@@ -92,13 +94,13 @@
                     "description": "The base path where the references can be found"
                 },
                 "genomes_ignore": {
-                    "type": "string",
-                    "default": "false",
+                    "type": "boolean",
                     "description": "Whether or not to use the references found in the `--genomes_base` folder"
                 },
                 "cmgg_config_base": {
                     "type": "string",
-                    "default": "/conf/"
+                    "default": "/conf/",
+                    "description": "The config base path for the cmgg configs"
                 }
             }
         },
@@ -306,11 +308,13 @@
                 },
                 "delly_sv_types": {
                     "type": "string",
-                    "default": "DEL,DUP"
+                    "default": "DEL,DUP",
+                    "description": "Which SV types delly should search for in the variant calling"
                 },
                 "delly_scatter_count": {
                     "type": "integer",
-                    "default": 2
+                    "default": 2,
+                    "description": "The scatter count used to scatter input BEDs for Delly"
                 },
                 "whamg_include_bed_file": {
                     "type": "boolean",
@@ -323,7 +327,8 @@
                 },
                 "allele_loci_vcf": {
                     "type": "string",
-                    "default": "None"
+                    "default": "None",
+                    "description": "Path to the Allele loci VCF"
                 },
                 "run_ploidy": {
                     "type": "boolean",

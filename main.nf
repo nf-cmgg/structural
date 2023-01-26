@@ -31,13 +31,13 @@ WorkflowMain.initialise(workflow, params, log)
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
 
-include { NF_CMGG_STRUCTURAL } from './workflows/nf-cmgg-structural'
+include { CMGGSTRUCTURAL } from './workflows/cmgg-structural'
 
 //
 // WORKFLOW: Run main CenterForMedicalGeneticsGhent/nf-cmgg-structural analysis pipeline
 //
-workflow CENTER_FOR_MEDICAL_GENETICS_NF_CMGG_STRUCTURAL {
-    NF_CMGG_STRUCTURAL ()
+workflow CMGG_CMGGSTRUCTURAL {
+    CMGGSTRUCTURAL ()
 }
 
 /*
@@ -51,7 +51,7 @@ workflow CENTER_FOR_MEDICAL_GENETICS_NF_CMGG_STRUCTURAL {
 // See: https://github.com/nf-core/rnaseq/issues/619
 //
 workflow {
-    CENTER_FOR_MEDICAL_GENETICS_NF_CMGG_STRUCTURAL ()
+    CMGG_CMGGSTRUCTURAL ()
 }
 
 /*

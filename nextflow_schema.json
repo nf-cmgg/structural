@@ -2,7 +2,7 @@
     "$schema": "http://json-schema.org/draft-07/schema",
     "$id": "https://raw.githubusercontent.com/CenterForMedicalGeneticsGhent/nf-cmgg-structural/master/nextflow_schema.json",
     "title": "CenterForMedicalGeneticsGhent/nf-cmgg-structural pipeline parameters",
-    "description": "A pipeline to call structural variants",
+    "description": "A nextflow pipeline for calling structural variants",
     "type": "object",
     "definitions": {
         "input_output_options": {
@@ -198,6 +198,12 @@
                     "fa_icon": "fas fa-question-circle",
                     "hidden": true
                 },
+                "version": {
+                    "type": "boolean",
+                    "description": "Display version and exit.",
+                    "fa_icon": "fas fa-question-circle",
+                    "hidden": true
+                },
                 "publish_dir_mode": {
                     "type": "string",
                     "default": "copy",
@@ -279,10 +285,6 @@
                     "description": "Show all params when using `--help`",
                     "hidden": true,
                     "help_text": "By default, parameters set as _hidden_ in the schema are not shown on the command line when a user runs with `--help`. Specifying this option will tell the pipeline to show all parameters."
-                },
-                "enable_conda": {
-                    "type": "string",
-                    "default": "false"
                 }
             }
         },

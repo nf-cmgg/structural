@@ -1,6 +1,6 @@
 name: Feature request
 description: Suggest an idea for the CenterForMedicalGeneticsGhent/nf-cmgg-structural pipeline
-labels: [enhancement]
+labels: enhancement
 body:
   - type: textarea
     id: description

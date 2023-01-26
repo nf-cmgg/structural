@@ -4,7 +4,7 @@
 Collect sample list metrics. Writes stats to stdout.
 
 Metrics:
-  sample_list_count   : Number of samples
+    sample_list_count   : Number of samples
 
 """
 
@@ -17,14 +17,13 @@ KEY_PREFIX = "sample_list_"
 
 def main(argv):
     parser = argparse.ArgumentParser(
-        description=__doc__,
-        prog='svtest sample-list',
-        formatter_class=argparse.RawDescriptionHelpFormatter)
-    parser.add_argument('test_sample_list', type=str)
-    parser.add_argument('--valid-sample-list', type=str, default=None,
-                        help='Sample ids not found in this list will cause an error')
-    parser.add_argument('--prefix', type=str, default=None,
-                        help='Prefix to add to metric names')
+        description=__doc__, prog="svtest sample-list", formatter_class=argparse.RawDescriptionHelpFormatter
+    )
+    parser.add_argument("test_sample_list", type=str)
+    parser.add_argument(
+        "--valid-sample-list", type=str, default=None, help="Sample ids not found in this list will cause an error"
+    )
+    parser.add_argument("--prefix", type=str, default=None, help="Prefix to add to metric names")
 
     # Print help if no arguments specified
     if len(argv) == 0:
@@ -54,17 +53,15 @@ def get_metrics(samples, valid_samples, metric_prefix):
     if valid_samples is not None:
         unexpected_samples = set(samples) - set(valid_samples)
         if len(unexpected_samples) > 0:
-            raise ValueError('Unexpected samples: %s' % unexpected_samples)
+            raise ValueError("Unexpected samples: %s" % unexpected_samples)
 
     if metric_prefix is None:
         pfx = KEY_PREFIX
     else:
         pfx = metric_prefix + "_" + KEY_PREFIX
-    metrics = {
-        pfx + "count": len(samples)
-    }
+    metrics = {pfx + "count": len(samples)}
     return metrics
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()

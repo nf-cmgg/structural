@@ -46,6 +46,7 @@ process JASMINESV {
         file_list=vcfs.txt \\
         out_file=${prefix}.vcf \\
         threads=${task.cpus} \\
+        genome_file=${fasta} \\
         ${bam_argument} \\
         ${iris_argument} \\
         ${sample_dists_argument} \\

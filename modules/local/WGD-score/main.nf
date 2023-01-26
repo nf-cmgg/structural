@@ -5,7 +5,7 @@ process WGD_SCORE {
     container "nicolasvnk/optparse-ubuntu:latest"
 
     input:
-    tuple path(wgd_matrix), path(wgd_scoring_mask) 
+    tuple path(wgd_matrix), path(wgd_scoring_mask)
 
     output:
     path "*_WGD_scores.txt.gz"          , emit: scores

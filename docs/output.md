@@ -1,4 +1,4 @@
-# nf-cmgg-structural: Output
+# CenterForMedicalGeneticsGhent/nf-cmgg-structural: Output
 
 ## Introduction
 

@@ -4,8 +4,8 @@
 Collect ped file metrics. Writes stats to stdout.
 
 Metrics:
-  ped_file_count : Number of records
-  ped_file_<family> : Number of families of each type
+    ped_file_count : Number of records
+    ped_file_<family> : Number of families of each type
 
 """
 
@@ -31,14 +31,13 @@ OTHER_METRIC = "other"
 
 def main(argv):
     parser = argparse.ArgumentParser(
-        description=__doc__,
-        prog='svtest ped-file',
-        formatter_class=argparse.RawDescriptionHelpFormatter)
-    parser.add_argument('test_ped_file', type=str)
-    parser.add_argument('--sample-list', type=str, default=None,
-                        help='Sample ids not found in this list will cause an error')
-    parser.add_argument('--prefix', type=str, default=None,
-                        help='Prefix to add to metric names')
+        description=__doc__, prog="svtest ped-file", formatter_class=argparse.RawDescriptionHelpFormatter
+    )
+    parser.add_argument("test_ped_file", type=str)
+    parser.add_argument(
+        "--sample-list", type=str, default=None, help="Sample ids not found in this list will cause an error"
+    )
+    parser.add_argument("--prefix", type=str, default=None, help="Prefix to add to metric names")
 
     # Print help if no arguments specified
     if len(argv) == 0:
@@ -52,7 +51,7 @@ def main(argv):
         samples = None
 
     # Get metrics
-    df = pd.read_csv(args.test_ped_file, sep='\t', names=range(6))
+    df = pd.read_csv(args.test_ped_file, sep="\t", names=range(6))
     metrics = get_metrics(df, valid_samples=samples, metric_prefix=args.prefix)
 
     # Write metrics
@@ -70,9 +69,7 @@ def get_metrics(df, valid_samples=None, metric_prefix=None):
         pfx = KEY_PREFIX
     else:
         pfx = metric_prefix + "_" + KEY_PREFIX
-    metrics = {
-        pfx + "count": df.shape[0]
-    }
+    metrics = {pfx + "count": df.shape[0]}
     metrics = add_family_count_metrics(metrics, df, pfx)
     metrics = add_sex_metrics(metrics, df, pfx)
     return metrics
@@ -89,7 +86,7 @@ def add_sex_metrics(metrics, df, prefix):
 
 
 def count_sex(type, df):
-    sex_col = df[4].astype('str')
+    sex_col = df[4].astype("str")
     return sex_col[sex_col == type].size
 
 
@@ -106,8 +103,7 @@ def get_family_counts(df):
     counts_by_id = {}
     for id in family_ids:
         counts_by_id[id] = family_id_col[family_id_col == id].size
-    counts_by_size = {SINGLETON_STR: 0, DUO_STR: 0,
-                      TRIO_STR: 0, QUAD_STR: 0, QUINTET_PLUS_STR: 0}
+    counts_by_size = {SINGLETON_STR: 0, DUO_STR: 0, TRIO_STR: 0, QUAD_STR: 0, QUINTET_PLUS_STR: 0}
     for id in counts_by_id:
         if counts_by_id[id] == 1:
             counts_by_size[SINGLETON_STR] += 1
@@ -125,12 +121,12 @@ def get_family_counts(df):
 def check_samples(df, valid_samples):
     samples = set(df[1])
     if len(samples) < df.shape[0]:
-        raise ValueError('There are duplicate sample ids in the ped file')
+        raise ValueError("There are duplicate sample ids in the ped file")
     if valid_samples is not None:
         unexpected_samples = samples - set(valid_samples)
         if len(unexpected_samples) > 0:
-            raise ValueError('Unexpected samples: %s' % unexpected_samples)
+            raise ValueError("Unexpected samples: %s" % unexpected_samples)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()

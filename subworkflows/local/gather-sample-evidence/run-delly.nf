@@ -6,6 +6,7 @@ include { REVERSE_BED        } from '../../../modules/local/reversebed/main'
 
 include { DELLY_CALL         } from '../../../modules/nf-core/delly/call/main'
 include { BCFTOOLS_CONCAT    } from '../../../modules/nf-core/bcftools/concat/main'
+include { BCFTOOLS_SORT      } from '../../../modules/nf-core/bcftools/sort/main'
 include { BCFTOOLS_CONVERT   } from '../../../modules/nf-core/bcftools/convert/main'
 include { BEDTOOLS_SPLIT     } from '../../../modules/nf-core/bedtools/split/main'
 include { TABIX_TABIX        } from '../../../modules/nf-core/tabix/tabix/main'
@@ -37,8 +38,7 @@ workflow RUN_DELLY {
 
     if(scatter_count > 1){
         BEDTOOLS_SPLIT(
-            single_beds,
-            scatter_count
+            single_beds
         )
 
         BEDTOOLS_SPLIT.out.beds
@@ -131,7 +131,7 @@ workflow RUN_DELLY {
 
         ch_versions = ch_versions.mix(BCFTOOLS_CONCAT.out.versions)
 
-        BCFTOOLS_CONCAT.out.vcf.set { tabix_input }
+        BCFTOOLS_CONCAT.out.vcf.set { sort_input }
 
     } else {
 
@@ -143,7 +143,7 @@ workflow RUN_DELLY {
 
         ch_versions = ch_versions.mix(BCFTOOLS_CONVERT.out.versions)
 
-        BCFTOOLS_CONVERT.out.vcf_gz.set { tabix_input }
+        BCFTOOLS_CONVERT.out.vcf_gz.set { sort_input }
 
     }
 
@@ -151,12 +151,16 @@ workflow RUN_DELLY {
     // Index the VCF file
     //
 
+    BCFTOOLS_SORT(
+        sort_input
+    )
+
     TABIX_TABIX(
-        tabix_input
+        BCFTOOLS_SORT.out.vcf
     )
     ch_versions = ch_versions.mix(TABIX_TABIX.out.versions)
 
-    tabix_input
+    BCFTOOLS_SORT.out.vcf
         .combine(TABIX_TABIX.out.tbi, by:0)
         .map(
             { meta, vcf, tbi ->

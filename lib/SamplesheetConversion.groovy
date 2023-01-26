@@ -48,10 +48,9 @@ class SamplesheetConversion {
                 def String key = field.key
                 def String regexPattern = field.value.pattern && field.value.pattern != '' ? field.value.pattern : '^.*$'
                 def String metaNames = field.value.meta
-                
+
                 def String input = row[key]
 
-                // 
                 if(input == null){
                     throw new Exception("[Samplesheet Error] Line ${rowCount} does not contain an input for field '${key}'.")
                 }
@@ -72,7 +71,7 @@ class SamplesheetConversion {
                         throw new Exception("[Samplesheet Error] The '${key}' file (${input}) on line ${rowCount} does not exist.")
                     }
                     output.add(inputFile)
-                    
+
                 }
             }
             output.add(0, meta)

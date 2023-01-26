@@ -1,8 +1,8 @@
 {
     "$schema": "http://json-schema.org/draft-07/schema",
-    "$id": "https://raw.githubusercontent.com/CenterForMedicalGeneticsGhent/nf-cmgg-structural/master/assets/samplesheet_schema.json",
-    "title": "Samplesheet validation schema",
-    "description": "Schema for the samplesheet used in this pipeline",
+    "$id": "https://raw.githubusercontent.com/CenterForMedicalGeneticsGhent/nf-cmgg-structural/master/assets/schema_input.json",
+    "title": "CenterForMedicalGeneticsGhent/nf-cmgg-structural pipeline - params.input schema",
+    "description": "Schema for the file provided with params.input",
     "type": "array",
     "items": {
         "type": "object",

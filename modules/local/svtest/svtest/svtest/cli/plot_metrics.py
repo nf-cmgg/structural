@@ -20,21 +20,17 @@ MAX_ROWS_PER_PLOT = 500
 
 def main(argv):
     parser = argparse.ArgumentParser(
-        description=__doc__,
-        prog='svtest plot-metrics',
-        formatter_class=argparse.RawDescriptionHelpFormatter)
-    parser.add_argument('metrics_a', type=str)
-    parser.add_argument('metrics_b', type=str)
-    parser.add_argument('pdf_out', type=str)
-    parser.add_argument('--a-name', type=str, default="metrics_a")
-    parser.add_argument('--b-name', type=str, default="metrics_b")
-    parser.add_argument('--sample-list', type=str, default=None)
-    parser.add_argument('--changes-only', action='store_true',
-                        help='Only plot values that are different')
-    parser.add_argument('--linear', action='store_true',
-                        help='Plot linear scale [default log]')
-    parser.add_argument('--metrics-out', type=str,
-                        help='Write plotted metrics to tsv', default=None)
+        description=__doc__, prog="svtest plot-metrics", formatter_class=argparse.RawDescriptionHelpFormatter
+    )
+    parser.add_argument("metrics_a", type=str)
+    parser.add_argument("metrics_b", type=str)
+    parser.add_argument("pdf_out", type=str)
+    parser.add_argument("--a-name", type=str, default="metrics_a")
+    parser.add_argument("--b-name", type=str, default="metrics_b")
+    parser.add_argument("--sample-list", type=str, default=None)
+    parser.add_argument("--changes-only", action="store_true", help="Only plot values that are different")
+    parser.add_argument("--linear", action="store_true", help="Plot linear scale [default log]")
+    parser.add_argument("--metrics-out", type=str, help="Write plotted metrics to tsv", default=None)
 
     # Print help if no arguments specified
     if len(argv) == 0:
@@ -45,8 +41,9 @@ def main(argv):
     # Read metric tables and join
     df_a = get_metrics(args.metrics_a)
     df_b = get_metrics(args.metrics_b)
-    df = df_a.join(df_b, how='outer', lsuffix='_a', rsuffix='_b', sort=True)\
-        .rename(columns={"value_a": args.a_name, "value_b": args.b_name})
+    df = df_a.join(df_b, how="outer", lsuffix="_a", rsuffix="_b", sort=True).rename(
+        columns={"value_a": args.a_name, "value_b": args.b_name}
+    )
 
     # If sample ids are provided, consolidate sample-specific metrics
     if args.sample_list is not None:
@@ -59,7 +56,7 @@ def main(argv):
 
     # Write raw data to file
     if args.metrics_out is not None:
-        df.to_csv(args.metrics_out, sep='\t')
+        df.to_csv(args.metrics_out, sep="\t")
 
     # Plot
     plot_data(df, args.pdf_out, args.linear)
@@ -84,14 +81,14 @@ def compute_metrics(metrics_dict, metrics_df, group):
 
 
 def get_sample_metric_rows(df, samples):
-    pat = '|'.join(samples)
+    pat = "|".join(samples)
     return df.index.str.contains(pat)
 
 
 def get_sample_tag_groups(sample_df, samples):
-    pat = r'({})'.format('|'.join(samples))
-    pat_double_underscore = r'__'
-    pat_underscore = r'(__|^_|_$)'
+    pat = r"({})".format("|".join(samples))
+    pat_double_underscore = r"__"
+    pat_underscore = r"(__|^_|_$)"
     tags = []
     for row in sample_df.index:
         row2 = re.sub(pat, "", row)
@@ -102,7 +99,7 @@ def get_sample_tag_groups(sample_df, samples):
 
 
 def get_metrics(path):
-    df = pd.read_csv(path, sep='\t', names=["name", "value"])
+    df = pd.read_csv(path, sep="\t", names=["name", "value"])
     return df.set_index("name")
 
 
@@ -116,15 +113,20 @@ def plot_data(df, out_path, linear):
 def plot_empty_data():
     fig = plt.figure()
     ax = fig.add_axes([0, 0, 1, 1])
-    left, width = .25, .5
-    bottom, height = .25, .5
+    left, width = 0.25, 0.5
+    bottom, height = 0.25, 0.5
     right = left + width
     top = bottom + height
-    ax.text(0.5 * (left + right), 0.5 * (bottom + top), 'No data',
-            horizontalalignment='center',
-            verticalalignment='center',
-            fontsize=20, color='red',
-            transform=ax.transAxes)
+    ax.text(
+        0.5 * (left + right),
+        0.5 * (bottom + top),
+        "No data",
+        horizontalalignment="center",
+        verticalalignment="center",
+        fontsize=20,
+        color="red",
+        transform=ax.transAxes,
+    )
 
 
 def plot_nonempty_data(df, out_path, linear):
@@ -140,12 +142,12 @@ def plot_nonempty_data(df, out_path, linear):
 def plot_rows(df, start, end, pdf, linear):
     df.iloc[start:end].iloc[::-1].plot.barh(figsize=(WIDTH, HEIGHT_SCALE * (max(end - start, 15))))
     if not linear:
-        plt.xscale('log')
-    plt.legend(bbox_to_anchor=(0, 1.02, 1., 0.102), loc='lower left', ncol=2, borderaxespad=0.)
+        plt.xscale("log")
+    plt.legend(bbox_to_anchor=(0, 1.02, 1.0, 0.102), loc="lower left", ncol=2, borderaxespad=0.0)
     plt.tight_layout()
     pdf.savefig()
     plt.close()
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()

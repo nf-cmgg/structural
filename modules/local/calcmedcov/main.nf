@@ -5,7 +5,7 @@ process CALCMEDCOV {
     container "nicolasvnk/optparse-ubuntu:latest"
 
     input:
-    path bincov_matrix 
+    path bincov_matrix
 
     output:
     path "*_medianCov.transposed.bed"   , emit: median_cov_file
@@ -18,7 +18,7 @@ process CALCMEDCOV {
     def prefix = task.ext.prefix ?: "batch"
 
     """
-    zcat ${bincov_matrix} > ${prefix}_fixed.bed 
+    zcat ${bincov_matrix} > ${prefix}_fixed.bed
     medianCoverage.R ${prefix}_fixed.bed -H ${prefix}_medianCov.bed
     Rscript -e "x <- read.table(\"${prefix}_medianCov.bed\",check.names=FALSE); xtransposed <- t(x[,c(1,2)]); write.table(xtransposed,file=\"${prefix}_medianCov.transposed.bed\",sep=\"\\t\",row.names=F,col.names=F,quote=F)"
 

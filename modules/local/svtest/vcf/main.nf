@@ -26,7 +26,7 @@ process SVTEST_VCF {
     def contigs     = fasta_fai
 
     def baseline = baseline_vcf ? "--baseline-vcf ${baseline_vcf}" : ""
-    
+
     """
     echo "${meta.id}" > samples.txt
 

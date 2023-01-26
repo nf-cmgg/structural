@@ -7,7 +7,7 @@
 def summary_params = NfcoreSchema.paramsSummaryMap(workflow, params)
 
 // Validate input parameters
-WorkflowNfcmggstructural.initialise(params, log)
+WorkflowNfCmggStructural.initialise(params, log)
 
 // TODO nf-core: Add all file path parameters for the pipeline to the list below
 // Check input path parameters to see if they exist
@@ -36,8 +36,10 @@ allele_loci_vcf = params.allele_loci_vcf ?: []
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
 
-ch_multiqc_config        = file("$projectDir/assets/multiqc_config.yml", checkIfExists: true)
-ch_multiqc_custom_config = params.multiqc_config ? Channel.fromPath(params.multiqc_config) : Channel.empty()
+ch_multiqc_config          = Channel.fromPath("$projectDir/assets/multiqc_config.yml", checkIfExists: true)
+ch_multiqc_custom_config   = params.multiqc_config ? Channel.fromPath( params.multiqc_config, checkIfExists: true ) : Channel.empty()
+ch_multiqc_logo            = params.multiqc_logo   ? Channel.fromPath( params.multiqc_logo, checkIfExists: true ) : Channel.empty()
+ch_multiqc_custom_methods_description = params.multiqc_methods_description ? file(params.multiqc_methods_description, checkIfExists: true) : file("$projectDir/assets/methods_description_template.yml", checkIfExists: true)
 
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -77,7 +79,7 @@ include { CUSTOM_DUMPSOFTWAREVERSIONS       } from '../modules/nf-core/custom/du
 // Info required for completion email and summary
 def multiqc_report = []
 
-workflow NF_CMGG_STRUCTURAL {
+workflow CMGGSTRUCTURAL {
 
     ch_versions = Channel.empty()
     ch_reports  = Channel.empty()
@@ -92,7 +94,7 @@ workflow NF_CMGG_STRUCTURAL {
         )
 
         ch_versions = ch_versions.mix(SAMTOOLS_FAIDX.out.versions)
-        fasta_fai   = SAMTOOLS_FAIDX.out.fai
+        fasta_fai   = SAMTOOLS_FAIDX.out.fai.map { it[1] }.collect()
     }
 
     if(!dict) {
@@ -121,7 +123,7 @@ workflow NF_CMGG_STRUCTURAL {
 
     BEDTOOLS_SORT(
         inputs.bed,
-        "bed"
+        []
     )
 
     ch_versions = ch_versions.mix(BEDTOOLS_SORT.out.versions)
@@ -227,21 +229,25 @@ workflow NF_CMGG_STRUCTURAL {
     ch_versions_yaml = CUSTOM_DUMPSOFTWAREVERSIONS.out.mqc_yml.collect()
 
     //
-    // Perform multiQC on all QC data
+    // MODULE: MultiQC
     //
+    workflow_summary    = WorkflowNfCmggStructural.paramsSummaryMultiqc(workflow, summary_params)
+    ch_workflow_summary = Channel.value(workflow_summary)
+
+    methods_description    = WorkflowNfCmggStructural.methodsDescriptionText(workflow, ch_multiqc_custom_methods_description)
+    ch_methods_description = Channel.value(methods_description)
 
     ch_multiqc_files = Channel.empty()
-
-    ch_multiqc_files = ch_multiqc_files.mix(
-                                        ch_versions_yaml,
-                                        ch_reports.collect(),
-                                        ch_multiqc_custom_config
-                                        )
+    ch_multiqc_files = ch_multiqc_files.mix(ch_workflow_summary.collectFile(name: 'workflow_summary_mqc.yaml'))
+    ch_multiqc_files = ch_multiqc_files.mix(ch_methods_description.collectFile(name: 'methods_description_mqc.yaml'))
+    ch_multiqc_files = ch_multiqc_files.mix(CUSTOM_DUMPSOFTWAREVERSIONS.out.mqc_yml.collect())
 
     MULTIQC (
-        ch_multiqc_files.collect()
+        ch_multiqc_files.collect(),
+        ch_multiqc_config.toList(),
+        ch_multiqc_custom_config.toList(),
+        ch_multiqc_logo.toList()
     )
-
     multiqc_report = MULTIQC.out.report.toList()
 }
 
@@ -256,6 +262,9 @@ workflow.onComplete {
         NfcoreTemplate.email(workflow, params, summary_params, projectDir, log, multiqc_report)
     }
     NfcoreTemplate.summary(workflow, params, log)
+    if (params.hook_url) {
+        NfcoreTemplate.IM_notification(workflow, params, summary_params, projectDir, log)
+    }
 }
 
 /*

@@ -16,10 +16,9 @@ KEY_PREFIX = "rf_cutoff_"
 
 def main(argv):
     parser = argparse.ArgumentParser(
-        description=__doc__,
-        prog='svtest rf-cutoffs',
-        formatter_class=argparse.RawDescriptionHelpFormatter)
-    parser.add_argument('cutoffs', type=str)
+        description=__doc__, prog="svtest rf-cutoffs", formatter_class=argparse.RawDescriptionHelpFormatter
+    )
+    parser.add_argument("cutoffs", type=str)
 
     # Print help if no arguments specified
     if len(argv) == 0:
@@ -28,7 +27,7 @@ def main(argv):
     args = parser.parse_args(argv)
 
     # Get metrics
-    df = pd.read_csv(args.cutoffs, sep='\t')
+    df = pd.read_csv(args.cutoffs, sep="\t")
     metrics = get_metrics(df)
 
     # Write metrics
@@ -44,8 +43,7 @@ def get_metrics(df):
     metrics = {}
     for i in range(df.shape[0]):
         row = df.iloc[i]
-        name = KEY_PREFIX + \
-            "_".join([row.test, row.svtype, row.metric, row.algtype])
+        name = KEY_PREFIX + "_".join([row.test, row.svtype, row.metric, row.algtype])
         if not pd.isna(row.min_svsize):
             name += "_min" + str(int(row.min_svsize))
         if not pd.isna(row.max_svsize):
@@ -54,5 +52,5 @@ def get_metrics(df):
     return metrics
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()

@@ -6,6 +6,7 @@
 include { RUN_MANTA                                     } from './run-manta'
 include { RUN_DELLY                                     } from './run-delly'
 include { RUN_WHAMG                                     } from './run-whamg'
+include { RUN_SMOOVE                                    } from './run-smoove'
 include { RUN_SCRAMBLE                                  } from './run-scramble'
 include { GATHER_SAMPLE_EVIDENCE_METRICS                } from './gather-metrics'
 include { MERGE_VCFS                                    } from './merge_vcfs'
@@ -103,6 +104,22 @@ workflow GATHER_SAMPLE_EVIDENCE {
     }
 
     //
+    // Calling variants using Smoove
+    //
+
+    if("smoove" in callers){
+        RUN_SMOOVE(
+            crams,
+            beds,
+            fasta,
+            fasta_fai
+        )
+
+        called_vcfs = called_vcfs.mix(RUN_SMOOVE.out.smoove_vcfs)
+        ch_versions = ch_versions.mix(RUN_SMOOVE.out.versions)
+    }
+
+    //
     // Calling variants using Scramble (I don't know if calling variants is the correct term here)
     //
 
@@ -125,7 +142,7 @@ workflow GATHER_SAMPLE_EVIDENCE {
 
     if(allele_loci_vcf){
         TABIX_TABIX(
-            [ [], allele_loci_vcf ]
+            allele_loci_vcf.map{[[id:"allele_loci_vcf"], it]}
         )
 
         crams

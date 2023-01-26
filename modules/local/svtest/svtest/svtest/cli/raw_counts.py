@@ -25,16 +25,15 @@ NUM_INTERVALS = "rd_num_intervals"
 INTERVALS_SIZE = "rd_intervals_size"
 
 EXPECTED_COLUMNS = 4
-HEADER_CHAR = '@'
+HEADER_CHAR = "@"
 
 
 def main(argv):
     parser = argparse.ArgumentParser(
-        description=__doc__,
-        prog='svtest raw-counts',
-        formatter_class=argparse.RawDescriptionHelpFormatter)
-    parser.add_argument('counts_file', type=str)
-    parser.add_argument('sample_id', type=str)
+        description=__doc__, prog="svtest raw-counts", formatter_class=argparse.RawDescriptionHelpFormatter
+    )
+    parser.add_argument("counts_file", type=str)
+    parser.add_argument("sample_id", type=str)
 
     # Print help if no arguments specified
     if len(argv) == 0:
@@ -43,7 +42,7 @@ def main(argv):
     args = parser.parse_args(argv)
 
     # Read file
-    with gzip.open(args.counts_file, mode='rb') as f:
+    with gzip.open(args.counts_file, mode="rb") as f:
         metrics = get_metrics(f, args.sample_id)
 
     # Write metrics
@@ -67,7 +66,7 @@ def get_metrics(file, sample_id):
         if last_line_was_header:
             last_line_was_header = False
             continue  # skip columns header line
-        tokens = line.strip().split('\t')
+        tokens = line.strip().split("\t")
         tu.test_iterable_size(tokens, EXPECTED_COLUMNS)
         start = int(tokens[1])
         end = int(tokens[2])
@@ -85,9 +84,9 @@ def get_metrics(file, sample_id):
         MEAN_KEY + "_" + sample_id: mean,
         NUM_ZERO + "_" + sample_id: num_zero,
         NUM_INTERVALS + "_" + sample_id: len(counts_arr),
-        INTERVALS_SIZE + "_" + sample_id: intervals_size
+        INTERVALS_SIZE + "_" + sample_id: intervals_size,
     }
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()

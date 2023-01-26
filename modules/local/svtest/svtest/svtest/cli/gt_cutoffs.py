@@ -13,19 +13,19 @@ import pandas as pd
 
 KEY_PREFIX = "gt_cutoffs_"
 
-MEAN_COL = 'mean'
-SD_COL = 'sd'
-CUTOFFS_COL = 'cutoffs'
+MEAN_COL = "mean"
+SD_COL = "sd"
+CUTOFFS_COL = "cutoffs"
 
 
 def main(argv):
     parser = argparse.ArgumentParser(
-        description=__doc__,
-        prog='svtest gt-cutoffs',
-        formatter_class=argparse.RawDescriptionHelpFormatter)
-    parser.add_argument('cutoffs', type=str)
-    parser.add_argument('type', type=str,
-                        help="Genotyping cutoffs type (e.g. depth_depth, depth_pesr, pesr_pesr, pesr_depth")
+        description=__doc__, prog="svtest gt-cutoffs", formatter_class=argparse.RawDescriptionHelpFormatter
+    )
+    parser.add_argument("cutoffs", type=str)
+    parser.add_argument(
+        "type", type=str, help="Genotyping cutoffs type (e.g. depth_depth, depth_pesr, pesr_pesr, pesr_depth"
+    )
 
     # Print help if no arguments specified
     if len(argv) == 0:
@@ -34,7 +34,7 @@ def main(argv):
     args = parser.parse_args(argv)
 
     # Get metrics
-    df = pd.read_csv(args.cutoffs, sep='\t')
+    df = pd.read_csv(args.cutoffs, sep="\t")
     metrics = get_metrics(df, args.type)
 
     # Write metrics
@@ -57,5 +57,5 @@ def get_metrics(df, type):
     return metrics
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()

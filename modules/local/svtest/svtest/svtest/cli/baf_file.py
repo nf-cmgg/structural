@@ -28,11 +28,10 @@ EXPECTED_COLUMNS = 4
 
 def main(argv):
     parser = argparse.ArgumentParser(
-        description=__doc__,
-        prog='svtest raw-baf',
-        formatter_class=argparse.RawDescriptionHelpFormatter)
-    parser.add_argument('baf_file', type=str)
-    parser.add_argument('sample_list', type=str)
+        description=__doc__, prog="svtest raw-baf", formatter_class=argparse.RawDescriptionHelpFormatter
+    )
+    parser.add_argument("baf_file", type=str)
+    parser.add_argument("sample_list", type=str)
 
     # Print help if no arguments specified
     if len(argv) == 0:
@@ -41,7 +40,7 @@ def main(argv):
     args = parser.parse_args(argv)
 
     # Read file
-    with gzip.open(args.baf_file, mode='rb') as fbaf:
+    with gzip.open(args.baf_file, mode="rb") as fbaf:
         metrics = get_metrics(fbaf, args.sample_list)
 
     # Write metrics
@@ -59,7 +58,7 @@ def get_metrics(baf_file, sample_list):
 
     data = []
     for line in baf_file:
-        tokens = line.decode().strip().split('\t')
+        tokens = line.decode().strip().split("\t")
         test_record(tokens, samples_set)
         baf = float(tokens[2])
         data.append(baf)
@@ -75,7 +74,7 @@ def get_metrics(baf_file, sample_list):
         Q25_KEY + metric_suffix: quantiles[0],
         Q50_KEY + metric_suffix: quantiles[1],
         Q75_KEY + metric_suffix: quantiles[2],
-        COUNT_KEY + metric_suffix: len(arr)
+        COUNT_KEY + metric_suffix: len(arr),
     }
 
 
@@ -85,5 +84,5 @@ def test_record(columns, samples):
     tu.test_column_in_iterable(columns, 3, samples)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()

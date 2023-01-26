@@ -19,12 +19,11 @@ def create_trees_from_records(records, variant_types, contigs):
     for record in records:
         type = vu.get_sv_type(record, variant_types_set)
         contig = record.chrom
-        if type == 'INS' or type == 'BND':
+        if type == "INS" or type == "BND":
             length = 0
         else:
             length = max(0, vu.get_record_length(record))
-        trees[type][contig].addi(
-            record.start, record.start + length + 1)
+        trees[type][contig].addi(record.start, record.start + length + 1)
     return trees
 
 
@@ -42,7 +41,7 @@ def create_trees_from_bed_records(records, variant_types, contigs):
             raise ValueError("Unexpected SVTYPE in bed file: %s" % type)
         contig = record[0]
         start = record[1]
-        if type == 'INS' or type == 'BND':
+        if type == "INS" or type == "BND":
             length = 0
         else:
             length = record[2] - record[1]
@@ -58,9 +57,9 @@ def create_trees_from_bed(f, contigs, padding):
     contigs_set = set(contigs)
     for record in f:
         line = record.decode()
-        if line.startswith('#'):
+        if line.startswith("#"):
             continue
-        record_tokens = line.strip().split('\t')
+        record_tokens = line.strip().split("\t")
         contig = record_tokens[0]
         if contig not in contigs_set:
             continue
@@ -78,7 +77,8 @@ def evaluate_tree(test_tree, truth_tree, min_ro, padding):
     for contig in test_tree:
         if contig in truth_tree:
             tp_contig, fp_contig, fpi_contig = evaluate_contig_tree(
-                test_tree[contig], truth_tree[contig], min_ro, padding)
+                test_tree[contig], truth_tree[contig], min_ro, padding
+            )
             tp[contig] = tp_contig
             fp[contig] = fp_contig
             fpi[contig] = fpi_contig
@@ -87,6 +87,7 @@ def evaluate_tree(test_tree, truth_tree, min_ro, padding):
             fp[contig] = len(test_tree[contig])
             fpi[contig] = list(test_tree[contig])
     return tp, fp, fpi
+
 
 # Evaluates test IntervalTree
 
@@ -124,6 +125,7 @@ def interval_size(interval):
 
 def overlap_size(interval_a, interval_b):
     return max(0, min(interval_a[1], interval_b[1]) - max(interval_a[0], interval_b[0]))
+
 
 # Sum tree sizes over contigs in trees[contig]
 

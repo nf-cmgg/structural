@@ -9,8 +9,7 @@ import pandas
 
 _zero_svs_are_outliers = True
 _outlier_std_threshold = 5.0
-_column_order = ["CHROM", "SVTYPE", "Mean", "Median", "STD",
-                    "Outlier_Sample", "Outlier_Number", "Outlier_Cate"]
+_column_order = ["CHROM", "SVTYPE", "Mean", "Median", "STD", "Outlier_Sample", "Outlier_Number", "Outlier_Cate"]
 
 
 def read_statfile(statfile: str) -> pandas.DataFrame:
@@ -25,20 +24,20 @@ def read_statfile(statfile: str) -> pandas.DataFrame:
         stats_data: pandas.DataFrame
             Table of variant stats
     """
-    with open(statfile, 'r') as f_in:
+    with open(statfile, "r") as f_in:
         # get column header from first line, stripping '#'
-        columns = f_in.readline().lstrip('#').split()
+        columns = f_in.readline().lstrip("#").split()
         # read rest of tsv file, using these columns as header and ignoring any future lines starting with '#'
-        return pandas.read_csv(statfile, sep='\t', comment='#', names=columns)
+        return pandas.read_csv(statfile, sep="\t", comment="#", names=columns)
 
 
 def pick_outliers_by_group(
-        chrom: str,
-        sv_type: str,
-        check_stats: pandas.DataFrame,
-        all_samples: Set[str],
-        zero_svs_are_outliers: bool = _zero_svs_are_outliers,
-        outlier_std_threshold: float = _outlier_std_threshold
+    chrom: str,
+    sv_type: str,
+    check_stats: pandas.DataFrame,
+    all_samples: Set[str],
+    zero_svs_are_outliers: bool = _zero_svs_are_outliers,
+    outlier_std_threshold: float = _outlier_std_threshold,
 ) -> pandas.DataFrame:
     """
     For given combination of contig and SV type, find samples that have outlier number of SVs. Return table of outliers
@@ -75,11 +74,9 @@ def pick_outliers_by_group(
         count_median = check_stats["NUM"].median()
         count_std = check_stats["NUM"].std()
         # Amongst samples that have SVs, find counts deviating by more than set multiple of std from the median
-        is_outlier = numpy.abs(
-            check_stats["NUM"] - count_median) > outlier_std_threshold * count_std
+        is_outlier = numpy.abs(check_stats["NUM"] - count_median) > outlier_std_threshold * count_std
         # Treat missing samples as outliers.
-        outliers = pandas.concat(
-            (missing_samples, check_stats.loc[is_outlier]), axis=0)
+        outliers = pandas.concat((missing_samples, check_stats.loc[is_outlier]), axis=0)
     else:
         # THIS FINDS FEWER, MORE MEANINGFUL OUTLIERS
         # Which samples are missing / included but have zero counts is unpredictable.
@@ -94,9 +91,8 @@ def pick_outliers_by_group(
         # Set threshold to be set multiple of greater of: std of counts, sqrt(median of counts)
         #  (i.e. greater of std or expected Poisson std)
         # Find counts those deviating by more than threshold from the median (including zeros)
-        is_outlier = (
-            numpy.abs(check_stats["NUM"] - count_median) >
-            outlier_std_threshold * numpy.maximum(count_std, numpy.sqrt(count_median))
+        is_outlier = numpy.abs(check_stats["NUM"] - count_median) > outlier_std_threshold * numpy.maximum(
+            count_std, numpy.sqrt(count_median)
         )
         outliers = check_stats.loc[is_outlier].copy()
 
@@ -106,16 +102,15 @@ def pick_outliers_by_group(
     outliers["Mean"] = count_mean
     outliers["Median"] = count_median
     outliers["STD"] = count_std
-    outliers["Outlier_Cate"] = numpy.where(
-        outliers["NUM"] > count_median, "high", "low")
+    outliers["Outlier_Cate"] = numpy.where(outliers["NUM"] > count_median, "high", "low")
     # rename and re-order columns
     return outliers.rename({"NUM": "Outlier_Number", "SAMPLE": "Outlier_Sample"}, axis=1).reindex(_column_order, axis=1)
 
 
 def pick_outliers(
-        stats_data: pandas.DataFrame,
-        zero_svs_are_outliers: bool = _zero_svs_are_outliers,
-        outlier_std_threshold: float = _outlier_std_threshold
+    stats_data: pandas.DataFrame,
+    zero_svs_are_outliers: bool = _zero_svs_are_outliers,
+    outlier_std_threshold: float = _outlier_std_threshold,
 ) -> pandas.DataFrame:
     """
     Find samples that have outlier number of SVs when broken down by contig and SV type. Return table of outliers
@@ -140,23 +135,23 @@ def pick_outliers(
     outliers = pandas.concat(
         tuple(
             pick_outliers_by_group(
-                chrom=chrom, sv_type=sv_type, check_stats=check_stats, all_samples=all_samples,
-                zero_svs_are_outliers=zero_svs_are_outliers, outlier_std_threshold=outlier_std_threshold
+                chrom=chrom,
+                sv_type=sv_type,
+                check_stats=check_stats,
+                all_samples=all_samples,
+                zero_svs_are_outliers=zero_svs_are_outliers,
+                outlier_std_threshold=outlier_std_threshold,
             )
             for (chrom, sv_type), check_stats in stats_data.groupby(
                 ["CHROM", "SVTYPE"], sort=False, as_index=False, group_keys=False
             )
         ),
-        axis=0
+        axis=0,
     )
     return outliers
 
 
-def write_outliers_file(
-        outliers: pandas.DataFrame,
-        outname: str,
-        outlier_type: str
-):
+def write_outliers_file(outliers: pandas.DataFrame, outname: str, outlier_type: str):
     """
     Write outliers of the appropriate type ("low" or "high") to TSV file.
     Args:
@@ -168,17 +163,17 @@ def write_outliers_file(
             "low" or "high".
     """
     # write outliers to tsv. Add "#" in front of header
-    with open(outname + "." + outlier_type, 'w') as f_out:
+    with open(outname + "." + outlier_type, "w") as f_out:
         f_out.write("#")  # add '#' in front of header
         outlier_wanted = outliers["Outlier_Cate"] == outlier_type
-        outliers.loc[outlier_wanted].to_csv(f_out, sep='\t', index=False)
+        outliers.loc[outlier_wanted].to_csv(f_out, sep="\t", index=False)
 
 
 def calc_num_svs_pick_outlier(
-        statfile: str,
-        outname: str,
-        zero_svs_are_outliers: bool = _zero_svs_are_outliers,
-        outlier_std_threshold: float = _outlier_std_threshold
+    statfile: str,
+    outname: str,
+    zero_svs_are_outliers: bool = _zero_svs_are_outliers,
+    outlier_std_threshold: float = _outlier_std_threshold,
 ):
     """
     Find samples that have outlier number of SVs when broken down by contig and SV type.
@@ -196,8 +191,9 @@ def calc_num_svs_pick_outlier(
             Threshold for outlier status as multiple of standard deviation of SV counts
     """
     stats_data = read_statfile(statfile)
-    outliers = pick_outliers(stats_data, zero_svs_are_outliers=zero_svs_are_outliers,
-                                outlier_std_threshold=outlier_std_threshold)
+    outliers = pick_outliers(
+        stats_data, zero_svs_are_outliers=zero_svs_are_outliers, outlier_std_threshold=outlier_std_threshold
+    )
     write_outliers_file(outliers, outname, "low")
     write_outliers_file(outliers, outname, "high")
 
@@ -206,20 +202,31 @@ def _parse_arguments(argv: Sequence[str]) -> argparse.Namespace:
     # noinspection PyTypeChecker
     parser = argparse.ArgumentParser(
         description="Find outliers in SV counts broken down by contig and SV type",
-        formatter_class=argparse.ArgumentDefaultsHelpFormatter
+        formatter_class=argparse.ArgumentDefaultsHelpFormatter,
     )
-    parser.add_argument("statfile", type=str,
-                        help="name of stats concatinated from all samples")
+    parser.add_argument("statfile", type=str, help="name of stats concatinated from all samples")
     parser.add_argument("outname", type=str, help="name of output file")
-    parser.add_argument("-z", "--zero-counts-are-not-outliers", action="store_true",
-                        help="don't make zero SV counts an automatic outlier, check deviation from median as usual")
-    parser.add_argument("-t", "--outlier-std-threshold", type=float, default=_outlier_std_threshold,
-                        help="threshold multiple of std of counts for outliers")
+    parser.add_argument(
+        "-z",
+        "--zero-counts-are-not-outliers",
+        action="store_true",
+        help="don't make zero SV counts an automatic outlier, check deviation from median as usual",
+    )
+    parser.add_argument(
+        "-t",
+        "--outlier-std-threshold",
+        type=float,
+        default=_outlier_std_threshold,
+        help="threshold multiple of std of counts for outliers",
+    )
     return parser.parse_args(argv[1:])
 
 
 if __name__ == "__main__":
     args = _parse_arguments(sys.argv)
-    calc_num_svs_pick_outlier(statfile=args.statfile, outname=args.outname,
-                                zero_svs_are_outliers=not args.zero_counts_are_not_outliers,
-                                outlier_std_threshold=args.outlier_std_threshold)
+    calc_num_svs_pick_outlier(
+        statfile=args.statfile,
+        outname=args.outname,
+        zero_svs_are_outliers=not args.zero_counts_are_not_outliers,
+        outlier_std_threshold=args.outlier_std_threshold,
+    )

@@ -4,7 +4,7 @@
 
 import groovy.text.SimpleTemplateEngine
 
-class WorkflowNf-cmgg-structural {
+class WorkflowNfCmggStructural {
 
     //
     // Check and validate parameters

@@ -5,7 +5,7 @@ include { MANTA_GERMLINE         } from '../../../modules/nf-core/manta/germline
 include { MANTA_CONVERTINVERSION } from '../../../modules/nf-core/manta/convertinversion/main'
 include { BCFTOOLS_REHEADER      } from '../../../modules/nf-core/bcftools/reheader/main'
 
-workflow RUN_MANTA {
+workflow BAM_VARIANT_CALLING_MANTA {
     take:
         crams                   // channel: [mandatory] [ meta, cram, crai ] => The aligned CRAMs per sample with the regions they should be called on
         beds                    // channel: [optional]  [ meta, bed, bed_gz, bed_gz_tbi ] => A channel containing the normal BED, the bgzipped BED and its index file

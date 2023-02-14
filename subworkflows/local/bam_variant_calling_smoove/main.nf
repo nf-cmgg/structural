@@ -7,7 +7,7 @@ include { REVERSE_BED        } from '../../../modules/local/reversebed/main'
 include { SMOOVE_CALL        } from '../../../modules/nf-core/smoove/call/main'
 include { TABIX_TABIX        } from '../../../modules/nf-core/tabix/tabix/main'
 
-workflow RUN_SMOOVE {
+workflow BAM_VARIANT_CALLING_SMOOVE {
     take:
         crams                   // channel: [mandatory] [ meta, cram, crai ] => The aligned CRAMs per sample with the regions they should be called on
         beds                    // channel: [optional]  [ meta, bed, bed_gz, bed_gz_tbi ] => A channel containing the normal BED, the bgzipped BED and its index file

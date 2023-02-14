@@ -9,7 +9,6 @@ def summary_params = NfcoreSchema.paramsSummaryMap(workflow, params)
 // Validate input parameters
 WorkflowNfCmggStructural.initialise(params, log)
 
-// TODO nf-core: Add all file path parameters for the pipeline to the list below
 // Check input path parameters to see if they exist
 def checkPathParamList = [
     params.input,
@@ -50,9 +49,7 @@ ch_multiqc_custom_methods_description = params.multiqc_methods_description ? fil
 //
 // SUBWORKFLOW: Consisting of a mix of local and nf-core/modules
 //
-include { GATHER_SAMPLE_EVIDENCE  } from '../subworkflows/local/gather-sample-evidence/main'
-include { EVIDENCE_QC             } from '../subworkflows/local/evidence-QC/main'
-include { GATHER_BATCH_EVIDENCE   } from '../subworkflows/local/gather-batch-evidence/main'
+include { BAM_STRUCTURAL_VARIANT_CALLING    } from '../subworkflows/local/bam_structural_variant_calling/main'
 
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -136,10 +133,10 @@ workflow CMGGSTRUCTURAL {
     beds = BEDTOOLS_SORT.out.sorted.combine(TABIX_BGZIPTABIX.out.gz_tbi, by:0)
 
     //
-    // Gather sample evidence
+    // Call the variants
     //
 
-    GATHER_SAMPLE_EVIDENCE(
+    BAM_STRUCTURAL_VARIANT_CALLING(
         inputs.crams,
         beds,
         allele_loci_vcf,
@@ -148,75 +145,8 @@ workflow CMGGSTRUCTURAL {
         dict
     )
 
-    ch_versions = ch_versions.mix(GATHER_SAMPLE_EVIDENCE.out.versions)
-    ch_reports  = ch_reports.mix(GATHER_SAMPLE_EVIDENCE.out.reports)
-
-    //
-    // Evidence QC
-    //
-
-    // EVIDENCE_QC(
-    //     GATHER_SAMPLE_EVIDENCE.out.vcfs,
-    //     GATHER_SAMPLE_EVIDENCE.out.coverage_counts,
-    //     []
-    // )
-
-    // ch_versions = ch_versions.mix(EVIDENCE_QC.out.versions)
-
-    //
-    // Gather batch evidence
-    //
-
-    // GATHER_BATCH_EVIDENCE(
-    //     GATHER_SAMPLE_EVIDENCE.out.coverage_counts,
-    //     [], //EVIDENCE_QC.out.bincov_matrix,
-    //     [], //EVIDENCE_QC.out.bincov_matrix_index
-    //     [], // BAF files
-    //     GATHER_SAMPLE_EVIDENCE.out.read_pairs,
-    //     GATHER_SAMPLE_EVIDENCE.out.split_reads,
-    //     GATHER_SAMPLE_EVIDENCE.out.site_depths,
-    //     fasta,
-    //     fasta_fai,
-    //     dict
-    // )
-
-    // ch_versions = ch_versions.mix(GATHER_BATCH_EVIDENCE.out.versions)
-
-    //
-    // Cluster Batch
-    //
-
-    // CLUSTER_BATCH()
-
-    //
-    // Generate Batch Metrics
-    //
-
-    // GENERATE_BATCH_METRICS()
-
-    //
-    // Filter Batch
-    //
-
-    // FILTER_BATCH()
-
-    //
-    // Merge Batch Sites
-    //
-
-    // MERGE_BATCH_SITES()
-
-    //
-    // Genotype Batch
-    //
-
-    // GENOTYPE_BATCH()
-
-    //
-    // Make Cohort VCF
-    //
-
-    // MAKE_COHORT_VCF()
+    ch_versions = ch_versions.mix(BAM_STRUCTURAL_VARIANT_CALLING.out.versions)
+    ch_reports  = ch_reports.mix(BAM_STRUCTURAL_VARIANT_CALLING.out.reports)
 
     //
     // Dump the software versions

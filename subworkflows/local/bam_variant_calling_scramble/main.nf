@@ -4,7 +4,7 @@
 include { SCRAMBLE_CLUSTERIDENTIFIER  } from '../../../modules/nf-core/scramble/clusteridentifier/main'
 include { SCRAMBLE_CLUSTERANALYSIS    } from '../../../modules/nf-core/scramble/clusteranalysis/main'
 
-workflow RUN_SCRAMBLE {
+workflow BAM_VARIANT_CALLING_SCRAMBLE {
     take:
         crams                   // channel: [mandatory] [ meta, cram, crai ] => The aligned CRAMs per sample with the regions they should be called on
         beds                    // channel: [optional]  [ meta, bed, bed_gz, bed_gz_tbi ] => A channel containing the normal BED, the bgzipped BED and its index file

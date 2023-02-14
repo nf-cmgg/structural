@@ -11,7 +11,7 @@ include { BCFTOOLS_CONVERT   } from '../../../modules/nf-core/bcftools/convert/m
 include { BEDTOOLS_SPLIT     } from '../../../modules/nf-core/bedtools/split/main'
 include { TABIX_TABIX        } from '../../../modules/nf-core/tabix/tabix/main'
 
-workflow RUN_DELLY {
+workflow BAM_VARIANT_CALLING_DELLY {
     take:
         crams                   // channel: [mandatory] [ meta, cram, crai ] => The aligned CRAMs per sample with the regions they should be called on
         beds                    // channel: [optional]  [ meta, bed, bed_gz, bed_gz_tbi ] => A channel containing the normal BED, the bgzipped BED and its index file

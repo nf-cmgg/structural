@@ -7,7 +7,7 @@ include { TABIX_BGZIP as BGZIP_MERGED                   } from '../../../modules
 include { TABIX_TABIX                                   } from '../../../modules/nf-core/tabix/tabix/main'
 include { JASMINESV                                     } from '../../../modules/nf-core/jasminesv/main'
 
-workflow MERGE_VCFS {
+workflow VCF_MERGE_JASMINE {
     take:
         vcfs                    // channel: [mandatory] [ meta, vcf ] => The gzipped called VCFs
         fasta                   // channel: [mandatory] [ fasta ] => The fasta reference file

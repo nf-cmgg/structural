@@ -3,20 +3,20 @@
 //
 
 // Import subworkflows
-include { RUN_MANTA                                     } from './run-manta'
-include { RUN_DELLY                                     } from './run-delly'
-include { RUN_WHAMG                                     } from './run-whamg'
-include { RUN_SMOOVE                                    } from './run-smoove'
-include { RUN_SCRAMBLE                                  } from './run-scramble'
-include { GATHER_SAMPLE_EVIDENCE_METRICS                } from './gather-metrics'
-include { MERGE_VCFS                                    } from './merge_vcfs'
+include { BAM_VARIANT_CALLING_MANTA                     } from '../bam_variant_calling_manta/main'
+include { BAM_VARIANT_CALLING_DELLY                     } from '../bam_variant_calling_delly/main'
+include { BAM_VARIANT_CALLING_WHAMG                     } from '../bam_variant_calling_whamg/main'
+include { BAM_VARIANT_CALLING_SMOOVE                    } from '../bam_variant_calling_smoove/main'
+include { BAM_VARIANT_CALLING_SCRAMBLE                  } from '../bam_variant_calling_scramble/main'
+include { VCF_METRICS_SVTK_SVTEST                       } from '../vcf_metrics_svtk_svtest/main'
+include { VCF_MERGE_JASMINE                             } from '../vcf_merge_jasmine/main'
 
 // Import modules
 include { GATK4_COLLECTREADCOUNTS as COLLECTREADCOUNTS  } from '../../../modules/nf-core/gatk4/collectreadcounts/main'
 include { GATK4_COLLECTSVEVIDENCE as COLLECTSVEVIDENCE  } from '../../../modules/nf-core/gatk4/collectsvevidence/main'
 include { TABIX_TABIX                                   } from '../../../modules/nf-core/tabix/tabix/main'
 
-workflow GATHER_SAMPLE_EVIDENCE {
+workflow BAM_STRUCTURAL_VARIANT_CALLING {
     take:
         crams                   // channel: [mandatory] [ meta, cram, crai, bed ] => The aligned CRAMs per sample with the regions they should be called on
         beds                    // channel: [optional]  [ meta, bed, bed_gz, bed_gz_tbi ] => A channel containing the normal BED, the bgzipped BED and its index file
@@ -59,15 +59,15 @@ workflow GATHER_SAMPLE_EVIDENCE {
     //
 
     if("manta" in callers){
-        RUN_MANTA(
+        BAM_VARIANT_CALLING_MANTA(
             crams,
             beds,
             fasta,
             fasta_fai
         )
 
-        called_vcfs = called_vcfs.mix(RUN_MANTA.out.manta_vcfs)
-        ch_versions = ch_versions.mix(RUN_MANTA.out.versions)
+        called_vcfs = called_vcfs.mix(BAM_VARIANT_CALLING_MANTA.out.manta_vcfs)
+        ch_versions = ch_versions.mix(BAM_VARIANT_CALLING_MANTA.out.versions)
     }
 
     //
@@ -75,15 +75,15 @@ workflow GATHER_SAMPLE_EVIDENCE {
     //
 
     if("delly" in callers){
-        RUN_DELLY(
+        BAM_VARIANT_CALLING_DELLY(
             crams,
             beds,
             fasta,
             fasta_fai
         )
 
-        called_vcfs = called_vcfs.mix(RUN_DELLY.out.delly_vcfs)
-        ch_versions = ch_versions.mix(RUN_DELLY.out.versions)
+        called_vcfs = called_vcfs.mix(BAM_VARIANT_CALLING_DELLY.out.delly_vcfs)
+        ch_versions = ch_versions.mix(BAM_VARIANT_CALLING_DELLY.out.versions)
     }
 
     //
@@ -92,15 +92,15 @@ workflow GATHER_SAMPLE_EVIDENCE {
 
     // Whamg needs some reheadering (like done in https://github.com/broadinstitute/gatk-sv/blob/90e3e9a221bdfe7ab2cfedeffb704bc6f0e99aa9/wdl/Whamg.wdl#L209)
     if("whamg" in callers){
-        RUN_WHAMG(
+        BAM_VARIANT_CALLING_WHAMG(
             crams,
             beds,
             fasta,
             fasta_fai
         )
 
-        called_vcfs = called_vcfs.mix(RUN_WHAMG.out.whamg_vcfs)
-        ch_versions = ch_versions.mix(RUN_WHAMG.out.versions)
+        called_vcfs = called_vcfs.mix(BAM_VARIANT_CALLING_WHAMG.out.whamg_vcfs)
+        ch_versions = ch_versions.mix(BAM_VARIANT_CALLING_WHAMG.out.versions)
     }
 
     //
@@ -108,15 +108,15 @@ workflow GATHER_SAMPLE_EVIDENCE {
     //
 
     if("smoove" in callers){
-        RUN_SMOOVE(
+        BAM_VARIANT_CALLING_SMOOVE(
             crams,
             beds,
             fasta,
             fasta_fai
         )
 
-        called_vcfs = called_vcfs.mix(RUN_SMOOVE.out.smoove_vcfs)
-        ch_versions = ch_versions.mix(RUN_SMOOVE.out.versions)
+        called_vcfs = called_vcfs.mix(BAM_VARIANT_CALLING_SMOOVE.out.smoove_vcfs)
+        ch_versions = ch_versions.mix(BAM_VARIANT_CALLING_SMOOVE.out.versions)
     }
 
     //
@@ -126,14 +126,14 @@ workflow GATHER_SAMPLE_EVIDENCE {
     // Scramble is unfinished. It needs a lot of improvements if we were to add it
 
     // if("scramble" in callers){
-    //     RUN_SCRAMBLE(
+    //     BAM_VARIANT_CALLING_SCRAMBLE(
     //         crams,
     //         beds,
     //         fasta
     //     )
 
-    //     called_vcfs = called_vcfs.mix(RUN_SCRAMBLE.out.scramble_vcfs)
-    //     ch_versions = ch_versions.mix(RUN_SCRAMBLE.out.versions)
+    //     called_vcfs = called_vcfs.mix(BAM_VARIANT_CALLING_SCRAMBLE.out.scramble_vcfs)
+    //     ch_versions = ch_versions.mix(BAM_VARIANT_CALLING_SCRAMBLE.out.versions)
     // }
 
     //
@@ -180,7 +180,7 @@ workflow GATHER_SAMPLE_EVIDENCE {
     //
 
     if(params.run_module_metrics) {
-        GATHER_SAMPLE_EVIDENCE_METRICS(
+        VCF_METRICS_SVTK_SVTEST(
             called_vcfs,
             COLLECTSVEVIDENCE.out.split_read_evidence,
             COLLECTSVEVIDENCE.out.paired_end_evidence,
@@ -188,18 +188,18 @@ workflow GATHER_SAMPLE_EVIDENCE {
             fasta_fai
         )
 
-        ch_metrics  = ch_reports.mix(GATHER_SAMPLE_EVIDENCE_METRICS.out.metrics)
-        ch_versions = ch_versions.mix(GATHER_SAMPLE_EVIDENCE_METRICS.out.versions)
+        ch_metrics  = ch_reports.mix(VCF_METRICS_SVTK_SVTEST.out.metrics)
+        ch_versions = ch_versions.mix(VCF_METRICS_SVTK_SVTEST.out.versions)
     }
 
     if(callers.size > 1){
-        MERGE_VCFS(
+        VCF_MERGE_JASMINE(
             called_vcfs.map { it[0..1] },
             fasta,
             fasta_fai,
         )
 
-        MERGE_VCFS.out.merged_vcfs.set { merged_vcfs }
+        VCF_MERGE_JASMINE.out.merged_vcfs.set { merged_vcfs }
     } else {
         called_vcfs.set { merged_vcfs }
     }

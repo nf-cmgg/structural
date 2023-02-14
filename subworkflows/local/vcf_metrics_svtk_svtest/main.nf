@@ -8,7 +8,7 @@ include { SVTEST_SRFILE    } from '../../../modules/local/svtest/sr-file/main'
 include { SVTEST_PEFILE    } from '../../../modules/local/svtest/pe-file/main'
 include { SVTEST_RAWCOUNTS } from '../../../modules/local/svtest/raw-counts/main'
 
-workflow GATHER_SAMPLE_EVIDENCE_METRICS {
+workflow VCF_METRICS_SVTK_SVTEST {
     take:
         called_vcfs             // channel: [mandatory] [ meta, vcf, tbi ] => The VCFs from all used variant callers
         split_read_evidence     // channel: [mandatory] [ meta, split_read_evidence ] => The split read evidence

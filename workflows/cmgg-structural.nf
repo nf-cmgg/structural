@@ -27,6 +27,7 @@ if (params.input) { ch_input = file(params.input, checkIfExists: true) } else { 
 fasta           = params.fasta
 fasta_fai       = params.fasta_fai
 dict            = params.dict
+bwa_index       = params.bwa_index ?: []
 allele_loci_vcf = params.allele_loci_vcf ?: []
 
 /*
@@ -64,6 +65,7 @@ include { TABIX_BGZIPTABIX                  } from '../modules/nf-core/tabix/bgz
 include { BEDTOOLS_SORT                     } from '../modules/nf-core/bedtools/sort/main'
 include { GATK4_CREATESEQUENCEDICTIONARY    } from '../modules/nf-core/gatk4/createsequencedictionary/main'
 include { SAMTOOLS_FAIDX                    } from '../modules/nf-core/samtools/faidx/main'
+include { BWA_INDEX                         } from '../modules/nf-core/bwa/index/main'
 include { MULTIQC                           } from '../modules/nf-core/multiqc/main'
 include { CUSTOM_DUMPSOFTWAREVERSIONS       } from '../modules/nf-core/custom/dumpsoftwareversions/main'
 
@@ -101,6 +103,15 @@ workflow CMGGSTRUCTURAL {
 
         ch_versions = ch_versions.mix(GATK4_CREATESEQUENCEDICTIONARY.out.versions)
         dict        = GATK4_CREATESEQUENCEDICTIONARY.out.dict
+    }
+
+    if(!bwa_index){
+        BWA_INDEX(
+            [ [], fasta ]
+        )
+
+        ch_versions = ch_versions.mix(BWA_INDEX.out.versions)
+        bwa_index = BWA_INDEX.out.index
     }
 
     //
@@ -142,7 +153,8 @@ workflow CMGGSTRUCTURAL {
         allele_loci_vcf,
         fasta,
         fasta_fai,
-        dict
+        dict,
+        bwa_index
     )
 
     ch_versions = ch_versions.mix(BAM_STRUCTURAL_VARIANT_CALLING.out.versions)

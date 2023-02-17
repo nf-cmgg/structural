@@ -2,7 +2,7 @@
 // Run Gridss
 //
 
-include { GRIDSS_GRIDSS      } from '../../../modules/local/gridss/gridss/main'
+include { GRIDSS_GRIDSS      } from '../../../modules/nf-core/gridss/gridss/main'
 
 include { TABIX_TABIX        } from '../../../modules/nf-core/tabix/tabix/main'
 
@@ -22,8 +22,8 @@ workflow BAM_VARIANT_CALLING_GRIDSS {
 
     GRIDSS_GRIDSS(
         crams.map {meta, cram, crai -> [meta, cram, []]},
-        fasta,
-        fasta_fai,
+        fasta.map {[[],it]},
+        fasta_fai.map {[[],it]},
         bwa_index
     )
 

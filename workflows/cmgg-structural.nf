@@ -23,12 +23,25 @@ for (param in checkPathParamList) { if (param) { file(param, checkIfExists: true
 // Check mandatory parameters
 if (params.input) { ch_input = file(params.input, checkIfExists: true) } else { exit 1, 'Input samplesheet not specified!' }
 
+// Check callers
+def availableCallers = [
+    "delly",
+    "whamg",
+    "manta",
+    "gridss",
+    "smoove"
+]
+
+for (caller in params.callers.tokenize(",")) {
+    if(!(caller in availableCallers)) { exit 1, "The caller '${caller}' is not supported please specify a comma delimited list with on or more of the following callers: ${availableCallers}".toString() }
+}
+
 // Parse parameters
-fasta           = params.fasta
-fasta_fai       = params.fasta_fai
-dict            = params.dict
-bwa_index       = params.bwa_index ?: []
-allele_loci_vcf = params.allele_loci_vcf ?: []
+fasta           = Channel.fromPath(params.fasta).collect()
+fasta_fai       = params.fasta_fai ? Channel.fromPath(params.fasta_fai).collect() : null
+dict            = params.dict ? Channel.fromPath(params.dict).collect() : null
+bwa_index       = params.bwa ? Channel.fromPath(params.bwa).map {[[],it]}.collect() : null
+allele_loci_vcf = params.allele_loci_vcf ? Channel.fromPath(params.allele_loci_vcf).collect() : []
 
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -89,7 +102,7 @@ workflow CMGGSTRUCTURAL {
 
     if(!fasta_fai){
         SAMTOOLS_FAIDX(
-            [ [], fasta ]
+            fasta.map {[[],it]}
         )
 
         ch_versions = ch_versions.mix(SAMTOOLS_FAIDX.out.versions)
@@ -102,16 +115,16 @@ workflow CMGGSTRUCTURAL {
         )
 
         ch_versions = ch_versions.mix(GATK4_CREATESEQUENCEDICTIONARY.out.versions)
-        dict        = GATK4_CREATESEQUENCEDICTIONARY.out.dict
+        dict        = GATK4_CREATESEQUENCEDICTIONARY.out.dict.collect()
     }
 
-    if(!bwa_index){
+    if(!bwa_index && params.callers.contains("gridss")){
         BWA_INDEX(
-            [ [], fasta ]
+            fasta.map {[[id:'bwa'],it]}
         )
 
         ch_versions = ch_versions.mix(BWA_INDEX.out.versions)
-        bwa_index = BWA_INDEX.out.index
+        bwa_index = BWA_INDEX.out.index.collect()
     }
 
     //

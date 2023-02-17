@@ -85,6 +85,11 @@
                         "git_sha": "c8e35eb2055c099720a75538d1b8adb3fb5a464c",
                         "installed_by": ["modules"]
                     },
+                    "gridss/gridss": {
+                        "branch": "master",
+                        "git_sha": "068edd3f6f736f312491b4333a0e3c2ba1cb9eac",
+                        "installed_by": ["modules"]
+                    },
                     "jasminesv": {
                         "branch": "master",
                         "git_sha": "1df904b954cadbeacf128688976ffffba25ac817",
@@ -133,7 +138,8 @@
                     "svtk/standardize": {
                         "branch": "master",
                         "git_sha": "c8e35eb2055c099720a75538d1b8adb3fb5a464c",
-                        "installed_by": ["modules"]
+                        "installed_by": ["modules"],
+                        "patch": "modules/nf-core/svtk/standardize/svtk-standardize.diff"
                     },
                     "tabix/bgzip": {
                         "branch": "master",

@@ -33,4 +33,17 @@ process SVTEST_SRFILE {
         python: \$(python3 --version | sed -e "s/Python //g")
     END_VERSIONS
     """
+
+    stub:
+    def prefix = task.ext.prefix ?: "${meta.id}"
+
+    """
+    touch ${prefix}.sr-file.tsv
+
+    cat <<-END_VERSIONS > versions.yml
+    "${task.process}":
+        svtest: ${VERSION}
+        python: \$(python3 --version | sed -e "s/Python //g")
+    END_VERSIONS
+    """
 }

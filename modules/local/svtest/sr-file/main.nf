@@ -36,6 +36,7 @@ process SVTEST_SRFILE {
 
     stub:
     def prefix = task.ext.prefix ?: "${meta.id}"
+    def VERSION = "0.1"
 
     """
     touch ${prefix}.sr-file.tsv

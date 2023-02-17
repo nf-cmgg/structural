@@ -49,6 +49,7 @@ process SVTEST_VCF {
 
     stub:
     def prefix = task.ext.prefix ?: "${meta.id}"
+    def VERSION = "0.1"
 
     """
     touch ${prefix}.tsv

@@ -42,4 +42,19 @@ process SVTK_STANDARDIZE {
         svtk: ${VERSION}
     END_VERSIONS
     """
+
+    stub:
+    def args = task.ext.args ?: ''
+    def prefix = task.ext.prefix ?: "${meta.id}"
+
+    def VERSION = '0.0.20190615' // WARN: Version information not provided by tool on CLI. Please update this string when bumping container versions.
+
+    """
+    touch ${prefix}.std.vcf.gz
+
+    cat <<-END_VERSIONS > versions.yml
+    "${task.process}":
+        svtk: ${VERSION}
+    END_VERSIONS
+    """
 }

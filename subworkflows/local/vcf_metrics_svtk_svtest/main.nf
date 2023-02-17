@@ -22,7 +22,7 @@ workflow VCF_METRICS_SVTK_SVTEST {
     ch_versions = Channel.empty()
 
     SVTK_STANDARDIZE(
-        called_vcfs.map({ meta, vcf, tbi -> [ meta, vcf ]}),
+        called_vcfs.filter {it[0].caller != "gridss"}.map({ meta, vcf, tbi -> [ meta, vcf ]}),
         fasta_fai
     )
 

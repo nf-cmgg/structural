@@ -13,9 +13,6 @@ workflow BAM_VARIANT_CALLING_GRIDSS {
         fasta_fai               // channel: [mandatory] [ fasta_fai ] => The index of the fasta reference file
         bwa_index               // channel: [mandatory] [ index ] => The BWA MEM index
 
-    // TODO add support for the bwa index
-    // TODO add tests
-
     main:
 
     ch_versions     = Channel.empty()

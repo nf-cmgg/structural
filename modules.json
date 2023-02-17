@@ -87,7 +87,7 @@
                     },
                     "gridss/gridss": {
                         "branch": "master",
-                        "git_sha": "068edd3f6f736f312491b4333a0e3c2ba1cb9eac",
+                        "git_sha": "f159f90b4bfa06b64bf86650fda0eb441dce4b77",
                         "installed_by": ["modules"]
                     },
                     "jasminesv": {

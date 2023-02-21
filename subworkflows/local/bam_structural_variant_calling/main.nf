@@ -11,6 +11,8 @@ include { BAM_VARIANT_CALLING_SCRAMBLE                  } from '../bam_variant_c
 include { VCF_METRICS_SVTK_SVTEST                       } from '../vcf_metrics_svtk_svtest/main'
 include { VCF_MERGE_JASMINE                             } from '../vcf_merge_jasmine/main'
 
+include { BAM_VARIANT_CALLING_GRIDSS                    } from '../bam_variant_calling_gridss/main'
+
 // Import modules
 include { GATK4_COLLECTREADCOUNTS as COLLECTREADCOUNTS  } from '../../../modules/nf-core/gatk4/collectreadcounts/main'
 include { GATK4_COLLECTSVEVIDENCE as COLLECTSVEVIDENCE  } from '../../../modules/nf-core/gatk4/collectsvevidence/main'
@@ -24,6 +26,7 @@ workflow BAM_STRUCTURAL_VARIANT_CALLING {
         fasta                   // channel: [mandatory] [ fasta ] => The fasta reference file
         fasta_fai               // channel: [mandatory] [ fasta_fai ] => The index of the fasta reference file
         dict                    // channel: [mandatory] [ dict ] => The dictionary of the fasta reference file
+        bwa_index               // channel: [optional]  [ index ] => The BWA MEM index
 
     main:
 
@@ -117,6 +120,22 @@ workflow BAM_STRUCTURAL_VARIANT_CALLING {
 
         called_vcfs = called_vcfs.mix(BAM_VARIANT_CALLING_SMOOVE.out.smoove_vcfs)
         ch_versions = ch_versions.mix(BAM_VARIANT_CALLING_SMOOVE.out.versions)
+    }
+
+    //
+    // Calling variants using Gridss
+    //
+
+    if("gridss" in callers){
+        BAM_VARIANT_CALLING_GRIDSS(
+            crams,
+            fasta,
+            fasta_fai,
+            bwa_index
+        )
+
+        called_vcfs = called_vcfs.mix(BAM_VARIANT_CALLING_GRIDSS.out.gridss_vcfs)
+        ch_versions = ch_versions.mix(BAM_VARIANT_CALLING_GRIDSS.out.versions)
     }
 
     //

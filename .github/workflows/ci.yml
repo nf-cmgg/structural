@@ -26,7 +26,7 @@ jobs:
     strategy:
       matrix:
         NXF_VER:
-          - "22.10.1"
+          - "22.10.5"
           - "latest-everything"
         test:
           - "all"
@@ -34,6 +34,7 @@ jobs:
           - "delly"
           - "manta"
           - "whamg"
+          - "gridss"
     steps:
       - name: Check out pipeline code
         uses: actions/checkout@v3

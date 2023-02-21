@@ -73,6 +73,10 @@
                     "default": "None",
                     "description": "Path to the sequence dictionary of the FASTA genome file"
                 },
+                "bwa": {
+                    "type": "string",
+                    "default": null
+                },
                 "igenomes_base": {
                     "type": "string",
                     "format": "directory-path",

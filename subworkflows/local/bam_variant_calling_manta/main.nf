@@ -53,16 +53,7 @@ workflow BAM_VARIANT_CALLING_MANTA {
 
     ch_versions = ch_versions.mix(MANTA_CONVERTINVERSION.out.versions)
 
-    //
-    // Change the header of the VCF to let it match the specifications
-    //
-
-    BCFTOOLS_REHEADER(
-        MANTA_CONVERTINVERSION.out.vcf.map{meta, vcf -> [meta, vcf, []]},
-        [],
-    )
-
-    BCFTOOLS_REHEADER.out.vcf
+    MANTA_CONVERTINVERSION.out.vcf
         .combine(MANTA_CONVERTINVERSION.out.tbi, by:0)
         .map(
             { meta, vcf, tbi ->

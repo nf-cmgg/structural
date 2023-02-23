@@ -64,6 +64,8 @@ ch_multiqc_custom_methods_description = params.multiqc_methods_description ? fil
 // SUBWORKFLOW: Consisting of a mix of local and nf-core/modules
 //
 include { BAM_STRUCTURAL_VARIANT_CALLING    } from '../subworkflows/local/bam_structural_variant_calling/main'
+include { VCF_GENOTYPE_SV_PARAGRAPH         } from '../subworkflows/local/vcf_genotype_sv_paragraph/main'
+include { VCF_GENOTYPE_SV_DELLY             } from '../subworkflows/local/vcf_genotype_sv_delly/main'
 
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -172,6 +174,17 @@ workflow CMGGSTRUCTURAL {
 
     ch_versions = ch_versions.mix(BAM_STRUCTURAL_VARIANT_CALLING.out.versions)
     ch_reports  = ch_reports.mix(BAM_STRUCTURAL_VARIANT_CALLING.out.reports)
+
+    //
+    // Genotype the variants
+    //
+
+    VCF_GENOTYPE_SV_DELLY(
+        BAM_STRUCTURAL_VARIANT_CALLING.out.vcfs,
+        inputs.crams,
+        fasta,
+        fasta_fai
+    )
 
     //
     // Dump the software versions

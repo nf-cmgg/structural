@@ -6,6 +6,8 @@ include { TABIX_BGZIP as UNZIP_VCFS                     } from '../../../modules
 include { TABIX_BGZIP as BGZIP_MERGED                   } from '../../../modules/nf-core/tabix/bgzip/main'
 include { TABIX_TABIX                                   } from '../../../modules/nf-core/tabix/tabix/main'
 include { JASMINESV                                     } from '../../../modules/nf-core/jasminesv/main'
+include { BCFTOOLS_SORT                                 } from '../../../modules/nf-core/bcftools/sort/main'
+
 
 workflow VCF_MERGE_JASMINE {
     take:
@@ -49,13 +51,19 @@ workflow VCF_MERGE_JASMINE {
 
     ch_versions = ch_versions.mix(BGZIP_MERGED.out.versions)
 
-    TABIX_TABIX(
+    BCFTOOLS_SORT(
         BGZIP_MERGED.out.output
+    )
+
+    ch_versions = ch_versions.mix(BCFTOOLS_SORT.out.versions)
+
+    TABIX_TABIX(
+        BCFTOOLS_SORT.out.vcf
     )
 
     ch_versions = ch_versions.mix(TABIX_TABIX.out.versions)
 
-    BGZIP_MERGED.out.output
+    BCFTOOLS_SORT.out.vcf
         .join(TABIX_TABIX.out.tbi)
         .set { merged_vcfs }
 

@@ -220,11 +220,16 @@ workflow BAM_STRUCTURAL_VARIANT_CALLING {
 
         VCF_MERGE_JASMINE.out.merged_vcfs.set { merged_vcfs }
     } else {
-        called_vcfs.set { merged_vcfs }
+        called_vcfs
+            .map { meta, vcf, tbi ->
+                new_meta = meta.findAll { !(it.key == "caller") }
+                [ new_meta, vcf, tbi ]
+            }
+            .set { merged_vcfs }
     }
 
     emit:
-    vcfs                = called_vcfs
+    vcfs                = merged_vcfs
 
     coverage_counts     = COLLECTREADCOUNTS.out.tsv
 

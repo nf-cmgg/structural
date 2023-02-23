@@ -79,7 +79,7 @@ workflow BAM_VARIANT_CALLING_DELLY {
         .map(
             { meta, cram, crai, bed ->
                 new_meta = meta + [id:bed.baseName.replace("_reversed","")]
-                [ new_meta, cram, crai, bed ]
+                [ new_meta, cram, crai, [], [], bed ]
             }
         )
         .dump(tag: 'delly_input', pretty: true)
@@ -99,15 +99,15 @@ workflow BAM_VARIANT_CALLING_DELLY {
 
     DELLY_CALL.out.bcf
         .join(DELLY_CALL.out.csi)
-        .map { meta, bcf, csi ->
+        .map { meta, vcf, csi ->
             new_meta = meta + [id:meta.sample]
-            [ new_meta, bcf, csi ]
+            [ new_meta, vcf, csi ]
         }
         .combine(SCATTER_BEDS.out.scatter, by:0)
         .map(
-            { meta, bcf, csi, beds ->
+            { meta, vcf, csi, beds ->
                 count = beds instanceof ArrayList ? beds.size() : 1
-                [ groupKey(meta, count), bcf, csi ]
+                [ groupKey(meta, count), vcf, csi ]
             }
         )
         .groupTuple()

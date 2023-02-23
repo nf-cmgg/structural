@@ -40,11 +40,6 @@
                         "git_sha": "f1f473b21811b958d1317c4a97c56e16d3ee40f9",
                         "installed_by": ["modules"]
                     },
-                    "bedtools/split": {
-                        "branch": "master",
-                        "git_sha": "c8e35eb2055c099720a75538d1b8adb3fb5a464c",
-                        "installed_by": ["modules"]
-                    },
                     "bwa/index": {
                         "branch": "master",
                         "git_sha": "c8e35eb2055c099720a75538d1b8adb3fb5a464c",
@@ -57,7 +52,7 @@
                     },
                     "delly/call": {
                         "branch": "master",
-                        "git_sha": "c8e35eb2055c099720a75538d1b8adb3fb5a464c",
+                        "git_sha": "40defa2f0eb37163d310530f84bfd92e52adc53d",
                         "installed_by": ["modules"]
                     },
                     "gatk4/collectreadcounts": {
@@ -108,6 +103,11 @@
                     "multiqc": {
                         "branch": "master",
                         "git_sha": "ee80d14721e76e2e079103b8dcd5d57129e584ba",
+                        "installed_by": ["modules"]
+                    },
+                    "paragraph/idxdepth": {
+                        "branch": "master",
+                        "git_sha": "a6d4e569dc522658b9b47a2c1d3e013b0ae4ba77",
                         "installed_by": ["modules"]
                     },
                     "samtools/convert": {

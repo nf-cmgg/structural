@@ -75,7 +75,7 @@
                 },
                 "bwa": {
                     "type": "string",
-                    "default": null
+                    "default": "None"
                 },
                 "igenomes_base": {
                     "type": "string",
@@ -300,6 +300,11 @@
             "description": "",
             "default": "",
             "properties": {
+                "delly_scatter_size": {
+                    "type": "integer",
+                    "default": 1000000,
+                    "description": "The approximate size of regions to split for parallelizing the Delly run"
+                },
                 "run_module_metrics": {
                     "type": "boolean",
                     "default": true,
@@ -315,11 +320,6 @@
                     "default": "DEL,DUP",
                     "description": "Which SV types delly should search for in the variant calling"
                 },
-                "delly_scatter_count": {
-                    "type": "integer",
-                    "default": 2,
-                    "description": "The scatter count used to scatter input BEDs for Delly"
-                },
                 "whamg_include_bed_file": {
                     "type": "boolean",
                     "description": "Whether or not to include the BED files when using Whamg (this can lead to thousands of processes and is only suggested for small BED files)"
@@ -334,13 +334,9 @@
                     "default": "None",
                     "description": "Path to the Allele loci VCF"
                 },
-                "run_ploidy": {
+                "output_callers": {
                     "type": "boolean",
-                    "description": "Whether or not to run ploidy"
-                },
-                "run_vcf_qc": {
-                    "type": "boolean",
-                    "description": "Whether or not to run VCF quality control"
+                    "description": "Output the output from different callers. Warning: This produces a lot of additional output and should only be used for testing purposes"
                 }
             }
         }

@@ -8,10 +8,9 @@ include { BAM_VARIANT_CALLING_DELLY                     } from '../bam_variant_c
 include { BAM_VARIANT_CALLING_WHAMG                     } from '../bam_variant_calling_whamg/main'
 include { BAM_VARIANT_CALLING_SMOOVE                    } from '../bam_variant_calling_smoove/main'
 include { BAM_VARIANT_CALLING_SCRAMBLE                  } from '../bam_variant_calling_scramble/main'
+include { BAM_VARIANT_CALLING_GRIDSS                    } from '../bam_variant_calling_gridss/main'
 include { VCF_METRICS_SVTK_SVTEST                       } from '../vcf_metrics_svtk_svtest/main'
 include { VCF_MERGE_JASMINE                             } from '../vcf_merge_jasmine/main'
-
-include { BAM_VARIANT_CALLING_GRIDSS                    } from '../bam_variant_calling_gridss/main'
 
 // Import modules
 include { GATK4_COLLECTREADCOUNTS as COLLECTREADCOUNTS  } from '../../../modules/nf-core/gatk4/collectreadcounts/main'

@@ -13,12 +13,16 @@ nextflow_pipeline {
         then {
             assert workflow.success
             assert file("${outputDir}/PosCon1/PosCon1.vcf.gz").exists()
+            assert file("${outputDir}/PosCon1/PosCon1_genotyped.vcf.gz").exists()
             assert file("${outputDir}/PosCon1/PosCon1.vcf.gz.tbi").exists()
             assert file("${outputDir}/PosCon2/PosCon2.vcf.gz").exists()
+            assert file("${outputDir}/PosCon2/PosCon2_genotyped.vcf.gz").exists()
             assert file("${outputDir}/PosCon2/PosCon2.vcf.gz.tbi").exists()
             assert file("${outputDir}/PosCon3/PosCon3.vcf.gz").exists()
+            assert file("${outputDir}/PosCon3/PosCon3_genotyped.vcf.gz").exists()
             assert file("${outputDir}/PosCon3/PosCon3.vcf.gz.tbi").exists()
             assert file("${outputDir}/PosCon4/PosCon4.vcf.gz").exists()
+            assert file("${outputDir}/PosCon4/PosCon4_genotyped.vcf.gz").exists()
             assert file("${outputDir}/PosCon4/PosCon4.vcf.gz.tbi").exists()
         }
     }

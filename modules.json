@@ -110,6 +110,11 @@
                         "git_sha": "a6d4e569dc522658b9b47a2c1d3e013b0ae4ba77",
                         "installed_by": ["modules"]
                     },
+                    "paragraph/multigrmpy": {
+                        "branch": "master",
+                        "git_sha": "5fb1c408da4a1f9bd17163cea30316d919589f5f",
+                        "installed_by": ["modules"]
+                    },
                     "samtools/convert": {
                         "branch": "master",
                         "git_sha": "c8e35eb2055c099720a75538d1b8adb3fb5a464c",

@@ -4,9 +4,8 @@ import groovy.json.JsonSlurper
 // Merge VCFs from multiple callers
 //
 
-include { PARAGRAPH_IDXDEPTH } from '../../../modules/nf-core/paragraph/idxdepth/main'
-
-include { PARAGRAPH_GRMPY    } from '../../../modules/local/paragraph/grmpy/main'
+include { PARAGRAPH_IDXDEPTH    } from '../../../modules/nf-core/paragraph/idxdepth/main'
+include { PARAGRAPH_MULTIGRMPY  } from '../../../modules/nf-core/paragraph/multigrmpy/main'
 
 workflow VCF_GENOTYPE_SV_PARAGRAPH {
     take:
@@ -50,15 +49,15 @@ workflow VCF_GENOTYPE_SV_PARAGRAPH {
         .join(manifest)
         .set { grmpy_input }
 
-    PARAGRAPH_GRMPY(
+    PARAGRAPH_MULTIGRMPY(
         grmpy_input,
         fasta.map { [[], it] },
         fasta_fai.map { [[], it] }
     )
-    ch_versions = ch_versions.mix(PARAGRAPH_GRMPY.out.versions)
+    ch_versions = ch_versions.mix(PARAGRAPH_MULTIGRMPY.out.versions)
 
     emit:
-    genotyped_vcfs = PARAGRAPH_GRMPY.out.vcf.view()
+    genotyped_vcfs = PARAGRAPH_MULTIGRMPY.out.vcf
     versions = ch_versions
 }
 

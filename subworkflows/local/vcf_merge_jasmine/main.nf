@@ -8,6 +8,7 @@ include { TABIX_TABIX                                   } from '../../../modules
 include { JASMINESV                                     } from '../../../modules/nf-core/jasminesv/main'
 include { BCFTOOLS_SORT                                 } from '../../../modules/nf-core/bcftools/sort/main'
 
+include { REHEADER_CALLED_VCFS                          } from '../../../modules/local/bcftools/reheader_called_vcfs/main'
 
 workflow VCF_MERGE_JASMINE {
     take:
@@ -45,14 +46,17 @@ workflow VCF_MERGE_JASMINE {
 
     ch_versions = ch_versions.mix(JASMINESV.out.versions)
 
-    BGZIP_MERGED(
-        JASMINESV.out.vcf
-    )
+    new_header = Channel.fromPath("${projectDir}/assets/header.txt").collect()
 
-    ch_versions = ch_versions.mix(BGZIP_MERGED.out.versions)
+    REHEADER_CALLED_VCFS(
+        JASMINESV.out.vcf,
+        new_header,
+        fasta_fai
+    )
+    ch_versions = ch_versions.mix(REHEADER_CALLED_VCFS.out.versions)
 
     BCFTOOLS_SORT(
-        BGZIP_MERGED.out.output
+        REHEADER_CALLED_VCFS.out.vcf
     )
 
     ch_versions = ch_versions.mix(BCFTOOLS_SORT.out.versions)

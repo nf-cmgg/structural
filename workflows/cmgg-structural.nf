@@ -133,9 +133,28 @@ workflow CMGGSTRUCTURAL {
     //
 
     SamplesheetConversion.convert(ch_input, file("${projectDir}/assets/schema_input.json"))
-        .multiMap({ meta, cram, crai, bed, oed ->
-            bed: [ meta, bed ]
-            crams: [ meta, cram, crai ]
+        .map { meta, cram, crai, bed, ped ->
+            new_meta = meta + [family:meta.family ?: meta.id]
+            [ new_meta, cram, crai, bed, ped ]
+        }
+        .tap { original_samplesheet }
+        .map { meta, cram, crai, bed, ped ->
+            [ meta.family, 1 ]
+        }
+        .groupTuple()
+        .map { family, one ->
+            [ family, one.sum() ]
+        }
+        .combine(
+            original_samplesheet.map {
+                [ it[0].family ] + it
+            },
+            by:0
+        )
+        .multiMap({ family, family_count, meta, cram, crai, bed, ped ->
+            new_meta = meta + [family_count:family_count]
+            bed: [ new_meta, bed ]
+            crams: [ new_meta, cram, crai ]
         })
         .set { inputs }
 

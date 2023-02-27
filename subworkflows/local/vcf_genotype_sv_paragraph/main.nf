@@ -6,6 +6,8 @@ import groovy.json.JsonSlurper
 
 include { PARAGRAPH_IDXDEPTH    } from '../../../modules/nf-core/paragraph/idxdepth/main'
 include { PARAGRAPH_MULTIGRMPY  } from '../../../modules/nf-core/paragraph/multigrmpy/main'
+include { TABIX_TABIX           } from '../../../modules/nf-core/tabix/tabix/main'
+include { BCFTOOLS_MERGE        } from '../../../modules/nf-core/bcftools/merge/main'
 
 workflow VCF_GENOTYPE_SV_PARAGRAPH {
     take:
@@ -56,8 +58,36 @@ workflow VCF_GENOTYPE_SV_PARAGRAPH {
     )
     ch_versions = ch_versions.mix(PARAGRAPH_MULTIGRMPY.out.versions)
 
+    TABIX_TABIX(
+        PARAGRAPH_MULTIGRMPY.out.vcf
+    )
+
+    PARAGRAPH_MULTIGRMPY.out.vcf
+        .join(TABIX_TABIX.out.tbi)
+        .map { meta, vcf, tbi ->
+            new_meta = meta.findAll { !(it.key == "sample") } + [id:meta.family]
+            [ groupKey(new_meta, meta.family_count), vcf, tbi ]
+        }
+        .groupTuple()
+        .branch { meta, vcfs, tbis ->
+            merge: vcfs.size() > 1
+            dont_merge: vcfs.size() == 1
+        }
+        .set { merge_input }
+
+    BCFTOOLS_MERGE(
+        merge_input.merge,
+        [],
+        [],
+        []
+    )
+
+    BCFTOOLS_MERGE.out.merged_variants
+        .mix(merge_input.dont_merge)
+        .set { genotyped_vcfs }
+
     emit:
-    genotyped_vcfs = PARAGRAPH_MULTIGRMPY.out.vcf
+    genotyped_vcfs
     versions = ch_versions
 }
 

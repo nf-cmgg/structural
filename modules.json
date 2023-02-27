@@ -10,6 +10,11 @@
                         "git_sha": "582ff1755bdd205c65e2ba4c31e0a008dae299ec",
                         "installed_by": ["modules"]
                     },
+                    "bcftools/merge": {
+                        "branch": "master",
+                        "git_sha": "c8e35eb2055c099720a75538d1b8adb3fb5a464c",
+                        "installed_by": ["modules"]
+                    },
                     "bcftools/reheader": {
                         "branch": "master",
                         "git_sha": "94688be064ebc0fc4d720ba7acb0f1f8eb8d0af0",

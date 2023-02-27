@@ -320,15 +320,6 @@
                     "default": "DEL,DUP",
                     "description": "Which SV types delly should search for in the variant calling"
                 },
-                "whamg_include_bed_file": {
-                    "type": "boolean",
-                    "description": "Whether or not to include the BED files when using Whamg (this can lead to thousands of processes and is only suggested for small BED files)"
-                },
-                "whamg_bed_overlap": {
-                    "type": "integer",
-                    "default": 10000,
-                    "description": "A overlap value for BED regions to be merged. This can reduce the overhead created when using the `--whamg_include_bed_file` option"
-                },
                 "allele_loci_vcf": {
                     "type": "string",
                     "default": "None",

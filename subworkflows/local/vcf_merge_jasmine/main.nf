@@ -2,8 +2,6 @@
 // Merge VCFs from multiple callers
 //
 
-include { TABIX_BGZIP as UNZIP_VCFS                     } from '../../../modules/nf-core/tabix/bgzip/main'
-include { TABIX_BGZIP as BGZIP_MERGED                   } from '../../../modules/nf-core/tabix/bgzip/main'
 include { TABIX_TABIX                                   } from '../../../modules/nf-core/tabix/tabix/main'
 include { JASMINESV                                     } from '../../../modules/nf-core/jasminesv/main'
 include { BCFTOOLS_SORT                                 } from '../../../modules/nf-core/bcftools/sort/main'
@@ -20,17 +18,11 @@ workflow VCF_MERGE_JASMINE {
 
     ch_versions     = Channel.empty()
 
-    UNZIP_VCFS(
-        vcfs
-    )
-
-    ch_versions = ch_versions.mix(UNZIP_VCFS.out.versions)
-
-    UNZIP_VCFS.out.output
+    vcfs
         .map { meta, vcf ->
             [ meta.findAll { !(it.key == "caller")}, vcf ]
         }
-        .groupTuple(size:params.callers.tokenize(",").size)
+        .groupTuple(size:params.callers.tokenize(",").size())
         .map { meta, vcfs ->
             [ meta, vcfs, [], [] ]
         }

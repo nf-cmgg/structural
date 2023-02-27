@@ -82,7 +82,7 @@
                     },
                     "jasminesv": {
                         "branch": "master",
-                        "git_sha": "1df904b954cadbeacf128688976ffffba25ac817",
+                        "git_sha": "bc65cc279dc5f7716091db364d992eda7beab6c4",
                         "installed_by": ["modules"]
                     },
                     "manta/convertinversion": {

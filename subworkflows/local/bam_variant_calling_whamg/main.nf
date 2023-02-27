@@ -18,7 +18,6 @@ workflow BAM_VARIANT_CALLING_WHAMG {
     main:
 
     ch_versions      = Channel.empty()
-    include_bed_file = params.whamg_include_bed_file
 
     //
     // Convert the CRAMs to BAMs
@@ -36,8 +35,6 @@ workflow BAM_VARIANT_CALLING_WHAMG {
     //
     // Calling variants using Whamg
     //
-
-    whamg_input.dump(tag: 'whamg_input', pretty: true)
 
     WHAMG(
         bams,

@@ -10,11 +10,6 @@
                         "git_sha": "582ff1755bdd205c65e2ba4c31e0a008dae299ec",
                         "installed_by": ["modules"]
                     },
-                    "bcftools/convert": {
-                        "branch": "master",
-                        "git_sha": "c8e35eb2055c099720a75538d1b8adb3fb5a464c",
-                        "installed_by": ["modules"]
-                    },
                     "bcftools/reheader": {
                         "branch": "master",
                         "git_sha": "94688be064ebc0fc4d720ba7acb0f1f8eb8d0af0",
@@ -23,11 +18,6 @@
                     "bcftools/sort": {
                         "branch": "master",
                         "git_sha": "4a21e4cca35e72ec059abd67f790e0b192ce5d81",
-                        "installed_by": ["modules"]
-                    },
-                    "bedtools/intersect": {
-                        "branch": "master",
-                        "git_sha": "e576ba52f6babb06cd7946c286e5bb4f494ee02c",
                         "installed_by": ["modules"]
                     },
                     "bedtools/merge": {

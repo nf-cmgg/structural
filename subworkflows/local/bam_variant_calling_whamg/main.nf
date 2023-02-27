@@ -39,9 +39,9 @@ workflow BAM_VARIANT_CALLING_WHAMG {
 
     if(include_bed_file){
 
-        BEDTOOLS_MERGE{
+        BEDTOOLS_MERGE(
             beds.map({ meta, bed, bed_gz, bed_gz_tbi -> [ meta, bed ]})
-        }
+        )
 
         ch_versions = ch_versions.mix(BEDTOOLS_MERGE.out.versions)
 

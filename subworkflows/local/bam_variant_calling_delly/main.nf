@@ -8,7 +8,6 @@ include { SCATTER_BEDS       } from '../../../modules/local/scatter_beds/main'
 include { DELLY_CALL         } from '../../../modules/nf-core/delly/call/main'
 include { BCFTOOLS_CONCAT    } from '../../../modules/nf-core/bcftools/concat/main'
 include { BCFTOOLS_SORT      } from '../../../modules/nf-core/bcftools/sort/main'
-include { BCFTOOLS_CONVERT   } from '../../../modules/nf-core/bcftools/convert/main'
 include { TABIX_TABIX        } from '../../../modules/nf-core/tabix/tabix/main'
 
 workflow BAM_VARIANT_CALLING_DELLY {

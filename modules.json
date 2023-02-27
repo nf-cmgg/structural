@@ -112,7 +112,7 @@
                     },
                     "paragraph/multigrmpy": {
                         "branch": "master",
-                        "git_sha": "5fb1c408da4a1f9bd17163cea30316d919589f5f",
+                        "git_sha": "c6cee1435661b67d195aeec35472c8d8d6e48ef4",
                         "installed_by": ["modules"]
                     },
                     "samtools/convert": {

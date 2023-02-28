@@ -14,7 +14,7 @@ process DELLY_CALL {
 
     output:
     tuple val(meta), path("*.{bcf,vcf.gz}")  , emit: bcf
-    tuple val(meta), path("*.csi")           , emit: csi, optional:true
+    tuple val(meta), path("*.{csi,tbi}")     , emit: csi, optional:true
     path "versions.yml"                      , emit: versions
 
     when:
@@ -29,7 +29,7 @@ process DELLY_CALL {
     def exclude = exclude_bed ? "--exclude ${exclude_bed}" : ""
 
     def bcf_output = suffix == "bcf" ? "--outfile ${prefix}.bcf" : ""
-    def vcf_output = suffix == "vcf" ? "| bgzip ${args2} --threads ${task.cpus} --stdout > ${prefix}.vcf.gz" : ""
+    def vcf_output = suffix == "vcf" ? "| sed 's/CONSENSUS/SVINSSEQ/g' | bgzip ${args2} --threads ${task.cpus} --stdout > ${prefix}.vcf.gz" : ""
 
     def genotype = vcf ? "--vcffile ${vcf}" : ""
 
@@ -43,6 +43,8 @@ process DELLY_CALL {
         ${exclude} \\
         ${input} \\
         ${vcf_output}
+
+    tabix ${prefix}.vcf.gz
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":

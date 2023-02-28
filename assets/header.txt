@@ -39,7 +39,6 @@
 ##INFO=<ID=SRMAPQ,Number=1,Type=Integer,Description="Median mapping quality of split-reads">
 ##INFO=<ID=SR,Number=1,Type=Integer,Description="Split-read support">
 ##INFO=<ID=SRQ,Number=1,Type=Float,Description="Split-read consensus alignment quality">
-##INFO=<ID=CONSENSUS,Number=1,Type=String,Description="Split-read consensus sequence">
 ##INFO=<ID=CE,Number=1,Type=Float,Description="Consensus sequence entropy">
 ##INFO=<ID=CT,Number=1,Type=String,Description="Paired-end signature induced connection type">
 ##INFO=<ID=SVLEN,Number=1,Type=Integer,Description="Insertion length for SVTYPE=INS.">

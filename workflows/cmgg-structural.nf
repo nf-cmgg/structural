@@ -36,6 +36,10 @@ for (caller in params.callers.tokenize(",")) {
     if(!(caller in availableCallers)) { exit 1, "The caller '${caller}' is not supported please specify a comma delimited list with on or more of the following callers: ${availableCallers}".toString() }
 }
 
+if ("whamg" in params.callers.tokenize(",")) {
+    exit 1, "Whamg currently isn't functional. This will be fixed in a further build of the pipeline"
+}
+
 // Parse parameters
 fasta           = Channel.fromPath(params.fasta).collect()
 fasta_fai       = params.fasta_fai ? Channel.fromPath(params.fasta_fai).collect() : null

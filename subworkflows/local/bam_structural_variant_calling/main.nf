@@ -92,7 +92,8 @@ workflow BAM_STRUCTURAL_VARIANT_CALLING {
     // Calling variants using Whamg
     //
 
-    // Whamg needs some reheadering (like done in https://github.com/broadinstitute/gatk-sv/blob/90e3e9a221bdfe7ab2cfedeffb704bc6f0e99aa9/wdl/Whamg.wdl#L209)
+    // TODO Whamg needs some reheadering (like done in https://github.com/broadinstitute/gatk-sv/blob/90e3e9a221bdfe7ab2cfedeffb704bc6f0e99aa9/wdl/Whamg.wdl#L209)
+    // TODO Add insertions sequence in the info key - Whamg will not work for now
     if("whamg" in callers){
         BAM_VARIANT_CALLING_WHAMG(
             crams,

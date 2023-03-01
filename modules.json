@@ -48,7 +48,8 @@
                     "delly/call": {
                         "branch": "master",
                         "git_sha": "40defa2f0eb37163d310530f84bfd92e52adc53d",
-                        "installed_by": ["modules"]
+                        "installed_by": ["modules"],
+                        "patch": "modules/nf-core/delly/call/delly-call.diff"
                     },
                     "gatk4/collectreadcounts": {
                         "branch": "master",

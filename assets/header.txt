@@ -203,3 +203,4 @@
 ##FORMAT=<ID=VF,Number=1,Type=Integer,Description="Count of fragments supporting the variant breakpoint allele and not the reference allele.">
 ##FORMAT=<ID=IS,Number=1,Type=String,Description="Whether or not the variant call was marked as specific due to high read support and length">
 ##FORMAT=<ID=OT,Number=1,Type=String,Description="The original type of the variant">
+##FORMAT=<ID=DP,Number=1,Type=Integer,Description="Read Depth">

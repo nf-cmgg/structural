@@ -53,7 +53,7 @@
 ##INFO=<ID=EVENT,Number=1,Type=String,Description="ID of event associated to breakend">
 ##INFO=<ID=HOMSEQ,Number=.,Type=String,Description="Sequence of base pair identical homology at event breakpoints">
 ##INFO=<ID=SVINSLEN,Number=.,Type=Integer,Description="Length of insertion">
-##INFO=<ID=SVINSSEQ,Number=.,Type=String,Description="Sequence of insertion">
+##INFO=<ID=SVINSSEQ,Number=1,Type=String,Description="Sequence of insertion">
 ##INFO=<ID=LEFT_SVINSSEQ,Number=.,Type=String,Description="Known left side of insertion for an insertion of unknown length">
 ##INFO=<ID=RIGHT_SVINSSEQ,Number=.,Type=String,Description="Known right side of insertion for an insertion of unknown length">
 ##INFO=<ID=BND_DEPTH,Number=1,Type=Integer,Description="Read depth at local translocation breakend">

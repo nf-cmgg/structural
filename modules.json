@@ -10,7 +10,7 @@
                         "git_sha": "582ff1755bdd205c65e2ba4c31e0a008dae299ec",
                         "installed_by": ["modules"]
                     },
-                    "bcftools/convert": {
+                    "bcftools/merge": {
                         "branch": "master",
                         "git_sha": "c8e35eb2055c099720a75538d1b8adb3fb5a464c",
                         "installed_by": ["modules"]
@@ -22,12 +22,7 @@
                     },
                     "bcftools/sort": {
                         "branch": "master",
-                        "git_sha": "c8e35eb2055c099720a75538d1b8adb3fb5a464c",
-                        "installed_by": ["modules"]
-                    },
-                    "bedtools/intersect": {
-                        "branch": "master",
-                        "git_sha": "e576ba52f6babb06cd7946c286e5bb4f494ee02c",
+                        "git_sha": "4a21e4cca35e72ec059abd67f790e0b192ce5d81",
                         "installed_by": ["modules"]
                     },
                     "bedtools/merge": {
@@ -38,11 +33,6 @@
                     "bedtools/sort": {
                         "branch": "master",
                         "git_sha": "f1f473b21811b958d1317c4a97c56e16d3ee40f9",
-                        "installed_by": ["modules"]
-                    },
-                    "bedtools/split": {
-                        "branch": "master",
-                        "git_sha": "c8e35eb2055c099720a75538d1b8adb3fb5a464c",
                         "installed_by": ["modules"]
                     },
                     "bwa/index": {
@@ -57,8 +47,9 @@
                     },
                     "delly/call": {
                         "branch": "master",
-                        "git_sha": "c8e35eb2055c099720a75538d1b8adb3fb5a464c",
-                        "installed_by": ["modules"]
+                        "git_sha": "40defa2f0eb37163d310530f84bfd92e52adc53d",
+                        "installed_by": ["modules"],
+                        "patch": "modules/nf-core/delly/call/delly-call.diff"
                     },
                     "gatk4/collectreadcounts": {
                         "branch": "master",
@@ -92,7 +83,7 @@
                     },
                     "jasminesv": {
                         "branch": "master",
-                        "git_sha": "1df904b954cadbeacf128688976ffffba25ac817",
+                        "git_sha": "bc65cc279dc5f7716091db364d992eda7beab6c4",
                         "installed_by": ["modules"]
                     },
                     "manta/convertinversion": {
@@ -108,6 +99,16 @@
                     "multiqc": {
                         "branch": "master",
                         "git_sha": "ee80d14721e76e2e079103b8dcd5d57129e584ba",
+                        "installed_by": ["modules"]
+                    },
+                    "paragraph/idxdepth": {
+                        "branch": "master",
+                        "git_sha": "a6d4e569dc522658b9b47a2c1d3e013b0ae4ba77",
+                        "installed_by": ["modules"]
+                    },
+                    "paragraph/multigrmpy": {
+                        "branch": "master",
+                        "git_sha": "c6cee1435661b67d195aeec35472c8d8d6e48ef4",
                         "installed_by": ["modules"]
                     },
                     "samtools/convert": {

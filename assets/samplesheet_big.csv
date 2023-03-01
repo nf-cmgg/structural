@@ -1,0 +1,5 @@
+sample,family,cram,crai,bed
+PosCon1,family1,s3://test-data/genomics/homo_sapiens/illumina/cram/SVcontrol/big/PosCon1_chr16.cram,s3://test-data/genomics/homo_sapiens/illumina/cram/SVcontrol/big/PosCon1_chr16.cram.crai,s3://test-data/genomics/homo_sapiens/illumina/regions/SVcontrol/PosCon1and2_chr16.roi.bed
+PosCon2,family1,s3://test-data/genomics/homo_sapiens/illumina/cram/SVcontrol/big/PosCon2_chr16.cram,s3://test-data/genomics/homo_sapiens/illumina/cram/SVcontrol/big/PosCon2_chr16.cram.crai,s3://test-data/genomics/homo_sapiens/illumina/regions/SVcontrol/PosCon1and2_chr16.roi.bed
+PosCon3,,s3://test-data/genomics/homo_sapiens/illumina/cram/SVcontrol/big/PosCon2_chr14.cram,s3://test-data/genomics/homo_sapiens/illumina/cram/SVcontrol/big/PosCon2_chr14.cram.crai,s3://test-data/genomics/homo_sapiens/illumina/regions/SVcontrol/PosCon2_chr14.roi.bed
+PosCon4,,s3://test-data/genomics/homo_sapiens/illumina/cram/SVcontrol/big/PosCon4_chrX.cram,s3://test-data/genomics/homo_sapiens/illumina/cram/SVcontrol/big/PosCon4_chrX.cram.crai,s3://test-data/genomics/homo_sapiens/illumina/regions/SVcontrol/PosCon4and5_chrX.roi.bed

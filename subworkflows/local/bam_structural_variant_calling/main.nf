@@ -8,10 +8,9 @@ include { BAM_VARIANT_CALLING_DELLY                     } from '../bam_variant_c
 include { BAM_VARIANT_CALLING_WHAMG                     } from '../bam_variant_calling_whamg/main'
 include { BAM_VARIANT_CALLING_SMOOVE                    } from '../bam_variant_calling_smoove/main'
 include { BAM_VARIANT_CALLING_SCRAMBLE                  } from '../bam_variant_calling_scramble/main'
+include { BAM_VARIANT_CALLING_GRIDSS                    } from '../bam_variant_calling_gridss/main'
 include { VCF_METRICS_SVTK_SVTEST                       } from '../vcf_metrics_svtk_svtest/main'
 include { VCF_MERGE_JASMINE                             } from '../vcf_merge_jasmine/main'
-
-include { BAM_VARIANT_CALLING_GRIDSS                    } from '../bam_variant_calling_gridss/main'
 
 // Import modules
 include { GATK4_COLLECTREADCOUNTS as COLLECTREADCOUNTS  } from '../../../modules/nf-core/gatk4/collectreadcounts/main'
@@ -93,7 +92,8 @@ workflow BAM_STRUCTURAL_VARIANT_CALLING {
     // Calling variants using Whamg
     //
 
-    // Whamg needs some reheadering (like done in https://github.com/broadinstitute/gatk-sv/blob/90e3e9a221bdfe7ab2cfedeffb704bc6f0e99aa9/wdl/Whamg.wdl#L209)
+    // TODO Whamg needs some reheadering (like done in https://github.com/broadinstitute/gatk-sv/blob/90e3e9a221bdfe7ab2cfedeffb704bc6f0e99aa9/wdl/Whamg.wdl#L209)
+    // TODO Add insertions sequence in the info key - Whamg will not work for now
     if("whamg" in callers){
         BAM_VARIANT_CALLING_WHAMG(
             crams,
@@ -220,11 +220,16 @@ workflow BAM_STRUCTURAL_VARIANT_CALLING {
 
         VCF_MERGE_JASMINE.out.merged_vcfs.set { merged_vcfs }
     } else {
-        called_vcfs.set { merged_vcfs }
+        called_vcfs
+            .map { meta, vcf, tbi ->
+                new_meta = meta.findAll { !(it.key == "caller") }
+                [ new_meta, vcf, tbi ]
+            }
+            .set { merged_vcfs }
     }
 
     emit:
-    vcfs                = called_vcfs
+    vcfs                = merged_vcfs
 
     coverage_counts     = COLLECTREADCOUNTS.out.tsv
 

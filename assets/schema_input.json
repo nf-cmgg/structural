@@ -3,35 +3,36 @@
     "$id": "https://raw.githubusercontent.com/CenterForMedicalGeneticsGhent/nf-cmgg-structural/master/assets/schema_input.json",
     "title": "CenterForMedicalGeneticsGhent/nf-cmgg-structural pipeline - params.input schema",
     "description": "Schema for the file provided with params.input",
-    "type": "array",
-    "items": {
-        "type": "object",
-        "definitions": {
-            "sample": {
-                "type": "string",
-                "meta": "id,sample"
-            },
-            "cram": {
-                "type": "string",
-                "pattern": "^\\S+\\.cram$",
-                "format": "file-path"
-            },
-            "crai": {
-                "type": "string",
-                "pattern": "^\\S+\\.crai$",
-                "format": "file-path"
-            },
-            "bed": {
-                "type": "string",
-                "pattern": "^\\S+\\.bed$",
-                "format": "file-path"
-            },
-            "ped": {
-                "type": "string",
-                "pattern": "^\\S+\\.ped$",
-                "format": "file-path"
-            }
+    "type": "object",
+    "properties": {
+        "sample": {
+            "type": "string",
+            "meta": "id,sample"
         },
-        "required": ["sample", "cram"]
-    }
+        "family": {
+            "type": "string",
+            "meta": "family"
+        },
+        "cram": {
+            "type": "string",
+            "pattern": "^\\S+\\.cram$",
+            "format": "file-path"
+        },
+        "crai": {
+            "type": "string",
+            "pattern": "^\\S+\\.crai$",
+            "format": "file-path"
+        },
+        "bed": {
+            "type": "string",
+            "pattern": "^\\S+\\.bed$",
+            "format": "file-path"
+        },
+        "ped": {
+            "type": "string",
+            "pattern": "^\\S+\\.ped$",
+            "format": "file-path"
+        }
+    },
+    "required": ["sample", "cram"]
 }

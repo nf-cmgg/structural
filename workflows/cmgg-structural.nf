@@ -36,6 +36,10 @@ for (caller in params.callers.tokenize(",")) {
     if(!(caller in availableCallers)) { exit 1, "The caller '${caller}' is not supported please specify a comma delimited list with on or more of the following callers: ${availableCallers}".toString() }
 }
 
+if ("whamg" in params.callers.tokenize(",")) {
+    exit 1, "Whamg currently isn't functional. This will be fixed in a further build of the pipeline"
+}
+
 // Parse parameters
 fasta           = Channel.fromPath(params.fasta).collect()
 fasta_fai       = params.fasta_fai ? Channel.fromPath(params.fasta_fai).collect() : null
@@ -64,6 +68,7 @@ ch_multiqc_custom_methods_description = params.multiqc_methods_description ? fil
 // SUBWORKFLOW: Consisting of a mix of local and nf-core/modules
 //
 include { BAM_STRUCTURAL_VARIANT_CALLING    } from '../subworkflows/local/bam_structural_variant_calling/main'
+include { VCF_GENOTYPE_SV_PARAGRAPH         } from '../subworkflows/local/vcf_genotype_sv_paragraph/main'
 
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -132,9 +137,28 @@ workflow CMGGSTRUCTURAL {
     //
 
     SamplesheetConversion.convert(ch_input, file("${projectDir}/assets/schema_input.json"))
-        .multiMap({ meta, cram, crai, bed, oed ->
-            bed: [ meta, bed ]
-            crams: [ meta, cram, crai ]
+        .map { meta, cram, crai, bed, ped ->
+            new_meta = meta + [family:meta.family ?: meta.id]
+            [ new_meta, cram, crai, bed, ped ]
+        }
+        .tap { original_samplesheet }
+        .map { meta, cram, crai, bed, ped ->
+            [ meta.family, 1 ]
+        }
+        .groupTuple()
+        .map { family, one ->
+            [ family, one.sum() ]
+        }
+        .combine(
+            original_samplesheet.map {
+                [ it[0].family ] + it
+            },
+            by:0
+        )
+        .multiMap({ family, family_count, meta, cram, crai, bed, ped ->
+            new_meta = meta + [family_count:family_count]
+            bed: [ new_meta, bed ]
+            crams: [ new_meta, cram, crai ]
         })
         .set { inputs }
 
@@ -172,6 +196,17 @@ workflow CMGGSTRUCTURAL {
 
     ch_versions = ch_versions.mix(BAM_STRUCTURAL_VARIANT_CALLING.out.versions)
     ch_reports  = ch_reports.mix(BAM_STRUCTURAL_VARIANT_CALLING.out.reports)
+
+    //
+    // Genotype the variants
+    //
+
+    VCF_GENOTYPE_SV_PARAGRAPH(
+        BAM_STRUCTURAL_VARIANT_CALLING.out.vcfs,
+        inputs.crams,
+        fasta,
+        fasta_fai
+    )
 
     //
     // Dump the software versions

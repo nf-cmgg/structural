@@ -2,10 +2,11 @@
 // Merge VCFs from multiple callers
 //
 
-include { TABIX_BGZIP as UNZIP_VCFS                     } from '../../../modules/nf-core/tabix/bgzip/main'
-include { TABIX_BGZIP as BGZIP_MERGED                   } from '../../../modules/nf-core/tabix/bgzip/main'
 include { TABIX_TABIX                                   } from '../../../modules/nf-core/tabix/tabix/main'
 include { JASMINESV                                     } from '../../../modules/nf-core/jasminesv/main'
+include { BCFTOOLS_SORT                                 } from '../../../modules/nf-core/bcftools/sort/main'
+
+include { REHEADER_CALLED_VCFS                          } from '../../../modules/local/bcftools/reheader_called_vcfs/main'
 
 workflow VCF_MERGE_JASMINE {
     take:
@@ -17,17 +18,11 @@ workflow VCF_MERGE_JASMINE {
 
     ch_versions     = Channel.empty()
 
-    UNZIP_VCFS(
-        vcfs
-    )
-
-    ch_versions = ch_versions.mix(UNZIP_VCFS.out.versions)
-
-    UNZIP_VCFS.out.output
+    vcfs
         .map { meta, vcf ->
             [ meta.findAll { !(it.key == "caller")}, vcf ]
         }
-        .groupTuple(size:params.callers.tokenize(",").size)
+        .groupTuple(size:params.callers.tokenize(",").size())
         .map { meta, vcfs ->
             [ meta, vcfs, [], [] ]
         }
@@ -43,19 +38,28 @@ workflow VCF_MERGE_JASMINE {
 
     ch_versions = ch_versions.mix(JASMINESV.out.versions)
 
-    BGZIP_MERGED(
-        JASMINESV.out.vcf
+    new_header = Channel.fromPath("${projectDir}/assets/header.txt").collect()
+
+    REHEADER_CALLED_VCFS(
+        JASMINESV.out.vcf,
+        new_header,
+        fasta_fai
+    )
+    ch_versions = ch_versions.mix(REHEADER_CALLED_VCFS.out.versions)
+
+    BCFTOOLS_SORT(
+        REHEADER_CALLED_VCFS.out.vcf
     )
 
-    ch_versions = ch_versions.mix(BGZIP_MERGED.out.versions)
+    ch_versions = ch_versions.mix(BCFTOOLS_SORT.out.versions)
 
     TABIX_TABIX(
-        BGZIP_MERGED.out.output
+        BCFTOOLS_SORT.out.vcf
     )
 
     ch_versions = ch_versions.mix(TABIX_TABIX.out.versions)
 
-    BGZIP_MERGED.out.output
+    BCFTOOLS_SORT.out.vcf
         .join(TABIX_TABIX.out.tbi)
         .set { merged_vcfs }
 

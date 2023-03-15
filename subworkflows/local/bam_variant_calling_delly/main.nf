@@ -102,7 +102,7 @@ workflow BAM_VARIANT_CALLING_DELLY {
             new_meta = meta + [id:meta.sample]
             [ new_meta, vcf, csi ]
         }
-        .join(SCATTER_BEDS.out.scatter, failOnMismatch:true, failOnDuplicate:true)
+        .combine(SCATTER_BEDS.out.scatter, by:0)
         .map(
             { meta, vcf, csi, beds ->
                 count = beds instanceof ArrayList ? beds.size() : 1

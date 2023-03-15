@@ -45,7 +45,7 @@ workflow BAM_VARIANT_CALLING_WHAMG {
     ch_versions = ch_versions.mix(WHAMG.out.versions)
 
     WHAMG.out.vcf
-        .join(WHAMG.out.tbi)
+        .join(WHAMG.out.tbi, failOnMismatch:true, failOnDuplicate:true)
         .set { whamg_vcfs }
 
     whamg_vcfs

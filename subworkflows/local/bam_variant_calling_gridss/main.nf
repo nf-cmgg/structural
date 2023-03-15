@@ -33,7 +33,7 @@ workflow BAM_VARIANT_CALLING_GRIDSS {
     ch_versions = ch_versions.mix(TABIX_TABIX.out.versions)
 
     GRIDSS_GRIDSS.out.vcf
-        .join(TABIX_TABIX.out.tbi)
+        .join(TABIX_TABIX.out.tbi, failOnMismatch:true, failOnDuplicate:true)
         .map(
             { meta, vcf, tbi ->
                 new_meta = meta + [caller:"gridss"]

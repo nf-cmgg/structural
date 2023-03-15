@@ -60,7 +60,7 @@ workflow VCF_MERGE_JASMINE {
     ch_versions = ch_versions.mix(TABIX_TABIX.out.versions)
 
     BCFTOOLS_SORT.out.vcf
-        .join(TABIX_TABIX.out.tbi)
+        .join(TABIX_TABIX.out.tbi, failOnMismatch:true, failOnDuplicate:true)
         .set { merged_vcfs }
 
     emit:

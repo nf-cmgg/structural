@@ -40,15 +40,15 @@ workflow VCF_GENOTYPE_SV_PARAGRAPH {
             id = manifest.baseName
             [ id, manifest ]
         }
-        .join(meta_channel.map { meta, json -> [ meta.id, meta ]})
+        .join(meta_channel.map { meta, json -> [ meta.id, meta ]}, failOnMismatch:true, failOnDuplicate:true)
         .map { id, manifest, meta ->
             [ meta, manifest ]
         }
         .set { manifest }
 
     vcfs
-        .join(crams)
-        .join(manifest)
+        .join(crams, failOnMismatch:true, failOnDuplicate:true)
+        .join(manifest, failOnMismatch:true, failOnDuplicate:true)
         .set { grmpy_input }
 
     PARAGRAPH_MULTIGRMPY(
@@ -63,7 +63,7 @@ workflow VCF_GENOTYPE_SV_PARAGRAPH {
     )
 
     PARAGRAPH_MULTIGRMPY.out.vcf
-        .join(TABIX_TABIX.out.tbi)
+        .join(TABIX_TABIX.out.tbi, failOnMismatch:true, failOnDuplicate:true)
         .map { meta, vcf, tbi ->
             new_meta = meta.findAll { !(it.key == "sample") } + [id:meta.family]
             [ groupKey(new_meta, meta.family_count), vcf, tbi ]
@@ -92,12 +92,17 @@ workflow VCF_GENOTYPE_SV_PARAGRAPH {
 }
 
 def create_manifest(json, id) {
-    Map jsonMap = (Map) new JsonSlurper().parseText(json)
-    initDepth = jsonMap["autosome"]["depth"]
-    depth = workflow.profile.contains("test") && initDepth == 0.0 ? 0.1 : initDepth
-    path = jsonMap["bam_path"]
-    read_length = jsonMap["read_length"]
-    sex = "unknown" //TODO: add support for sex determination
-    header = "id\tpath\tdepth\tread length\tsex"
-    return "${header}\n${id}\t${path}\t${depth}\t${read_length}\t${sex}".toString()
+    if(!workflow.stubRun) {
+        Map jsonMap = (Map) new JsonSlurper().parseText(json)
+        initDepth = jsonMap["autosome"]["depth"]
+        depth = workflow.profile.contains("test") && initDepth == 0.0 ? 0.1 : initDepth
+        path = jsonMap["bam_path"]
+        read_length = jsonMap["read_length"]
+        sex = "unknown" //TODO: add support for sex determination
+        header = "id\tpath\tdepth\tread length\tsex"
+        return "${header}\n${id}\t${path}\t${depth}\t${read_length}\t${sex}".toString()
+    }
+    else {
+        return "stub"
+    }
 }

@@ -42,7 +42,7 @@ workflow BAM_VARIANT_CALLING_SMOOVE {
     //
 
     crams
-        .join(REVERSE_BED.out.bed)
+        .join(REVERSE_BED.out.bed, failOnMismatch:true, failOnDuplicate:true)
         .dump(tag: 'smoove_input', pretty: true)
         .set { smoove_input }
 

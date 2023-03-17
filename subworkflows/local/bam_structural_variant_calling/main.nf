@@ -14,6 +14,7 @@ include { VCF_MERGE_JASMINE                             } from '../vcf_merge_jas
 
 // Import modules
 include { VIOLA                                         } from '../../../modules/local/viola/main'
+include { REHEADER_CALLED_VCFS                          } from '../../../modules/local/bcftools/reheader_called_vcfs/main'
 
 include { GATK4_COLLECTREADCOUNTS as COLLECTREADCOUNTS  } from '../../../modules/nf-core/gatk4/collectreadcounts/main'
 include { GATK4_COLLECTSVEVIDENCE as COLLECTSVEVIDENCE  } from '../../../modules/nf-core/gatk4/collectsvevidence/main'
@@ -226,20 +227,29 @@ workflow BAM_STRUCTURAL_VARIANT_CALLING {
             fasta,
             fasta_fai,
         )
+        ch_versions = ch_versions.mix(VCF_MERGE_JASMINE.out.versions)
 
         VCF_MERGE_JASMINE.out.merged_vcfs.set { merged_vcfs }
     } else {
+
+        new_header = Channel.fromPath("${projectDir}/assets/header.txt").collect()
+
+        REHEADER_CALLED_VCFS(
+            VIOLA.out.vcf,
+            new_header,
+            fasta_fai
+        )
+        ch_versions = ch_versions.mix(REHEADER_CALLED_VCFS.out.versions)
         
         TABIX_VCFS(
-            VIOLA.out.vcf
+            REHEADER_CALLED_VCFS.out.vcf
         )
-
         ch_versions = ch_versions.mix(TABIX_VCFS.out.versions)
 
-        VIOLA.out.vcf
+        REHEADER_CALLED_VCFS.out.vcf
             .join(TABIX_VCFS.out.tbi, failOnDuplicate:true, failOnMismatch:true)
             .map { meta, vcf, tbi ->
-                new_meta = meta.findAll { !(it.key == "caller") }
+                new_meta = meta - meta.subMap("caller")
                 [ new_meta, vcf, tbi ]
             }
             .set { merged_vcfs }

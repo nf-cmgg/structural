@@ -2,9 +2,10 @@
 // Run Gridss
 //
 
-include { GRIDSS_GRIDSS      } from '../../../modules/nf-core/gridss/gridss/main'
+include { SIMPLE_EVENT_ANNOTATION   } from '../../../modules/local/gridss/simple_event_annotation/main'
 
-include { TABIX_TABIX        } from '../../../modules/nf-core/tabix/tabix/main'
+include { GRIDSS_GRIDSS             } from '../../../modules/nf-core/gridss/gridss/main'
+include { TABIX_TABIX               } from '../../../modules/nf-core/tabix/tabix/main'
 
 workflow BAM_VARIANT_CALLING_GRIDSS {
     take:
@@ -23,16 +24,19 @@ workflow BAM_VARIANT_CALLING_GRIDSS {
         fasta_fai.map {[[],it]},
         bwa_index
     )
-
     ch_versions = ch_versions.mix(GRIDSS_GRIDSS.out.versions)
 
-    TABIX_TABIX(
+    SIMPLE_EVENT_ANNOTATION(
         GRIDSS_GRIDSS.out.vcf
     )
+    ch_versions = ch_versions.mix(SIMPLE_EVENT_ANNOTATION.out.versions)
 
+    TABIX_TABIX(
+        SIMPLE_EVENT_ANNOTATION.out.vcf
+    )
     ch_versions = ch_versions.mix(TABIX_TABIX.out.versions)
 
-    GRIDSS_GRIDSS.out.vcf
+    SIMPLE_EVENT_ANNOTATION.out.vcf
         .join(TABIX_TABIX.out.tbi, failOnMismatch:true, failOnDuplicate:true)
         .map(
             { meta, vcf, tbi ->

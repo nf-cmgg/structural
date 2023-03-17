@@ -154,6 +154,7 @@
 ##INFO=<ID=ALLVARS_EXT,Number=.,Type=String,Description="A comma-separated of all variants supporting this call">
 ##INFO=<ID=VARCALLS,Number=1,Type=String,Description="The number of variant calls supporting this variant">
 ##INFO=<ID=INTRASAMPLE_IDLIST,Number=.,Type=String,Description="The IDs which were merged in the most recent round of merging">
+##INFO=<ID=SVLENORG,Number=1,Type=Integer,Description="The SV length calculated by the used variant caller">
 ##FORMAT=<ID=GT,Number=1,Type=String,Description="Genotype">
 ##FORMAT=<ID=GL,Number=G,Type=Float,Description="Log10-scaled genotype likelihoods for RR,RA,AA genotypes">
 ##FORMAT=<ID=GQ,Number=1,Type=Integer,Description="Genotype Quality">

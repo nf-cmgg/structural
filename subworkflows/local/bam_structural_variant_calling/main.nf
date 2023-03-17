@@ -13,9 +13,12 @@ include { VCF_METRICS_SVTK_SVTEST                       } from '../vcf_metrics_s
 include { VCF_MERGE_JASMINE                             } from '../vcf_merge_jasmine/main'
 
 // Import modules
+include { VIOLA                                         } from '../../../modules/local/viola/main'
+
 include { GATK4_COLLECTREADCOUNTS as COLLECTREADCOUNTS  } from '../../../modules/nf-core/gatk4/collectreadcounts/main'
 include { GATK4_COLLECTSVEVIDENCE as COLLECTSVEVIDENCE  } from '../../../modules/nf-core/gatk4/collectsvevidence/main'
-include { TABIX_TABIX                                   } from '../../../modules/nf-core/tabix/tabix/main'
+include { TABIX_TABIX as TABIX_ALLELE                   } from '../../../modules/nf-core/tabix/tabix/main'
+include { TABIX_TABIX as TABIX_VCFS                     } from '../../../modules/nf-core/tabix/tabix/main'
 
 workflow BAM_STRUCTURAL_VARIANT_CALLING {
     take:
@@ -160,12 +163,12 @@ workflow BAM_STRUCTURAL_VARIANT_CALLING {
     //
 
     if(allele_loci_vcf){
-        TABIX_TABIX(
+        TABIX_ALLELE(
             allele_loci_vcf.map{[[id:"allele_loci_vcf"], it]}
         )
 
         crams
-            .combine(TABIX_TABIX.out.tbi)
+            .combine(TABIX_ALLELE.out.tbi)
             .map(
                 { meta, cram, crai, tbi ->
                     [ meta, cram, crai, allele_loci_vcf, tbi ]
@@ -211,16 +214,30 @@ workflow BAM_STRUCTURAL_VARIANT_CALLING {
         ch_versions = ch_versions.mix(VCF_METRICS_SVTK_SVTEST.out.versions)
     }
 
+    VIOLA(
+        called_vcfs.map{ it[0..1] }
+    )
+
+    ch_versions = ch_versions.mix(VIOLA.out.versions)
+
     if(callers.size > 1){
         VCF_MERGE_JASMINE(
-            called_vcfs.map { it[0..1] },
+            VIOLA.out.vcf,
             fasta,
             fasta_fai,
         )
 
         VCF_MERGE_JASMINE.out.merged_vcfs.set { merged_vcfs }
     } else {
-        called_vcfs
+        
+        TABIX_VCFS(
+            VIOLA.out.vcf
+        )
+
+        ch_versions = ch_versions.mix(TABIX_VCFS.out.versions)
+
+        VIOLA.out.vcf
+            .join(TABIX_VCFS.out.tbi, failOnDuplicate:true, failOnMismatch:true)
             .map { meta, vcf, tbi ->
                 new_meta = meta.findAll { !(it.key == "caller") }
                 [ new_meta, vcf, tbi ]

@@ -11,7 +11,7 @@ process SIMPLE_EVENT_ANNOTATION {
     tuple val(meta), path(vcf)
 
     output:
-    tuple val(meta), path("*.vcf.gz")   , emit: bed
+    tuple val(meta), path("*.vcf.gz")   , emit: vcf
     path "versions.yml"                 , emit: versions
 
     when:

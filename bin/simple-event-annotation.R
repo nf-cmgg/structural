@@ -1,4 +1,4 @@
-#!/usr/bin/R
+#!/usr/local/bin/R
 # Fetched from https://github.com/PapenfussLab/gridss/blob/master/example/simple-event-annotation.R
 # Although it's been slightly adjusted
 

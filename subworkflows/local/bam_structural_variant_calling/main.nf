@@ -93,7 +93,7 @@ workflow BAM_STRUCTURAL_VARIANT_CALLING {
     }
 
     //
-    // Calling variants using Whamg
+    // Calling variants using Whamg (Currently disabled)
     //
 
     // TODO Whamg needs some reheadering (like done in https://github.com/broadinstitute/gatk-sv/blob/90e3e9a221bdfe7ab2cfedeffb704bc6f0e99aa9/wdl/Whamg.wdl#L209)
@@ -127,7 +127,7 @@ workflow BAM_STRUCTURAL_VARIANT_CALLING {
     }
 
     //
-    // Calling variants using Gridss
+    // Calling variants using Gridss (Currently disabled)
     //
 
     if("gridss" in callers){

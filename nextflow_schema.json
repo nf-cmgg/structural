@@ -308,7 +308,7 @@
                 "callers": {
                     "type": "string",
                     "default": "manta",
-                    "description": "A comma-seperated list of callers to use"
+                    "description": "A comma-seperated list of callers to use. Can be one or more these: smoove|delly|manta"
                 },
                 "allele_loci_vcf": {
                     "type": "string",

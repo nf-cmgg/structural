@@ -37,7 +37,11 @@ for (caller in params.callers.tokenize(",")) {
 }
 
 if ("whamg" in params.callers.tokenize(",")) {
-    exit 1, "Whamg currently isn't functional. This will be fixed in a further build of the pipeline"
+    error("Whamg currently isn't functional. This will be fixed in a further build of the pipeline")
+}
+
+if ("gridss" in params.callers.tokenize(",")) {
+    error("Gridss currently isn't functional. This will be fixed in a further build of the pipeline")
 }
 
 // Parse parameters

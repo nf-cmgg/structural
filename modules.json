@@ -51,16 +51,6 @@
                         "installed_by": ["modules"],
                         "patch": "modules/nf-core/delly/call/delly-call.diff"
                     },
-                    "gatk4/collectreadcounts": {
-                        "branch": "master",
-                        "git_sha": "1fccb96ee4fc3efcdb7ed257f016a59cecb83dec",
-                        "installed_by": ["modules"]
-                    },
-                    "gatk4/collectsvevidence": {
-                        "branch": "master",
-                        "git_sha": "c8e35eb2055c099720a75538d1b8adb3fb5a464c",
-                        "installed_by": ["modules"]
-                    },
                     "gatk4/createsequencedictionary": {
                         "branch": "master",
                         "git_sha": "c8e35eb2055c099720a75538d1b8adb3fb5a464c",
@@ -135,12 +125,6 @@
                         "branch": "master",
                         "git_sha": "0a1ee3e389dc9be449a9a2f9fdc5aa753622d4d7",
                         "installed_by": ["modules"]
-                    },
-                    "svtk/standardize": {
-                        "branch": "master",
-                        "git_sha": "c8e35eb2055c099720a75538d1b8adb3fb5a464c",
-                        "installed_by": ["modules"],
-                        "patch": "modules/nf-core/svtk/standardize/svtk-standardize.diff"
                     },
                     "tabix/bgzip": {
                         "branch": "master",

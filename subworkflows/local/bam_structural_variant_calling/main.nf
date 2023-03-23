@@ -9,16 +9,12 @@ include { BAM_VARIANT_CALLING_WHAMG                     } from '../bam_variant_c
 include { BAM_VARIANT_CALLING_SMOOVE                    } from '../bam_variant_calling_smoove/main'
 include { BAM_VARIANT_CALLING_SCRAMBLE                  } from '../bam_variant_calling_scramble/main'
 include { BAM_VARIANT_CALLING_GRIDSS                    } from '../bam_variant_calling_gridss/main'
-include { VCF_METRICS_SVTK_SVTEST                       } from '../vcf_metrics_svtk_svtest/main'
 include { VCF_MERGE_JASMINE                             } from '../vcf_merge_jasmine/main'
 
 // Import modules
 include { VIOLA                                         } from '../../../modules/local/viola/main'
 include { REHEADER_CALLED_VCFS                          } from '../../../modules/local/bcftools/reheader_called_vcfs/main'
 
-include { GATK4_COLLECTREADCOUNTS as COLLECTREADCOUNTS  } from '../../../modules/nf-core/gatk4/collectreadcounts/main'
-include { GATK4_COLLECTSVEVIDENCE as COLLECTSVEVIDENCE  } from '../../../modules/nf-core/gatk4/collectsvevidence/main'
-include { TABIX_TABIX as TABIX_ALLELE                   } from '../../../modules/nf-core/tabix/tabix/main'
 include { TABIX_TABIX as TABIX_VCFS                     } from '../../../modules/nf-core/tabix/tabix/main'
 
 workflow BAM_STRUCTURAL_VARIANT_CALLING {
@@ -39,26 +35,6 @@ workflow BAM_STRUCTURAL_VARIANT_CALLING {
     ch_reports  = Channel.empty()
     ch_metrics  = Channel.empty()
     called_vcfs = Channel.empty()
-
-    //
-    // GATK Collect Read Counts
-    //
-
-    crams
-        .combine(
-            beds.map({meta, bed, bed_gz, bed_gz_tbi -> [meta, bed]})
-        , by:0)
-    .dump(tag: 'collectreadcounts_input', pretty: true)
-    .set { collectreadcounts_input }
-
-    COLLECTREADCOUNTS(
-        collectreadcounts_input,
-        fasta,
-        fasta_fai,
-        dict
-    )
-
-    // ch_versions = ch_versions.mix(COLLECTREADCOUNTS.out.versions)
 
     //
     // Calling variants using Manta
@@ -160,60 +136,8 @@ workflow BAM_STRUCTURAL_VARIANT_CALLING {
     // }
 
     //
-    // GATK Collect Structural Variant Evidence
+    // Standardize and merge VCFs per sample for all callers
     //
-
-    if(allele_loci_vcf){
-        TABIX_ALLELE(
-            allele_loci_vcf.map{[[id:"allele_loci_vcf"], it]}
-        )
-
-        crams
-            .combine(TABIX_ALLELE.out.tbi)
-            .map(
-                { meta, cram, crai, tbi ->
-                    [ meta, cram, crai, allele_loci_vcf, tbi ]
-                }
-            )
-            .set { collectsvevidence_input }
-
-    } else {
-        crams
-            .map(
-                { meta, cram, crai ->
-                    [ meta, cram, crai, [], [] ]
-                }
-            )
-            .set { collectsvevidence_input }
-    }
-
-    collectsvevidence_input.dump(tag: 'collectsvevidence_input', pretty: true)
-
-    COLLECTSVEVIDENCE(
-        collectsvevidence_input,
-        fasta,
-        fasta_fai,
-        dict
-    )
-
-    ch_versions = ch_versions.mix(COLLECTSVEVIDENCE.out.versions)
-
-    //
-    // Create the metrics for all produced files
-    //
-
-    if(params.run_module_metrics) {
-        VCF_METRICS_SVTK_SVTEST(
-            called_vcfs,
-            COLLECTSVEVIDENCE.out.split_read_evidence,
-            COLLECTSVEVIDENCE.out.paired_end_evidence,
-            COLLECTSVEVIDENCE.out.site_depths,
-            fasta_fai
-        )
-
-        ch_metrics  = ch_reports.mix(VCF_METRICS_SVTK_SVTEST.out.metrics)
-        ch_versions = ch_versions.mix(VCF_METRICS_SVTK_SVTEST.out.versions)
-    }
 
     VIOLA(
         called_vcfs.map{ it[0..1] }
@@ -257,12 +181,6 @@ workflow BAM_STRUCTURAL_VARIANT_CALLING {
 
     emit:
     vcfs                = merged_vcfs
-
-    coverage_counts     = COLLECTREADCOUNTS.out.tsv
-
-    split_reads         = COLLECTSVEVIDENCE.out.split_read_evidence.combine(COLLECTSVEVIDENCE.out.split_read_evidence_index, by:0)
-    read_pairs          = COLLECTSVEVIDENCE.out.paired_end_evidence.combine(COLLECTSVEVIDENCE.out.paired_end_evidence_index, by:0)
-    site_depths         = COLLECTSVEVIDENCE.out.site_depths.combine(COLLECTSVEVIDENCE.out.site_depths_index, by:0)
 
     versions            = ch_versions
     metrics             = ch_metrics

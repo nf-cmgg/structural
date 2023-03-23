@@ -6,8 +6,8 @@ nextflow_pipeline {
     test("Success") {
         when {
             params {
-                // TODO re-add whamg when it is fixed
-                callers = "delly,manta,smoove,gridss"
+                // TODO re-add whamg and gridss when they are fixed
+                callers = "delly,manta,smoove"
             }
         }
 

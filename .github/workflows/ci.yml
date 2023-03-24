@@ -29,13 +29,18 @@ jobs:
           - "22.10.5"
           - "latest-everything"
         test:
-          - "all"
+          - "all_annotate"
+          - "all_no_annotate"
           - "smoove"
           - "delly"
           - "manta"
-          - "whamg"
-          - "gridss"
+
     steps:
+      - name: Free some space
+        run: |
+          sudo rm -rf "/usr/local/share/boost"
+          sudo rm -rf "$AGENT_TOOLSDIRECTORY"
+
       - name: Check out pipeline code
         uses: actions/checkout@v3
 

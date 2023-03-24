@@ -12,7 +12,7 @@ workflow VCF_MERGE_JASMINE {
     take:
         vcfs                    // channel: [mandatory] [ meta, vcf ] => The gzipped called VCFs
         fasta                   // channel: [mandatory] [ fasta ] => The fasta reference file
-        fasta_fai               // channel: [mandatory] [ fasta_fai ] => The index of the fasta reference file
+        fai               // channel: [mandatory] [ fai ] => The index of the fasta reference file
 
     main:
 
@@ -43,7 +43,7 @@ workflow VCF_MERGE_JASMINE {
     REHEADER_CALLED_VCFS(
         JASMINESV.out.vcf,
         new_header,
-        fasta_fai
+        fai
     )
     ch_versions = ch_versions.mix(REHEADER_CALLED_VCFS.out.versions)
 

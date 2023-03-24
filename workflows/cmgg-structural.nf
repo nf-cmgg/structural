@@ -14,9 +14,15 @@ def checkPathParamList = [
     params.input,
     params.multiqc_config,
     params.fasta,
-    params.fasta_fai,
+    params.fai,
     params.dict,
-    params.allele_loci_vcf
+    params.vep_cache,
+    params.gnomad_sv,
+    params.gnomad_sv_tbi,
+    params.genomes1000_sv,
+    params.genomes1000_sv_tbi,
+    params.phenotypes,
+    params.phenotypes_tbi
 ]
 for (param in checkPathParamList) { if (param) { file(param, checkIfExists: true) } }
 
@@ -26,14 +32,14 @@ if (params.input) { ch_input = file(params.input, checkIfExists: true) } else { 
 // Check callers
 def availableCallers = [
     "delly",
-    "whamg",
+    // "whamg",
     "manta",
-    "gridss",
+    // "gridss",
     "smoove"
 ]
 
 for (caller in params.callers.tokenize(",")) {
-    if(!(caller in availableCallers)) { exit 1, "The caller '${caller}' is not supported please specify a comma delimited list with on or more of the following callers: ${availableCallers}".toString() }
+    if(!(caller in availableCallers)) { error("The caller '${caller}' is not supported please specify a comma delimited list with on or more of the following callers: ${availableCallers}".toString()) }
 }
 
 if ("whamg" in params.callers.tokenize(",")) {
@@ -43,13 +49,6 @@ if ("whamg" in params.callers.tokenize(",")) {
 if ("gridss" in params.callers.tokenize(",")) {
     error("Gridss currently isn't functional. This will be fixed in a further build of the pipeline")
 }
-
-// Parse parameters
-fasta           = Channel.fromPath(params.fasta).collect()
-fasta_fai       = params.fasta_fai ? Channel.fromPath(params.fasta_fai).collect() : null
-dict            = params.dict ? Channel.fromPath(params.dict).collect() : null
-bwa_index       = params.bwa ? Channel.fromPath(params.bwa).map {[[],it]}.collect() : null
-allele_loci_vcf = params.allele_loci_vcf ? Channel.fromPath(params.allele_loci_vcf).collect() : []
 
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -84,10 +83,12 @@ include { VCF_GENOTYPE_SV_PARAGRAPH         } from '../subworkflows/local/vcf_ge
 // MODULE: Installed directly from nf-core/modules
 //
 include { TABIX_BGZIPTABIX                  } from '../modules/nf-core/tabix/bgziptabix/main'
+include { TABIX_TABIX                       } from '../modules/nf-core/tabix/tabix/main'
 include { BEDTOOLS_SORT                     } from '../modules/nf-core/bedtools/sort/main'
 include { GATK4_CREATESEQUENCEDICTIONARY    } from '../modules/nf-core/gatk4/createsequencedictionary/main'
 include { SAMTOOLS_FAIDX                    } from '../modules/nf-core/samtools/faidx/main'
 include { BWA_INDEX                         } from '../modules/nf-core/bwa/index/main'
+include { ENSEMBLVEP_VEP                    } from '../modules/nf-core/ensemblvep/vep/main'
 include { MULTIQC                           } from '../modules/nf-core/multiqc/main'
 include { CUSTOM_DUMPSOFTWAREVERSIONS       } from '../modules/nf-core/custom/dumpsoftwareversions/main'
 
@@ -106,16 +107,50 @@ workflow CMGGSTRUCTURAL {
     ch_reports  = Channel.empty()
 
     //
+    // Create input channels from parameters
+    //
+
+    fasta           = Channel.fromPath(params.fasta).collect()
+    fai             = params.fai ?          Channel.fromPath(params.fai).collect() :                null
+    dict            = params.dict ?         Channel.fromPath(params.dict).collect() :               null
+    bwa_index       = params.bwa ?          Channel.fromPath(params.bwa).map {[[],it]}.collect() :  null
+    vep_cache       = params.vep_cache ?    Channel.fromPath(params.vep_cache).collect() :          []
+
+    vep_extra_files = []
+
+    if(params.vep_structuralvariantoverlap && ((params.gnomad_sv && params.gnomad_sv_tbi) || (params.genomes1000_sv && params.genomes1000_sv_tbi))) {
+        if(params.gnomad_sv && params.gnomad_sv_tbi) {
+            vep_extra_files.add(file(params.gnomad_sv, checkIfExists:true))
+            vep_extra_files.add(file(params.gnomad_sv_tbi, checkIfExists:true))
+        }
+        if(params.genomes1000_sv && params.genomes1000_sv_tbi) {
+            vep_extra_files.add(file(params.genomes1000_sv, checkIfExists:true))
+            vep_extra_files.add(file(params.genomes1000_sv_tbi, checkIfExists:true))
+        }
+    }
+    else if (params.vep_structuralvariantoverlap) {
+        error("Please specify '--gnomad_sv PATH/TO/GNOMADSV/FILE' and '--gnomad_sv_tbi PATH/TO/GNOMADS/INDEX/FILE' and/or '--genomes1000_sv PATH/TO/genomes1000/FILE' and '--genomes1000_sv_tbi PATH/TO/genomes1000/INDEX/FILE' to use the StructuralVariantOverlap VEP plugin.")
+    }
+
+    if(params.vep_phenotypes && params.phenotypes && params.phenotypes_tbi) {
+        vep_extra_files.add(file(params.phenotypes, checkIfExists:true))
+        vep_extra_files.add(file(params.phenotypes_tbi, checkIfExists:true))
+    }
+    else if(params.vep_phenotypes) {
+        error("Please specify '--phenotypes PATH/TO/PHENOTYPES/FILE' and '--phenotypes_tbi PATH/TO/PHENOTYPES/INDEX/FILE' to use the Phenotypes VEP plugin.")
+    }
+
+    //
     // Create optional inputs
     //
 
-    if(!fasta_fai){
+    if(!fai){
         SAMTOOLS_FAIDX(
             fasta.map {[[],it]}
         )
 
         ch_versions = ch_versions.mix(SAMTOOLS_FAIDX.out.versions)
-        fasta_fai   = SAMTOOLS_FAIDX.out.fai.map { it[1] }.collect()
+        fai   = SAMTOOLS_FAIDX.out.fai.map { it[1] }.collect()
     }
 
     if(!dict) {
@@ -191,9 +226,8 @@ workflow CMGGSTRUCTURAL {
     BAM_STRUCTURAL_VARIANT_CALLING(
         inputs.crams,
         beds,
-        allele_loci_vcf,
         fasta,
-        fasta_fai,
+        fai,
         dict,
         bwa_index
     )
@@ -209,7 +243,35 @@ workflow CMGGSTRUCTURAL {
         BAM_STRUCTURAL_VARIANT_CALLING.out.vcfs,
         inputs.crams,
         fasta,
-        fasta_fai
+        fai
+    )
+
+    ch_versions = ch_versions.mix(VCF_GENOTYPE_SV_PARAGRAPH.out.versions)
+
+    //
+    // Annotate using Ensembl VEP
+    //
+
+    ENSEMBLVEP_VEP(
+        VCF_GENOTYPE_SV_PARAGRAPH.out.genotyped_vcfs,
+        params.genome,
+        params.species,
+        params.vep_cache_version,
+        vep_cache,
+        fasta,
+        vep_extra_files
+    )
+
+    ch_reports  = ch_reports.mix(ENSEMBLVEP_VEP.out.report)
+    ch_versions = ch_versions.mix(ENSEMBLVEP_VEP.out.versions)
+
+    ENSEMBLVEP_VEP.out.vcf
+        .tap { vep_vcfs_to_index }
+        .dump(tag:'vep_output', pretty:true)
+        .set { vep_vcfs }
+
+    TABIX_TABIX(
+        vep_vcfs_to_index
     )
 
     //

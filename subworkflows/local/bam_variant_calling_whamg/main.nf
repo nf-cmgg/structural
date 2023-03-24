@@ -13,7 +13,7 @@ workflow BAM_VARIANT_CALLING_WHAMG {
         crams                   // channel: [mandatory] [ meta, cram, crai ] => The aligned CRAMs per sample with the regions they should be called on
         beds                    // channel: [optional]  [ meta, bed, bed_gz, bed_gz_tbi ] => A channel containing the normal BED, the bgzipped BED and its index file
         fasta                   // channel: [mandatory] [ fasta ] => The fasta reference file
-        fasta_fai               // channel: [mandatory] [ fasta_fai ] => The index of the fasta reference file
+        fai               // channel: [mandatory] [ fai ] => The index of the fasta reference file
 
     main:
 
@@ -26,7 +26,7 @@ workflow BAM_VARIANT_CALLING_WHAMG {
     SAMTOOLS_CONVERT(
         crams,
         fasta,
-        fasta_fai
+        fai
     )
 
     SAMTOOLS_CONVERT.out.alignment_index.set { bams }
@@ -39,7 +39,7 @@ workflow BAM_VARIANT_CALLING_WHAMG {
     WHAMG(
         bams,
         fasta,
-        fasta_fai
+        fai
     )
 
     ch_versions = ch_versions.mix(WHAMG.out.versions)

@@ -14,7 +14,7 @@ workflow VCF_GENOTYPE_SV_PARAGRAPH {
         vcfs                    // channel: [mandatory] [ meta, vcf, tbi ] VCFs containing the called structural variants
         crams                   // channel: [mandatory] [ meta, cram, crai ] => The CRAM files used to create the VCF files
         fasta                   // channel: [mandatory] [ fasta ] => The fasta reference file
-        fasta_fai               // channel: [mandatory] [ fasta_fai ] => The index of the fasta reference file
+        fai               // channel: [mandatory] [ fai ] => The index of the fasta reference file
 
     main:
 
@@ -23,7 +23,7 @@ workflow VCF_GENOTYPE_SV_PARAGRAPH {
     PARAGRAPH_IDXDEPTH(
         crams,
         fasta.map { [[], it] },
-        fasta_fai.map { [[], it] }
+        fai.map { [[], it] }
     )
     ch_versions = ch_versions.mix(PARAGRAPH_IDXDEPTH.out.versions)
 
@@ -54,7 +54,7 @@ workflow VCF_GENOTYPE_SV_PARAGRAPH {
     PARAGRAPH_MULTIGRMPY(
         grmpy_input,
         fasta.map { [[], it] },
-        fasta_fai.map { [[], it] }
+        fai.map { [[], it] }
     )
     ch_versions = ch_versions.mix(PARAGRAPH_MULTIGRMPY.out.versions)
 
@@ -72,6 +72,7 @@ workflow VCF_GENOTYPE_SV_PARAGRAPH {
         .branch { meta, vcfs, tbis ->
             merge: vcfs.size() > 1
             dont_merge: vcfs.size() == 1
+                return [ meta, vcfs ]
         }
         .set { merge_input }
 

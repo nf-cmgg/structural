@@ -60,13 +60,12 @@
                     "mimetype": "text/plain",
                     "pattern": "^\\S+\\.fn?a(sta)?(\\.gz)?$",
                     "description": "Path to FASTA genome file.",
-                    "help_text": "This parameter is *mandatory* if `--genome` is not specified. If you don't have a BWA index available this will be generated for you automatically. Combine with `--save_reference` to save BWA index for future runs.",
+                    "help_text": "This parameter is *mandatory* if `--genome` is not specified. ",
                     "fa_icon": "far fa-file-code"
                 },
-                "fasta_fai": {
+                "fai": {
                     "type": "string",
-                    "default": "None",
-                    "description": "Path to the index of the FASTA genome file"
+                    "default": null
                 },
                 "dict": {
                     "type": "string",
@@ -75,7 +74,8 @@
                 },
                 "bwa": {
                     "type": "string",
-                    "default": "None"
+                    "default": "None",
+                    "description": "Path to the BWA index folder"
                 },
                 "igenomes_base": {
                     "type": "string",
@@ -294,37 +294,28 @@
                 }
             }
         },
-        "new_group_1": {
-            "title": "New Group 1",
+        "pipeline_specific_options": {
+            "title": "Pipeline specific options",
             "type": "object",
-            "description": "",
+            "description": "Options specific to the execution of this pipeline",
             "default": "",
             "properties": {
-                "run_module_metrics": {
-                    "type": "boolean",
-                    "default": true,
-                    "description": "Set to true if metrics have to be run on the VCFs"
-                },
                 "callers": {
                     "type": "string",
                     "default": "manta",
                     "description": "A comma-seperated list of callers to use. Can be one or more these: smoove|delly|manta"
                 },
-                "allele_loci_vcf": {
-                    "type": "string",
-                    "default": "None",
-                    "description": "Path to the Allele loci VCF"
-                },
                 "output_callers": {
                     "type": "boolean",
-                    "description": "Output the output from different callers. Warning: This produces a lot of additional output and should only be used for testing purposes"
+                    "description": "Output the VCF files from different callers. Warning: This produces a lot of additional output and should only be used for testing purposes"
                 }
-            }
+            },
+            "required": ["callers"]
         },
         "delly_parameters": {
             "title": "Delly parameters",
             "type": "object",
-            "description": "",
+            "description": "Options specific for the Delly execution",
             "default": "",
             "properties": {
                 "delly_scatter_size": {
@@ -334,7 +325,7 @@
                 },
                 "delly_sv_types": {
                     "type": "string",
-                    "default": "DEL,DUP",
+                    "default": "ALL",
                     "description": "Which SV types delly should search for in the variant calling"
                 },
                 "delly_map_qual": {
@@ -346,6 +337,69 @@
                     "type": "integer",
                     "default": 2,
                     "description": "The minimum clique size to use for delly"
+                }
+            }
+        },
+        "vep_options": {
+            "title": "VEP options",
+            "type": "object",
+            "description": "Options for the annotation with VEP",
+            "default": "",
+            "properties": {
+                "vep_cache_version": {
+                    "type": "integer",
+                    "default": 108,
+                    "description": "The version of the VEP cache to use.",
+                    "help_text": "This version should be present in the folder supplied by `--vep_cache`. This version should be the same as `--vep_version` when no VEP cache was given with `--vep_cache`"
+                },
+                "vep_cache": {
+                    "type": "string",
+                    "default": null
+                },
+                "vep_version": {
+                    "type": "number",
+                    "default": 108.2
+                },
+                "species": {
+                    "type": "string",
+                    "default": "homo_sapiens",
+                    "description": "The species used for the analysis. Should be all lowercase and spaces should be underscorses."
+                },
+                "vep_structuralvariantoverlap": {
+                    "type": "string",
+                    "default": "false",
+                    "description": "Use the StructuralVariantOverlap VEP plugin",
+                    "help_text": "This requires either `--gnomad_sv` and `--gnomad_sv_tbi` and/or `--genomes1000_sv` and `--genomes1000_sv_tbi`. "
+                },
+                "vep_phenotypes": {
+                    "type": "string",
+                    "default": "false",
+                    "description": "Use the Phenotypes VEP plugin",
+                    "help_text": "This requires `--phenotypes` and `--phenotypes_tbi`. "
+                },
+                "gnomad_sv": {
+                    "type": "string",
+                    "default": null
+                },
+                "gnomad_sv_tbi": {
+                    "type": "string",
+                    "default": null
+                },
+                "genomes1000_sv": {
+                    "type": "string",
+                    "default": null
+                },
+                "genomes1000_sv_tbi": {
+                    "type": "string",
+                    "default": null
+                },
+                "phenotypes": {
+                    "type": "string",
+                    "default": null
+                },
+                "phenotypes_tbi": {
+                    "type": "string",
+                    "default": null
                 }
             }
         }
@@ -367,10 +421,13 @@
             "$ref": "#/definitions/generic_options"
         },
         {
-            "$ref": "#/definitions/new_group_1"
+            "$ref": "#/definitions/pipeline_specific_options"
         },
         {
             "$ref": "#/definitions/delly_parameters"
+        },
+        {
+            "$ref": "#/definitions/vep_options"
         }
     ]
 }

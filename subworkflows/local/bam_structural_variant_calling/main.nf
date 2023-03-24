@@ -21,9 +21,8 @@ workflow BAM_STRUCTURAL_VARIANT_CALLING {
     take:
         crams                   // channel: [mandatory] [ meta, cram, crai, bed ] => The aligned CRAMs per sample with the regions they should be called on
         beds                    // channel: [optional]  [ meta, bed, bed_gz, bed_gz_tbi ] => A channel containing the normal BED, the bgzipped BED and its index file
-        allele_loci_vcf         // channel: [optional]  [ vcf ] => A channel containing the VCF and its index for counting the alleles
         fasta                   // channel: [mandatory] [ fasta ] => The fasta reference file
-        fasta_fai               // channel: [mandatory] [ fasta_fai ] => The index of the fasta reference file
+        fai                     // channel: [mandatory] [ fai ] => The index of the fasta reference file
         dict                    // channel: [mandatory] [ dict ] => The dictionary of the fasta reference file
         bwa_index               // channel: [optional]  [ index ] => The BWA MEM index
 
@@ -45,7 +44,7 @@ workflow BAM_STRUCTURAL_VARIANT_CALLING {
             crams,
             beds,
             fasta,
-            fasta_fai
+            fai
         )
 
         called_vcfs = called_vcfs.mix(BAM_VARIANT_CALLING_MANTA.out.manta_vcfs)
@@ -61,7 +60,7 @@ workflow BAM_STRUCTURAL_VARIANT_CALLING {
             crams,
             beds,
             fasta,
-            fasta_fai
+            fai
         )
 
         called_vcfs = called_vcfs.mix(BAM_VARIANT_CALLING_DELLY.out.delly_vcfs)
@@ -79,7 +78,7 @@ workflow BAM_STRUCTURAL_VARIANT_CALLING {
             crams,
             beds,
             fasta,
-            fasta_fai
+            fai
         )
 
         called_vcfs = called_vcfs.mix(BAM_VARIANT_CALLING_WHAMG.out.whamg_vcfs)
@@ -95,7 +94,7 @@ workflow BAM_STRUCTURAL_VARIANT_CALLING {
             crams,
             beds,
             fasta,
-            fasta_fai
+            fai
         )
 
         called_vcfs = called_vcfs.mix(BAM_VARIANT_CALLING_SMOOVE.out.smoove_vcfs)
@@ -110,7 +109,7 @@ workflow BAM_STRUCTURAL_VARIANT_CALLING {
         BAM_VARIANT_CALLING_GRIDSS(
             crams,
             fasta,
-            fasta_fai,
+            fai,
             bwa_index
         )
 
@@ -149,7 +148,7 @@ workflow BAM_STRUCTURAL_VARIANT_CALLING {
         VCF_MERGE_JASMINE(
             VIOLA.out.vcf,
             fasta,
-            fasta_fai,
+            fai,
         )
         ch_versions = ch_versions.mix(VCF_MERGE_JASMINE.out.versions)
 
@@ -161,7 +160,7 @@ workflow BAM_STRUCTURAL_VARIANT_CALLING {
         REHEADER_CALLED_VCFS(
             VIOLA.out.vcf,
             new_header,
-            fasta_fai
+            fai
         )
         ch_versions = ch_versions.mix(REHEADER_CALLED_VCFS.out.versions)
         

@@ -193,8 +193,16 @@ workflow CMGGSTRUCTURAL {
     // Prepare the BED files
     //
 
+    ch_inputs.bed
+        .branch { meta, bed ->
+            bed: bed
+            no_bed: !bed
+                return [ meta, [], [], [] ]
+        }
+        .set { ch_all_beds }
+
     BEDTOOLS_SORT(
-        ch_inputs.bed,
+        ch_all_beds.bed,
         []
     )
 
@@ -207,6 +215,7 @@ workflow CMGGSTRUCTURAL {
 
     BEDTOOLS_SORT.out.sorted
         .join(TABIX_BGZIPTABIX.out.gz_tbi, failOnDuplicate:true, failOnMismatch:true)
+        .mix(ch_all_beds.no_bed)
         .set { ch_beds }
 
     //

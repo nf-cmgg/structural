@@ -23,26 +23,31 @@ workflow BAM_VARIANT_CALLING_SMOOVE {
     //
 
     ch_beds
-        .map(
-            { meta, bed, bed_gz, bed_gz_tbi ->
-                [ meta, bed ]
-            }
-        )
+        .branch { meta, bed, bed_gz, bed_gz_tbi ->
+            bed: bed
+                return [ meta, bed ]
+            no_bed: !bed
+                return [ meta, [] ]
+        }
         .set { ch_reverse_input }
 
     REVERSE_BED(
-        ch_reverse_input,
+        ch_reverse_input.bed,
         ch_fai
     )
 
     ch_versions = ch_versions.mix(REVERSE_BED.out.versions.first())
+
+    REVERSE_BED.out.bed
+        .mix(ch_reverse_input.no_bed)
+        .set { ch_reversed_beds }
 
     //
     // Calling variants using Smoove
     //
 
     ch_crams
-        .join(REVERSE_BED.out.bed, failOnMismatch:true, failOnDuplicate:true)
+        .join(ch_reversed_beds, failOnMismatch:true, failOnDuplicate:true)
         .dump(tag: 'smoove_input', pretty: true)
         .set { ch_smoove_input }
 

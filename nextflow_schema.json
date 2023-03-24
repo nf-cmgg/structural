@@ -67,11 +67,6 @@
                     "type": "string",
                     "default": "None"
                 },
-                "dict": {
-                    "type": "string",
-                    "default": "None",
-                    "description": "Path to the sequence dictionary of the FASTA genome file"
-                },
                 "bwa": {
                     "type": "string",
                     "default": "None",
@@ -327,11 +322,6 @@
             "description": "Options specific for the Delly execution",
             "default": "",
             "properties": {
-                "delly_scatter_size": {
-                    "type": "integer",
-                    "default": 1000000,
-                    "description": "The approximate size of regions to split for parallelizing the Delly run"
-                },
                 "delly_sv_types": {
                     "type": "string",
                     "default": "ALL",

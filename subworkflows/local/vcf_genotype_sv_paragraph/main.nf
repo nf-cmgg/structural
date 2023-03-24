@@ -4,10 +4,11 @@ import groovy.json.JsonSlurper
 // Merge VCFs from multiple callers
 //
 
-include { PARAGRAPH_IDXDEPTH    } from '../../../modules/nf-core/paragraph/idxdepth/main'
-include { PARAGRAPH_MULTIGRMPY  } from '../../../modules/nf-core/paragraph/multigrmpy/main'
-include { TABIX_TABIX           } from '../../../modules/nf-core/tabix/tabix/main'
-include { BCFTOOLS_MERGE        } from '../../../modules/nf-core/bcftools/merge/main'
+include { PARAGRAPH_IDXDEPTH                } from '../../../modules/nf-core/paragraph/idxdepth/main'
+include { PARAGRAPH_MULTIGRMPY              } from '../../../modules/nf-core/paragraph/multigrmpy/main'
+include { TABIX_TABIX as TABIX_INDIVIDUALS  } from '../../../modules/nf-core/tabix/tabix/main'
+include { TABIX_TABIX as TABIX_FAMILY       } from '../../../modules/nf-core/tabix/tabix/main'
+include { BCFTOOLS_MERGE                    } from '../../../modules/nf-core/bcftools/merge/main'
 
 workflow VCF_GENOTYPE_SV_PARAGRAPH {
     take:
@@ -25,7 +26,7 @@ workflow VCF_GENOTYPE_SV_PARAGRAPH {
         fasta.map { [[], it] },
         fai.map { [[], it] }
     )
-    ch_versions = ch_versions.mix(PARAGRAPH_IDXDEPTH.out.versions)
+    ch_versions = ch_versions.mix(PARAGRAPH_IDXDEPTH.out.versions.first())
 
     PARAGRAPH_IDXDEPTH.out.depth
         .tap { meta_channel }
@@ -56,14 +57,15 @@ workflow VCF_GENOTYPE_SV_PARAGRAPH {
         fasta.map { [[], it] },
         fai.map { [[], it] }
     )
-    ch_versions = ch_versions.mix(PARAGRAPH_MULTIGRMPY.out.versions)
+    ch_versions = ch_versions.mix(PARAGRAPH_MULTIGRMPY.out.versions.first())
 
-    TABIX_TABIX(
+    TABIX_INDIVIDUALS(
         PARAGRAPH_MULTIGRMPY.out.vcf
     )
+    ch_versions = ch_versions.mix(TABIX_INDIVIDUALS.out.versions.first())
 
     PARAGRAPH_MULTIGRMPY.out.vcf
-        .join(TABIX_TABIX.out.tbi, failOnMismatch:true, failOnDuplicate:true)
+        .join(TABIX_INDIVIDUALS.out.tbi, failOnMismatch:true, failOnDuplicate:true)
         .map { meta, vcf, tbi ->
             new_meta = meta.findAll { !(it.key == "sample") } + [id:meta.family]
             [ groupKey(new_meta, meta.family_count), vcf, tbi ]
@@ -82,10 +84,18 @@ workflow VCF_GENOTYPE_SV_PARAGRAPH {
         [],
         []
     )
+    ch_versions = ch_versions.mix(BCFTOOLS_MERGE.out.versions.first())
 
     BCFTOOLS_MERGE.out.merged_variants
         .mix(merge_input.dont_merge)
         .set { genotyped_vcfs }
+
+    if(!params.annotate) {
+        TABIX_FAMILY(
+            genotyped_vcfs
+        )
+        ch_versions = ch_versions.mix(TABIX_FAMILY.out.versions.first())
+    }
 
     emit:
     genotyped_vcfs

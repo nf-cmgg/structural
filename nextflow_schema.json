@@ -65,7 +65,7 @@
                 },
                 "fai": {
                     "type": "string",
-                    "default": null
+                    "default": "None"
                 },
                 "dict": {
                     "type": "string",
@@ -308,6 +308,15 @@
                 "output_callers": {
                     "type": "boolean",
                     "description": "Output the VCF files from different callers. Warning: This produces a lot of additional output and should only be used for testing purposes"
+                },
+                "callers_support": {
+                    "type": "integer",
+                    "default": 1,
+                    "description": "The minimum amount of callers that should detect a variant. All variants that have a lower amount of callers supporting it, will be removed. (Only used when more than one caller is given)"
+                },
+                "annotate": {
+                    "type": "boolean",
+                    "description": "Runs the annotation with Ensembl VEP when true"
                 }
             },
             "required": ["callers"]
@@ -347,18 +356,20 @@
             "default": "",
             "properties": {
                 "vep_cache_version": {
-                    "type": "integer",
-                    "default": 108,
+                    "type": "string",
+                    "default": "108",
                     "description": "The version of the VEP cache to use.",
                     "help_text": "This version should be present in the folder supplied by `--vep_cache`. This version should be the same as `--vep_version` when no VEP cache was given with `--vep_cache`"
                 },
                 "vep_cache": {
                     "type": "string",
-                    "default": null
+                    "default": "None",
+                    "description": "The path to the VEP cache folder"
                 },
                 "vep_version": {
-                    "type": "number",
-                    "default": 108.2
+                    "type": "string",
+                    "default": "108.2",
+                    "description": "The version of VEP to use"
                 },
                 "species": {
                     "type": "string",
@@ -366,40 +377,44 @@
                     "description": "The species used for the analysis. Should be all lowercase and spaces should be underscorses."
                 },
                 "vep_structuralvariantoverlap": {
-                    "type": "string",
-                    "default": "false",
+                    "type": "boolean",
                     "description": "Use the StructuralVariantOverlap VEP plugin",
                     "help_text": "This requires either `--gnomad_sv` and `--gnomad_sv_tbi` and/or `--genomes1000_sv` and `--genomes1000_sv_tbi`. "
                 },
                 "vep_phenotypes": {
-                    "type": "string",
-                    "default": "false",
+                    "type": "boolean",
                     "description": "Use the Phenotypes VEP plugin",
                     "help_text": "This requires `--phenotypes` and `--phenotypes_tbi`. "
                 },
                 "gnomad_sv": {
                     "type": "string",
-                    "default": null
+                    "default": "None",
+                    "description": "Path to the Gnomad VCF file"
                 },
                 "gnomad_sv_tbi": {
                     "type": "string",
-                    "default": null
+                    "default": "None",
+                    "description": "Path to the Gnomad VCF index file"
                 },
                 "genomes1000_sv": {
                     "type": "string",
-                    "default": null
+                    "default": "None",
+                    "description": "Path to the 1000 Genomes VCF file"
                 },
                 "genomes1000_sv_tbi": {
                     "type": "string",
-                    "default": null
+                    "default": "None",
+                    "description": "Path to the 1000 Genomes VCF index file"
                 },
                 "phenotypes": {
                     "type": "string",
-                    "default": null
+                    "default": "None",
+                    "description": "Path to the phenotypes GFF file"
                 },
                 "phenotypes_tbi": {
                     "type": "string",
-                    "default": null
+                    "default": "None",
+                    "description": "Path to the phenotypes GFF index file"
                 }
             }
         }

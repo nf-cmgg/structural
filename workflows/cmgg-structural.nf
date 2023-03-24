@@ -83,7 +83,7 @@ include { VCF_GENOTYPE_SV_PARAGRAPH         } from '../subworkflows/local/vcf_ge
 // MODULE: Installed directly from nf-core/modules
 //
 include { TABIX_BGZIPTABIX                  } from '../modules/nf-core/tabix/bgziptabix/main'
-include { TABIX_TABIX                       } from '../modules/nf-core/tabix/tabix/main'
+include { TABIX_TABIX as TABIX_ANNOTATED    } from '../modules/nf-core/tabix/tabix/main'
 include { BEDTOOLS_SORT                     } from '../modules/nf-core/bedtools/sort/main'
 include { GATK4_CREATESEQUENCEDICTIONARY    } from '../modules/nf-core/gatk4/createsequencedictionary/main'
 include { SAMTOOLS_FAIDX                    } from '../modules/nf-core/samtools/faidx/main'
@@ -110,22 +110,22 @@ workflow CMGGSTRUCTURAL {
     // Create input channels from parameters
     //
 
-    fasta           = Channel.fromPath(params.fasta).collect()
-    fai             = params.fai ?          Channel.fromPath(params.fai).collect() :                null
-    dict            = params.dict ?         Channel.fromPath(params.dict).collect() :               null
-    bwa_index       = params.bwa ?          Channel.fromPath(params.bwa).map {[[],it]}.collect() :  null
-    vep_cache       = params.vep_cache ?    Channel.fromPath(params.vep_cache).collect() :          []
+    ch_fasta           = Channel.fromPath(params.fasta).collect()
+    ch_fai             = params.fai ?          Channel.fromPath(params.fai).collect() :                null
+    ch_dict            = params.dict ?         Channel.fromPath(params.dict).collect() :               null
+    ch_bwa_index       = params.bwa ?          Channel.fromPath(params.bwa).map {[[],it]}.collect() :  null
+    ch_vep_cache       = params.vep_cache ?    Channel.fromPath(params.vep_cache).collect() :          []
 
-    vep_extra_files = []
+    ch_vep_extra_files = []
 
     if(params.vep_structuralvariantoverlap && ((params.gnomad_sv && params.gnomad_sv_tbi) || (params.genomes1000_sv && params.genomes1000_sv_tbi))) {
         if(params.gnomad_sv && params.gnomad_sv_tbi) {
-            vep_extra_files.add(file(params.gnomad_sv, checkIfExists:true))
-            vep_extra_files.add(file(params.gnomad_sv_tbi, checkIfExists:true))
+            ch_vep_extra_files.add(file(params.gnomad_sv, checkIfExists:true))
+            ch_vep_extra_files.add(file(params.gnomad_sv_tbi, checkIfExists:true))
         }
         if(params.genomes1000_sv && params.genomes1000_sv_tbi) {
-            vep_extra_files.add(file(params.genomes1000_sv, checkIfExists:true))
-            vep_extra_files.add(file(params.genomes1000_sv_tbi, checkIfExists:true))
+            ch_vep_extra_files.add(file(params.genomes1000_sv, checkIfExists:true))
+            ch_vep_extra_files.add(file(params.genomes1000_sv_tbi, checkIfExists:true))
         }
     }
     else if (params.vep_structuralvariantoverlap) {
@@ -133,8 +133,8 @@ workflow CMGGSTRUCTURAL {
     }
 
     if(params.vep_phenotypes && params.phenotypes && params.phenotypes_tbi) {
-        vep_extra_files.add(file(params.phenotypes, checkIfExists:true))
-        vep_extra_files.add(file(params.phenotypes_tbi, checkIfExists:true))
+        ch_vep_extra_files.add(file(params.phenotypes, checkIfExists:true))
+        ch_vep_extra_files.add(file(params.phenotypes_tbi, checkIfExists:true))
     }
     else if(params.vep_phenotypes) {
         error("Please specify '--phenotypes PATH/TO/PHENOTYPES/FILE' and '--phenotypes_tbi PATH/TO/PHENOTYPES/INDEX/FILE' to use the Phenotypes VEP plugin.")
@@ -144,31 +144,31 @@ workflow CMGGSTRUCTURAL {
     // Create optional inputs
     //
 
-    if(!fai){
+    if(!ch_fai){
         SAMTOOLS_FAIDX(
-            fasta.map {[[],it]}
+            ch_fasta.map {[[],it]}
         )
 
         ch_versions = ch_versions.mix(SAMTOOLS_FAIDX.out.versions)
-        fai   = SAMTOOLS_FAIDX.out.fai.map { it[1] }.collect()
+        ch_fai   = SAMTOOLS_FAIDX.out.fai.map { it[1] }.collect()
     }
 
-    if(!dict) {
+    if(!ch_dict) {
         GATK4_CREATESEQUENCEDICTIONARY(
-            fasta
+            ch_fasta
         )
 
         ch_versions = ch_versions.mix(GATK4_CREATESEQUENCEDICTIONARY.out.versions)
-        dict        = GATK4_CREATESEQUENCEDICTIONARY.out.dict.collect()
+        ch_dict        = GATK4_CREATESEQUENCEDICTIONARY.out.dict.collect()
     }
 
-    if(!bwa_index && params.callers.contains("gridss")){
+    if(!ch_bwa_index && params.callers.contains("gridss")){
         BWA_INDEX(
-            fasta.map {[[id:'bwa'],it]}
+            ch_fasta.map {[[id:'bwa'],it]}
         )
 
         ch_versions = ch_versions.mix(BWA_INDEX.out.versions)
-        bwa_index = BWA_INDEX.out.index.collect()
+        ch_bwa_index = BWA_INDEX.out.index.collect()
     }
 
     //
@@ -199,14 +199,14 @@ workflow CMGGSTRUCTURAL {
             bed: [ new_meta, bed ]
             crams: [ new_meta, cram, crai ]
         })
-        .set { inputs }
+        .set { ch_inputs }
 
     //
     // Prepare the BED files
     //
 
     BEDTOOLS_SORT(
-        inputs.bed,
+        ch_inputs.bed,
         []
     )
 
@@ -217,19 +217,21 @@ workflow CMGGSTRUCTURAL {
     )
     ch_versions = ch_versions.mix(TABIX_BGZIPTABIX.out.versions)
 
-    beds = BEDTOOLS_SORT.out.sorted.combine(TABIX_BGZIPTABIX.out.gz_tbi, by:0)
+    BEDTOOLS_SORT.out.sorted
+        .join(TABIX_BGZIPTABIX.out.gz_tbi, failOnDuplicate:true, failOnMismatch:true)
+        .set { ch_beds }
 
     //
     // Call the variants
     //
 
     BAM_STRUCTURAL_VARIANT_CALLING(
-        inputs.crams,
-        beds,
-        fasta,
-        fai,
-        dict,
-        bwa_index
+        ch_inputs.crams,
+        ch_beds,
+        ch_fasta,
+        ch_fai,
+        ch_dict,
+        ch_bwa_index
     )
 
     ch_versions = ch_versions.mix(BAM_STRUCTURAL_VARIANT_CALLING.out.versions)
@@ -241,38 +243,34 @@ workflow CMGGSTRUCTURAL {
 
     VCF_GENOTYPE_SV_PARAGRAPH(
         BAM_STRUCTURAL_VARIANT_CALLING.out.vcfs,
-        inputs.crams,
-        fasta,
-        fai
+        ch_inputs.crams,
+        ch_fasta,
+        ch_fai
     )
-
     ch_versions = ch_versions.mix(VCF_GENOTYPE_SV_PARAGRAPH.out.versions)
 
     //
     // Annotate using Ensembl VEP
     //
 
-    ENSEMBLVEP_VEP(
-        VCF_GENOTYPE_SV_PARAGRAPH.out.genotyped_vcfs,
-        params.genome,
-        params.species,
-        params.vep_cache_version,
-        vep_cache,
-        fasta,
-        vep_extra_files
-    )
+    if(params.annotate) {
+        ENSEMBLVEP_VEP(
+            VCF_GENOTYPE_SV_PARAGRAPH.out.genotyped_vcfs,
+            params.genome,
+            params.species,
+            params.vep_cache_version,
+            ch_vep_cache,
+            ch_fasta,
+            ch_vep_extra_files
+        )
 
-    ch_reports  = ch_reports.mix(ENSEMBLVEP_VEP.out.report)
-    ch_versions = ch_versions.mix(ENSEMBLVEP_VEP.out.versions)
+        ch_reports  = ch_reports.mix(ENSEMBLVEP_VEP.out.report)
+        ch_versions = ch_versions.mix(ENSEMBLVEP_VEP.out.versions)
 
-    ENSEMBLVEP_VEP.out.vcf
-        .tap { vep_vcfs_to_index }
-        .dump(tag:'vep_output', pretty:true)
-        .set { vep_vcfs }
-
-    TABIX_TABIX(
-        vep_vcfs_to_index
-    )
+        TABIX_ANNOTATED(
+            ENSEMBLVEP_VEP.out.vcf
+        )
+    }
 
     //
     // Dump the software versions
@@ -294,6 +292,7 @@ workflow CMGGSTRUCTURAL {
     ch_methods_description = Channel.value(methods_description)
 
     ch_multiqc_files = Channel.empty()
+    ch_multiqc_files = ch_multiqc_files.mix(ch_reports)
     ch_multiqc_files = ch_multiqc_files.mix(ch_workflow_summary.collectFile(name: 'workflow_summary_mqc.yaml'))
     ch_multiqc_files = ch_multiqc_files.mix(ch_methods_description.collectFile(name: 'methods_description_mqc.yaml'))
     ch_multiqc_files = ch_multiqc_files.mix(CUSTOM_DUMPSOFTWAREVERSIONS.out.mqc_yml.collect())

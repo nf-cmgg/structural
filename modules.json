@@ -56,21 +56,6 @@
                         "git_sha": "bea3ca998816a7f812b1bbbcb27c3a9ffbac0706",
                         "installed_by": ["modules"]
                     },
-                    "gatk4/createsequencedictionary": {
-                        "branch": "master",
-                        "git_sha": "c8e35eb2055c099720a75538d1b8adb3fb5a464c",
-                        "installed_by": ["modules"]
-                    },
-                    "gatk4/printsvevidence": {
-                        "branch": "master",
-                        "git_sha": "c8e35eb2055c099720a75538d1b8adb3fb5a464c",
-                        "installed_by": ["modules"]
-                    },
-                    "gatk4/sitedepthtobaf": {
-                        "branch": "master",
-                        "git_sha": "c8e35eb2055c099720a75538d1b8adb3fb5a464c",
-                        "installed_by": ["modules"]
-                    },
                     "gridss/gridss": {
                         "branch": "master",
                         "git_sha": "f159f90b4bfa06b64bf86650fda0eb441dce4b77",

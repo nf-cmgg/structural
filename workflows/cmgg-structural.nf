@@ -15,7 +15,6 @@ def checkPathParamList = [
     params.multiqc_config,
     params.fasta,
     params.fai,
-    params.dict,
     params.vep_cache,
     params.gnomad_sv,
     params.gnomad_sv_tbi,
@@ -85,7 +84,6 @@ include { VCF_GENOTYPE_SV_PARAGRAPH         } from '../subworkflows/local/vcf_ge
 include { TABIX_BGZIPTABIX                  } from '../modules/nf-core/tabix/bgziptabix/main'
 include { TABIX_TABIX as TABIX_ANNOTATED    } from '../modules/nf-core/tabix/tabix/main'
 include { BEDTOOLS_SORT                     } from '../modules/nf-core/bedtools/sort/main'
-include { GATK4_CREATESEQUENCEDICTIONARY    } from '../modules/nf-core/gatk4/createsequencedictionary/main'
 include { SAMTOOLS_FAIDX                    } from '../modules/nf-core/samtools/faidx/main'
 include { BWA_INDEX                         } from '../modules/nf-core/bwa/index/main'
 include { ENSEMBLVEP_VEP                    } from '../modules/nf-core/ensemblvep/vep/main'
@@ -112,7 +110,6 @@ workflow CMGGSTRUCTURAL {
 
     ch_fasta           = Channel.fromPath(params.fasta).collect()
     ch_fai             = params.fai ?          Channel.fromPath(params.fai).collect() :                null
-    ch_dict            = params.dict ?         Channel.fromPath(params.dict).collect() :               null
     ch_bwa_index       = params.bwa ?          Channel.fromPath(params.bwa).map {[[],it]}.collect() :  null
     ch_vep_cache       = params.vep_cache ?    Channel.fromPath(params.vep_cache).collect() :          []
 
@@ -151,15 +148,6 @@ workflow CMGGSTRUCTURAL {
 
         ch_versions = ch_versions.mix(SAMTOOLS_FAIDX.out.versions)
         ch_fai   = SAMTOOLS_FAIDX.out.fai.map { it[1] }.collect()
-    }
-
-    if(!ch_dict) {
-        GATK4_CREATESEQUENCEDICTIONARY(
-            ch_fasta
-        )
-
-        ch_versions = ch_versions.mix(GATK4_CREATESEQUENCEDICTIONARY.out.versions)
-        ch_dict        = GATK4_CREATESEQUENCEDICTIONARY.out.dict.collect()
     }
 
     if(!ch_bwa_index && params.callers.contains("gridss")){
@@ -230,7 +218,6 @@ workflow CMGGSTRUCTURAL {
         ch_beds,
         ch_fasta,
         ch_fai,
-        ch_dict,
         ch_bwa_index
     )
 

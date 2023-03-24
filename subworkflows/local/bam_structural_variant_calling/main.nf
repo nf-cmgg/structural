@@ -19,52 +19,50 @@ include { TABIX_TABIX as TABIX_VCFS                     } from '../../../modules
 
 workflow BAM_STRUCTURAL_VARIANT_CALLING {
     take:
-        crams                   // channel: [mandatory] [ meta, cram, crai, bed ] => The aligned CRAMs per sample with the regions they should be called on
-        beds                    // channel: [optional]  [ meta, bed, bed_gz, bed_gz_tbi ] => A channel containing the normal BED, the bgzipped BED and its index file
-        fasta                   // channel: [mandatory] [ fasta ] => The fasta reference file
-        fai                     // channel: [mandatory] [ fai ] => The index of the fasta reference file
-        dict                    // channel: [mandatory] [ dict ] => The dictionary of the fasta reference file
-        bwa_index               // channel: [optional]  [ index ] => The BWA MEM index
+        ch_crams        // channel: [mandatory] [ meta, cram, crai, bed ] => The aligned CRAMs per sample with the regions they should be called on
+        ch_beds         // channel: [optional]  [ meta, bed, bed_gz, bed_gz_tbi ] => A channel containing the normal BED, the bgzipped BED and its index file
+        ch_fasta        // channel: [mandatory] [ fasta ] => The fasta reference file
+        ch_fai          // channel: [mandatory] [ fai ] => The index of the fasta reference file
+        ch_bwa_index    // channel: [optional]  [ index ] => The BWA MEM index
 
     main:
 
-    callers = params.callers.tokenize(",")
+    val_callers     = params.callers.tokenize(",")
 
-    ch_versions = Channel.empty()
-    ch_reports  = Channel.empty()
-    ch_metrics  = Channel.empty()
-    called_vcfs = Channel.empty()
+    ch_versions     = Channel.empty()
+    ch_reports      = Channel.empty()
+    ch_called_vcfs  = Channel.empty()
 
     //
     // Calling variants using Manta
     //
 
-    if("manta" in callers){
+    if("manta" in val_callers){
         BAM_VARIANT_CALLING_MANTA(
-            crams,
-            beds,
-            fasta,
-            fai
+            ch_crams,
+            ch_beds,
+            ch_fasta,
+            ch_fai
         )
 
-        called_vcfs = called_vcfs.mix(BAM_VARIANT_CALLING_MANTA.out.manta_vcfs)
-        ch_versions = ch_versions.mix(BAM_VARIANT_CALLING_MANTA.out.versions)
+        ch_called_vcfs  = ch_called_vcfs.mix(BAM_VARIANT_CALLING_MANTA.out.manta_vcfs)
+        ch_versions     = ch_versions.mix(BAM_VARIANT_CALLING_MANTA.out.versions)
     }
 
     //
     // Calling variants using Delly
     //
 
-    if("delly" in callers){
+    if("delly" in val_callers){
         BAM_VARIANT_CALLING_DELLY(
-            crams,
-            beds,
-            fasta,
-            fai
+            ch_crams,
+            ch_beds,
+            ch_fasta,
+            ch_fai
         )
 
-        called_vcfs = called_vcfs.mix(BAM_VARIANT_CALLING_DELLY.out.delly_vcfs)
-        ch_versions = ch_versions.mix(BAM_VARIANT_CALLING_DELLY.out.versions)
+        ch_called_vcfs  = ch_called_vcfs.mix(BAM_VARIANT_CALLING_DELLY.out.delly_vcfs)
+        ch_versions     = ch_versions.mix(BAM_VARIANT_CALLING_DELLY.out.versions)
     }
 
     //
@@ -73,48 +71,48 @@ workflow BAM_STRUCTURAL_VARIANT_CALLING {
 
     // TODO Whamg needs some reheadering (like done in https://github.com/broadinstitute/gatk-sv/blob/90e3e9a221bdfe7ab2cfedeffb704bc6f0e99aa9/wdl/Whamg.wdl#L209)
     // TODO Add insertions sequence in the info key - Whamg will not work for now
-    if("whamg" in callers){
+    if("whamg" in val_callers){
         BAM_VARIANT_CALLING_WHAMG(
-            crams,
-            beds,
-            fasta,
-            fai
+            ch_crams,
+            ch_beds,
+            ch_fasta,
+            ch_fai
         )
 
-        called_vcfs = called_vcfs.mix(BAM_VARIANT_CALLING_WHAMG.out.whamg_vcfs)
-        ch_versions = ch_versions.mix(BAM_VARIANT_CALLING_WHAMG.out.versions)
+        ch_called_vcfs  = ch_called_vcfs.mix(BAM_VARIANT_CALLING_WHAMG.out.whamg_vcfs)
+        ch_versions     = ch_versions.mix(BAM_VARIANT_CALLING_WHAMG.out.versions)
     }
 
     //
     // Calling variants using Smoove
     //
 
-    if("smoove" in callers){
+    if("smoove" in val_callers){
         BAM_VARIANT_CALLING_SMOOVE(
-            crams,
-            beds,
-            fasta,
-            fai
+            ch_crams,
+            ch_beds,
+            ch_fasta,
+            ch_fai
         )
 
-        called_vcfs = called_vcfs.mix(BAM_VARIANT_CALLING_SMOOVE.out.smoove_vcfs)
-        ch_versions = ch_versions.mix(BAM_VARIANT_CALLING_SMOOVE.out.versions)
+        ch_called_vcfs  = ch_called_vcfs.mix(BAM_VARIANT_CALLING_SMOOVE.out.smoove_vcfs)
+        ch_versions     = ch_versions.mix(BAM_VARIANT_CALLING_SMOOVE.out.versions)
     }
 
     //
     // Calling variants using Gridss (Currently disabled)
     //
 
-    if("gridss" in callers){
+    if("gridss" in val_callers){
         BAM_VARIANT_CALLING_GRIDSS(
-            crams,
-            fasta,
-            fai,
-            bwa_index
+            ch_crams,
+            ch_fasta,
+            ch_fai,
+            ch_bwa_index
         )
 
-        called_vcfs = called_vcfs.mix(BAM_VARIANT_CALLING_GRIDSS.out.gridss_vcfs)
-        ch_versions = ch_versions.mix(BAM_VARIANT_CALLING_GRIDSS.out.versions)
+        ch_called_vcfs  = ch_called_vcfs.mix(BAM_VARIANT_CALLING_GRIDSS.out.gridss_vcfs)
+        ch_versions     = ch_versions.mix(BAM_VARIANT_CALLING_GRIDSS.out.versions)
     }
 
     //
@@ -123,15 +121,15 @@ workflow BAM_STRUCTURAL_VARIANT_CALLING {
 
     // Scramble is unfinished. It needs a lot of improvements if we were to add it
 
-    // if("scramble" in callers){
+    // if("scramble" in val_callers){
     //     BAM_VARIANT_CALLING_SCRAMBLE(
-    //         crams,
-    //         beds,
-    //         fasta
+    //         ch_crams,
+    //         ch_beds,
+    //         ch_fasta
     //     )
 
-    //     called_vcfs = called_vcfs.mix(BAM_VARIANT_CALLING_SCRAMBLE.out.scramble_vcfs)
-    //     ch_versions = ch_versions.mix(BAM_VARIANT_CALLING_SCRAMBLE.out.versions)
+    //    ch_called_vcfs  = ch_called_vcfs.mix(BAM_VARIANT_CALLING_SCRAMBLE.out.scramble_vcfs)
+    //    ch_versions     = ch_versions.mix(BAM_VARIANT_CALLING_SCRAMBLE.out.versions)
     // }
 
     //
@@ -139,35 +137,37 @@ workflow BAM_STRUCTURAL_VARIANT_CALLING {
     //
 
     VIOLA(
-        called_vcfs.map{ it[0..1] }
+        ch_called_vcfs.map{ it[0..1] }
     )
 
-    ch_versions = ch_versions.mix(VIOLA.out.versions)
+    ch_versions = ch_versions.mix(VIOLA.out.versions.first())
 
-    if(callers.size > 1){
+    if(val_callers.size() > 1){
         VCF_MERGE_JASMINE(
             VIOLA.out.vcf,
-            fasta,
-            fai,
+            ch_fasta,
+            ch_fai,
         )
         ch_versions = ch_versions.mix(VCF_MERGE_JASMINE.out.versions)
 
-        VCF_MERGE_JASMINE.out.merged_vcfs.set { merged_vcfs }
+        VCF_MERGE_JASMINE.out.merged_vcfs.set { ch_merged_vcfs }
     } else {
 
-        new_header = Channel.fromPath("${projectDir}/assets/header.txt").collect()
+        Channel.fromPath("${projectDir}/assets/header.txt")
+            .collect()
+            .set { ch_new_header }
 
         REHEADER_CALLED_VCFS(
             VIOLA.out.vcf,
-            new_header,
-            fai
+            ch_new_header,
+            ch_fai
         )
-        ch_versions = ch_versions.mix(REHEADER_CALLED_VCFS.out.versions)
+        ch_versions = ch_versions.mix(REHEADER_CALLED_VCFS.out.versions.first())
         
         TABIX_VCFS(
             REHEADER_CALLED_VCFS.out.vcf
         )
-        ch_versions = ch_versions.mix(TABIX_VCFS.out.versions)
+        ch_versions = ch_versions.mix(TABIX_VCFS.out.versions.first())
 
         REHEADER_CALLED_VCFS.out.vcf
             .join(TABIX_VCFS.out.tbi, failOnDuplicate:true, failOnMismatch:true)
@@ -175,13 +175,12 @@ workflow BAM_STRUCTURAL_VARIANT_CALLING {
                 new_meta = meta - meta.subMap("caller")
                 [ new_meta, vcf, tbi ]
             }
-            .set { merged_vcfs }
+            .set { ch_merged_vcfs }
     }
 
     emit:
-    vcfs                = merged_vcfs
+    vcfs                = ch_merged_vcfs    // channel: [ val(meta), path(vcf), path(tbi) ]
 
     versions            = ch_versions
-    metrics             = ch_metrics
     reports             = ch_reports
 }

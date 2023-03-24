@@ -12,10 +12,10 @@ include { TABIX_TABIX        } from '../../../modules/nf-core/tabix/tabix/main'
 
 workflow BAM_VARIANT_CALLING_DELLY {
     take:
-        crams                   // channel: [mandatory] [ meta, cram, crai ] => The aligned CRAMs per sample with the regions they should be called on
-        beds                    // channel: [optional]  [ meta, bed, bed_gz, bed_gz_tbi ] => A channel containing the normal BED, the bgzipped BED and its index file
-        fasta                   // channel: [mandatory] [ fasta ] => The fasta reference file
-        fai               // channel: [mandatory] [ fai ] => The index of the fasta reference file
+        ch_crams    // channel: [mandatory] [ meta, cram, crai ] => The aligned CRAMs per sample with the regions they should be called on
+        ch_beds     // channel: [optional]  [ meta, bed, bed_gz, bed_gz_tbi ] => A channel containing the normal BED, the bgzipped BED and its index file
+        ch_fasta    // channel: [mandatory] [ fasta ] => The fasta reference file
+        ch_fai      // channel: [mandatory] [ fai ] => The index of the fasta reference file
 
     main:
 
@@ -25,20 +25,20 @@ workflow BAM_VARIANT_CALLING_DELLY {
     // Split the BED files if the scatter count is bigger than 1
     //
 
-    beds
+    ch_beds
         .map(
             { meta, bed, bed_gz, bed_gz_tbi ->
                 [ meta, bed ]
             }
         )
-        .set { single_beds }
+        .set { ch_single_beds }
 
     SCATTER_BEDS(
-        single_beds,
+        ch_single_beds,
         params.delly_scatter_size
     )
 
-    ch_versions = ch_versions.mix(SCATTER_BEDS.out.versions)
+    ch_versions = ch_versions.mix(SCATTER_BEDS.out.versions.first())
 
     SCATTER_BEDS.out.scatter
         .transpose()
@@ -46,26 +46,24 @@ workflow BAM_VARIANT_CALLING_DELLY {
                 new_meta = meta + [id:bed.baseName]
                 [ new_meta, bed ]
         }
-        .set { split_beds }
-
-    split_beds.dump(tag: 'split_beds', pretty: true)
+        .set { ch_split_beds }
 
     //
     // Reverse the BED file (It will only contain the regions that aren't of interest now)
     //
 
     REVERSE_BED(
-        split_beds,
-        fai
+        ch_split_beds,
+        ch_fai
     )
 
-    ch_versions = ch_versions.mix(REVERSE_BED.out.versions)
+    ch_versions = ch_versions.mix(REVERSE_BED.out.versions.first())
 
     //
     // Calling variants using Delly
     //
 
-    crams
+    ch_crams
         .combine(
             REVERSE_BED.out.bed
                 .map(
@@ -82,15 +80,15 @@ workflow BAM_VARIANT_CALLING_DELLY {
             }
         )
         .dump(tag: 'delly_input', pretty: true)
-        .set { delly_input }
+        .set { ch_delly_input }
 
     DELLY_CALL(
-        delly_input,
-        fasta,
-        fai
+        ch_delly_input,
+        ch_fasta,
+        ch_fai
     )
 
-    ch_versions = ch_versions.mix(DELLY_CALL.out.versions)
+    ch_versions = ch_versions.mix(DELLY_CALL.out.versions.first())
 
     //
     // Concatenate the BCF files if the scatter count is bigger than 1 and convert the BCF to VCF
@@ -111,32 +109,31 @@ workflow BAM_VARIANT_CALLING_DELLY {
         )
         .groupTuple()
         .dump(tag: 'bcftools_input', pretty: true)
-        .set { bcftools_input }
+        .set { ch_bcftools_input }
 
 
     BCFTOOLS_CONCAT(
-        bcftools_input
+        ch_bcftools_input
     )
 
-    ch_versions = ch_versions.mix(BCFTOOLS_CONCAT.out.versions)
-
-    BCFTOOLS_CONCAT.out.vcf.set { sort_input }
+    ch_versions = ch_versions.mix(BCFTOOLS_CONCAT.out.versions.first())
 
     //
     // Index the VCF file
     //
 
     BCFTOOLS_SORT(
-        sort_input
+        BCFTOOLS_CONCAT.out.vcf
     )
+    ch_versions = ch_versions.mix(BCFTOOLS_SORT.out.versions.first())
 
     TABIX_TABIX(
         BCFTOOLS_SORT.out.vcf
     )
-    ch_versions = ch_versions.mix(TABIX_TABIX.out.versions)
+    ch_versions = ch_versions.mix(TABIX_TABIX.out.versions.first())
 
     BCFTOOLS_SORT.out.vcf
-        .combine(TABIX_TABIX.out.tbi, by:0)
+        .join(TABIX_TABIX.out.tbi, failOnDuplicate:true, failOnMismatch:true)
         .map(
             { meta, vcf, tbi ->
                 new_meta = meta + [caller:"delly"]
@@ -144,9 +141,10 @@ workflow BAM_VARIANT_CALLING_DELLY {
             }
         )
         .dump(tag: 'delly_vcfs', pretty: true)
-        .set { delly_vcfs }
+        .set { ch_delly_vcfs }
 
     emit:
-    delly_vcfs
-    versions = ch_versions
+    delly_vcfs  = ch_delly_vcfs // channel: [ val(meta), path(vcf), path(tbi) ]
+
+    versions    = ch_versions
 }

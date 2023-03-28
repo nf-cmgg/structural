@@ -9,133 +9,110 @@ include { BAM_VARIANT_CALLING_WHAMG                     } from '../bam_variant_c
 include { BAM_VARIANT_CALLING_SMOOVE                    } from '../bam_variant_calling_smoove/main'
 include { BAM_VARIANT_CALLING_SCRAMBLE                  } from '../bam_variant_calling_scramble/main'
 include { BAM_VARIANT_CALLING_GRIDSS                    } from '../bam_variant_calling_gridss/main'
-include { VCF_METRICS_SVTK_SVTEST                       } from '../vcf_metrics_svtk_svtest/main'
 include { VCF_MERGE_JASMINE                             } from '../vcf_merge_jasmine/main'
 
 // Import modules
-include { GATK4_COLLECTREADCOUNTS as COLLECTREADCOUNTS  } from '../../../modules/nf-core/gatk4/collectreadcounts/main'
-include { GATK4_COLLECTSVEVIDENCE as COLLECTSVEVIDENCE  } from '../../../modules/nf-core/gatk4/collectsvevidence/main'
-include { TABIX_TABIX                                   } from '../../../modules/nf-core/tabix/tabix/main'
+include { VIOLA                                         } from '../../../modules/local/viola/main'
+include { REHEADER_CALLED_VCFS                          } from '../../../modules/local/bcftools/reheader_called_vcfs/main'
+
+include { TABIX_TABIX as TABIX_VCFS                     } from '../../../modules/nf-core/tabix/tabix/main'
 
 workflow BAM_STRUCTURAL_VARIANT_CALLING {
     take:
-        crams                   // channel: [mandatory] [ meta, cram, crai, bed ] => The aligned CRAMs per sample with the regions they should be called on
-        beds                    // channel: [optional]  [ meta, bed, bed_gz, bed_gz_tbi ] => A channel containing the normal BED, the bgzipped BED and its index file
-        allele_loci_vcf         // channel: [optional]  [ vcf ] => A channel containing the VCF and its index for counting the alleles
-        fasta                   // channel: [mandatory] [ fasta ] => The fasta reference file
-        fasta_fai               // channel: [mandatory] [ fasta_fai ] => The index of the fasta reference file
-        dict                    // channel: [mandatory] [ dict ] => The dictionary of the fasta reference file
-        bwa_index               // channel: [optional]  [ index ] => The BWA MEM index
+        ch_crams        // channel: [mandatory] [ meta, cram, crai, bed ] => The aligned CRAMs per sample with the regions they should be called on
+        ch_beds         // channel: [optional]  [ meta, bed, bed_gz, bed_gz_tbi ] => A channel containing the normal BED, the bgzipped BED and its index file
+        ch_fasta        // channel: [mandatory] [ fasta ] => The fasta reference file
+        ch_fai          // channel: [mandatory] [ fai ] => The index of the fasta reference file
+        ch_bwa_index    // channel: [optional]  [ index ] => The BWA MEM index
 
     main:
 
-    callers = params.callers.tokenize(",")
+    val_callers     = params.callers.tokenize(",")
 
-    ch_versions = Channel.empty()
-    ch_reports  = Channel.empty()
-    ch_metrics  = Channel.empty()
-    called_vcfs = Channel.empty()
-
-    //
-    // GATK Collect Read Counts
-    //
-
-    crams
-        .combine(
-            beds.map({meta, bed, bed_gz, bed_gz_tbi -> [meta, bed]})
-        , by:0)
-    .dump(tag: 'collectreadcounts_input', pretty: true)
-    .set { collectreadcounts_input }
-
-    COLLECTREADCOUNTS(
-        collectreadcounts_input,
-        fasta,
-        fasta_fai,
-        dict
-    )
-
-    // ch_versions = ch_versions.mix(COLLECTREADCOUNTS.out.versions)
+    ch_versions     = Channel.empty()
+    ch_reports      = Channel.empty()
+    ch_called_vcfs  = Channel.empty()
 
     //
     // Calling variants using Manta
     //
 
-    if("manta" in callers){
+    if("manta" in val_callers){
         BAM_VARIANT_CALLING_MANTA(
-            crams,
-            beds,
-            fasta,
-            fasta_fai
+            ch_crams,
+            ch_beds,
+            ch_fasta,
+            ch_fai
         )
 
-        called_vcfs = called_vcfs.mix(BAM_VARIANT_CALLING_MANTA.out.manta_vcfs)
-        ch_versions = ch_versions.mix(BAM_VARIANT_CALLING_MANTA.out.versions)
+        ch_called_vcfs  = ch_called_vcfs.mix(BAM_VARIANT_CALLING_MANTA.out.manta_vcfs)
+        ch_versions     = ch_versions.mix(BAM_VARIANT_CALLING_MANTA.out.versions)
     }
 
     //
     // Calling variants using Delly
     //
 
-    if("delly" in callers){
+    if("delly" in val_callers){
         BAM_VARIANT_CALLING_DELLY(
-            crams,
-            beds,
-            fasta,
-            fasta_fai
+            ch_crams,
+            ch_beds,
+            ch_fasta,
+            ch_fai
         )
 
-        called_vcfs = called_vcfs.mix(BAM_VARIANT_CALLING_DELLY.out.delly_vcfs)
-        ch_versions = ch_versions.mix(BAM_VARIANT_CALLING_DELLY.out.versions)
+        ch_called_vcfs  = ch_called_vcfs.mix(BAM_VARIANT_CALLING_DELLY.out.delly_vcfs)
+        ch_versions     = ch_versions.mix(BAM_VARIANT_CALLING_DELLY.out.versions)
     }
 
     //
-    // Calling variants using Whamg
+    // Calling variants using Whamg (Currently disabled)
     //
 
     // TODO Whamg needs some reheadering (like done in https://github.com/broadinstitute/gatk-sv/blob/90e3e9a221bdfe7ab2cfedeffb704bc6f0e99aa9/wdl/Whamg.wdl#L209)
     // TODO Add insertions sequence in the info key - Whamg will not work for now
-    if("whamg" in callers){
+    if("whamg" in val_callers){
         BAM_VARIANT_CALLING_WHAMG(
-            crams,
-            beds,
-            fasta,
-            fasta_fai
+            ch_crams,
+            ch_beds,
+            ch_fasta,
+            ch_fai
         )
 
-        called_vcfs = called_vcfs.mix(BAM_VARIANT_CALLING_WHAMG.out.whamg_vcfs)
-        ch_versions = ch_versions.mix(BAM_VARIANT_CALLING_WHAMG.out.versions)
+        ch_called_vcfs  = ch_called_vcfs.mix(BAM_VARIANT_CALLING_WHAMG.out.whamg_vcfs)
+        ch_versions     = ch_versions.mix(BAM_VARIANT_CALLING_WHAMG.out.versions)
     }
 
     //
     // Calling variants using Smoove
     //
 
-    if("smoove" in callers){
+    if("smoove" in val_callers){
         BAM_VARIANT_CALLING_SMOOVE(
-            crams,
-            beds,
-            fasta,
-            fasta_fai
+            ch_crams,
+            ch_beds,
+            ch_fasta,
+            ch_fai
         )
 
-        called_vcfs = called_vcfs.mix(BAM_VARIANT_CALLING_SMOOVE.out.smoove_vcfs)
-        ch_versions = ch_versions.mix(BAM_VARIANT_CALLING_SMOOVE.out.versions)
+        ch_called_vcfs  = ch_called_vcfs.mix(BAM_VARIANT_CALLING_SMOOVE.out.smoove_vcfs)
+        ch_versions     = ch_versions.mix(BAM_VARIANT_CALLING_SMOOVE.out.versions)
     }
 
     //
-    // Calling variants using Gridss
+    // Calling variants using Gridss (Currently disabled)
     //
 
-    if("gridss" in callers){
+    if("gridss" in val_callers){
         BAM_VARIANT_CALLING_GRIDSS(
-            crams,
-            fasta,
-            fasta_fai,
-            bwa_index
+            ch_crams,
+            ch_fasta,
+            ch_fai,
+            ch_bwa_index
         )
 
-        called_vcfs = called_vcfs.mix(BAM_VARIANT_CALLING_GRIDSS.out.gridss_vcfs)
-        ch_versions = ch_versions.mix(BAM_VARIANT_CALLING_GRIDSS.out.versions)
+        ch_called_vcfs  = ch_called_vcfs.mix(BAM_VARIANT_CALLING_GRIDSS.out.gridss_vcfs)
+        ch_versions     = ch_versions.mix(BAM_VARIANT_CALLING_GRIDSS.out.versions)
     }
 
     //
@@ -144,100 +121,66 @@ workflow BAM_STRUCTURAL_VARIANT_CALLING {
 
     // Scramble is unfinished. It needs a lot of improvements if we were to add it
 
-    // if("scramble" in callers){
+    // if("scramble" in val_callers){
     //     BAM_VARIANT_CALLING_SCRAMBLE(
-    //         crams,
-    //         beds,
-    //         fasta
+    //         ch_crams,
+    //         ch_beds,
+    //         ch_fasta
     //     )
 
-    //     called_vcfs = called_vcfs.mix(BAM_VARIANT_CALLING_SCRAMBLE.out.scramble_vcfs)
-    //     ch_versions = ch_versions.mix(BAM_VARIANT_CALLING_SCRAMBLE.out.versions)
+    //    ch_called_vcfs  = ch_called_vcfs.mix(BAM_VARIANT_CALLING_SCRAMBLE.out.scramble_vcfs)
+    //    ch_versions     = ch_versions.mix(BAM_VARIANT_CALLING_SCRAMBLE.out.versions)
     // }
 
     //
-    // GATK Collect Structural Variant Evidence
+    // Standardize and merge VCFs per sample for all callers
     //
 
-    if(allele_loci_vcf){
-        TABIX_TABIX(
-            allele_loci_vcf.map{[[id:"allele_loci_vcf"], it]}
-        )
-
-        crams
-            .combine(TABIX_TABIX.out.tbi)
-            .map(
-                { meta, cram, crai, tbi ->
-                    [ meta, cram, crai, allele_loci_vcf, tbi ]
-                }
-            )
-            .set { collectsvevidence_input }
-
-    } else {
-        crams
-            .map(
-                { meta, cram, crai ->
-                    [ meta, cram, crai, [], [] ]
-                }
-            )
-            .set { collectsvevidence_input }
-    }
-
-    collectsvevidence_input.dump(tag: 'collectsvevidence_input', pretty: true)
-
-    COLLECTSVEVIDENCE(
-        collectsvevidence_input,
-        fasta,
-        fasta_fai,
-        dict
+    VIOLA(
+        ch_called_vcfs.map{ it[0..1] }
     )
 
-    ch_versions = ch_versions.mix(COLLECTSVEVIDENCE.out.versions)
+    ch_versions = ch_versions.mix(VIOLA.out.versions.first())
 
-    //
-    // Create the metrics for all produced files
-    //
-
-    if(params.run_module_metrics) {
-        VCF_METRICS_SVTK_SVTEST(
-            called_vcfs,
-            COLLECTSVEVIDENCE.out.split_read_evidence,
-            COLLECTSVEVIDENCE.out.paired_end_evidence,
-            COLLECTSVEVIDENCE.out.site_depths,
-            fasta_fai
-        )
-
-        ch_metrics  = ch_reports.mix(VCF_METRICS_SVTK_SVTEST.out.metrics)
-        ch_versions = ch_versions.mix(VCF_METRICS_SVTK_SVTEST.out.versions)
-    }
-
-    if(callers.size > 1){
+    if(val_callers.size() > 1){
         VCF_MERGE_JASMINE(
-            called_vcfs.map { it[0..1] },
-            fasta,
-            fasta_fai,
+            VIOLA.out.vcf,
+            ch_fasta,
+            ch_fai,
         )
+        ch_versions = ch_versions.mix(VCF_MERGE_JASMINE.out.versions)
 
-        VCF_MERGE_JASMINE.out.merged_vcfs.set { merged_vcfs }
+        VCF_MERGE_JASMINE.out.merged_vcfs.set { ch_merged_vcfs }
     } else {
-        called_vcfs
+
+        Channel.fromPath("${projectDir}/assets/header.txt")
+            .collect()
+            .set { ch_new_header }
+
+        REHEADER_CALLED_VCFS(
+            VIOLA.out.vcf,
+            ch_new_header,
+            ch_fai
+        )
+        ch_versions = ch_versions.mix(REHEADER_CALLED_VCFS.out.versions.first())
+        
+        TABIX_VCFS(
+            REHEADER_CALLED_VCFS.out.vcf
+        )
+        ch_versions = ch_versions.mix(TABIX_VCFS.out.versions.first())
+
+        REHEADER_CALLED_VCFS.out.vcf
+            .join(TABIX_VCFS.out.tbi, failOnDuplicate:true, failOnMismatch:true)
             .map { meta, vcf, tbi ->
-                new_meta = meta.findAll { !(it.key == "caller") }
+                new_meta = meta - meta.subMap("caller")
                 [ new_meta, vcf, tbi ]
             }
-            .set { merged_vcfs }
+            .set { ch_merged_vcfs }
     }
 
     emit:
-    vcfs                = merged_vcfs
-
-    coverage_counts     = COLLECTREADCOUNTS.out.tsv
-
-    split_reads         = COLLECTSVEVIDENCE.out.split_read_evidence.combine(COLLECTSVEVIDENCE.out.split_read_evidence_index, by:0)
-    read_pairs          = COLLECTSVEVIDENCE.out.paired_end_evidence.combine(COLLECTSVEVIDENCE.out.paired_end_evidence_index, by:0)
-    site_depths         = COLLECTSVEVIDENCE.out.site_depths.combine(COLLECTSVEVIDENCE.out.site_depths_index, by:0)
+    vcfs                = ch_merged_vcfs    // channel: [ val(meta), path(vcf), path(tbi) ]
 
     versions            = ch_versions
-    metrics             = ch_metrics
     reports             = ch_reports
 }

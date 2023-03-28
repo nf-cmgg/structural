@@ -2,15 +2,16 @@
 // Run Gridss
 //
 
-include { GRIDSS_GRIDSS      } from '../../../modules/nf-core/gridss/gridss/main'
+include { SIMPLE_EVENT_ANNOTATION   } from '../../../modules/local/gridss/simple_event_annotation/main'
 
-include { TABIX_TABIX        } from '../../../modules/nf-core/tabix/tabix/main'
+include { GRIDSS_GRIDSS             } from '../../../modules/nf-core/gridss/gridss/main'
+include { TABIX_TABIX               } from '../../../modules/nf-core/tabix/tabix/main'
 
 workflow BAM_VARIANT_CALLING_GRIDSS {
     take:
         crams                   // channel: [mandatory] [ meta, cram, crai ] => The aligned CRAMs per sample with the regions they should be called on
         fasta                   // channel: [mandatory] [ fasta ] => The fasta reference file
-        fasta_fai               // channel: [mandatory] [ fasta_fai ] => The index of the fasta reference file
+        fai               // channel: [mandatory] [ fai ] => The index of the fasta reference file
         bwa_index               // channel: [mandatory] [ index ] => The BWA MEM index
 
     main:
@@ -20,20 +21,23 @@ workflow BAM_VARIANT_CALLING_GRIDSS {
     GRIDSS_GRIDSS(
         crams.map {meta, cram, crai -> [meta, cram, []]},
         fasta.map {[[],it]},
-        fasta_fai.map {[[],it]},
+        fai.map {[[],it]},
         bwa_index
     )
-
     ch_versions = ch_versions.mix(GRIDSS_GRIDSS.out.versions)
 
-    TABIX_TABIX(
+    SIMPLE_EVENT_ANNOTATION(
         GRIDSS_GRIDSS.out.vcf
     )
+    ch_versions = ch_versions.mix(SIMPLE_EVENT_ANNOTATION.out.versions)
 
+    TABIX_TABIX(
+        SIMPLE_EVENT_ANNOTATION.out.vcf
+    )
     ch_versions = ch_versions.mix(TABIX_TABIX.out.versions)
 
-    GRIDSS_GRIDSS.out.vcf
-        .join(TABIX_TABIX.out.tbi)
+    SIMPLE_EVENT_ANNOTATION.out.vcf
+        .join(TABIX_TABIX.out.tbi, failOnMismatch:true, failOnDuplicate:true)
         .map(
             { meta, vcf, tbi ->
                 new_meta = meta + [caller:"gridss"]

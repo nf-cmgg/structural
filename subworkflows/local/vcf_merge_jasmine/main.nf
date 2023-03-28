@@ -10,15 +10,15 @@ include { REHEADER_CALLED_VCFS                          } from '../../../modules
 
 workflow VCF_MERGE_JASMINE {
     take:
-        vcfs                    // channel: [mandatory] [ meta, vcf ] => The gzipped called VCFs
-        fasta                   // channel: [mandatory] [ fasta ] => The fasta reference file
-        fasta_fai               // channel: [mandatory] [ fasta_fai ] => The index of the fasta reference file
+        ch_vcfs     // channel: [mandatory] [ meta, vcf ] => The bgzipped called VCFs
+        ch_fasta    // channel: [mandatory] [ fasta ] => The fasta reference file
+        ch_fai      // channel: [mandatory] [ fai ] => The index of the fasta reference file
 
     main:
 
     ch_versions     = Channel.empty()
 
-    vcfs
+    ch_vcfs
         .map { meta, vcf ->
             [ meta.findAll { !(it.key == "caller")}, vcf ]
         }
@@ -27,43 +27,46 @@ workflow VCF_MERGE_JASMINE {
             [ meta, vcfs, [], [] ]
         }
         .dump(tag:'jasmine_input', pretty:true)
-        .set { jasmine_input }
+        .set { ch_jasmine_input }
 
     JASMINESV(
-        jasmine_input,
-        [],
-        [],
+        ch_jasmine_input,
+        ch_fasta,
+        ch_fai,
         []
     )
 
-    ch_versions = ch_versions.mix(JASMINESV.out.versions)
+    ch_versions = ch_versions.mix(JASMINESV.out.versions.first())
 
-    new_header = Channel.fromPath("${projectDir}/assets/header.txt").collect()
+    Channel.fromPath("${projectDir}/assets/header.txt")
+        .collect()
+        .set { ch_new_header }
 
     REHEADER_CALLED_VCFS(
         JASMINESV.out.vcf,
-        new_header,
-        fasta_fai
+        ch_new_header,
+        ch_fai
     )
-    ch_versions = ch_versions.mix(REHEADER_CALLED_VCFS.out.versions)
+    ch_versions = ch_versions.mix(REHEADER_CALLED_VCFS.out.versions.first())
 
     BCFTOOLS_SORT(
         REHEADER_CALLED_VCFS.out.vcf
     )
 
-    ch_versions = ch_versions.mix(BCFTOOLS_SORT.out.versions)
+    ch_versions = ch_versions.mix(BCFTOOLS_SORT.out.versions.first())
 
     TABIX_TABIX(
         BCFTOOLS_SORT.out.vcf
     )
 
-    ch_versions = ch_versions.mix(TABIX_TABIX.out.versions)
+    ch_versions = ch_versions.mix(TABIX_TABIX.out.versions.first())
 
     BCFTOOLS_SORT.out.vcf
-        .join(TABIX_TABIX.out.tbi)
-        .set { merged_vcfs }
+        .join(TABIX_TABIX.out.tbi, failOnMismatch:true, failOnDuplicate:true)
+        .set { ch_merged_vcfs }
 
     emit:
-    merged_vcfs
-    versions = ch_versions
+    merged_vcfs = ch_merged_vcfs    // channel: [ val(meta), path(vcf), path(tbi) ]
+
+    versions    = ch_versions
 }

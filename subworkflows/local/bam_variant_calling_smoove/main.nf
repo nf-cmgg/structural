@@ -5,6 +5,7 @@
 include { REVERSE_BED        } from '../../../modules/local/reversebed/main'
 
 include { SMOOVE_CALL        } from '../../../modules/nf-core/smoove/call/main'
+include { BCFTOOLS_SORT      } from '../../../modules/nf-core/bcftools/sort/main'
 include { TABIX_TABIX        } from '../../../modules/nf-core/tabix/tabix/main'
 
 workflow BAM_VARIANT_CALLING_SMOOVE {
@@ -59,12 +60,17 @@ workflow BAM_VARIANT_CALLING_SMOOVE {
 
     ch_versions = ch_versions.mix(SMOOVE_CALL.out.versions.first())
 
-    TABIX_TABIX(
+    BCFTOOLS_SORT(
         SMOOVE_CALL.out.vcf
+    )
+    ch_versions = ch_versions.mix(BCFTOOLS_SORT.out.versions.first())
+
+    TABIX_TABIX(
+        BCFTOOLS_SORT.out.vcf
     )
     ch_versions = ch_versions.mix(TABIX_TABIX.out.versions.first())
 
-    SMOOVE_CALL.out.vcf
+    BCFTOOLS_SORT.out.vcf
         .combine(TABIX_TABIX.out.tbi, by:0)
         .map(
             { meta, vcf, tbi ->

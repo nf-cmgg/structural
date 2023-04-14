@@ -88,17 +88,19 @@ workflow VCF_GENOTYPE_SV_PARAGRAPH {
 
     BCFTOOLS_MERGE.out.merged_variants
         .mix(ch_merge_input.dont_merge)
+        .set { ch_tabix_input }
+
+    TABIX_FAMILY(
+        ch_tabix_input
+    )
+    ch_versions = ch_versions.mix(TABIX_FAMILY.out.versions.first())
+
+    ch_tabix_input
+        .join(TABIX_FAMILY.out.tbi, failOnDuplicate: true, failOnMismatch:true)
         .set { ch_genotyped_vcfs }
 
-    if(!params.annotate) {
-        TABIX_FAMILY(
-            ch_genotyped_vcfs
-        )
-        ch_versions = ch_versions.mix(TABIX_FAMILY.out.versions.first())
-    }
-
     emit:
-    genotyped_vcfs  = ch_genotyped_vcfs  // channel: [ val(meta), path(vcf) ]
+    genotyped_vcfs  = ch_genotyped_vcfs  // channel: [ val(meta), path(vcf), path(tbi) ]
 
     versions        = ch_versions
 }

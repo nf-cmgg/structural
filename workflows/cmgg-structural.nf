@@ -71,6 +71,7 @@ ch_multiqc_custom_methods_description = params.multiqc_methods_description ? fil
 //
 include { BAM_STRUCTURAL_VARIANT_CALLING    } from '../subworkflows/local/bam_structural_variant_calling/main'
 include { VCF_GENOTYPE_SV_PARAGRAPH         } from '../subworkflows/local/vcf_genotype_sv_paragraph/main'
+include { VCF_ANNOTATE_VEP_ANNOTSV_VCFANNO  } from '../subworkflows/local/vcf_annotate_vep_annotsv_vcfanno/main'
 
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -82,7 +83,6 @@ include { VCF_GENOTYPE_SV_PARAGRAPH         } from '../subworkflows/local/vcf_ge
 // MODULE: Installed directly from nf-core/modules
 //
 include { TABIX_BGZIPTABIX                  } from '../modules/nf-core/tabix/bgziptabix/main'
-include { TABIX_TABIX as TABIX_ANNOTATED    } from '../modules/nf-core/tabix/tabix/main'
 include { BEDTOOLS_SORT                     } from '../modules/nf-core/bedtools/sort/main'
 include { SAMTOOLS_FAIDX                    } from '../modules/nf-core/samtools/faidx/main'
 include { BWA_INDEX                         } from '../modules/nf-core/bwa/index/main'
@@ -250,22 +250,16 @@ workflow CMGGSTRUCTURAL {
     //
 
     if(params.annotate) {
-        ENSEMBLVEP_VEP(
+        VCF_ANNOTATE_VEP_ANNOTSV_VCFANNO(
             VCF_GENOTYPE_SV_PARAGRAPH.out.genotyped_vcfs,
-            params.genome,
-            params.species,
-            params.vep_cache_version,
-            ch_vep_cache,
             ch_fasta,
+            ch_fai,
+            ch_vep_cache,
             ch_vep_extra_files
         )
 
-        ch_reports  = ch_reports.mix(ENSEMBLVEP_VEP.out.report)
-        ch_versions = ch_versions.mix(ENSEMBLVEP_VEP.out.versions)
-
-        TABIX_ANNOTATED(
-            ENSEMBLVEP_VEP.out.vcf
-        )
+        ch_reports  = ch_reports.mix(VCF_ANNOTATE_VEP_ANNOTSV_VCFANNO.out.reports)
+        ch_versions = ch_versions.mix(VCF_ANNOTATE_VEP_ANNOTSV_VCFANNO.out.versions)
     }
 
     //

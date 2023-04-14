@@ -5,6 +5,11 @@
         "https://github.com/nf-core/modules.git": {
             "modules": {
                 "nf-core": {
+                    "annotsv/annotsv": {
+                        "branch": "master",
+                        "git_sha": "28708bf9ef55937d87ff6604cb36a26b3275c43f",
+                        "installed_by": ["modules"]
+                    },
                     "bcftools/concat": {
                         "branch": "master",
                         "git_sha": "582ff1755bdd205c65e2ba4c31e0a008dae299ec",
@@ -53,7 +58,7 @@
                     },
                     "ensemblvep/vep": {
                         "branch": "master",
-                        "git_sha": "bea3ca998816a7f812b1bbbcb27c3a9ffbac0706",
+                        "git_sha": "ac924c4ba0be25f79248b51be0c9fbfa404b6030",
                         "installed_by": ["modules"]
                     },
                     "gridss/gridss": {
@@ -129,6 +134,11 @@
                     "tabix/tabix": {
                         "branch": "master",
                         "git_sha": "c8e35eb2055c099720a75538d1b8adb3fb5a464c",
+                        "installed_by": ["modules"]
+                    },
+                    "vcfanno": {
+                        "branch": "master",
+                        "git_sha": "0f8a77ff00e65eaeebc509b8156eaa983192474b",
                         "installed_by": ["modules"]
                     },
                     "whamg": {

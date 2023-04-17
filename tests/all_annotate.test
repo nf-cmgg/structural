@@ -23,8 +23,11 @@ nextflow_pipeline {
             assert file("${outputDir}/PosCon4/PosCon4.vcf.gz").exists()
             assert file("${outputDir}/PosCon4/PosCon4.vcf.gz.tbi").exists()
             assert file("${outputDir}/ready/family1/family1.vcf.gz").exists()
+            assert file("${outputDir}/ready/family1/family1.vcf.gz.tbi").exists()
             assert file("${outputDir}/ready/PosCon3/PosCon3.vcf.gz").exists()
+            assert file("${outputDir}/ready/PosCon3/PosCon3.vcf.gz.tbi").exists()
             assert file("${outputDir}/ready/PosCon4/PosCon4.vcf.gz").exists()
+            assert file("${outputDir}/ready/PosCon4/PosCon4.vcf.gz.tbi").exists()
         }
     }
 }

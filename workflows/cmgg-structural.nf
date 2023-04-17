@@ -189,7 +189,7 @@ workflow CMGGSTRUCTURAL {
             .set { ch_annotsv_annotations_ready }
     }
     else {
-        ch_annotsv_annotations.set { ch_annotsv_annotations_ready }
+        ch_annotsv_annotations_ready = ch_annotsv_annotations
     }
 
     //

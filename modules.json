@@ -8,7 +8,8 @@
                     "annotsv/annotsv": {
                         "branch": "master",
                         "git_sha": "28708bf9ef55937d87ff6604cb36a26b3275c43f",
-                        "installed_by": ["modules"]
+                        "installed_by": ["modules"],
+                        "patch": "modules/nf-core/annotsv/annotsv/annotsv-annotsv.diff"
                     },
                     "annotsv/installannotations": {
                         "branch": "master",
@@ -52,7 +53,7 @@
                     },
                     "custom/dumpsoftwareversions": {
                         "branch": "master",
-                        "git_sha": "b6d4d476aee074311c89d82a69c1921bd70c8180",
+                        "git_sha": "7101db4432d3268b7fcb5b8f75fa0a022dc5561b",
                         "installed_by": ["modules"]
                     },
                     "delly/call": {

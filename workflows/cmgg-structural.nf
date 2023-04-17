@@ -21,7 +21,10 @@ def checkPathParamList = [
     params.genomes1000_sv,
     params.genomes1000_sv_tbi,
     params.phenotypes,
-    params.phenotypes_tbi
+    params.phenotypes_tbi,
+    params.annotsv_annotations,
+    params.vcfanno_toml,
+    params.vcfanno_lua
 ]
 for (param in checkPathParamList) { if (param) { file(param, checkIfExists: true) } }
 
@@ -86,7 +89,8 @@ include { TABIX_BGZIPTABIX                  } from '../modules/nf-core/tabix/bgz
 include { BEDTOOLS_SORT                     } from '../modules/nf-core/bedtools/sort/main'
 include { SAMTOOLS_FAIDX                    } from '../modules/nf-core/samtools/faidx/main'
 include { BWA_INDEX                         } from '../modules/nf-core/bwa/index/main'
-include { ENSEMBLVEP_VEP                    } from '../modules/nf-core/ensemblvep/vep/main'
+include { ANNOTSV_INSTALLANNOTATIONS        } from '../modules/nf-core/annotsv/installannotations/main'
+include { UNTAR                             } from '../modules/nf-core/untar/main'
 include { MULTIQC                           } from '../modules/nf-core/multiqc/main'
 include { CUSTOM_DUMPSOFTWAREVERSIONS       } from '../modules/nf-core/custom/dumpsoftwareversions/main'
 
@@ -108,10 +112,16 @@ workflow CMGGSTRUCTURAL {
     // Create input channels from parameters
     //
 
-    ch_fasta           = Channel.fromPath(params.fasta).collect()
-    ch_fai             = params.fai ?          Channel.fromPath(params.fai).collect() :                null
-    ch_bwa_index       = params.bwa ?          Channel.fromPath(params.bwa).map {[[],it]}.collect() :  null
-    ch_vep_cache       = params.vep_cache ?    Channel.fromPath(params.vep_cache).collect() :          []
+    ch_fasta                    = Channel.fromPath(params.fasta).collect()
+    ch_fai                      = params.fai ?                      Channel.fromPath(params.fai).collect() :                                                null
+    ch_bwa_index                = params.bwa ?                      Channel.fromPath(params.bwa).map {[[],it]}.collect() :                                  null
+    ch_vep_cache                = params.vep_cache ?                Channel.fromPath(params.vep_cache).collect() :                                          []
+    ch_annotsv_annotations      = params.annotsv_annotations ?      Channel.fromPath(params.annotsv_annotations).map{[[id:"annotations"], it]}.collect() :  null
+    ch_annotsv_candidate_genes  = params.annotsv_candidate_genes ?  Channel.fromPath(params.annotsv_candidate_genes).map{[[], it]}.collect() :              [[],[]]
+    ch_annotsv_gene_transcripts = params.annotsv_gene_transcripts ? Channel.fromPath(params.annotsv_gene_transcripts).map{[[], it]}.collect() :            [[],[]]
+    ch_vcfanno_toml             = params.vcfanno_toml ?             Channel.fromPath(params.vcfanno_toml).collect() :                                       []
+    ch_vcfanno_lua              = params.vcfanno_lua ?              Channel.fromPath(params.vcfanno_lua).collect() :                                        []
+    ch_vcfanno_resources        = params.vcfanno_resources ?        Channel.of(params.vcfanno_resources.split(",")).map{file(it, checkIfExists:true)}.collect() : []
 
     ch_vep_extra_files = []
 
@@ -157,6 +167,29 @@ workflow CMGGSTRUCTURAL {
 
         ch_versions = ch_versions.mix(BWA_INDEX.out.versions)
         ch_bwa_index = BWA_INDEX.out.index.collect()
+    }
+
+    if(params.annotate && !ch_annotsv_annotations) {
+        ANNOTSV_INSTALLANNOTATIONS()
+        ch_versions = ch_versions.mix(ANNOTSV_INSTALLANNOTATIONS.out.versions)
+
+        ANNOTSV_INSTALLANNOTATIONS.out.annotations
+            .map { [[id:"annotations"], it] }
+            .collect()
+            .set { ch_annotsv_annotations_ready }
+    } 
+    else if(params.annotate && params.annotsv_annotations.endsWith(".tar.gz")) {
+        UNTAR(
+            ch_annotsv_annotations
+        )
+        ch_versions = ch_versions.mix(UNTAR.out.versions)
+
+        UNTAR.out.untar
+            .collect()
+            .set { ch_annotsv_annotations_ready }
+    }
+    else {
+        ch_annotsv_annotations.set { ch_annotsv_annotations_ready }
     }
 
     //
@@ -254,8 +287,14 @@ workflow CMGGSTRUCTURAL {
             VCF_GENOTYPE_SV_PARAGRAPH.out.genotyped_vcfs,
             ch_fasta,
             ch_fai,
+            ch_annotsv_annotations_ready,
+            ch_annotsv_candidate_genes,
+            ch_annotsv_gene_transcripts,
             ch_vep_cache,
-            ch_vep_extra_files
+            ch_vep_extra_files,
+            ch_vcfanno_toml,
+            ch_vcfanno_lua,
+            ch_vcfanno_resources
         )
 
         ch_reports  = ch_reports.mix(VCF_ANNOTATE_VEP_ANNOTSV_VCFANNO.out.reports)

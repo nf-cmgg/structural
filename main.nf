@@ -25,6 +25,7 @@ params.genomes1000_sv       = WorkflowMain.getGenomeAttribute(params, 'genomes10
 params.genomes1000_sv_tbi   = WorkflowMain.getGenomeAttribute(params, 'genomes1000_sv_tbi')
 params.phenotypes           = WorkflowMain.getGenomeAttribute(params, 'phenotypes')
 params.phenotypes_tbi       = WorkflowMain.getGenomeAttribute(params, 'phenotypes_tbi')
+params.annotsv_annotations  = WorkflowMain.getGenomeAttribute(params, 'annotsv_annotations')
 
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

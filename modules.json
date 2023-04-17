@@ -10,6 +10,11 @@
                         "git_sha": "28708bf9ef55937d87ff6604cb36a26b3275c43f",
                         "installed_by": ["modules"]
                     },
+                    "annotsv/installannotations": {
+                        "branch": "master",
+                        "git_sha": "b68aee26a00c3578710004072a10927660d16015",
+                        "installed_by": ["modules"]
+                    },
                     "bcftools/concat": {
                         "branch": "master",
                         "git_sha": "582ff1755bdd205c65e2ba4c31e0a008dae299ec",
@@ -136,9 +141,14 @@
                         "git_sha": "c8e35eb2055c099720a75538d1b8adb3fb5a464c",
                         "installed_by": ["modules"]
                     },
+                    "untar": {
+                        "branch": "master",
+                        "git_sha": "cc1f997fab6d8fde5dc0e6e2a310814df5b53ce7",
+                        "installed_by": ["modules"]
+                    },
                     "vcfanno": {
                         "branch": "master",
-                        "git_sha": "0f8a77ff00e65eaeebc509b8156eaa983192474b",
+                        "git_sha": "8b97329e850add26d11d822209cc6712f829e12a",
                         "installed_by": ["modules"]
                     },
                     "whamg": {

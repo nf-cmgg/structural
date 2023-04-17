@@ -1,0 +1,5 @@
+[[annotation]]
+file="annotsv_annotated.vcf.gz"
+fields=["AnnotSV_ID"]
+names=["annotsv_id"]
+ops=["self"]

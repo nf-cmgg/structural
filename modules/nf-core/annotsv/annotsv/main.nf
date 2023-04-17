@@ -46,6 +46,14 @@ process ANNOTSV_ANNOTSV {
 
     mv *_AnnotSV/* .
 
+    if [ ! -f "${prefix}.tsv ]; then
+        touch ${prefix}.tsv
+    fi
+
+    if [ ! -f "${prefix}.vcf ]; then
+        touch ${prefix}.vcf
+    fi
+
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
         annotsv: \$(echo \$(AnnotSV -help 2>&1 | head -n1 | sed 's/^AnnotSV //'))

@@ -1,0 +1,5 @@
+[[annotation]]
+file="RetNet.v6.coordinates.bed"
+columns=[4]
+ops=["self"]
+names=["RetNet_Gene_name"]

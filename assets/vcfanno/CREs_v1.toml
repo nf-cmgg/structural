@@ -1,0 +1,5 @@
+[[annotation]]
+file="CREs.v1.coordinates.bed.gz"
+columns=[4]
+ops=["self"]
+names=["CRE_Gene_name"]

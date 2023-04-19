@@ -1,0 +1,6 @@
+[[annotation]]
+file="rpe_scale_res25000_win250000.TADboundaries.bed"
+columns=[4]
+#TODO: define the name and ops here
+#names=["RetNetCNV_Gene_name"]
+#ops=["self"]

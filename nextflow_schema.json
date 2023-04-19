@@ -417,18 +417,24 @@
             "properties": {
                 "annotsv_annotations": {
                     "type": "string",
-                    "default": null,
+                    "default": "None",
                     "description": "The full path to the AnnotSV annotations folder. This can be a tarzipped folder. When --annotate is set to true and this isn't given, the annotations will be downloaded automatically (this is not recommended though)"
                 },
                 "annotsv_candidate_genes": {
                     "type": "string",
-                    "default": null,
+                    "default": "None",
                     "description": "The full path the candidate genes file for AnnotSV"
                 },
                 "annotsv_gene_transcripts": {
                     "type": "string",
-                    "default": null,
+                    "default": "None",
                     "description": "The full path to the gene transcripts file for AnnotSV"
+                },
+                "annotsv_file_name": {
+                    "type": "string",
+                    "default": "annotsv_annotated",
+                    "hidden": true,
+                    "description": "The default name of the AnnotSV VCFs"
                 }
             }
         },
@@ -444,12 +450,12 @@
                 },
                 "vcfanno_lua": {
                     "type": "string",
-                    "default": null,
+                    "default": "None",
                     "description": "The full path to a lua script for VCFanno"
                 },
                 "vcfanno_resources": {
                     "type": "string",
-                    "default": null,
+                    "default": "None",
                     "description": "A comma-delimited list of files referenced in the VCFanno config. This can contain glob patterns as well. Place all filenames together between double qoutes to not cause any irregularities"
                 }
             }

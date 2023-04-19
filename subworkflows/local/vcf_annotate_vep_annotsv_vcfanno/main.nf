@@ -111,7 +111,7 @@ def create_vcfanno_toml(vcfanno_resources) {
     def params_toml_files = params.vcfanno_toml ? parse_toml(params.vcfanno_toml) : [postannotation:[]]
     def assets_toml_files = parse_toml("${projectDir}/assets/vcfanno/*.toml")
     def resources = vcfanno_resources.collect { it.fileName.toString() }
-    resources.add("annotsv_annotated.vcf.gz")
+    resources.add(params.annotsv_file_name)
     def output = []
     for (file_name in resources) {
         if (params_toml_files.containsKey(file_name)){

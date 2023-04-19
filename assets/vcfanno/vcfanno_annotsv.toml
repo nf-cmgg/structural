@@ -3,3 +3,8 @@ file="annotsv_annotated.vcf.gz"
 fields=["AnnotSV_ID"]
 names=["annotsv_id"]
 ops=["self"]
+
+[[postannotation]]
+field=["AnnotSV_ID"]
+name=["annotsv_id"]
+op=["self"]

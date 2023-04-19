@@ -113,7 +113,7 @@ workflow VCF_ANNOTATE_VEP_ANNOTSV_VCFANNO {
 }
 
 def create_vcfanno_toml(vcfanno_resources) {
-    def params_toml_files = params.vcfanno_toml ? parse_toml(params.vcfanno_toml) : [:]
+    def params_toml_files = params.vcfanno_toml ? parse_toml(params.vcfanno_toml) : [postannotation:[]]
     def assets_toml_files = parse_toml("${projectDir}/assets/vcfanno/*.toml")
     def resources = vcfanno_resources.collect { it.fileName.toString() }
     resources.add("annotsv_annotated.vcf.gz")
@@ -126,16 +126,16 @@ def create_vcfanno_toml(vcfanno_resources) {
             output.add(create_toml_config(assets_toml_files[file_name]))
         }
     }
-    return output
-}
-
-def create_toml_config(file_map) {
-    config = file_map.values().findAll { it != "" }.join("\n")
-    return "${config}\n"
+    postannotation = params_toml_files.postannotation != [] ? params_toml_files.postannotation : assets_toml_files.postannotation
+    if (postannotation != []){
+        output.add(postannotation)
+    }
+    return output.flatten()
 }
 
 def parse_toml(tomls) {
     def output = [:]
+    output.postannotation = []
     tomls_files = file(tomls, checkIfExists:true)
     toml_list = tomls_files instanceof LinkedList ? tomls_files : [tomls_files]
     for (toml in toml_list) {
@@ -150,7 +150,17 @@ def parse_toml(tomls) {
         for (line in toml.readLines()) {
             if (line.startsWith("#")) { continue }
             if (line == "[[annotation]]" || line == "[[postannotation]]") {
-                if(info != "") {
+                if (info.startsWith("[[postannotation]]")) {
+                    output.postannotation.add(create_toml_config([
+                        "info": info,
+                        "columns": columns,
+                        "fields": fields,
+                        "names": names,
+                        "ops": ops,
+                        "type": type
+                    ]))
+                }
+                else if(info != "") {
                     output[file] = [
                         "info": info,
                         "file": file_line,
@@ -160,6 +170,8 @@ def parse_toml(tomls) {
                         "ops": ops,
                         "type": type
                     ]
+                }
+                if (info != "") {
                     info = ""
                     fields = ""
                     file_line = ""
@@ -175,7 +187,7 @@ def parse_toml(tomls) {
                 file_line = line
                 file = line.split("\"")[-1]
             }
-            else if (line.startsWith("fields")) {
+            else if (line.startsWith("field")) {
                 fields = line
             }
             else if (line.startsWith("op")) {
@@ -191,15 +203,32 @@ def parse_toml(tomls) {
                 type = line
             }
         }
-        output[file] = [
-            "info": info,
-            "file": file_line,
-            "columns": columns,
-            "fields": fields,
-            "names": names,
-            "ops": ops,
-            "type": type
-        ]
+        if (info == "[[postannotation]]") {
+            output.postannotation.add(create_toml_config([
+                "info": info,
+                "columns": columns,
+                "fields": fields,
+                "names": names,
+                "ops": ops,
+                "type": type
+            ]))
+        }
+        else {
+            output[file] = [
+                "info": info,
+                "file": file_line,
+                "columns": columns,
+                "fields": fields,
+                "names": names,
+                "ops": ops,
+                "type": type
+            ]
+        }
     }
     return output
+}
+
+def create_toml_config(file_map) {
+    config = file_map.values().findAll { it != "" }.join("\n")
+    return "${config}\n"
 }

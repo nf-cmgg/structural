@@ -134,7 +134,7 @@
                     },
                     "tabix/bgziptabix": {
                         "branch": "master",
-                        "git_sha": "c8e35eb2055c099720a75538d1b8adb3fb5a464c",
+                        "git_sha": "da53f7da4ff34b920bb3f186d151184bd440e3b5",
                         "installed_by": ["modules"]
                     },
                     "tabix/tabix": {

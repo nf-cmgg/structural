@@ -89,13 +89,14 @@ workflow VCF_ANNOTATE_VEP_ANNOTSV_VCFANNO {
 
     Channel.fromList(create_vcfanno_toml(val_vcfanno_resources))
         .collectFile(name:"vcfanno.toml", newLine:true)
+        .collect()
         .set { ch_vcfanno_toml }
 
     VCFANNO(
         ch_vcfanno_input,
         ch_vcfanno_toml,
         ch_vcfanno_lua,
-        val_vcfanno_resources
+        val_vcfanno_resources ? Channel.fromList(val_vcfanno_resources).collect() : []
     )
     ch_versions = ch_versions.mix(VCFANNO.out.versions)
 

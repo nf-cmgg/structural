@@ -1,7 +1,8 @@
 nextflow_pipeline {
 
-    name "Tests using all callers"
+    name "Tests using all callers with annotation"
     script "main.nf"
+    options "-stub"
 
     test("Success") {
         when {

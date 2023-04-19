@@ -440,18 +440,17 @@
             "properties": {
                 "vcfanno_toml": {
                     "type": "string",
-                    "default": "${projectDir}/assets/vcfanno.toml",
-                    "description": "The full path to the AnnotSV config TOML file"
+                    "description": "The full path to the AnnotSV config TOML file. This file will be used to dynamically overwrite default configs for this pipeline run"
                 },
                 "vcfanno_lua": {
                     "type": "string",
                     "default": null,
-                    "description": "The full path a lua script for VCFanno"
+                    "description": "The full path to a lua script for VCFanno"
                 },
                 "vcfanno_resources": {
                     "type": "string",
                     "default": null,
-                    "description": "A comma-delimited list of files referenced in the VCFanno config. This can contain glob patterns as well"
+                    "description": "A comma-delimited list of files referenced in the VCFanno config. This can contain glob patterns as well. Place all filenames together between double qoutes to not cause any irregularities"
                 }
             }
         }

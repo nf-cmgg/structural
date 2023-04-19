@@ -19,9 +19,8 @@ workflow VCF_ANNOTATE_VEP_ANNOTSV_VCFANNO {
         ch_annotsv_gene_transcripts             // channel: [optional]  [ val(meta), path(gene_transcripts) ]
         ch_vep_cache                            // channel: [optional]  [ path(cache) ] => The path to the local VEP cache
         ch_vep_extra_files                      // channel: [optional]  [ path(file1, file2, file3...) ] => The VEP extra files
-        ch_vcfanno_toml                         // channel: [mandatory] [ path(toml) ] => The TOML configuration for VCFanno
         ch_vcfanno_lua                          // channel: [optional]  [ path(lua) ] => The lua script to influence VCFanno
-        ch_vcfanno_resources                    // channel: [optional]  [ path(file1, file2, file3...) ] => The extra VCFanno files
+        val_vcfanno_resources                   // list:    [optional]  [ path(file1, file2, file3...) ] => The extra VCFanno files
 
     main:
 
@@ -88,11 +87,15 @@ workflow VCF_ANNOTATE_VEP_ANNOTSV_VCFANNO {
         )
         .set { ch_vcfanno_input }
 
+    Channel.fromList(create_vcfanno_toml(val_vcfanno_resources))
+        .collectFile(name:"vcfanno.toml", newLine:true)
+        .set { ch_vcfanno_toml }
+
     VCFANNO(
         ch_vcfanno_input,
         ch_vcfanno_toml,
         ch_vcfanno_lua,
-        ch_vcfanno_resources
+        val_vcfanno_resources
     )
     ch_versions = ch_versions.mix(VCFANNO.out.versions)
 
@@ -102,8 +105,100 @@ workflow VCF_ANNOTATE_VEP_ANNOTSV_VCFANNO {
     ch_versions = ch_versions.mix(TABIX_ANNOTATED.out.versions)
     
     emit:
-    annotated_vcfs  = TABIX_ANNOTATED.out.gz_tbi  // channel: [ val(meta), path(vcf), path(tbi) ]
+    // annotated_vcfs  = TABIX_ANNOTATED.out.gz_tbi  // channel: [ val(meta), path(vcf), path(tbi) ]
 
     reports         = ch_reports
     versions        = ch_versions
+}
+
+def create_vcfanno_toml(vcfanno_resources) {
+    def params_toml_files = params.vcfanno_toml ? parse_toml(params.vcfanno_toml) : [:]
+    def assets_toml_files = parse_toml("${projectDir}/assets/vcfanno/*.toml")
+    def resources = vcfanno_resources.collect { it.fileName.toString() }
+    resources.add("annotsv_annotated.vcf.gz")
+    def output = []
+    for (file_name in resources) {
+        if (params_toml_files.containsKey(file_name)){
+            output.add(create_toml_config(params_toml_files[file_name]))
+        }
+        else if (assets_toml_files.containsKey(file_name)){
+            output.add(create_toml_config(assets_toml_files[file_name]))
+        }
+    }
+    return output
+}
+
+def create_toml_config(file_map) {
+    config = file_map.values().findAll { it != "" }.join("\n")
+    return "${config}\n"
+}
+
+def parse_toml(tomls) {
+    def output = [:]
+    tomls_files = file(tomls, checkIfExists:true)
+    toml_list = tomls_files instanceof LinkedList ? tomls_files : [tomls_files]
+    for (toml in toml_list) {
+        def info = ""
+        def fields = ""
+        def file_line = ""
+        def file = ""
+        def ops = ""
+        def names = ""
+        def columns = ""
+        def type = ""
+        for (line in toml.readLines()) {
+            if (line.startsWith("#")) { continue }
+            if (line == "[[annotation]]" || line == "[[postannotation]]") {
+                if(info != "") {
+                    output[file] = [
+                        "info": info,
+                        "file": file_line,
+                        "columns": columns,
+                        "fields": fields,
+                        "names": names,
+                        "ops": ops,
+                        "type": type
+                    ]
+                    info = ""
+                    fields = ""
+                    file_line = ""
+                    file = ""
+                    ops = ""
+                    names = ""
+                    columns = ""
+                    type = ""
+                }
+                info = line
+            }
+            else if (line.startsWith("file")) {
+                file_line = line
+                file = line.split("\"")[-1]
+            }
+            else if (line.startsWith("fields")) {
+                fields = line
+            }
+            else if (line.startsWith("op")) {
+                ops = line
+            }
+            else if (line.startsWith("name")) {
+                names = line
+            }
+            else if (line.startsWith("columns")) {
+                columns = line
+            }
+            else if (line.startsWith("type")) {
+                type = line
+            }
+        }
+        output[file] = [
+            "info": info,
+            "file": file_line,
+            "columns": columns,
+            "fields": fields,
+            "names": names,
+            "ops": ops,
+            "type": type
+        ]
+    }
+    return output
 }

@@ -118,10 +118,9 @@ workflow CMGGSTRUCTURAL {
     ch_vep_cache                = params.vep_cache ?                Channel.fromPath(params.vep_cache).collect() :                                          []
     ch_annotsv_annotations      = params.annotsv_annotations ?      Channel.fromPath(params.annotsv_annotations).map{[[id:"annotations"], it]}.collect() :  null
     ch_annotsv_candidate_genes  = params.annotsv_candidate_genes ?  Channel.fromPath(params.annotsv_candidate_genes).map{[[], it]}.collect() :              [[],[]]
-    ch_annotsv_gene_transcripts = params.annotsv_gene_transcripts ? Channel.fromPath(params.annotsv_gene_transcripts).map{[[], it]}.collect() :            [[],[]]
-    ch_vcfanno_toml             = params.vcfanno_toml ?             Channel.fromPath(params.vcfanno_toml).collect() :                                       []
+    ch_annotsv_gene_transcripts = params.annotsv_gene_transcripts ? Channel.fromPath(params.annotsv_gene_transcripts).map{[[], it]}.collect() :             [[],[]]
     ch_vcfanno_lua              = params.vcfanno_lua ?              Channel.fromPath(params.vcfanno_lua).collect() :                                        []
-    ch_vcfanno_resources        = params.vcfanno_resources ?        Channel.of(params.vcfanno_resources.split(",")).map{file(it, checkIfExists:true)}.collect() : []
+    val_vcfanno_resources       = params.vcfanno_resources ?        params.vcfanno_resources.split(",").collect{file(it, checkIfExists:true)}.flatten() :   []
 
     ch_vep_extra_files = []
 
@@ -292,9 +291,8 @@ workflow CMGGSTRUCTURAL {
             ch_annotsv_gene_transcripts,
             ch_vep_cache,
             ch_vep_extra_files,
-            ch_vcfanno_toml,
             ch_vcfanno_lua,
-            ch_vcfanno_resources
+            val_vcfanno_resources
         )
 
         ch_reports  = ch_reports.mix(VCF_ANNOTATE_VEP_ANNOTSV_VCFANNO.out.reports)

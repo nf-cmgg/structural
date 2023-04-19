@@ -120,10 +120,10 @@ def create_vcfanno_toml(vcfanno_resources) {
     def output = []
     for (file_name in resources) {
         if (params_toml_files.containsKey(file_name)){
-            output.add(create_toml_config(params_toml_files[file_name]))
+            output.add(params_toml_files[file_name])
         }
         else if (assets_toml_files.containsKey(file_name)){
-            output.add(create_toml_config(assets_toml_files[file_name]))
+            output.add(assets_toml_files[file_name])
         }
     }
     postannotation = params_toml_files.postannotation != [] ? params_toml_files.postannotation : assets_toml_files.postannotation
@@ -140,95 +140,39 @@ def parse_toml(tomls) {
     toml_list = tomls_files instanceof LinkedList ? tomls_files : [tomls_files]
     for (toml in toml_list) {
         def info = ""
-        def fields = ""
-        def file_line = ""
         def file = ""
-        def ops = ""
-        def names = ""
-        def columns = ""
-        def type = ""
+        def fields = []
         for (line in toml.readLines()) {
             if (line.startsWith("#")) { continue }
             if (line == "[[annotation]]" || line == "[[postannotation]]") {
                 if (info.startsWith("[[postannotation]]")) {
-                    output.postannotation.add(create_toml_config([
-                        "info": info,
-                        "columns": columns,
-                        "fields": fields,
-                        "names": names,
-                        "ops": ops,
-                        "type": type
-                    ]))
+                    output.postannotation.add(create_toml_config(fields))
                 }
                 else if(info != "") {
-                    output[file] = [
-                        "info": info,
-                        "file": file_line,
-                        "columns": columns,
-                        "fields": fields,
-                        "names": names,
-                        "ops": ops,
-                        "type": type
-                    ]
+                    output[file] = create_toml_config(fields)
                 }
                 if (info != "") {
                     info = ""
-                    fields = ""
-                    file_line = ""
                     file = ""
-                    ops = ""
-                    names = ""
-                    columns = ""
-                    type = ""
+                    fields = []
                 }
                 info = line
             }
             else if (line.startsWith("file")) {
-                file_line = line
                 file = line.split("\"")[-1]
             }
-            else if (line.startsWith("field")) {
-                fields = line
-            }
-            else if (line.startsWith("op")) {
-                ops = line
-            }
-            else if (line.startsWith("name")) {
-                names = line
-            }
-            else if (line.startsWith("columns")) {
-                columns = line
-            }
-            else if (line.startsWith("type")) {
-                type = line
-            }
+            fields.add(line)
         }
-        if (info == "[[postannotation]]") {
-            output.postannotation.add(create_toml_config([
-                "info": info,
-                "columns": columns,
-                "fields": fields,
-                "names": names,
-                "ops": ops,
-                "type": type
-            ]))
-        }
-        else {
-            output[file] = [
-                "info": info,
-                "file": file_line,
-                "columns": columns,
-                "fields": fields,
-                "names": names,
-                "ops": ops,
-                "type": type
-            ]
+        if (info.startsWith("[[postannotation]]")) {
+            output.postannotation.add(create_toml_config(fields))
+        } else {
+            output[file] = create_toml_config(fields)
         }
     }
     return output
 }
 
-def create_toml_config(file_map) {
-    config = file_map.values().findAll { it != "" }.join("\n")
+def create_toml_config(fields_list) {
+    config = fields_list.findAll { it != "" }.join("\n")
     return "${config}\n"
 }

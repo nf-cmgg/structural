@@ -367,35 +367,10 @@
                     "default": "homo_sapiens",
                     "description": "The species used for the analysis. Should be all lowercase and spaces should be underscorses."
                 },
-                "vep_structuralvariantoverlap": {
-                    "type": "boolean",
-                    "description": "Use the StructuralVariantOverlap VEP plugin",
-                    "help_text": "This requires either `--gnomad_sv` and `--gnomad_sv_tbi` and/or `--genomes1000_sv` and `--genomes1000_sv_tbi`. "
-                },
                 "vep_phenotypes": {
                     "type": "boolean",
                     "description": "Use the Phenotypes VEP plugin",
                     "help_text": "This requires `--phenotypes` and `--phenotypes_tbi`. "
-                },
-                "gnomad_sv": {
-                    "type": "string",
-                    "default": "None",
-                    "description": "Path to the Gnomad VCF file"
-                },
-                "gnomad_sv_tbi": {
-                    "type": "string",
-                    "default": "None",
-                    "description": "Path to the Gnomad VCF index file"
-                },
-                "genomes1000_sv": {
-                    "type": "string",
-                    "default": "None",
-                    "description": "Path to the 1000 Genomes VCF file"
-                },
-                "genomes1000_sv_tbi": {
-                    "type": "string",
-                    "default": "None",
-                    "description": "Path to the 1000 Genomes VCF index file"
                 },
                 "phenotypes": {
                     "type": "string",

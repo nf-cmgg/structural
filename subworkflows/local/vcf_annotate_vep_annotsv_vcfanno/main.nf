@@ -12,6 +12,7 @@ include { TABIX_TABIX as TABIX_VEP              } from '../../../modules/nf-core
 workflow VCF_ANNOTATE_VEP_ANNOTSV_VCFANNO {
     take:
         ch_vcfs                                 // channel: [mandatory] [ val(meta), path(vcf), path(tbi) ] VCFs containing the called structural variants
+        ch_small_variants                       // channel: [mandatory] [ val(meta), path(vcf) ] VCFs containing small variants used in AnnotSV
         ch_fasta                                // channel: [mandatory] [ path(fasta) ] => The fasta reference file
         ch_fai                                  // channel: [mandatory] [ path(fai) ] => The index of the fasta reference file
         ch_annotsv_annotations                  // channel: [mandatory] [ val(meta), path(annotations) ] => The annotations for AnnotSV
@@ -29,11 +30,14 @@ workflow VCF_ANNOTATE_VEP_ANNOTSV_VCFANNO {
 
     // Run AnnotSV and VEP in parallel and merge TSV from AnnotSV with VCF from VEP during VCFanno
 
+    ch_vcfs
+        .join(ch_small_variants, failOnDuplicate:true, failOnMismatch:true)
+        .set { ch_annotsv_input }
+
     ANNOTSV_ANNOTSV(
-        ch_vcfs,
+        ch_annotsv_input,
         ch_annotsv_annotations,
         ch_annotsv_candidate_genes,
-        [[],[]],
         [[],[]],
         ch_annotsv_gene_transcripts
     )

@@ -1,7 +1,7 @@
 Changes in module 'nf-core/annotsv/annotsv'
 --- modules/nf-core/annotsv/annotsv/main.nf
 +++ modules/nf-core/annotsv/annotsv/main.nf
-@@ -46,6 +46,14 @@
+@@ -45,6 +45,14 @@
  
      mv *_AnnotSV/* .
  

@@ -32,6 +32,11 @@
             "type": "string",
             "pattern": "^\\S+\\.ped$",
             "format": "file-path"
+        },
+        "small_variants": {
+            "type": "string",
+            "pattern": "^\\S+\\.vcf(\\.gz)?$",
+            "format": "file-path"
         }
     },
     "required": ["sample", "cram"]

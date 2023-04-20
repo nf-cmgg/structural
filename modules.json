@@ -7,7 +7,7 @@
                 "nf-core": {
                     "annotsv/annotsv": {
                         "branch": "master",
-                        "git_sha": "28708bf9ef55937d87ff6604cb36a26b3275c43f",
+                        "git_sha": "7cf4500154a721906c271afaaeda8792bb1e2073",
                         "installed_by": ["modules"],
                         "patch": "modules/nf-core/annotsv/annotsv/annotsv-annotsv.diff"
                     },

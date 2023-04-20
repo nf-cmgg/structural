@@ -196,12 +196,12 @@ workflow CMGGSTRUCTURAL {
     //
 
     SamplesheetConversion.convert(ch_input, file("${projectDir}/assets/schema_input.json"))
-        .map { meta, cram, crai, bed, ped ->
+        .map { meta, cram, crai, bed, ped, small_variants ->
             new_meta = meta + [family:meta.family ?: meta.id]
-            [ new_meta, cram, crai, bed, ped ]
+            [ new_meta, cram, crai, bed, ped, small_variants ]
         }
         .tap { original_samplesheet }
-        .map { meta, cram, crai, bed, ped ->
+        .map { meta, cram, crai, bed, ped, small_variants ->
             [ meta.family, 1 ]
         }
         .groupTuple()
@@ -214,12 +214,30 @@ workflow CMGGSTRUCTURAL {
             },
             by:0
         )
-        .multiMap({ family, family_count, meta, cram, crai, bed, ped ->
+        .multiMap({ family, family_count, meta, cram, crai, bed, ped, small_variants ->
             new_meta = meta + [family_count:family_count]
+            family_meta = [
+                id: meta.family,
+                family: meta.family,
+                family_count: family_count
+            ]
             bed: [ new_meta, bed ]
             crams: [ new_meta, cram, crai ]
+            small_variants: [ family_meta, small_variants ]
         })
         .set { ch_inputs }
+
+    //
+    // Use one small variants file per family
+    //
+
+    ch_inputs.small_variants
+        .groupTuple() // No size needed here because no process has been run with small variant VCF files before this
+        .map { meta, vcfs ->
+            // Find the first VCF file and return that one for the family ([] if no VCF is given for the family)
+            [ meta, vcfs.find { it != [] } ?: [] ]
+        }
+        .set { ch_small_variants_ready }
 
     //
     // Prepare the BED files
@@ -284,6 +302,7 @@ workflow CMGGSTRUCTURAL {
     if(params.annotate) {
         VCF_ANNOTATE_VEP_ANNOTSV_VCFANNO(
             VCF_GENOTYPE_SV_PARAGRAPH.out.genotyped_vcfs,
+            ch_small_variants_ready,
             ch_fasta,
             ch_fai,
             ch_annotsv_annotations_ready,

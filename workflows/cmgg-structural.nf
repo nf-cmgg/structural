@@ -124,20 +124,6 @@ workflow CMGGSTRUCTURAL {
 
     ch_vep_extra_files = []
 
-    if(params.vep_structuralvariantoverlap && ((params.gnomad_sv && params.gnomad_sv_tbi) || (params.genomes1000_sv && params.genomes1000_sv_tbi))) {
-        if(params.gnomad_sv && params.gnomad_sv_tbi) {
-            ch_vep_extra_files.add(file(params.gnomad_sv, checkIfExists:true))
-            ch_vep_extra_files.add(file(params.gnomad_sv_tbi, checkIfExists:true))
-        }
-        if(params.genomes1000_sv && params.genomes1000_sv_tbi) {
-            ch_vep_extra_files.add(file(params.genomes1000_sv, checkIfExists:true))
-            ch_vep_extra_files.add(file(params.genomes1000_sv_tbi, checkIfExists:true))
-        }
-    }
-    else if (params.vep_structuralvariantoverlap) {
-        error("Please specify '--gnomad_sv PATH/TO/GNOMADSV/FILE' and '--gnomad_sv_tbi PATH/TO/GNOMADS/INDEX/FILE' and/or '--genomes1000_sv PATH/TO/genomes1000/FILE' and '--genomes1000_sv_tbi PATH/TO/genomes1000/INDEX/FILE' to use the StructuralVariantOverlap VEP plugin.")
-    }
-
     if(params.vep_phenotypes && params.phenotypes && params.phenotypes_tbi) {
         ch_vep_extra_files.add(file(params.phenotypes, checkIfExists:true))
         ch_vep_extra_files.add(file(params.phenotypes_tbi, checkIfExists:true))

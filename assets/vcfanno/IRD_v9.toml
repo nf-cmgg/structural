@@ -1,5 +1,5 @@
 [[annotation]]
-file="IRD.v9.coordinates.bed"
+file="IRD.v9.coordinates.bed.gz"
 columns=[4]
 ops=["self"]
 names=["IRD_Gene_name"]

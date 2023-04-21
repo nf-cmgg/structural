@@ -410,6 +410,10 @@
                     "default": "annotsv_annotated",
                     "hidden": true,
                     "description": "The default name of the AnnotSV VCFs"
+                },
+                "output_annotsv": {
+                    "type": "boolean",
+                    "description": "Output the AnnotSV output files along with the end results"
                 }
             }
         },

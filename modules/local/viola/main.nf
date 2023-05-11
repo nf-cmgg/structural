@@ -2,7 +2,7 @@ process VIOLA {
     tag "$meta.id"
     label 'process_low'
 
-    container "nicolasvnk/viola:1.0.2"
+    container "docker.io/nicolasvnk/viola:1.0.2"
 
     input:
     tuple val(meta), path(vcf)

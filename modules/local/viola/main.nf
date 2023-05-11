@@ -25,7 +25,7 @@ process VIOLA {
     def unzipped_vcf = vcf.name.replace(".gz","")
 
     """
-    cp ${vcf} new_${vcf}
+    cp ${vcf} new_${vcf} 
     bgzip -d new_${vcf}
 
     variant=\$(cat new_${unzipped_vcf} | awk '/^#/ {next} {print 1;exit}' || echo 0)

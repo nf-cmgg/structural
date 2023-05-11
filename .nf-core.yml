@@ -5,6 +5,9 @@ lint:
     - assets/nf-core-nf-cmgg-structural_logo_light.png
     - docs/images/nf-core-nf-cmgg-structural_logo_light.png
     - docs/images/nf-core-nf-cmgg-structural_logo_dark.png
+    - assets/nf-core-nf-cmgg-structural_logo_light.png
+    - docs/images/nf-core-nf-cmgg-structural_logo_light.png
+    - docs/images/nf-core-nf-cmgg-structural_logo_dark.png
     - .github/ISSUE_TEMPLATE/config.yml
     - .github/workflows/awstest.yml
     - .github/workflows/awsfulltest.yml

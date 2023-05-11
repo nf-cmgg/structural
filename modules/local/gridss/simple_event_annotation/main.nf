@@ -5,7 +5,7 @@ process SIMPLE_EVENT_ANNOTATION {
     conda "bioconda::bioconductor-structuralvariantannotation=1.13.0"
     container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
         'https://depot.galaxyproject.org/singularity/bioconductor-structuralvariantannotation:1.13.0--r42hdfd78af_0' :
-        'quay.io/biocontainers/bioconductor-structuralvariantannotation:1.13.0--r42hdfd78af_0' }"
+        'biocontainers/bioconductor-structuralvariantannotation:1.13.0--r42hdfd78af_0' }"
 
     input:
     tuple val(meta), path(vcf)

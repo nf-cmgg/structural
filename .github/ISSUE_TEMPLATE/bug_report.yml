@@ -45,7 +45,10 @@ body:
 
         * Hardware _(eg. HPC, Desktop, Cloud)_
         * Executor _(eg. slurm, local, awsbatch)_
-        * Container engine: _(e.g. Docker, Singularity, Conda, Podman, Shifter or Charliecloud)_
+
+        * Container engine: _(e.g. Docker, Singularity, Conda, Podman, Shifter, Charliecloud,
+        or Apptainer)_
+
         * OS _(eg. CentOS Linux, macOS, Linux Mint)_
 
         * Version of CenterForMedicalGeneticsGhent/nf-cmgg-structural _(eg. 1.1, 1.5,

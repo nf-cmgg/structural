@@ -3,8 +3,7 @@
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     CenterForMedicalGeneticsGhent/nf-cmgg-structural
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    Github : https://github.com/CenterForMedicalGeneticsGhent/nf-cmgg-structural
-----------------------------------------------------------------------------------------
+    Github : https://github.com/CenterForMedicalGeneticsGhent/nf-cmgg-structural----------------------------------------------------------------------------------------
 */
 
 nextflow.enable.dsl = 2

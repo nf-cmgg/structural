@@ -33,7 +33,8 @@ def availableCallers = [
     // "whamg",
     "manta",
     // "gridss",
-    "smoove"
+    "smoove",
+    "expansionhunter"
 ]
 
 for (caller in params.callers.tokenize(",")) {
@@ -68,9 +69,10 @@ ch_multiqc_custom_methods_description = params.multiqc_methods_description ? fil
 //
 // SUBWORKFLOW: Consisting of a mix of local and nf-core/modules
 //
-include { BAM_STRUCTURAL_VARIANT_CALLING    } from '../subworkflows/local/bam_structural_variant_calling/main'
-include { VCF_GENOTYPE_SV_PARAGRAPH         } from '../subworkflows/local/vcf_genotype_sv_paragraph/main'
-include { VCF_ANNOTATE_VEP_ANNOTSV_VCFANNO  } from '../subworkflows/local/vcf_annotate_vep_annotsv_vcfanno/main'
+include { BAM_STRUCTURAL_VARIANT_CALLING            } from '../subworkflows/local/bam_structural_variant_calling/main'
+include { BAM_REPEATS_ESTIMATION_EXPANSIONHUNTER    } from '../subworkflows/local/bam_repeats_estimation_expansionhunter/main'
+include { VCF_GENOTYPE_SV_PARAGRAPH                 } from '../subworkflows/local/vcf_genotype_sv_paragraph/main'
+include { VCF_ANNOTATE_VEP_ANNOTSV_VCFANNO          } from '../subworkflows/local/vcf_annotate_vep_annotsv_vcfanno/main'
 
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -81,14 +83,16 @@ include { VCF_ANNOTATE_VEP_ANNOTSV_VCFANNO  } from '../subworkflows/local/vcf_an
 //
 // MODULE: Installed directly from nf-core/modules
 //
-include { TABIX_BGZIPTABIX                  } from '../modules/nf-core/tabix/bgziptabix/main'
-include { BEDTOOLS_SORT                     } from '../modules/nf-core/bedtools/sort/main'
-include { SAMTOOLS_FAIDX                    } from '../modules/nf-core/samtools/faidx/main'
-include { BWA_INDEX                         } from '../modules/nf-core/bwa/index/main'
-include { ANNOTSV_INSTALLANNOTATIONS        } from '../modules/nf-core/annotsv/installannotations/main'
-include { UNTAR                             } from '../modules/nf-core/untar/main'
-include { MULTIQC                           } from '../modules/nf-core/multiqc/main'
-include { CUSTOM_DUMPSOFTWAREVERSIONS       } from '../modules/nf-core/custom/dumpsoftwareversions/main'
+include { TABIX_BGZIPTABIX                          } from '../modules/nf-core/tabix/bgziptabix/main'
+include { BEDTOOLS_SORT                             } from '../modules/nf-core/bedtools/sort/main'
+include { SAMTOOLS_FAIDX                            } from '../modules/nf-core/samtools/faidx/main'
+include { BWA_INDEX                                 } from '../modules/nf-core/bwa/index/main'
+include { ANNOTSV_INSTALLANNOTATIONS                } from '../modules/nf-core/annotsv/installannotations/main'
+include { UNTAR                                     } from '../modules/nf-core/untar/main'
+include { BCFTOOLS_CONCAT                           } from '../modules/nf-core/bcftools/concat/main'
+include { TABIX_TABIX as TABIX_CONCAT               } from '../modules/nf-core/tabix/tabix/main'
+include { MULTIQC                                   } from '../modules/nf-core/multiqc/main'
+include { CUSTOM_DUMPSOFTWAREVERSIONS               } from '../modules/nf-core/custom/dumpsoftwareversions/main'
 
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -108,15 +112,18 @@ workflow CMGGSTRUCTURAL {
     // Create input channels from parameters
     //
 
-    ch_fasta                    = Channel.fromPath(params.fasta).collect()
-    ch_fai                      = params.fai ?                      Channel.fromPath(params.fai).collect() :                                                null
-    ch_bwa_index                = params.bwa ?                      Channel.fromPath(params.bwa).map {[[],it]}.collect() :                                  null
-    ch_vep_cache                = params.vep_cache ?                Channel.fromPath(params.vep_cache).collect() :                                          []
-    ch_annotsv_annotations      = params.annotsv_annotations ?      Channel.fromPath(params.annotsv_annotations).map{[[id:"annotations"], it]}.collect() :  null
-    ch_annotsv_candidate_genes  = params.annotsv_candidate_genes ?  Channel.fromPath(params.annotsv_candidate_genes).map{[[], it]}.collect() :              [[],[]]
-    ch_annotsv_gene_transcripts = params.annotsv_gene_transcripts ? Channel.fromPath(params.annotsv_gene_transcripts).map{[[], it]}.collect() :             [[],[]]
-    ch_vcfanno_lua              = params.vcfanno_lua ?              Channel.fromPath(params.vcfanno_lua).collect() :                                        []
-    val_vcfanno_resources       = params.vcfanno_resources ?        params.vcfanno_resources.split(",").collect{file(it, checkIfExists:true)}.flatten() :   []
+    ch_fasta                        = Channel.fromPath(params.fasta).collect()
+    ch_fai                          = params.fai ?                          Channel.fromPath(params.fai).collect() :                                                null
+    ch_bwa_index                    = params.bwa ?                          Channel.fromPath(params.bwa).map {[[],it]}.collect() :                                  null
+    ch_vep_cache                    = params.vep_cache ?                    Channel.fromPath(params.vep_cache).collect() :                                          []
+    ch_annotsv_annotations          = params.annotsv_annotations ?          Channel.fromPath(params.annotsv_annotations).map{[[id:"annotations"], it]}.collect() :  null
+    ch_annotsv_candidate_genes      = params.annotsv_candidate_genes ?      Channel.fromPath(params.annotsv_candidate_genes).map{[[], it]}.collect() :              [[],[]]
+    ch_annotsv_gene_transcripts     = params.annotsv_gene_transcripts ?     Channel.fromPath(params.annotsv_gene_transcripts).map{[[], it]}.collect() :             [[],[]]
+    ch_vcfanno_lua                  = params.vcfanno_lua ?                  Channel.fromPath(params.vcfanno_lua).collect() :                                        []
+    ch_expansionhunter_catalogue    = params.expansionhunter_catalogue ?    Channel.fromPath(params.expansionhunter_catalogue).map{[[id:"exp_catalogue"], it]}.collect() :  null
+    val_vcfanno_resources           = params.vcfanno_resources ?            params.vcfanno_resources.split(",").collect{file(it, checkIfExists:true)}.flatten() :   []
+
+    def val_callers                 = params.callers.split(",") as Collection
 
     ch_vep_extra_files = []
 
@@ -126,6 +133,10 @@ workflow CMGGSTRUCTURAL {
     }
     else if(params.vep_phenotypes) {
         error("Please specify '--phenotypes PATH/TO/PHENOTYPES/FILE' and '--phenotypes_tbi PATH/TO/PHENOTYPES/INDEX/FILE' to use the Phenotypes VEP plugin.")
+    }
+
+    if(val_callers.contains("expansionhunter") && !params.expansionhunter_catalogue) {
+        error("Please provide a variant catalogue for Expansionhunter with the '--expansionhunter_catalogue' option")
     }
 
     //
@@ -254,23 +265,81 @@ workflow CMGGSTRUCTURAL {
     // Call the variants
     //
 
-    BAM_STRUCTURAL_VARIANT_CALLING(
-        ch_inputs.crams,
-        ch_beds,
-        ch_fasta,
-        ch_fai,
-        ch_bwa_index
-    )
+    ch_all_variants = Channel.empty()
 
-    ch_versions = ch_versions.mix(BAM_STRUCTURAL_VARIANT_CALLING.out.versions)
-    ch_reports  = ch_reports.mix(BAM_STRUCTURAL_VARIANT_CALLING.out.reports)
+    def count_concat = 0
+
+    def sv_callers = ["delly", "smoove", "manta"] as Collection
+    def do_sv_call = val_callers.intersect(sv_callers).size() > 0
+    
+    if(do_sv_call) {
+        count_concat++
+
+        BAM_STRUCTURAL_VARIANT_CALLING(
+            ch_inputs.crams,
+            ch_beds,
+            ch_fasta,
+            ch_fai,
+            ch_bwa_index
+        )
+        ch_versions = ch_versions.mix(BAM_STRUCTURAL_VARIANT_CALLING.out.versions)
+        ch_reports  = ch_reports.mix(BAM_STRUCTURAL_VARIANT_CALLING.out.reports)
+
+        ch_all_variants = ch_all_variants.mix(BAM_STRUCTURAL_VARIANT_CALLING.out.vcfs)
+    }
+
+    //
+    // Estimate repeats with expansionhunter 
+    //
+
+    def do_repeat_estimation = val_callers.contains("expansionhunter")
+
+    if(do_repeat_estimation) {
+        count_concat++
+
+        BAM_REPEATS_ESTIMATION_EXPANSIONHUNTER(
+            ch_inputs.crams,
+            ch_fasta,
+            ch_fai,
+            ch_expansionhunter_catalogue
+        )
+        ch_versions = ch_versions.mix(BAM_REPEATS_ESTIMATION_EXPANSIONHUNTER.out.versions.first())
+
+        ch_all_variants = ch_all_variants.mix(BAM_REPEATS_ESTIMATION_EXPANSIONHUNTER.out.expansionhunter_vcfs)
+    }
+
+    //
+    // Concatenate the variants from different detection methods
+    //
+
+    if(count_concat > 1) {
+        ch_all_variants
+            .groupTuple(size:count_concat)
+            .set { ch_concat_input }
+
+        BCFTOOLS_CONCAT(
+            ch_concat_input
+        )
+        ch_versions = ch_versions.mix(BCFTOOLS_CONCAT.out.versions.first())
+        
+        TABIX_CONCAT(
+            BCFTOOLS_CONCAT.out.vcf
+        )
+        ch_versions = ch_versions.mix(TABIX_CONCAT.out.versions.first())
+
+        BCFTOOLS_CONCAT.out.vcf
+            .join(TABIX_CONCAT.out.tbi, failOnDuplicate:true, failOnMismatch:true)
+            .set { ch_genotype_input }
+    } else {
+        ch_all_variants.set { ch_genotype_input }
+    }
 
     //
     // Genotype the variants
     //
 
     VCF_GENOTYPE_SV_PARAGRAPH(
-        BAM_STRUCTURAL_VARIANT_CALLING.out.vcfs,
+        ch_genotype_input,
         ch_inputs.crams,
         ch_fasta,
         ch_fai

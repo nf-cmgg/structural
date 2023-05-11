@@ -67,6 +67,11 @@
                         "git_sha": "ac924c4ba0be25f79248b51be0c9fbfa404b6030",
                         "installed_by": ["modules"]
                     },
+                    "expansionhunter": {
+                        "branch": "master",
+                        "git_sha": "5e4835b5798eaef33d23d9a2939f2ca9d3a07d4d",
+                        "installed_by": ["modules"]
+                    },
                     "gridss/gridss": {
                         "branch": "master",
                         "git_sha": "0f8a77ff00e65eaeebc509b8156eaa983192474b",

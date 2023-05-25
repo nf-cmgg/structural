@@ -1,0 +1,5 @@
+[[annotation]]
+file="RetNetCNV.v1.coordinates.bed.gz"
+columns=[4]
+ops=["self"]
+names=["RetNetCNV_Gene_name"]

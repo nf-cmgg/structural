@@ -65,7 +65,8 @@
                 },
                 "fai": {
                     "type": "string",
-                    "default": "None"
+                    "default": "None",
+                    "description": "The index of the FASTA reference file"
                 },
                 "bwa": {
                     "type": "string",
@@ -366,35 +367,10 @@
                     "default": "homo_sapiens",
                     "description": "The species used for the analysis. Should be all lowercase and spaces should be underscorses."
                 },
-                "vep_structuralvariantoverlap": {
-                    "type": "boolean",
-                    "description": "Use the StructuralVariantOverlap VEP plugin",
-                    "help_text": "This requires either `--gnomad_sv` and `--gnomad_sv_tbi` and/or `--genomes1000_sv` and `--genomes1000_sv_tbi`. "
-                },
                 "vep_phenotypes": {
                     "type": "boolean",
                     "description": "Use the Phenotypes VEP plugin",
                     "help_text": "This requires `--phenotypes` and `--phenotypes_tbi`. "
-                },
-                "gnomad_sv": {
-                    "type": "string",
-                    "default": "None",
-                    "description": "Path to the Gnomad VCF file"
-                },
-                "gnomad_sv_tbi": {
-                    "type": "string",
-                    "default": "None",
-                    "description": "Path to the Gnomad VCF index file"
-                },
-                "genomes1000_sv": {
-                    "type": "string",
-                    "default": "None",
-                    "description": "Path to the 1000 Genomes VCF file"
-                },
-                "genomes1000_sv_tbi": {
-                    "type": "string",
-                    "default": "None",
-                    "description": "Path to the 1000 Genomes VCF index file"
                 },
                 "phenotypes": {
                     "type": "string",
@@ -405,6 +381,61 @@
                     "type": "string",
                     "default": "None",
                     "description": "Path to the phenotypes GFF index file"
+                }
+            }
+        },
+        "annotsv_options": {
+            "title": "AnnotSV options",
+            "type": "object",
+            "description": "Options specific to the execution of AnnotSV",
+            "default": "",
+            "properties": {
+                "annotsv_annotations": {
+                    "type": "string",
+                    "default": "None",
+                    "description": "The full path to the AnnotSV annotations folder. This can be a tarzipped folder. When --annotate is set to true and this isn't given, the annotations will be downloaded automatically (this is not recommended though)"
+                },
+                "annotsv_candidate_genes": {
+                    "type": "string",
+                    "default": "None",
+                    "description": "The full path the candidate genes file for AnnotSV"
+                },
+                "annotsv_gene_transcripts": {
+                    "type": "string",
+                    "default": "None",
+                    "description": "The full path to the gene transcripts file for AnnotSV"
+                },
+                "annotsv_file_name": {
+                    "type": "string",
+                    "default": "annotsv_annotated",
+                    "hidden": true,
+                    "description": "The default name of the AnnotSV VCFs"
+                },
+                "output_annotsv": {
+                    "type": "boolean",
+                    "description": "Output the AnnotSV output files along with the end results"
+                }
+            }
+        },
+        "vcfanno_options": {
+            "title": "VCFanno options",
+            "type": "object",
+            "description": "Options for the execution of AnnotSV",
+            "default": "",
+            "properties": {
+                "vcfanno_toml": {
+                    "type": "string",
+                    "description": "The full path to the AnnotSV config TOML file. This file will be used to dynamically overwrite default configs for this pipeline run"
+                },
+                "vcfanno_lua": {
+                    "type": "string",
+                    "default": "None",
+                    "description": "The full path to a lua script for VCFanno"
+                },
+                "vcfanno_resources": {
+                    "type": "string",
+                    "default": "None",
+                    "description": "A comma-delimited list of files referenced in the VCFanno config. This can contain glob patterns as well. Place all filenames together between double qoutes to not cause any irregularities"
                 }
             }
         }
@@ -433,6 +464,12 @@
         },
         {
             "$ref": "#/definitions/vep_options"
+        },
+        {
+            "$ref": "#/definitions/annotsv_options"
+        },
+        {
+            "$ref": "#/definitions/vcfanno_options"
         }
     ]
 }

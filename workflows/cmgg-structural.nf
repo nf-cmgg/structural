@@ -16,12 +16,11 @@ def checkPathParamList = [
     params.fasta,
     params.fai,
     params.vep_cache,
-    params.gnomad_sv,
-    params.gnomad_sv_tbi,
-    params.genomes1000_sv,
-    params.genomes1000_sv_tbi,
     params.phenotypes,
-    params.phenotypes_tbi
+    params.phenotypes_tbi,
+    params.annotsv_annotations,
+    params.vcfanno_toml,
+    params.vcfanno_lua
 ]
 for (param in checkPathParamList) { if (param) { file(param, checkIfExists: true) } }
 
@@ -71,6 +70,7 @@ ch_multiqc_custom_methods_description = params.multiqc_methods_description ? fil
 //
 include { BAM_STRUCTURAL_VARIANT_CALLING    } from '../subworkflows/local/bam_structural_variant_calling/main'
 include { VCF_GENOTYPE_SV_PARAGRAPH         } from '../subworkflows/local/vcf_genotype_sv_paragraph/main'
+include { VCF_ANNOTATE_VEP_ANNOTSV_VCFANNO  } from '../subworkflows/local/vcf_annotate_vep_annotsv_vcfanno/main'
 
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -82,11 +82,11 @@ include { VCF_GENOTYPE_SV_PARAGRAPH         } from '../subworkflows/local/vcf_ge
 // MODULE: Installed directly from nf-core/modules
 //
 include { TABIX_BGZIPTABIX                  } from '../modules/nf-core/tabix/bgziptabix/main'
-include { TABIX_TABIX as TABIX_ANNOTATED    } from '../modules/nf-core/tabix/tabix/main'
 include { BEDTOOLS_SORT                     } from '../modules/nf-core/bedtools/sort/main'
 include { SAMTOOLS_FAIDX                    } from '../modules/nf-core/samtools/faidx/main'
 include { BWA_INDEX                         } from '../modules/nf-core/bwa/index/main'
-include { ENSEMBLVEP_VEP                    } from '../modules/nf-core/ensemblvep/vep/main'
+include { ANNOTSV_INSTALLANNOTATIONS        } from '../modules/nf-core/annotsv/installannotations/main'
+include { UNTAR                             } from '../modules/nf-core/untar/main'
 include { MULTIQC                           } from '../modules/nf-core/multiqc/main'
 include { CUSTOM_DUMPSOFTWAREVERSIONS       } from '../modules/nf-core/custom/dumpsoftwareversions/main'
 
@@ -108,26 +108,17 @@ workflow CMGGSTRUCTURAL {
     // Create input channels from parameters
     //
 
-    ch_fasta           = Channel.fromPath(params.fasta).collect()
-    ch_fai             = params.fai ?          Channel.fromPath(params.fai).collect() :                null
-    ch_bwa_index       = params.bwa ?          Channel.fromPath(params.bwa).map {[[],it]}.collect() :  null
-    ch_vep_cache       = params.vep_cache ?    Channel.fromPath(params.vep_cache).collect() :          []
+    ch_fasta                    = Channel.fromPath(params.fasta).collect()
+    ch_fai                      = params.fai ?                      Channel.fromPath(params.fai).collect() :                                                null
+    ch_bwa_index                = params.bwa ?                      Channel.fromPath(params.bwa).map {[[],it]}.collect() :                                  null
+    ch_vep_cache                = params.vep_cache ?                Channel.fromPath(params.vep_cache).collect() :                                          []
+    ch_annotsv_annotations      = params.annotsv_annotations ?      Channel.fromPath(params.annotsv_annotations).map{[[id:"annotations"], it]}.collect() :  null
+    ch_annotsv_candidate_genes  = params.annotsv_candidate_genes ?  Channel.fromPath(params.annotsv_candidate_genes).map{[[], it]}.collect() :              [[],[]]
+    ch_annotsv_gene_transcripts = params.annotsv_gene_transcripts ? Channel.fromPath(params.annotsv_gene_transcripts).map{[[], it]}.collect() :             [[],[]]
+    ch_vcfanno_lua              = params.vcfanno_lua ?              Channel.fromPath(params.vcfanno_lua).collect() :                                        []
+    val_vcfanno_resources       = params.vcfanno_resources ?        params.vcfanno_resources.split(",").collect{file(it, checkIfExists:true)}.flatten() :   []
 
     ch_vep_extra_files = []
-
-    if(params.vep_structuralvariantoverlap && ((params.gnomad_sv && params.gnomad_sv_tbi) || (params.genomes1000_sv && params.genomes1000_sv_tbi))) {
-        if(params.gnomad_sv && params.gnomad_sv_tbi) {
-            ch_vep_extra_files.add(file(params.gnomad_sv, checkIfExists:true))
-            ch_vep_extra_files.add(file(params.gnomad_sv_tbi, checkIfExists:true))
-        }
-        if(params.genomes1000_sv && params.genomes1000_sv_tbi) {
-            ch_vep_extra_files.add(file(params.genomes1000_sv, checkIfExists:true))
-            ch_vep_extra_files.add(file(params.genomes1000_sv_tbi, checkIfExists:true))
-        }
-    }
-    else if (params.vep_structuralvariantoverlap) {
-        error("Please specify '--gnomad_sv PATH/TO/GNOMADSV/FILE' and '--gnomad_sv_tbi PATH/TO/GNOMADS/INDEX/FILE' and/or '--genomes1000_sv PATH/TO/genomes1000/FILE' and '--genomes1000_sv_tbi PATH/TO/genomes1000/INDEX/FILE' to use the StructuralVariantOverlap VEP plugin.")
-    }
 
     if(params.vep_phenotypes && params.phenotypes && params.phenotypes_tbi) {
         ch_vep_extra_files.add(file(params.phenotypes, checkIfExists:true))
@@ -159,17 +150,40 @@ workflow CMGGSTRUCTURAL {
         ch_bwa_index = BWA_INDEX.out.index.collect()
     }
 
+    if(params.annotate && !ch_annotsv_annotations) {
+        ANNOTSV_INSTALLANNOTATIONS()
+        ch_versions = ch_versions.mix(ANNOTSV_INSTALLANNOTATIONS.out.versions)
+
+        ANNOTSV_INSTALLANNOTATIONS.out.annotations
+            .map { [[id:"annotations"], it] }
+            .collect()
+            .set { ch_annotsv_annotations_ready }
+    } 
+    else if(params.annotate && params.annotsv_annotations.endsWith(".tar.gz")) {
+        UNTAR(
+            ch_annotsv_annotations
+        )
+        ch_versions = ch_versions.mix(UNTAR.out.versions)
+
+        UNTAR.out.untar
+            .collect()
+            .set { ch_annotsv_annotations_ready }
+    }
+    else {
+        ch_annotsv_annotations_ready = ch_annotsv_annotations
+    }
+
     //
     // Create the input channel
     //
 
     SamplesheetConversion.convert(ch_input, file("${projectDir}/assets/schema_input.json"))
-        .map { meta, cram, crai, bed, ped ->
+        .map { meta, cram, crai, bed, ped, small_variants ->
             new_meta = meta + [family:meta.family ?: meta.id]
-            [ new_meta, cram, crai, bed, ped ]
+            [ new_meta, cram, crai, bed, ped, small_variants ]
         }
         .tap { original_samplesheet }
-        .map { meta, cram, crai, bed, ped ->
+        .map { meta, cram, crai, bed, ped, small_variants ->
             [ meta.family, 1 ]
         }
         .groupTuple()
@@ -182,12 +196,30 @@ workflow CMGGSTRUCTURAL {
             },
             by:0
         )
-        .multiMap({ family, family_count, meta, cram, crai, bed, ped ->
+        .multiMap({ family, family_count, meta, cram, crai, bed, ped, small_variants ->
             new_meta = meta + [family_count:family_count]
+            family_meta = [
+                id: meta.family,
+                family: meta.family,
+                family_count: family_count
+            ]
             bed: [ new_meta, bed ]
             crams: [ new_meta, cram, crai ]
+            small_variants: [ family_meta, small_variants ]
         })
         .set { ch_inputs }
+
+    //
+    // Use one small variants file per family
+    //
+
+    ch_inputs.small_variants
+        .groupTuple() // No size needed here because no process has been run with small variant VCF files before this
+        .map { meta, vcfs ->
+            // Find the first VCF file and return that one for the family ([] if no VCF is given for the family)
+            [ meta, vcfs.find { it != [] } ?: [] ]
+        }
+        .set { ch_small_variants_ready }
 
     //
     // Prepare the BED files
@@ -250,22 +282,22 @@ workflow CMGGSTRUCTURAL {
     //
 
     if(params.annotate) {
-        ENSEMBLVEP_VEP(
+        VCF_ANNOTATE_VEP_ANNOTSV_VCFANNO(
             VCF_GENOTYPE_SV_PARAGRAPH.out.genotyped_vcfs,
-            params.genome,
-            params.species,
-            params.vep_cache_version,
-            ch_vep_cache,
+            ch_small_variants_ready,
             ch_fasta,
-            ch_vep_extra_files
+            ch_fai,
+            ch_annotsv_annotations_ready,
+            ch_annotsv_candidate_genes,
+            ch_annotsv_gene_transcripts,
+            ch_vep_cache,
+            ch_vep_extra_files,
+            ch_vcfanno_lua,
+            val_vcfanno_resources
         )
 
-        ch_reports  = ch_reports.mix(ENSEMBLVEP_VEP.out.report)
-        ch_versions = ch_versions.mix(ENSEMBLVEP_VEP.out.versions)
-
-        TABIX_ANNOTATED(
-            ENSEMBLVEP_VEP.out.vcf
-        )
+        ch_reports  = ch_reports.mix(VCF_ANNOTATE_VEP_ANNOTSV_VCFANNO.out.reports)
+        ch_versions = ch_versions.mix(VCF_ANNOTATE_VEP_ANNOTSV_VCFANNO.out.versions)
     }
 
     //

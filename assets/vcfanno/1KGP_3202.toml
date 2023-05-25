@@ -1,0 +1,5 @@
+[[annotation]]
+file="1KGP_3202.gatksv_svtools_novelins.freeze_V3.wAF.GRCh38.vcf.gz"
+fields=["AF"]
+ops=["self"]
+names=["AF_1000G"]

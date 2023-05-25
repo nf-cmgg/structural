@@ -1,6 +1,6 @@
 nextflow_pipeline {
 
-    name "Tests using all callers"
+    name "Tests using all callers without annotation"
     script "main.nf"
 
     test("Success") {

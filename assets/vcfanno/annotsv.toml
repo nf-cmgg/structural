@@ -1,0 +1,5 @@
+[[annotation]]
+file="annotsv_annotated.vcf.gz"
+fields=["AnnotSV_ID", "Samples_ID", "Gene_name", "Gene_count", "Cosmic_ID", "RE_gene", "CytoBand", "OMIM_ID", "GnomAD_pLI", "ExAC_pLI", "ACMG_class", "AnnotSV_ranking_score", "AnnotSV_ranking_criteria"]
+names=["AnnotSV_ID", "Samples_ID", "Gene_name", "Gene_count", "Cosmic_ID", "RE_gene", "CytoBand", "OMIM_ID", "GnomAD_pLI", "ExAC_pLI", "ACMG_class", "AnnotSV_ranking_score", "AnnotSV_ranking_criteria"]
+ops=["self", "self", "self", "self", "self", "self", "self", "self", "self", "self", "self", "self", "self"]

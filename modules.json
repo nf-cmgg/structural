@@ -97,6 +97,11 @@
                         "git_sha": "911696ea0b62df80e900ef244d7867d177971f73",
                         "installed_by": ["modules"]
                     },
+                    "ngsbits/samplegender": {
+                        "branch": "master",
+                        "git_sha": "e8d164fa8326069de538f74910d809da9f25826e",
+                        "installed_by": ["modules"]
+                    },
                     "paragraph/idxdepth": {
                         "branch": "master",
                         "git_sha": "911696ea0b62df80e900ef244d7867d177971f73",

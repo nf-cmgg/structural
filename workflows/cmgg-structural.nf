@@ -20,7 +20,8 @@ def checkPathParamList = [
     params.phenotypes_tbi,
     params.annotsv_annotations,
     params.vcfanno_toml,
-    params.vcfanno_lua
+    params.vcfanno_lua,
+    params.expansionhunter_catalogue
 ]
 for (param in checkPathParamList) { if (param) { file(param, checkIfExists: true) } }
 
@@ -299,8 +300,8 @@ workflow CMGGSTRUCTURAL {
 
         BAM_REPEATS_ESTIMATION_EXPANSIONHUNTER(
             ch_inputs.crams,
-            ch_fasta,
-            ch_fai,
+            ch_fasta.map { [[], it]},
+            ch_fai.map { [[], it]},
             ch_expansionhunter_catalogue
         )
         ch_versions = ch_versions.mix(BAM_REPEATS_ESTIMATION_EXPANSIONHUNTER.out.versions.first())

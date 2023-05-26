@@ -3,8 +3,6 @@
 //
 
 include { DELLY_CALL         } from '../../../modules/nf-core/delly/call/main'
-include { BCFTOOLS_CONCAT    } from '../../../modules/nf-core/bcftools/concat/main'
-include { BCFTOOLS_SORT      } from '../../../modules/nf-core/bcftools/sort/main'
 include { TABIX_TABIX        } from '../../../modules/nf-core/tabix/tabix/main'
 
 workflow BAM_VARIANT_CALLING_DELLY {
@@ -22,7 +20,7 @@ workflow BAM_VARIANT_CALLING_DELLY {
     //
 
     ch_crams
-        .map { meta, cram, crai, ->
+        .map { meta, cram, crai ->
             [ meta, cram, crai, [], [], [] ]
         }
         .dump(tag: 'delly_input', pretty: true)

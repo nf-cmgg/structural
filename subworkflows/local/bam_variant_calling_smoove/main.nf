@@ -2,8 +2,6 @@
 // Run Delly
 //
 
-include { REVERSE_BED        } from '../../../modules/local/reversebed/main'
-
 include { SMOOVE_CALL        } from '../../../modules/nf-core/smoove/call/main'
 include { BCFTOOLS_SORT      } from '../../../modules/nf-core/bcftools/sort/main'
 include { TABIX_TABIX        } from '../../../modules/nf-core/tabix/tabix/main'
@@ -11,7 +9,6 @@ include { TABIX_TABIX        } from '../../../modules/nf-core/tabix/tabix/main'
 workflow BAM_VARIANT_CALLING_SMOOVE {
     take:
         ch_crams    // channel: [mandatory] [ meta, cram, crai ] => The aligned CRAMs per sample with the regions they should be called on
-        ch_beds     // channel: [optional]  [ meta, bed, bed_gz, bed_gz_tbi ] => A channel containing the normal BED, the bgzipped BED and its index file
         ch_fasta    // channel: [mandatory] [ fasta ] => The fasta reference file
         ch_fai      // channel: [mandatory] [ fai ] => The index of the fasta reference file
 
@@ -20,35 +17,13 @@ workflow BAM_VARIANT_CALLING_SMOOVE {
     ch_versions     = Channel.empty()
 
     //
-    // Reverse the BED file (It will only contain the regions that aren't of interest now)
-    //
-
-    ch_beds
-        .branch { meta, bed, bed_gz, bed_gz_tbi ->
-            bed: bed
-                return [ meta, bed ]
-            no_bed: !bed
-                return [ meta, [] ]
-        }
-        .set { ch_reverse_input }
-
-    REVERSE_BED(
-        ch_reverse_input.bed,
-        ch_fai
-    )
-
-    ch_versions = ch_versions.mix(REVERSE_BED.out.versions.first())
-
-    REVERSE_BED.out.bed
-        .mix(ch_reverse_input.no_bed)
-        .set { ch_reversed_beds }
-
-    //
     // Calling variants using Smoove
     //
 
     ch_crams
-        .join(ch_reversed_beds, failOnMismatch:true, failOnDuplicate:true)
+        .map { meta, cram, crai ->
+            [ meta, cram, crai, [] ]
+        }
         .dump(tag: 'smoove_input', pretty: true)
         .set { ch_smoove_input }
 

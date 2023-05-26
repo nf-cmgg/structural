@@ -8,7 +8,6 @@ include { BCFTOOLS_REHEADER      } from '../../../modules/nf-core/bcftools/rehea
 workflow BAM_VARIANT_CALLING_MANTA {
     take:
         ch_crams    // channel: [mandatory] [ meta, cram, crai ] => The aligned CRAMs per sample with the regions they should be called on
-        ch_beds     // channel: [optional]  [ meta, bed, bed_gz, bed_gz_tbi ] => A channel containing the normal BED, the bgzipped BED and its index file
         ch_fasta    // channel: [mandatory] [ fasta ] => The fasta reference file
         ch_fai      // channel: [mandatory] [ fai ] => The index of the fasta reference file
 
@@ -16,21 +15,14 @@ workflow BAM_VARIANT_CALLING_MANTA {
 
     ch_versions     = Channel.empty()
 
-    ch_beds
-        .map(
-            { meta, bed, bed_gz, bed_gz_tbi ->
-                [ meta, bed_gz, bed_gz_tbi ]
-            }
-        )
-        .dump(tag: 'gzipped_beds', pretty: true)
-        .set { ch_gzipped_beds }
-
     //
     // Calling variants using Manta
     //
 
     ch_crams
-        .join(ch_gzipped_beds, failOnDuplicate:true, failOnMismatch:true)
+        .map { meta, cram, crai ->
+            [ meta, cram, crai, [], [] ]
+        }
         .dump(tag: 'manta_input', pretty: true)
         .set { ch_manta_input }
 

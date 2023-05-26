@@ -20,7 +20,6 @@ include { TABIX_TABIX as TABIX_VCFS                     } from '../../../modules
 workflow BAM_STRUCTURAL_VARIANT_CALLING {
     take:
         ch_crams        // channel: [mandatory] [ meta, cram, crai, bed ] => The aligned CRAMs per sample with the regions they should be called on
-        ch_beds         // channel: [optional]  [ meta, bed, bed_gz, bed_gz_tbi ] => A channel containing the normal BED, the bgzipped BED and its index file
         ch_fasta        // channel: [mandatory] [ fasta ] => The fasta reference file
         ch_fai          // channel: [mandatory] [ fai ] => The index of the fasta reference file
         ch_bwa_index    // channel: [optional]  [ index ] => The BWA MEM index
@@ -40,7 +39,6 @@ workflow BAM_STRUCTURAL_VARIANT_CALLING {
     if("manta" in val_callers){
         BAM_VARIANT_CALLING_MANTA(
             ch_crams,
-            ch_beds,
             ch_fasta,
             ch_fai
         )
@@ -56,7 +54,6 @@ workflow BAM_STRUCTURAL_VARIANT_CALLING {
     if("delly" in val_callers){
         BAM_VARIANT_CALLING_DELLY(
             ch_crams,
-            ch_beds,
             ch_fasta,
             ch_fai
         )
@@ -71,17 +68,16 @@ workflow BAM_STRUCTURAL_VARIANT_CALLING {
 
     // TODO Whamg needs some reheadering (like done in https://github.com/broadinstitute/gatk-sv/blob/90e3e9a221bdfe7ab2cfedeffb704bc6f0e99aa9/wdl/Whamg.wdl#L209)
     // TODO Add insertions sequence in the info key - Whamg will not work for now
-    if("whamg" in val_callers){
-        BAM_VARIANT_CALLING_WHAMG(
-            ch_crams,
-            ch_beds,
-            ch_fasta,
-            ch_fai
-        )
+    // if("whamg" in val_callers){
+    //     BAM_VARIANT_CALLING_WHAMG(
+    //         ch_crams,
+    //         ch_fasta,
+    //         ch_fai
+    //     )
 
-        ch_called_vcfs  = ch_called_vcfs.mix(BAM_VARIANT_CALLING_WHAMG.out.whamg_vcfs)
-        ch_versions     = ch_versions.mix(BAM_VARIANT_CALLING_WHAMG.out.versions)
-    }
+    //     ch_called_vcfs  = ch_called_vcfs.mix(BAM_VARIANT_CALLING_WHAMG.out.whamg_vcfs)
+    //     ch_versions     = ch_versions.mix(BAM_VARIANT_CALLING_WHAMG.out.versions)
+    // }
 
     //
     // Calling variants using Smoove
@@ -90,7 +86,6 @@ workflow BAM_STRUCTURAL_VARIANT_CALLING {
     if("smoove" in val_callers){
         BAM_VARIANT_CALLING_SMOOVE(
             ch_crams,
-            ch_beds,
             ch_fasta,
             ch_fai
         )
@@ -100,7 +95,7 @@ workflow BAM_STRUCTURAL_VARIANT_CALLING {
     }
 
     //
-    // Calling variants using Gridss (Currently disabled)
+    // Calling variants using Gridss
     //
 
     if("gridss" in val_callers){
@@ -124,7 +119,6 @@ workflow BAM_STRUCTURAL_VARIANT_CALLING {
     // if("scramble" in val_callers){
     //     BAM_VARIANT_CALLING_SCRAMBLE(
     //         ch_crams,
-    //         ch_beds,
     //         ch_fasta
     //     )
 

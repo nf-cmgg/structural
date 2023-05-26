@@ -28,24 +28,22 @@ for (param in checkPathParamList) { if (param) { file(param, checkIfExists: true
 if (params.input) { ch_input = file(params.input, checkIfExists: true) } else { exit 1, 'Input samplesheet not specified!' }
 
 // Check callers
+def callers = params.callers.tokenize(",")
+
 def availableCallers = [
     "delly",
     // "whamg",
     "manta",
-    // "gridss",
+    "gridss",
     "smoove"
 ]
 
-for (caller in params.callers.tokenize(",")) {
+for (caller in callers) {
     if(!(caller in availableCallers)) { error("The caller '${caller}' is not supported please specify a comma delimited list with on or more of the following callers: ${availableCallers}".toString()) }
 }
 
-if ("whamg" in params.callers.tokenize(",")) {
+if ("whamg" in callers) {
     error("Whamg currently isn't functional. This will be fixed in a further build of the pipeline")
-}
-
-if ("gridss" in params.callers.tokenize(",")) {
-    error("Gridss currently isn't functional. This will be fixed in a further build of the pipeline")
 }
 
 /*
@@ -86,7 +84,8 @@ include { BEDTOOLS_SORT                     } from '../modules/nf-core/bedtools/
 include { SAMTOOLS_FAIDX                    } from '../modules/nf-core/samtools/faidx/main'
 include { BWA_INDEX                         } from '../modules/nf-core/bwa/index/main'
 include { ANNOTSV_INSTALLANNOTATIONS        } from '../modules/nf-core/annotsv/installannotations/main'
-include { UNTAR                             } from '../modules/nf-core/untar/main'
+include { UNTAR as UNTAR_ANNOTSV            } from '../modules/nf-core/untar/main'
+include { UNTAR as UNTAR_BWA                } from '../modules/nf-core/untar/main'
 include { MULTIQC                           } from '../modules/nf-core/multiqc/main'
 include { CUSTOM_DUMPSOFTWAREVERSIONS       } from '../modules/nf-core/custom/dumpsoftwareversions/main'
 
@@ -108,7 +107,7 @@ workflow CMGGSTRUCTURAL {
     // Create input channels from parameters
     //
 
-    ch_fasta                    = Channel.fromPath(params.fasta).collect()
+    ch_fasta_ready              = Channel.fromPath(params.fasta).collect()
     ch_fai                      = params.fai ?                      Channel.fromPath(params.fai).collect() :                                                null
     ch_bwa_index                = params.bwa ?                      Channel.fromPath(params.bwa).map {[[],it]}.collect() :                                  null
     ch_vep_cache                = params.vep_cache ?                Channel.fromPath(params.vep_cache).collect() :                                          []
@@ -134,20 +133,36 @@ workflow CMGGSTRUCTURAL {
 
     if(!ch_fai){
         SAMTOOLS_FAIDX(
-            ch_fasta.map {[[],it]}
+            ch_fasta_ready.map {[[],it]}
         )
 
-        ch_versions = ch_versions.mix(SAMTOOLS_FAIDX.out.versions)
-        ch_fai   = SAMTOOLS_FAIDX.out.fai.map { it[1] }.collect()
+        ch_versions  = ch_versions.mix(SAMTOOLS_FAIDX.out.versions)
+        ch_fai_ready = SAMTOOLS_FAIDX.out.fai.map { it[1] }.collect()
+    }
+    else {
+        ch_fai_ready = ch_fai
     }
 
-    if(!ch_bwa_index && params.callers.contains("gridss")){
+    if(!ch_bwa_index && "gridss" in callers){
         BWA_INDEX(
             ch_fasta.map {[[id:'bwa'],it]}
         )
 
-        ch_versions = ch_versions.mix(BWA_INDEX.out.versions)
-        ch_bwa_index = BWA_INDEX.out.index.collect()
+        ch_versions        = ch_versions.mix(BWA_INDEX.out.versions)
+        ch_bwa_index_ready = BWA_INDEX.out.index.collect()
+    }
+    else if(ch_bwa_index && params.bwa.endsWith(".tar.gz") && "gridss" in callers) {
+        UNTAR_BWA(
+            ch_bwa_index
+        )
+        ch_versions = ch_versions.mix(UNTAR_BWA.out.versions)
+
+        UNTAR_BWA.out.untar
+            .collect()
+            .set { ch_bwa_index_ready }
+    }
+    else {
+        ch_bwa_index_ready = ch_bwa_index
     }
 
     if(params.annotate && !ch_annotsv_annotations) {
@@ -160,12 +175,12 @@ workflow CMGGSTRUCTURAL {
             .set { ch_annotsv_annotations_ready }
     } 
     else if(params.annotate && params.annotsv_annotations.endsWith(".tar.gz")) {
-        UNTAR(
+        UNTAR_ANNOTSV(
             ch_annotsv_annotations
         )
-        ch_versions = ch_versions.mix(UNTAR.out.versions)
+        ch_versions = ch_versions.mix(UNTAR_ANNOTSV.out.versions)
 
-        UNTAR.out.untar
+        UNTAR_ANNOTSV.out.untar
             .collect()
             .set { ch_annotsv_annotations_ready }
     }
@@ -178,77 +193,11 @@ workflow CMGGSTRUCTURAL {
     //
 
     SamplesheetConversion.convert(ch_input, file("${projectDir}/assets/schema_input.json"))
-        .map { meta, cram, crai, bed, ped, small_variants ->
-            new_meta = meta + [family:meta.family ?: meta.id]
-            [ new_meta, cram, crai, bed, ped, small_variants ]
-        }
-        .tap { original_samplesheet }
-        .map { meta, cram, crai, bed, ped, small_variants ->
-            [ meta.family, 1 ]
-        }
-        .groupTuple()
-        .map { family, one ->
-            [ family, one.sum() ]
-        }
-        .combine(
-            original_samplesheet.map {
-                [ it[0].family ] + it
-            },
-            by:0
-        )
-        .multiMap({ family, family_count, meta, cram, crai, bed, ped, small_variants ->
-            new_meta = meta + [family_count:family_count]
-            family_meta = [
-                id: meta.family,
-                family: meta.family,
-                family_count: family_count
-            ]
-            bed: [ new_meta, bed ]
-            crams: [ new_meta, cram, crai ]
-            small_variants: [ family_meta, small_variants ]
+        .multiMap({ meta, cram, crai, small_variants ->
+            crams:          [ meta, cram, crai ]
+            small_variants: [ meta, small_variants ]
         })
         .set { ch_inputs }
-
-    //
-    // Use one small variants file per family
-    //
-
-    ch_inputs.small_variants
-        .groupTuple() // No size needed here because no process has been run with small variant VCF files before this
-        .map { meta, vcfs ->
-            // Find the first VCF file and return that one for the family ([] if no VCF is given for the family)
-            [ meta, vcfs.find { it != [] } ?: [] ]
-        }
-        .set { ch_small_variants_ready }
-
-    //
-    // Prepare the BED files
-    //
-
-    ch_inputs.bed
-        .branch { meta, bed ->
-            bed: bed
-            no_bed: !bed
-                return [ meta, [], [], [] ]
-        }
-        .set { ch_all_beds }
-
-    BEDTOOLS_SORT(
-        ch_all_beds.bed,
-        []
-    )
-
-    ch_versions = ch_versions.mix(BEDTOOLS_SORT.out.versions)
-
-    TABIX_BGZIPTABIX(
-        BEDTOOLS_SORT.out.sorted
-    )
-    ch_versions = ch_versions.mix(TABIX_BGZIPTABIX.out.versions)
-
-    BEDTOOLS_SORT.out.sorted
-        .join(TABIX_BGZIPTABIX.out.gz_tbi, failOnDuplicate:true, failOnMismatch:true)
-        .mix(ch_all_beds.no_bed)
-        .set { ch_beds }
 
     //
     // Call the variants
@@ -256,26 +205,13 @@ workflow CMGGSTRUCTURAL {
 
     BAM_STRUCTURAL_VARIANT_CALLING(
         ch_inputs.crams,
-        ch_beds,
-        ch_fasta,
-        ch_fai,
-        ch_bwa_index
+        ch_fasta_ready,
+        ch_fai_ready,
+        ch_bwa_index_ready
     )
 
     ch_versions = ch_versions.mix(BAM_STRUCTURAL_VARIANT_CALLING.out.versions)
     ch_reports  = ch_reports.mix(BAM_STRUCTURAL_VARIANT_CALLING.out.reports)
-
-    //
-    // Genotype the variants
-    //
-
-    VCF_GENOTYPE_SV_PARAGRAPH(
-        BAM_STRUCTURAL_VARIANT_CALLING.out.vcfs,
-        ch_inputs.crams,
-        ch_fasta,
-        ch_fai
-    )
-    ch_versions = ch_versions.mix(VCF_GENOTYPE_SV_PARAGRAPH.out.versions)
 
     //
     // Annotate using Ensembl VEP
@@ -283,10 +219,10 @@ workflow CMGGSTRUCTURAL {
 
     if(params.annotate) {
         VCF_ANNOTATE_VEP_ANNOTSV_VCFANNO(
-            VCF_GENOTYPE_SV_PARAGRAPH.out.genotyped_vcfs,
-            ch_small_variants_ready,
-            ch_fasta,
-            ch_fai,
+            BAM_STRUCTURAL_VARIANT_CALLING.out.vcfs,
+            ch_inputs.small_variants,
+            ch_fasta_ready,
+            ch_fai_ready,
             ch_annotsv_annotations_ready,
             ch_annotsv_candidate_genes,
             ch_annotsv_gene_transcripts,

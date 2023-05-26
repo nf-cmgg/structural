@@ -80,7 +80,6 @@ include { VCF_ANNOTATE_VEP_ANNOTSV_VCFANNO  } from '../subworkflows/local/vcf_an
 // MODULE: Installed directly from nf-core/modules
 //
 include { TABIX_BGZIPTABIX                  } from '../modules/nf-core/tabix/bgziptabix/main'
-include { BEDTOOLS_SORT                     } from '../modules/nf-core/bedtools/sort/main'
 include { SAMTOOLS_FAIDX                    } from '../modules/nf-core/samtools/faidx/main'
 include { BWA_INDEX                         } from '../modules/nf-core/bwa/index/main'
 include { ANNOTSV_INSTALLANNOTATIONS        } from '../modules/nf-core/annotsv/installannotations/main'

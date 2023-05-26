@@ -43,20 +43,8 @@ workflow VCF_ANNOTATE_VEP_ANNOTSV_VCFANNO {
     )
     ch_versions = ch_versions.mix(ANNOTSV_ANNOTSV.out.versions.first())
 
-    ANNOTSV_ANNOTSV.out.vcf
-        .map { meta, vcf ->
-            // Artifically create a single variant annotated VCF if the VCF is empty
-            // This will only affect test runs that create VCFs with no variants
-            // TODO make sure the tests don't actually need this!
-            if(vcf.size() == 0){
-                vcf.text = file("${projectDir}/assets/dummy_annotsv.vcf", checkIfExists:true).text
-            }
-            [ meta, vcf ]
-        }
-        .set { ch_bgzip_input }
-
     TABIX_ANNOTSV(
-        ch_bgzip_input
+        ANNOTSV_ANNOTSV.out.vcf
     )
     ch_versions = ch_versions.mix(TABIX_ANNOTSV.out.versions.first())
 

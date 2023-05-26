@@ -9,10 +9,6 @@
             "type": "string",
             "meta": "id,sample"
         },
-        "family": {
-            "type": "string",
-            "meta": "family"
-        },
         "cram": {
             "type": "string",
             "pattern": "^\\S+\\.cram$",
@@ -21,16 +17,6 @@
         "crai": {
             "type": "string",
             "pattern": "^\\S+\\.crai$",
-            "format": "file-path"
-        },
-        "bed": {
-            "type": "string",
-            "pattern": "^\\S+\\.bed$",
-            "format": "file-path"
-        },
-        "ped": {
-            "type": "string",
-            "pattern": "^\\S+\\.ped$",
             "format": "file-path"
         },
         "small_variants": {

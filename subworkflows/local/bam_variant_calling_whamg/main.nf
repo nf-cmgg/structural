@@ -2,10 +2,7 @@
 // Run Whamg
 //
 include { WHAMG                       } from '../../../modules/nf-core/whamg/main'
-include { BCFTOOLS_CONCAT             } from '../../../modules/nf-core/bcftools/concat/main'
-include { BEDTOOLS_MERGE              } from '../../../modules/nf-core/bedtools/merge/main'
 include { SAMTOOLS_CONVERT            } from '../../../modules/nf-core/samtools/convert/main'
-include { TABIX_TABIX as TABIX_CONCAT } from '../../../modules/nf-core/tabix/tabix/main'
 include { TABIX_TABIX as TABIX_WHAMG  } from '../../../modules/nf-core/tabix/tabix/main'
 
 workflow BAM_VARIANT_CALLING_WHAMG {

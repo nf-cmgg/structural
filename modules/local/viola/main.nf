@@ -28,22 +28,13 @@ process VIOLA {
     cp ${vcf} new_${vcf}
     bgzip -d new_${vcf}
 
-    variant=\$(cat new_${unzipped_vcf} | awk '/^#/ {next} {print 1;exit}' || echo 0)
-
-    if [ \$variant -eq 1 ]
-    then
-        viola_standardize.py \\
-            new_${unzipped_vcf} \\
-            ${meta.caller} \\
-            ${prefix}.vcf \\
-            ${meta.id}
-        bgzip ${prefix}.vcf
-        echo "Ran the standardization succesfully"
-    else
-        echo "${vcf} was empty, so the viola_standardize.py process was skipped."
-        bgzip new_${unzipped_vcf}
-        cp new_${vcf} ${prefix}.vcf.gz
-    fi
+    viola_standardize.py \\
+        new_${unzipped_vcf} \\
+        ${meta.caller} \\
+        ${prefix}.vcf \\
+        ${meta.id}
+    bgzip ${prefix}.vcf
+    echo "Ran the standardization succesfully"
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":

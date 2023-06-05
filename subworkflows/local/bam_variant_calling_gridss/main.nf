@@ -3,24 +3,32 @@
 //
 
 include { GRIDSS_GRIDSS             } from '../../../modules/nf-core/gridss/gridss/main'
+include { ESTIMATE_READ_LENGTH      } from '../../../modules/local/estimate_read_length/main'
 include { TABIX_TABIX               } from '../../../modules/nf-core/tabix/tabix/main'
 
 workflow BAM_VARIANT_CALLING_GRIDSS {
     take:
-        crams       // channel: [mandatory] [ meta, cram, crai ] => The aligned CRAMs per sample with the regions they should be called on
-        fasta       // channel: [mandatory] [ fasta ] => The fasta reference file
-        fai         // channel: [mandatory] [ fai ] => The index of the fasta reference file
-        bwa_index   // channel: [mandatory] [ meta, index ] => The BWA MEM index
+        ch_crams       // channel: [mandatory] [ meta, cram, crai ] => The aligned CRAMs per sample with the regions they should be called on
+        ch_fasta       // channel: [mandatory] [ fasta ] => The fasta reference file
+        ch_fai         // channel: [mandatory] [ fai ] => The index of the fasta reference file
+        ch_bwa_index   // channel: [mandatory] [ meta, index ] => The BWA MEM index
 
     main:
 
     ch_versions     = Channel.empty()
 
+    ESTIMATE_READ_LENGTH(
+        ch_crams,
+        ch_fasta,
+        ch_fai
+    )
+    ch_versions = ch_versions.mix(ESTIMATE_READ_LENGTH.out.versions.first())
+
     GRIDSS_GRIDSS(
-        crams.map {meta, cram, crai -> [meta, cram, []]},
-        fasta.map {[[],it]},
-        fai.map {[[],it]},
-        bwa_index
+        ch_crams.map {meta, cram, crai -> [meta, cram, []]},
+        ch_fasta.map {[[],it]},
+        ch_fai.map {[[],it]},
+        ch_bwa_index
     )
     ch_versions = ch_versions.mix(GRIDSS_GRIDSS.out.versions.first())
 
@@ -31,9 +39,10 @@ workflow BAM_VARIANT_CALLING_GRIDSS {
 
     GRIDSS_GRIDSS.out.vcf
         .join(TABIX_TABIX.out.tbi, failOnMismatch:true, failOnDuplicate:true)
+        .join(ESTIMATE_READ_LENGTH.out.read_length)
         .map(
-            { meta, vcf, tbi ->
-                new_meta = meta + [caller:"gridss"]
+            { meta, vcf, tbi, read_length ->
+                new_meta = meta + [caller:"gridss", read_length:read_length]
                 [ new_meta, vcf, tbi ]
             }
         )

@@ -4,6 +4,7 @@ import argparse
 import os
 import shutil
 import numpy as np
+import pandas as pd
 
 import viola
 
@@ -14,6 +15,7 @@ if __name__ == "__main__":
     parser.add_argument('caller', metavar='STRING', type=str, help="The caller used to call the VCF")
     parser.add_argument('out_file', metavar='FILE', type=str, help="The standardized VCF")
     parser.add_argument('patient_name', metavar='STRING', type=str, help="The name of the patient in the VCF file")
+    parser.add_argument('-l', '--read_length', metavar='INTEGER', type=int, help="The approximate read length", default=150)
 
     args = parser.parse_args()
 
@@ -21,6 +23,7 @@ if __name__ == "__main__":
     caller = args.caller
     out_file = args.out_file
     patient_name = args.patient_name
+    read_length = args.read_length
 
     if caller == "smoove": caller = "lumpy"
 
@@ -37,9 +40,39 @@ if __name__ == "__main__":
                     new.write(line.replace("CIRPOS", "CIEND"))
         raw_vcf = viola.read_vcf(in_file, variant_caller=caller, patient_name=patient_name)
         vcf = raw_vcf.breakend2breakpoint()
-        orig_table = vcf.get_table("positions")
+
+        # Genotype the variants
+        # TODO Fix the calculation of the genotypes to be more precise
+        # TODO Analyse the amount of variants are inside the intervals 0-20 >20-40 >40-60 >60-80 >80
+        vf = vcf.get_table("vf")[["id", "vf"]]
+        ref = vcf.get_table("ref")[["id", "ref"]]
+        refpair = vcf.get_table("refpair")[["id", "refpair"]]
+        svlen = vcf.get_table("svlen")[["id", "svlen"]]
+        merged = pd.merge(pd.merge(pd.merge(vf, ref), refpair), svlen)
+        merged["vaf"] = np.where(
+            merged['svlen'] > read_length,
+            merged['vf']/(merged['vf'] + merged['ref'] + merged['refpair']),
+            merged['vf']/(merged['vf'] + merged['ref'])
+        )
+        merged["gt"] = np.where(
+            merged['vaf'] >= 0.75,
+            "1/1",
+            np.where(
+                merged["vaf"] <= 0.25,
+                "0/0",
+                "0/1"
+            )
+        )
+        gt_old = merged[["id", "gt"]]
+        gt = gt_old.assign(format="GT")
+        formats_old = vcf.get_table("formats")
+        formats = pd.merge(formats_old, gt, how='left', on=['format', 'id'])
+        formats.loc[formats["gt"].notna(), 'value'] = formats['gt']
+        formats_done = formats.drop(columns="gt")
+        vcf.replace_table("formats", formats_done)
 
         # Fix the ALT fields for breakpoint notation
+        orig_table = vcf.get_table("positions")
         alt_table = viola.io.parser.create_alt_field_from_position(orig_table)
         alt_table["alt"] = np.where(alt_table["svtype"] == "BND", orig_table["alt"], alt_table["alt"])
         vcf.replace_table("positions", alt_table)

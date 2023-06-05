@@ -133,12 +133,18 @@ workflow BAM_STRUCTURAL_VARIANT_CALLING {
     VIOLA(
         ch_called_vcfs.map{ it[0..1] }
     )
-
     ch_versions = ch_versions.mix(VIOLA.out.versions.first())
+
+    VIOLA.out.vcf
+        .map { meta, vcf ->
+            new_meta = meta.caller == "gridss" ? meta - meta.subMap("read_length") : meta
+            [ new_meta, vcf ]
+        }
+        .set { ch_viola_output }
 
     if(val_callers.size() > 1){
         VCF_MERGE_JASMINE(
-            VIOLA.out.vcf,
+            ch_viola_output,
             ch_fasta,
             ch_fai,
         )
@@ -152,7 +158,7 @@ workflow BAM_STRUCTURAL_VARIANT_CALLING {
             .set { ch_new_header }
 
         REHEADER_CALLED_VCFS(
-            VIOLA.out.vcf,
+            ch_viola_output,
             ch_new_header,
             ch_fai
         )

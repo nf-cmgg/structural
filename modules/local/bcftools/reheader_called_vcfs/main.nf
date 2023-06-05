@@ -2,10 +2,10 @@ process REHEADER_CALLED_VCFS {
     tag "$meta.id"
     label 'process_low'
 
-    conda "bioconda::bcftools=1.16"
+    conda "bioconda::bcftools=1.17"
     container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
-        'https://depot.galaxyproject.org/singularity/bcftools:1.16--hfe4b78e_1':
-        'biocontainers/bcftools:1.16--hfe4b78e_1' }"
+        'https://depot.galaxyproject.org/singularity/bcftools:1.17--haef29d1_0':
+        'biocontainers/bcftools:1.17--haef29d1_0' }"
 
     input:
     tuple val(meta), path(vcf)
@@ -13,7 +13,7 @@ process REHEADER_CALLED_VCFS {
     path fai
 
     output:
-    tuple val(meta), path("*.vcf.gz"), emit: vcf
+    tuple val(meta), path("*.vcf")   , emit: vcf
     path "versions.yml"              , emit: versions
 
     when:
@@ -38,7 +38,7 @@ process REHEADER_CALLED_VCFS {
         -h new_header.txt \\
         ${args} \\
         --threads ${task.cpus} \\
-        -o ${prefix}.vcf.gz \\
+        -o ${prefix}.vcf \\
         ${vcf}
 
     cat <<-END_VERSIONS > versions.yml

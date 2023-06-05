@@ -8,7 +8,7 @@ process VIOLA {
     tuple val(meta), path(vcf)
 
     output:
-    tuple val(meta), path("*_standardized.vcf.gz")  , emit: vcf
+    tuple val(meta), path("*.vcf.gz")  , emit: vcf
     path "versions.yml"                             , emit: versions
 
     when:

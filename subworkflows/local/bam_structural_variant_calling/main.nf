@@ -9,13 +9,13 @@ include { BAM_VARIANT_CALLING_WHAMG                     } from '../bam_variant_c
 include { BAM_VARIANT_CALLING_SMOOVE                    } from '../bam_variant_calling_smoove/main'
 include { BAM_VARIANT_CALLING_SCRAMBLE                  } from '../bam_variant_calling_scramble/main'
 include { BAM_VARIANT_CALLING_GRIDSS                    } from '../bam_variant_calling_gridss/main'
+include { VCF_STANDARDIZE_VIOLA                         } from '../vcf_standardize_viola/main'
 include { VCF_MERGE_JASMINE                             } from '../vcf_merge_jasmine/main'
 
 // Import modules
-include { VIOLA                                         } from '../../../modules/local/viola/main'
 include { REHEADER_CALLED_VCFS                          } from '../../../modules/local/bcftools/reheader_called_vcfs/main'
 
-include { TABIX_TABIX as TABIX_VCFS                     } from '../../../modules/nf-core/tabix/tabix/main'
+include { TABIX_BGZIPTABIX                              } from '../../../modules/nf-core/tabix/bgziptabix/main'
 
 workflow BAM_STRUCTURAL_VARIANT_CALLING {
     take:
@@ -130,12 +130,12 @@ workflow BAM_STRUCTURAL_VARIANT_CALLING {
     // Standardize and merge VCFs per sample for all callers
     //
 
-    VIOLA(
+    VCF_STANDARDIZE_VIOLA(
         ch_called_vcfs.map{ it[0..1] }
     )
-    ch_versions = ch_versions.mix(VIOLA.out.versions.first())
+    ch_versions = ch_versions.mix(VCF_STANDARDIZE_VIOLA.out.versions)
 
-    VIOLA.out.vcf
+    VCF_STANDARDIZE_VIOLA.out.standardized_vcfs
         .map { meta, vcf ->
             new_meta = meta.caller == "gridss" ? meta - meta.subMap("read_length") : meta
             [ new_meta, vcf ]
@@ -164,13 +164,12 @@ workflow BAM_STRUCTURAL_VARIANT_CALLING {
         )
         ch_versions = ch_versions.mix(REHEADER_CALLED_VCFS.out.versions.first())
         
-        TABIX_VCFS(
+        TABIX_BGZIPTABIX(
             REHEADER_CALLED_VCFS.out.vcf
         )
-        ch_versions = ch_versions.mix(TABIX_VCFS.out.versions.first())
+        ch_versions = ch_versions.mix(TABIX_BGZIPTABIX.out.versions.first())
 
-        REHEADER_CALLED_VCFS.out.vcf
-            .join(TABIX_VCFS.out.tbi, failOnDuplicate:true, failOnMismatch:true)
+        TABIX_BGZIPTABIX.out.gz_tbi
             .map { meta, vcf, tbi ->
                 new_meta = meta - meta.subMap("caller")
                 [ new_meta, vcf, tbi ]

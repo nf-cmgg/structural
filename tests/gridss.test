@@ -11,19 +11,17 @@ nextflow_pipeline {
         }
 
         then {
-            assert workflow.failed
-            // assert file("${outputDir}/PosCon1/PosCon1.vcf.gz").exists()
-            // assert file("${outputDir}/PosCon1/PosCon1.vcf.gz.tbi").exists()
-            // assert file("${outputDir}/PosCon2/PosCon2.vcf.gz").exists()
-            // assert file("${outputDir}/PosCon2/PosCon2.vcf.gz.tbi").exists()
-            // assert file("${outputDir}/PosCon3/PosCon3.vcf.gz").exists()
-            // assert file("${outputDir}/PosCon3/PosCon3.vcf.gz.tbi").exists()
-            // assert file("${outputDir}/PosCon4/PosCon4.vcf.gz").exists()
-            // assert file("${outputDir}/PosCon4/PosCon4.vcf.gz.tbi").exists()
-            // assert file("${outputDir}/ready/family1/family1.vcf.gz").exists()
-            // assert file("${outputDir}/ready/PosCon3/PosCon3.vcf.gz").exists()
-            // assert file("${outputDir}/ready/PosCon4/PosCon4.vcf.gz").exists()
-
+            assert workflow.success
+            assert file("${outputDir}/PosCon1/PosCon1.vcf.gz").exists()
+            assert file("${outputDir}/PosCon1/PosCon1.vcf.gz.tbi").exists()
+            assert file("${outputDir}/PosCon2/PosCon2.vcf.gz").exists()
+            assert file("${outputDir}/PosCon2/PosCon2.vcf.gz.tbi").exists()
+            assert file("${outputDir}/PosCon3/PosCon3.vcf.gz").exists()
+            assert file("${outputDir}/PosCon3/PosCon3.vcf.gz.tbi").exists()
+            assert file("${outputDir}/PosCon4/PosCon4.vcf.gz").exists()
+            assert file("${outputDir}/PosCon4/PosCon4.vcf.gz.tbi").exists()
+            assert file("${outputDir}/PosCon5/PosCon5.vcf.gz").exists()
+            assert file("${outputDir}/PosCon5/PosCon5.vcf.gz.tbi").exists()
         }
     }
 }

@@ -21,6 +21,10 @@ def checkPathParamList = [
     params.annotsv_annotations,
     params.vcfanno_toml,
     params.vcfanno_lua
+    params.phenotypes_tbi,
+    params.annotsv_annotations,
+    params.vcfanno_toml,
+    params.vcfanno_lua
 ]
 for (param in checkPathParamList) { if (param) { file(param, checkIfExists: true) } }
 
@@ -228,8 +232,13 @@ workflow CMGGSTRUCTURAL {
             ch_vep_extra_files,
             ch_vcfanno_lua,
             val_vcfanno_resources
+            ch_vep_extra_files,
+            ch_vcfanno_lua,
+            val_vcfanno_resources
         )
 
+        ch_reports  = ch_reports.mix(VCF_ANNOTATE_VEP_ANNOTSV_VCFANNO.out.reports)
+        ch_versions = ch_versions.mix(VCF_ANNOTATE_VEP_ANNOTSV_VCFANNO.out.versions)
         ch_reports  = ch_reports.mix(VCF_ANNOTATE_VEP_ANNOTSV_VCFANNO.out.reports)
         ch_versions = ch_versions.mix(VCF_ANNOTATE_VEP_ANNOTSV_VCFANNO.out.versions)
     }

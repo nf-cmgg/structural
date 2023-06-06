@@ -25,7 +25,8 @@ if __name__ == "__main__":
     patient_name = args.patient_name
     read_length = args.read_length
 
-    if caller == "smoove": caller = "lumpy"
+    if caller == "smoove":
+        caller = "lumpy"
 
     if caller == "gridss":
         svlen_not_added = True
@@ -36,7 +37,9 @@ if __name__ == "__main__":
                 for line in old.readlines():
                     if line.startswith("##INFO") and svlen_not_added:
                         svlen_not_added = False
-                        new.write("##INFO=<ID=SVLEN,Number=1,Type=Integer,Description=\"The length of the structural variant.\">\n")
+                        new.write(
+                            '##INFO=<ID=SVLEN,Number=1,Type=Integer,Description="The length of the structural variant.">\n'
+                        )
                     new.write(line.replace("CIRPOS", "CIEND"))
         raw_vcf = viola.read_vcf(in_file, variant_caller=caller, patient_name=patient_name)
         vcf = raw_vcf.breakend2breakpoint()

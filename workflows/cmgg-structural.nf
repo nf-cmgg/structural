@@ -67,7 +67,6 @@ ch_multiqc_custom_methods_description = params.multiqc_methods_description ? fil
 // SUBWORKFLOW: Consisting of a mix of local and nf-core/modules
 //
 include { BAM_STRUCTURAL_VARIANT_CALLING    } from '../subworkflows/local/bam_structural_variant_calling/main'
-include { VCF_GENOTYPE_SV_PARAGRAPH         } from '../subworkflows/local/vcf_genotype_sv_paragraph/main'
 include { VCF_ANNOTATE_VEP_ANNOTSV_VCFANNO  } from '../subworkflows/local/vcf_annotate_vep_annotsv_vcfanno/main'
 
 /*
@@ -106,11 +105,11 @@ workflow CMGGSTRUCTURAL {
     // Create input channels from parameters
     //
 
-    ch_fasta_ready              = Channel.fromPath(params.fasta).collect()
-    ch_fai                      = params.fai ?                      Channel.fromPath(params.fai).collect() :                                                null
-    ch_bwa_index                = params.bwa ?                      Channel.fromPath(params.bwa).map {[[],it]}.collect() :                                  null
-    ch_vep_cache                = params.vep_cache ?                Channel.fromPath(params.vep_cache).collect() :                                          []
-    ch_annotsv_annotations      = params.annotsv_annotations ?      Channel.fromPath(params.annotsv_annotations).map{[[id:"annotations"], it]}.collect() :  null
+    ch_fasta_ready              = Channel.fromPath(params.fasta).map{[[id:'fasta'], it]}.collect()
+    ch_fai                      = params.fai ?                      Channel.fromPath(params.fai).map{[[id:"fai"],it]}.collect() :                                                null
+    ch_bwa_index                = params.bwa ?                      Channel.fromPath(params.bwa).map{[[id:"bwa"],it]}.collect() :                                  null
+    ch_vep_cache                = params.vep_cache ?                Channel.fromPath(params.vep_cache).map{[[id:"vep_cache"],it]}.collect() :                                          []
+    ch_annotsv_annotations      = params.annotsv_annotations ?      Channel.fromPath(params.annotsv_annotations).map{[[id:"annotsv_annotations"], it]}.collect() :  null
     ch_annotsv_candidate_genes  = params.annotsv_candidate_genes ?  Channel.fromPath(params.annotsv_candidate_genes).map{[[], it]}.collect() :              [[],[]]
     ch_annotsv_gene_transcripts = params.annotsv_gene_transcripts ? Channel.fromPath(params.annotsv_gene_transcripts).map{[[], it]}.collect() :             [[],[]]
     ch_vcfanno_lua              = params.vcfanno_lua ?              Channel.fromPath(params.vcfanno_lua).collect() :                                        []
@@ -132,11 +131,11 @@ workflow CMGGSTRUCTURAL {
 
     if(!ch_fai){
         SAMTOOLS_FAIDX(
-            ch_fasta_ready.map {[[],it]}
+            ch_fasta_ready
         )
 
         ch_versions  = ch_versions.mix(SAMTOOLS_FAIDX.out.versions)
-        ch_fai_ready = SAMTOOLS_FAIDX.out.fai.map { it[1] }.collect()
+        ch_fai_ready = SAMTOOLS_FAIDX.out.fai.map{[[id:'fai'], it]}.collect()
     }
     else {
         ch_fai_ready = ch_fai
@@ -144,11 +143,11 @@ workflow CMGGSTRUCTURAL {
 
     if(!ch_bwa_index && "gridss" in callers){
         BWA_INDEX(
-            ch_fasta.map {[[id:'bwa'],it]}
+            ch_fasta_ready
         )
 
         ch_versions        = ch_versions.mix(BWA_INDEX.out.versions)
-        ch_bwa_index_ready = BWA_INDEX.out.index.collect()
+        ch_bwa_index_ready = BWA_INDEX.out.index.map{[[id:'bwa'], it[1]]}.collect()
     }
     else if(ch_bwa_index && params.bwa.endsWith(".tar.gz") && "gridss" in callers) {
         UNTAR_BWA(

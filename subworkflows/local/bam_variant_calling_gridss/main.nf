@@ -9,8 +9,8 @@ include { TABIX_TABIX               } from '../../../modules/nf-core/tabix/tabix
 workflow BAM_VARIANT_CALLING_GRIDSS {
     take:
         ch_crams       // channel: [mandatory] [ meta, cram, crai ] => The aligned CRAMs per sample with the regions they should be called on
-        ch_fasta       // channel: [mandatory] [ fasta ] => The fasta reference file
-        ch_fai         // channel: [mandatory] [ fai ] => The index of the fasta reference file
+        ch_fasta       // channel: [mandatory] [ meta, fasta ] => The fasta reference file
+        ch_fai         // channel: [mandatory] [ meta, fai ] => The index of the fasta reference file
         ch_bwa_index   // channel: [mandatory] [ meta, index ] => The BWA MEM index
 
     main:
@@ -26,8 +26,8 @@ workflow BAM_VARIANT_CALLING_GRIDSS {
 
     GRIDSS_GRIDSS(
         ch_crams.map {meta, cram, crai -> [meta, cram, []]},
-        ch_fasta.map {[[],it]},
-        ch_fai.map {[[],it]},
+        ch_fasta,
+        ch_fai,
         ch_bwa_index
     )
     ch_versions = ch_versions.mix(GRIDSS_GRIDSS.out.versions.first())

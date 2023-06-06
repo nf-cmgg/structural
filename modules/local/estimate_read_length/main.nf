@@ -9,8 +9,8 @@ process ESTIMATE_READ_LENGTH {
 
     input:
     tuple val(meta), path(input), path(index)
-    path  fasta
-    path  fai
+    tuple val(meta2), path(fasta)
+    tuple val(meta3), path(fai)
 
     output:
     tuple val(meta), env(READ_LENGTH), emit: read_length

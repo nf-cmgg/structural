@@ -9,8 +9,8 @@ include { TABIX_TABIX        } from '../../../modules/nf-core/tabix/tabix/main'
 workflow BAM_VARIANT_CALLING_SMOOVE {
     take:
         ch_crams    // channel: [mandatory] [ meta, cram, crai ] => The aligned CRAMs per sample with the regions they should be called on
-        ch_fasta    // channel: [mandatory] [ fasta ] => The fasta reference file
-        ch_fai      // channel: [mandatory] [ fai ] => The index of the fasta reference file
+        ch_fasta    // channel: [mandatory] [ meta, fasta ] => The fasta reference file
+        ch_fai      // channel: [mandatory] [ meta, fai ] => The index of the fasta reference file
 
     main:
 
@@ -29,8 +29,8 @@ workflow BAM_VARIANT_CALLING_SMOOVE {
 
     SMOOVE_CALL(
         ch_smoove_input,
-        ch_fasta,
-        ch_fai
+        ch_fasta.map{it[1]},
+        ch_fai.map{it[1]}
     )
 
     ch_versions = ch_versions.mix(SMOOVE_CALL.out.versions.first())

@@ -20,9 +20,9 @@ include { TABIX_BGZIPTABIX                              } from '../../../modules
 workflow BAM_STRUCTURAL_VARIANT_CALLING {
     take:
         ch_crams        // channel: [mandatory] [ meta, cram, crai, bed ] => The aligned CRAMs per sample with the regions they should be called on
-        ch_fasta        // channel: [mandatory] [ fasta ] => The fasta reference file
-        ch_fai          // channel: [mandatory] [ fai ] => The index of the fasta reference file
-        ch_bwa_index    // channel: [optional]  [ index ] => The BWA MEM index
+        ch_fasta        // channel: [mandatory] [ meta, fasta ] => The fasta reference file
+        ch_fai          // channel: [mandatory] [ meta, fai ] => The index of the fasta reference file
+        ch_bwa_index    // channel: [optional]  [ meta, index ] => The BWA MEM index
 
     main:
 
@@ -131,7 +131,7 @@ workflow BAM_STRUCTURAL_VARIANT_CALLING {
     //
 
     VCF_STANDARDIZE_VIOLA(
-        ch_called_vcfs.map{ it[0..1] }
+        ch_called_vcfs.map{ meta, vcf, tbi -> [meta, vcf] }
     )
     ch_versions = ch_versions.mix(VCF_STANDARDIZE_VIOLA.out.versions)
 

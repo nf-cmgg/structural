@@ -11,8 +11,8 @@ include { REHEADER_CALLED_VCFS                          } from '../../../modules
 workflow VCF_MERGE_JASMINE {
     take:
         ch_vcfs     // channel: [mandatory] [ meta, vcf ] => The bgzipped called VCFs
-        ch_fasta    // channel: [mandatory] [ fasta ] => The fasta reference file
-        ch_fai      // channel: [mandatory] [ fai ] => The index of the fasta reference file
+        ch_fasta    // channel: [mandatory] [ meta, fasta ] => The fasta reference file
+        ch_fai      // channel: [mandatory] [ meta, fai ] => The index of the fasta reference file
 
     main:
 
@@ -31,8 +31,8 @@ workflow VCF_MERGE_JASMINE {
 
     JASMINESV(
         ch_jasmine_input,
-        ch_fasta,
-        ch_fai,
+        ch_fasta.map{it[1]},
+        ch_fai.map{it[1]},
         []
     )
 

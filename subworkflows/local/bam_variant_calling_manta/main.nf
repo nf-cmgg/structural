@@ -3,13 +3,12 @@
 //
 include { MANTA_GERMLINE         } from '../../../modules/nf-core/manta/germline/main'
 include { MANTA_CONVERTINVERSION } from '../../../modules/nf-core/manta/convertinversion/main'
-include { BCFTOOLS_REHEADER      } from '../../../modules/nf-core/bcftools/reheader/main'
 
 workflow BAM_VARIANT_CALLING_MANTA {
     take:
         ch_crams    // channel: [mandatory] [ meta, cram, crai ] => The aligned CRAMs per sample with the regions they should be called on
-        ch_fasta    // channel: [mandatory] [ fasta ] => The fasta reference file
-        ch_fai      // channel: [mandatory] [ fai ] => The index of the fasta reference file
+        ch_fasta    // channel: [mandatory] [ meta, fasta ] => The fasta reference file
+        ch_fai      // channel: [mandatory] [ meta, fai ] => The index of the fasta reference file
 
     main:
 
@@ -40,7 +39,7 @@ workflow BAM_VARIANT_CALLING_MANTA {
 
     MANTA_CONVERTINVERSION(
         MANTA_GERMLINE.out.diploid_sv_vcf,
-        ch_fasta
+        ch_fasta.map{it[1]}
     )
 
     ch_versions = ch_versions.mix(MANTA_CONVERTINVERSION.out.versions.first())

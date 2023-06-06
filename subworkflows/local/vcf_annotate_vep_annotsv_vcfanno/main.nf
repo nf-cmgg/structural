@@ -8,6 +8,7 @@ include { VCFANNO                               } from '../../../modules/nf-core
 include { TABIX_BGZIPTABIX as TABIX_ANNOTATED   } from '../../../modules/nf-core/tabix/bgziptabix/main'
 include { TABIX_BGZIPTABIX as TABIX_ANNOTSV     } from '../../../modules/nf-core/tabix/bgziptabix/main'
 include { TABIX_TABIX as TABIX_VEP              } from '../../../modules/nf-core/tabix/tabix/main'
+include { BCFTOOLS_FILTER                       } from '../../../modules/nf-core/bcftools/filter/main'
 
 workflow VCF_ANNOTATE_VEP_ANNOTSV_VCFANNO {
     take:
@@ -31,6 +32,20 @@ workflow VCF_ANNOTATE_VEP_ANNOTSV_VCFANNO {
     // Run AnnotSV and VEP in parallel and merge TSV from AnnotSV with VCF from VEP during VCFanno
 
     ch_vcfs
+        .map { meta, vcf, tbi ->
+            [ meta, vcf ]
+        }
+        .set { ch_bcftools_input }
+
+    BCFTOOLS_FILTER(
+        ch_bcftools_input
+    )
+    ch_versions = ch_versions.mix(BCFTOOLS_FILTER.out.versions.first())
+
+    BCFTOOLS_FILTER.out.vcf
+        .map { meta, vcf ->
+            [ meta, vcf, [] ]
+        }
         .join(ch_small_variants, failOnDuplicate:true, failOnMismatch:true)
         .set { ch_annotsv_input }
 

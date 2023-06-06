@@ -11,11 +11,13 @@ import viola
 if __name__ == "__main__":
     # Setting up argparser
     parser = argparse.ArgumentParser(description="A script to standardize VCFs using Viola-SV")
-    parser.add_argument('vcf', metavar='FILE', type=str, help="The called VCF")
-    parser.add_argument('caller', metavar='STRING', type=str, help="The caller used to call the VCF")
-    parser.add_argument('out_file', metavar='FILE', type=str, help="The standardized VCF")
-    parser.add_argument('patient_name', metavar='STRING', type=str, help="The name of the patient in the VCF file")
-    parser.add_argument('-l', '--read_length', metavar='INTEGER', type=int, help="The approximate read length", default=150)
+    parser.add_argument("vcf", metavar="FILE", type=str, help="The called VCF")
+    parser.add_argument("caller", metavar="STRING", type=str, help="The caller used to call the VCF")
+    parser.add_argument("out_file", metavar="FILE", type=str, help="The standardized VCF")
+    parser.add_argument("patient_name", metavar="STRING", type=str, help="The name of the patient in the VCF file")
+    parser.add_argument(
+        "-l", "--read_length", metavar="INTEGER", type=int, help="The approximate read length", default=150
+    )
 
     args = parser.parse_args()
 
@@ -30,10 +32,10 @@ if __name__ == "__main__":
 
     if caller == "gridss":
         svlen_not_added = True
-        old_vcf = f'old_{in_file}'
+        old_vcf = f"old_{in_file}"
         os.rename(in_file, old_vcf)
-        with open(old_vcf, 'r') as old:
-            with open(in_file, 'w') as new:
+        with open(old_vcf, "r") as old:
+            with open(in_file, "w") as new:
                 for line in old.readlines():
                     if line.startswith("##INFO") and svlen_not_added:
                         svlen_not_added = False
@@ -53,24 +55,16 @@ if __name__ == "__main__":
         svlen = vcf.get_table("svlen")[["id", "svlen"]]
         merged = pd.merge(pd.merge(pd.merge(vf, ref), refpair), svlen)
         merged["vaf"] = np.where(
-            merged['svlen'] > read_length,
-            merged['vf']/(merged['vf'] + merged['ref'] + merged['refpair']),
-            merged['vf']/(merged['vf'] + merged['ref'])
+            merged["svlen"] > read_length,
+            merged["vf"] / (merged["vf"] + merged["ref"] + merged["refpair"]),
+            merged["vf"] / (merged["vf"] + merged["ref"]),
         )
-        merged["gt"] = np.where(
-            merged['vaf'] >= 0.75,
-            "1/1",
-            np.where(
-                merged["vaf"] <= 0.25,
-                "0/0",
-                "0/1"
-            )
-        )
+        merged["gt"] = np.where(merged["vaf"] >= 0.75, "1/1", np.where(merged["vaf"] <= 0.25, "0/0", "0/1"))
         gt_old = merged[["id", "gt"]]
         gt = gt_old.assign(format="GT")
         formats_old = vcf.get_table("formats")
-        formats = pd.merge(formats_old, gt, how='left', on=['format', 'id'])
-        formats.loc[formats["gt"].notna(), 'value'] = formats['gt']
+        formats = pd.merge(formats_old, gt, how="left", on=["format", "id"])
+        formats.loc[formats["gt"].notna(), "value"] = formats["gt"]
         formats_done = formats.drop(columns="gt")
         vcf.replace_table("formats", formats_done)
 
@@ -88,7 +82,7 @@ if __name__ == "__main__":
     for id in ids:
         number = id.split(":")[-1]
         new_ids.append(f"{caller}_{number}")
-    vcf.replace_svid(ids,new_ids)
+    vcf.replace_svid(ids, new_ids)
 
     # Write to output file
     try:

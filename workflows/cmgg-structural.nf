@@ -19,8 +19,6 @@ def checkPathParamList = [
     params.phenotypes,
     params.phenotypes_tbi,
     params.annotsv_annotations,
-    params.vcfanno_toml,
-    params.vcfanno_lua
     params.phenotypes_tbi,
     params.annotsv_annotations,
     params.vcfanno_toml,
@@ -110,14 +108,14 @@ workflow CMGGSTRUCTURAL {
     //
 
     ch_fasta_ready              = Channel.fromPath(params.fasta).map{[[id:'fasta'], it]}.collect()
-    ch_fai                      = params.fai ?                      Channel.fromPath(params.fai).map{[[id:"fai"],it]}.collect() :                                                null
-    ch_bwa_index                = params.bwa ?                      Channel.fromPath(params.bwa).map{[[id:"bwa"],it]}.collect() :                                  null
-    ch_vep_cache                = params.vep_cache ?                Channel.fromPath(params.vep_cache).map{[[id:"vep_cache"],it]}.collect() :                                          []
+    ch_fai                      = params.fai ?                      Channel.fromPath(params.fai).map{[[id:"fai"],it]}.collect() : null
+    ch_bwa_index                = params.bwa ?                      Channel.fromPath(params.bwa).map{[[id:"bwa"],it]}.collect() : null
+    ch_vep_cache                = params.vep_cache ?                Channel.fromPath(params.vep_cache).map{[[id:"vep_cache"],it]}.collect() : []
     ch_annotsv_annotations      = params.annotsv_annotations ?      Channel.fromPath(params.annotsv_annotations).map{[[id:"annotsv_annotations"], it]}.collect() :  null
-    ch_annotsv_candidate_genes  = params.annotsv_candidate_genes ?  Channel.fromPath(params.annotsv_candidate_genes).map{[[], it]}.collect() :              [[],[]]
-    ch_annotsv_gene_transcripts = params.annotsv_gene_transcripts ? Channel.fromPath(params.annotsv_gene_transcripts).map{[[], it]}.collect() :             [[],[]]
-    ch_vcfanno_lua              = params.vcfanno_lua ?              Channel.fromPath(params.vcfanno_lua).collect() :                                        []
-    val_vcfanno_resources       = params.vcfanno_resources ?        params.vcfanno_resources.split(",").collect{file(it, checkIfExists:true)}.flatten() :   []
+    ch_annotsv_candidate_genes  = params.annotsv_candidate_genes ?  Channel.fromPath(params.annotsv_candidate_genes).map{[[], it]}.collect() : [[],[]]
+    ch_annotsv_gene_transcripts = params.annotsv_gene_transcripts ? Channel.fromPath(params.annotsv_gene_transcripts).map{[[], it]}.collect() : [[],[]]
+    ch_vcfanno_lua              = params.vcfanno_lua ?              Channel.fromPath(params.vcfanno_lua).collect() : []
+    val_vcfanno_resources       = params.vcfanno_resources ?        params.vcfanno_resources.split(",").collect{file(it, checkIfExists:true)}.flatten() : []
 
     ch_vep_extra_files = []
 
@@ -232,13 +230,8 @@ workflow CMGGSTRUCTURAL {
             ch_vep_extra_files,
             ch_vcfanno_lua,
             val_vcfanno_resources
-            ch_vep_extra_files,
-            ch_vcfanno_lua,
-            val_vcfanno_resources
         )
 
-        ch_reports  = ch_reports.mix(VCF_ANNOTATE_VEP_ANNOTSV_VCFANNO.out.reports)
-        ch_versions = ch_versions.mix(VCF_ANNOTATE_VEP_ANNOTSV_VCFANNO.out.versions)
         ch_reports  = ch_reports.mix(VCF_ANNOTATE_VEP_ANNOTSV_VCFANNO.out.reports)
         ch_versions = ch_versions.mix(VCF_ANNOTATE_VEP_ANNOTSV_VCFANNO.out.versions)
     }

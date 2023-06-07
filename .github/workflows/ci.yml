@@ -34,6 +34,7 @@ jobs:
           - "smoove"
           - "delly"
           - "manta"
+          - "expansionhunter"
 
     steps:
       - name: Free some space

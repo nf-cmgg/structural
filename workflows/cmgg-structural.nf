@@ -65,6 +65,7 @@ ch_multiqc_custom_methods_description = params.multiqc_methods_description ? fil
 include { BAM_STRUCTURAL_VARIANT_CALLING        } from '../subworkflows/local/bam_structural_variant_calling/main'
 include { VCF_ANNOTATE_VEP_ANNOTSV_VCFANNO      } from '../subworkflows/local/vcf_annotate_vep_annotsv_vcfanno/main'
 include { BAM_REPEAT_ESTIMATION_EXPANSIONHUNTER } from '../subworkflows/local/bam_repeat_estimation_expansionhunter/main'
+include { VCF_CONCAT_BCFTOOLS                   } from '../subworkflows/local/vcf_concat_bcftools/main'
 
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -97,6 +98,8 @@ workflow CMGGSTRUCTURAL {
 
     ch_versions = Channel.empty()
     ch_reports  = Channel.empty()
+    ch_outputs  = Channel.empty()
+    count_types = 0
 
     //
     // Create input channels from parameters
@@ -202,6 +205,8 @@ workflow CMGGSTRUCTURAL {
 
     if(callers.intersect(params.sv_callers)){
 
+        count_types++
+
         BAM_STRUCTURAL_VARIANT_CALLING(
             ch_inputs.crams,
             ch_fasta_ready,
@@ -233,6 +238,9 @@ workflow CMGGSTRUCTURAL {
 
             ch_reports  = ch_reports.mix(VCF_ANNOTATE_VEP_ANNOTSV_VCFANNO.out.reports)
             ch_versions = ch_versions.mix(VCF_ANNOTATE_VEP_ANNOTSV_VCFANNO.out.versions)
+            ch_outputs  = ch_outputs.mix(VCF_ANNOTATE_VEP_ANNOTSV_VCFANNO.out.vcfs)
+        } else {
+            ch_outputs  = ch_outputs.mix(BAM_STRUCTURAL_VARIANT_CALLING.out.vcfs)
         }
     }
 
@@ -242,6 +250,8 @@ workflow CMGGSTRUCTURAL {
 
     if(callers.intersect(params.repeats_callers)){
 
+        count_types++
+
         BAM_REPEAT_ESTIMATION_EXPANSIONHUNTER(
             ch_inputs.crams,
             ch_fasta_ready,
@@ -249,6 +259,17 @@ workflow CMGGSTRUCTURAL {
             ch_catalog
         )
         ch_versions = ch_versions.mix(BAM_REPEAT_ESTIMATION_EXPANSIONHUNTER.out.versions)
+        ch_outputs  = ch_outputs.mix(BAM_REPEAT_ESTIMATION_EXPANSIONHUNTER.out.vcfs)
+
+    }
+
+    if(count_types > 1 && params.concat_output) {
+
+        VCF_CONCAT_BCFTOOLS(
+            ch_outputs,
+            count_types
+        )
+        ch_versions = ch_versions.mix(VCF_CONCAT_BCFTOOLS.out.versions)
 
     }
 

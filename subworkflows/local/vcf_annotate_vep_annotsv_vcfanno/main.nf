@@ -107,8 +107,11 @@ workflow VCF_ANNOTATE_VEP_ANNOTSV_VCFANNO {
     )
     ch_versions = ch_versions.mix(TABIX_ANNOTATED.out.versions)
     
+    TABIX_ANNOTATED.out.gz_tbi
+        .set { ch_annotated_vcfs }
+
     emit:
-    // annotated_vcfs  = TABIX_ANNOTATED.out.gz_tbi  // channel: [ val(meta), path(vcf), path(tbi) ]
+    vcfs            = ch_annotated_vcfs  // channel: [ val(meta), path(vcf), path(tbi) ]
 
     reports         = ch_reports
     versions        = ch_versions

@@ -22,7 +22,8 @@ def checkPathParamList = [
     params.phenotypes_tbi,
     params.annotsv_annotations,
     params.vcfanno_toml,
-    params.vcfanno_lua
+    params.vcfanno_lua,
+    params.expansionhunter_catalog
 ]
 for (param in checkPathParamList) { if (param) { file(param, checkIfExists: true) } }
 
@@ -32,13 +33,7 @@ if (params.input) { ch_input = file(params.input, checkIfExists: true) } else { 
 // Check callers
 def callers = params.callers.tokenize(",")
 
-def availableCallers = [
-    "delly",
-    // "whamg",
-    "manta",
-    "gridss",
-    "smoove"
-]
+def availableCallers = params.svCallers + params.repeatsCallers
 
 for (caller in callers) {
     if(!(caller in availableCallers)) { error("The caller '${caller}' is not supported please specify a comma delimited list with on or more of the following callers: ${availableCallers}".toString()) }
@@ -68,8 +63,9 @@ ch_multiqc_custom_methods_description = params.multiqc_methods_description ? fil
 //
 // SUBWORKFLOW: Consisting of a mix of local and nf-core/modules
 //
-include { BAM_STRUCTURAL_VARIANT_CALLING    } from '../subworkflows/local/bam_structural_variant_calling/main'
-include { VCF_ANNOTATE_VEP_ANNOTSV_VCFANNO  } from '../subworkflows/local/vcf_annotate_vep_annotsv_vcfanno/main'
+include { BAM_STRUCTURAL_VARIANT_CALLING        } from '../subworkflows/local/bam_structural_variant_calling/main'
+include { VCF_ANNOTATE_VEP_ANNOTSV_VCFANNO      } from '../subworkflows/local/vcf_annotate_vep_annotsv_vcfanno/main'
+include { BAM_REPEAT_ESTIMATION_EXPANSIONHUNTER } from '../subworkflows/local/bam_repeat_estimation_expansionhunter/main'
 
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -115,6 +111,8 @@ workflow CMGGSTRUCTURAL {
     ch_annotsv_candidate_genes  = params.annotsv_candidate_genes ?  Channel.fromPath(params.annotsv_candidate_genes).map{[[], it]}.collect() : [[],[]]
     ch_annotsv_gene_transcripts = params.annotsv_gene_transcripts ? Channel.fromPath(params.annotsv_gene_transcripts).map{[[], it]}.collect() : [[],[]]
     ch_vcfanno_lua              = params.vcfanno_lua ?              Channel.fromPath(params.vcfanno_lua).collect() : []
+    ch_catalog                  = params.expansionhunter_catalog ?  Channel.fromPath(params.expansionhunter_catalog).map{[[id:'catalog'], it]}.collect() : [[],[]]    
+
     val_vcfanno_resources       = params.vcfanno_resources ?        params.vcfanno_resources.split(",").collect{file(it, checkIfExists:true)}.flatten() : []
 
     ch_vep_extra_files = []
@@ -165,7 +163,7 @@ workflow CMGGSTRUCTURAL {
         ch_bwa_index_ready = ch_bwa_index
     }
 
-    if(params.annotate && !ch_annotsv_annotations) {
+    if(params.annotate && !ch_annotsv_annotations && callers.intersect(params.svCallers)) {
         ANNOTSV_INSTALLANNOTATIONS()
         ch_versions = ch_versions.mix(ANNOTSV_INSTALLANNOTATIONS.out.versions)
 
@@ -174,7 +172,7 @@ workflow CMGGSTRUCTURAL {
             .collect()
             .set { ch_annotsv_annotations_ready }
     } 
-    else if(params.annotate && params.annotsv_annotations.endsWith(".tar.gz")) {
+    else if(params.annotate && callers.intersect(params.svCallers) && params.annotsv_annotations.endsWith(".tar.gz")) {
         UNTAR_ANNOTSV(
             ch_annotsv_annotations
         )
@@ -203,37 +201,56 @@ workflow CMGGSTRUCTURAL {
     // Call the variants
     //
 
-    BAM_STRUCTURAL_VARIANT_CALLING(
-        ch_inputs.crams,
-        ch_fasta_ready,
-        ch_fai_ready,
-        ch_bwa_index_ready
-    )
+    if(callers.intersect(params.svCallers)){
 
-    ch_versions = ch_versions.mix(BAM_STRUCTURAL_VARIANT_CALLING.out.versions)
-    ch_reports  = ch_reports.mix(BAM_STRUCTURAL_VARIANT_CALLING.out.reports)
-
-    //
-    // Annotate using Ensembl VEP
-    //
-
-    if(params.annotate) {
-        VCF_ANNOTATE_VEP_ANNOTSV_VCFANNO(
-            BAM_STRUCTURAL_VARIANT_CALLING.out.vcfs,
-            ch_inputs.small_variants,
+        BAM_STRUCTURAL_VARIANT_CALLING(
+            ch_inputs.crams,
             ch_fasta_ready,
             ch_fai_ready,
-            ch_annotsv_annotations_ready,
-            ch_annotsv_candidate_genes,
-            ch_annotsv_gene_transcripts,
-            ch_vep_cache,
-            ch_vep_extra_files,
-            ch_vcfanno_lua,
-            val_vcfanno_resources
+            ch_bwa_index_ready
         )
 
-        ch_reports  = ch_reports.mix(VCF_ANNOTATE_VEP_ANNOTSV_VCFANNO.out.reports)
-        ch_versions = ch_versions.mix(VCF_ANNOTATE_VEP_ANNOTSV_VCFANNO.out.versions)
+        ch_versions = ch_versions.mix(BAM_STRUCTURAL_VARIANT_CALLING.out.versions)
+        ch_reports  = ch_reports.mix(BAM_STRUCTURAL_VARIANT_CALLING.out.reports)
+
+        //
+        // Annotate the variants
+        //
+
+        if(params.annotate) {
+            VCF_ANNOTATE_VEP_ANNOTSV_VCFANNO(
+                BAM_STRUCTURAL_VARIANT_CALLING.out.vcfs,
+                ch_inputs.small_variants,
+                ch_fasta_ready,
+                ch_fai_ready,
+                ch_annotsv_annotations_ready,
+                ch_annotsv_candidate_genes,
+                ch_annotsv_gene_transcripts,
+                ch_vep_cache,
+                ch_vep_extra_files,
+                ch_vcfanno_lua,
+                val_vcfanno_resources
+            )
+
+            ch_reports  = ch_reports.mix(VCF_ANNOTATE_VEP_ANNOTSV_VCFANNO.out.reports)
+            ch_versions = ch_versions.mix(VCF_ANNOTATE_VEP_ANNOTSV_VCFANNO.out.versions)
+        }
+    }
+
+    //
+    // Estimate repeat sizes
+    //
+
+    if(callers.intersect(params.repeatsCallers)){
+
+        BAM_REPEAT_ESTIMATION_EXPANSIONHUNTER(
+            ch_inputs.crams,
+            ch_fasta_ready,
+            ch_fai_ready,
+            ch_catalog
+        )
+        ch_versions = ch_versions.mix(BAM_REPEAT_ESTIMATION_EXPANSIONHUNTER.out.versions)
+
     }
 
     //

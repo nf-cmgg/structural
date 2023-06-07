@@ -342,8 +342,8 @@
                     "description": "Runs the annotation with Ensembl VEP when true"
                 },
                 "concat_output": {
-                    "type": "string",
-                    "default": "false",
+                    "type": "boolean",
+                    "default": false,
                     "description": "Also output a concatenated VCF with all types analysed included"
                 }
             },

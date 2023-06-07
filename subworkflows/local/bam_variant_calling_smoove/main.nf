@@ -49,8 +49,7 @@ workflow BAM_VARIANT_CALLING_SMOOVE {
         .combine(TABIX_TABIX.out.tbi, by:0)
         .map(
             { meta, vcf, tbi ->
-                new_meta = meta.clone()
-                new_meta.caller = "smoove"
+                new_meta = meta + [caller:'smoove']
                 [ new_meta, vcf, tbi ]
             }
         )

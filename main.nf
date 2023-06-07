@@ -7,6 +7,8 @@
 ----------------------------------------------------------------------------------------
 */
 
+include { validateParameters; paramsHelp; paramsSummaryLog } from 'plugin/nf-validation'
+
 nextflow.enable.dsl = 2
 
 /*
@@ -29,7 +31,18 @@ params.annotsv_annotations  = WorkflowMain.getGenomeAttribute(params, 'annotsv_a
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
 
-WorkflowMain.initialise(workflow, params, log)
+// Print help message
+if (params.help) {
+   def String command = "nextflow run CenterForMedicalGeneticsGhent/nf-cmgg-structural --input <input csv/tsv/yaml> --outdir <output folder>"
+   log.info paramsHelp(command)
+   exit 0
+}
+
+// Print parameter summary log to screen
+log.info paramsSummaryLog(workflow)
+
+// Validate input parameters
+validateParameters()
 
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

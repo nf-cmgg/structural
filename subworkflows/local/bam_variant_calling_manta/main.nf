@@ -48,8 +48,7 @@ workflow BAM_VARIANT_CALLING_MANTA {
         .join(MANTA_CONVERTINVERSION.out.tbi, failOnDuplicate:true, failOnMismatch:true)
         .map(
             { meta, vcf, tbi ->
-                new_meta = meta.clone()
-                new_meta.caller = "manta"
+                new_meta = meta + [caller:"manta"]
                 [ new_meta, vcf, tbi ]
             }
         )

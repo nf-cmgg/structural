@@ -26,7 +26,7 @@ workflow BAM_STRUCTURAL_VARIANT_CALLING {
 
     main:
 
-    val_callers     = params.callers.tokenize(",").intersect(params.svCallers)
+    val_callers     = params.callers.tokenize(",").intersect(params.sv_callers)
 
     ch_versions     = Channel.empty()
     ch_reports      = Channel.empty()

@@ -4,10 +4,9 @@
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
 
-def summary_params = NfcoreSchema.paramsSummaryMap(workflow, params)
+include { fromSamplesheet; paramsSummaryMap } from 'plugin/nf-validation'
 
-// Validate input parameters
-WorkflowNfCmggStructural.initialise(params, log)
+def summary_params = paramsSummaryMap(workflow)
 
 // Check input path parameters to see if they exist
 def checkPathParamList = [
@@ -33,7 +32,7 @@ if (params.input) { ch_input = file(params.input, checkIfExists: true) } else { 
 // Check callers
 def callers = params.callers.tokenize(",")
 
-def availableCallers = params.svCallers + params.repeatsCallers
+def availableCallers = params.sv_callers + params.repeats_callers
 
 for (caller in callers) {
     if(!(caller in availableCallers)) { error("The caller '${caller}' is not supported please specify a comma delimited list with on or more of the following callers: ${availableCallers}".toString()) }
@@ -163,7 +162,7 @@ workflow CMGGSTRUCTURAL {
         ch_bwa_index_ready = ch_bwa_index
     }
 
-    if(params.annotate && !ch_annotsv_annotations && callers.intersect(params.svCallers)) {
+    if(params.annotate && !ch_annotsv_annotations && callers.intersect(params.sv_callers)) {
         ANNOTSV_INSTALLANNOTATIONS()
         ch_versions = ch_versions.mix(ANNOTSV_INSTALLANNOTATIONS.out.versions)
 
@@ -172,7 +171,7 @@ workflow CMGGSTRUCTURAL {
             .collect()
             .set { ch_annotsv_annotations_ready }
     } 
-    else if(params.annotate && callers.intersect(params.svCallers) && params.annotsv_annotations.endsWith(".tar.gz")) {
+    else if(params.annotate && callers.intersect(params.sv_callers) && params.annotsv_annotations.endsWith(".tar.gz")) {
         UNTAR_ANNOTSV(
             ch_annotsv_annotations
         )
@@ -190,7 +189,7 @@ workflow CMGGSTRUCTURAL {
     // Create the input channel
     //
 
-    SamplesheetConversion.convert(ch_input, file("${projectDir}/assets/schema_input.json"))
+    Channel.fromSamplesheet("input")
         .multiMap({ meta, cram, crai, small_variants ->
             crams:          [ meta, cram, crai ]
             small_variants: [ meta, small_variants ]
@@ -201,7 +200,7 @@ workflow CMGGSTRUCTURAL {
     // Call the variants
     //
 
-    if(callers.intersect(params.svCallers)){
+    if(callers.intersect(params.sv_callers)){
 
         BAM_STRUCTURAL_VARIANT_CALLING(
             ch_inputs.crams,
@@ -241,7 +240,7 @@ workflow CMGGSTRUCTURAL {
     // Estimate repeat sizes
     //
 
-    if(callers.intersect(params.repeatsCallers)){
+    if(callers.intersect(params.repeats_callers)){
 
         BAM_REPEAT_ESTIMATION_EXPANSIONHUNTER(
             ch_inputs.crams,

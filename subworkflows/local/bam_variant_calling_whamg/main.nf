@@ -47,7 +47,7 @@ workflow BAM_VARIANT_CALLING_WHAMG {
     whamg_vcfs
         .map(
             { meta, vcf, tbi ->
-                new_meta = meta.findAll {true} + [caller:"whamg"]
+                new_meta = meta + [caller:"whamg"]
                 [ new_meta, vcf, tbi ]
             }
         )

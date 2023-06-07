@@ -189,7 +189,7 @@ workflow CMGGSTRUCTURAL {
     // Create the input channel
     //
 
-    Channel.fromSamplesheet("input")
+    Channel.fromSamplesheet("input", immutable_meta:false)
         .multiMap({ meta, cram, crai, small_variants ->
             crams:          [ meta, cram, crai ]
             small_variants: [ meta, small_variants ]

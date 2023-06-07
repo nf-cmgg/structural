@@ -131,7 +131,9 @@ workflow BAM_STRUCTURAL_VARIANT_CALLING {
     //
 
     VCF_STANDARDIZE_VIOLA(
-        ch_called_vcfs.map{ meta, vcf, tbi -> [meta, vcf] }
+        ch_called_vcfs.map{ meta, vcf, tbi ->
+            [meta, vcf] 
+        }
     )
     ch_versions = ch_versions.mix(VCF_STANDARDIZE_VIOLA.out.versions)
 

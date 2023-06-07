@@ -46,12 +46,10 @@ workflow BAM_VARIANT_CALLING_MANTA {
 
     MANTA_CONVERTINVERSION.out.vcf
         .join(MANTA_CONVERTINVERSION.out.tbi, failOnDuplicate:true, failOnMismatch:true)
-        .map(
-            { meta, vcf, tbi ->
-                new_meta = meta + [caller:"manta"]
-                [ new_meta, vcf, tbi ]
-            }
-        )
+        .map{ meta, vcf, tbi ->
+            new_meta = meta + [caller:"manta"]
+            [ new_meta, vcf, tbi ]
+        }
         .dump(tag: 'manta_vcfs', pretty: true)
         .set { ch_manta_vcfs }
 

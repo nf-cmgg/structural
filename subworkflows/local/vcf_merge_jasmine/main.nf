@@ -18,12 +18,14 @@ workflow VCF_MERGE_JASMINE {
 
     ch_versions     = Channel.empty()
 
+    sv_callers = params.callers.tokenize(",").intersect(params.sv_callers)
+
     ch_vcfs
         .map { meta, vcf ->
             new_meta = meta - meta.subMap("caller")
             [ new_meta, vcf ]
         }
-        .groupTuple(size:params.callers.tokenize(",").size())
+        .groupTuple(size:sv_callers.size())
         .map { meta, vcfs ->
             [ meta, vcfs, [], [] ]
         }

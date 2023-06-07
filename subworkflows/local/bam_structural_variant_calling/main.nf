@@ -15,7 +15,7 @@ include { VCF_MERGE_JASMINE                             } from '../vcf_merge_jas
 // Import modules
 include { REHEADER_CALLED_VCFS                          } from '../../../modules/local/bcftools/reheader_called_vcfs/main'
 
-include { TABIX_BGZIPTABIX                              } from '../../../modules/nf-core/tabix/bgziptabix/main'
+include { TABIX_TABIX                                   } from '../../../modules/nf-core/tabix/tabix/main'
 
 workflow BAM_STRUCTURAL_VARIANT_CALLING {
     take:
@@ -26,7 +26,7 @@ workflow BAM_STRUCTURAL_VARIANT_CALLING {
 
     main:
 
-    val_callers     = params.callers.tokenize(",")
+    val_callers     = params.callers.tokenize(",").intersect(params.svCallers)
 
     ch_versions     = Channel.empty()
     ch_reports      = Channel.empty()
@@ -164,12 +164,13 @@ workflow BAM_STRUCTURAL_VARIANT_CALLING {
         )
         ch_versions = ch_versions.mix(REHEADER_CALLED_VCFS.out.versions.first())
         
-        TABIX_BGZIPTABIX(
+        TABIX_TABIX(
             REHEADER_CALLED_VCFS.out.vcf
         )
-        ch_versions = ch_versions.mix(TABIX_BGZIPTABIX.out.versions.first())
+        ch_versions = ch_versions.mix(TABIX_TABIX.out.versions.first())
 
-        TABIX_BGZIPTABIX.out.gz_tbi
+        REHEADER_CALLED_VCFS.out.vcf
+        .join(TABIX_TABIX.out.tbi, failOnDuplicate:true, failOnMismatch:true)
             .map { meta, vcf, tbi ->
                 new_meta = meta - meta.subMap("caller")
                 [ new_meta, vcf, tbi ]

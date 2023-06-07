@@ -20,7 +20,8 @@ workflow VCF_MERGE_JASMINE {
 
     ch_vcfs
         .map { meta, vcf ->
-            [ meta.findAll { !(it.key == "caller")}, vcf ]
+            new_meta = meta - meta.subMap("caller")
+            [ new_meta, vcf ]
         }
         .groupTuple(size:params.callers.tokenize(",").size())
         .map { meta, vcfs ->

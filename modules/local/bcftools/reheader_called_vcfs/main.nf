@@ -13,16 +13,23 @@ process REHEADER_CALLED_VCFS {
     tuple val(meta2), path(fai)
 
     output:
-    tuple val(meta), path("*.vcf")   , emit: vcf
-    path "versions.yml"              , emit: versions
+    tuple val(meta), path("*.${extension}")   , emit: vcf
+    path "versions.yml"                       , emit: versions
 
     when:
     task.ext.when == null || task.ext.when
 
     script:
     def args = task.ext.args ?: ''
+    def args2 = task.ext.args2 ?: ''
     def prefix = task.ext.prefix ?: "${meta.id}"
     def update_sequences = fai ? "-f $fai" : ""
+
+    extension = args2.contains("--output-type b") || args2.contains("-Ob") ? "bcf.gz" :
+                args2.contains("--output-type u") || args2.contains("-Ou") ? "bcf" :
+                args2.contains("--output-type z") || args2.contains("-Oz") ? "vcf.gz" :
+                args2.contains("--output-type v") || args2.contains("-Ov") ? "vcf" :
+                "vcf"
 
     """
     bcftools view -h ${vcf} | grep -E \\#\\#fileformat=VCF\\|\\#\\#fileDate=\\|\\#\\#reference=\\|\\#\\#smoove_counts_stats= \\
@@ -38,8 +45,8 @@ process REHEADER_CALLED_VCFS {
         -h new_header.txt \\
         ${args} \\
         --threads ${task.cpus} \\
-        -o ${prefix}.vcf \\
-        ${vcf}
+        ${vcf} \\
+        | bcftools convert ${args2} --output ${prefix}.${extension}
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
@@ -49,9 +56,16 @@ process REHEADER_CALLED_VCFS {
 
     stub:
     def prefix = task.ext.prefix ?: "${meta.id}"
+    def args2 = task.ext.args2 ?: ''
+
+    extension = args2.contains("--output-type b") || args2.contains("-Ob") ? "bcf.gz" :
+                args2.contains("--output-type u") || args2.contains("-Ou") ? "bcf" :
+                args2.contains("--output-type z") || args2.contains("-Oz") ? "vcf.gz" :
+                args2.contains("--output-type v") || args2.contains("-Ov") ? "vcf" :
+                "vcf"
 
     """
-    touch ${prefix}.vcf
+    touch ${prefix}.${extension}
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":

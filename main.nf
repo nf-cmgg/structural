@@ -33,9 +33,9 @@ params.annotsv_annotations  = WorkflowMain.getGenomeAttribute(params, 'annotsv_a
 
 // Print help message
 if (params.help) {
-   def String command = "nextflow run CenterForMedicalGeneticsGhent/nf-cmgg-structural --input <input csv/tsv/yaml> --outdir <output folder>"
-   log.info paramsHelp(command)
-   exit 0
+    def String command = "nextflow run CenterForMedicalGeneticsGhent/nf-cmgg-structural --input <input csv/tsv/yaml> --outdir <output folder>"
+    log.info paramsHelp(command)
+    exit 0
 }
 
 // Print parameter summary log to screen

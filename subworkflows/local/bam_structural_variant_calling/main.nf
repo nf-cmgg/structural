@@ -15,6 +15,7 @@ include { VCF_MERGE_JASMINE                             } from '../vcf_merge_jas
 // Import modules
 include { REHEADER_CALLED_VCFS                          } from '../../../modules/local/bcftools/reheader_called_vcfs/main'
 
+include { BCFTOOLS_SORT                                 } from '../../../modules/nf-core/bcftools/sort/main'
 include { TABIX_TABIX                                   } from '../../../modules/nf-core/tabix/tabix/main'
 
 workflow BAM_STRUCTURAL_VARIANT_CALLING {
@@ -166,8 +167,13 @@ workflow BAM_STRUCTURAL_VARIANT_CALLING {
         )
         ch_versions = ch_versions.mix(REHEADER_CALLED_VCFS.out.versions.first())
         
-        TABIX_TABIX(
+        BCFTOOLS_SORT(
             REHEADER_CALLED_VCFS.out.vcf
+        )
+        ch_versions = ch_versions.mix(BCFTOOLS_SORT.out.versions.first())
+
+        TABIX_TABIX(
+            BCFTOOLS_SORT.out.vcf
         )
         ch_versions = ch_versions.mix(TABIX_TABIX.out.versions.first())
 

@@ -6,6 +6,7 @@ process VIOLA {
 
     input:
     tuple val(meta), path(vcf)
+    val(caller)
 
     output:
     tuple val(meta), path("*.vcf.gz")  , emit: vcf
@@ -30,7 +31,7 @@ process VIOLA {
 
     viola_standardize.py \\
         new_${unzipped_vcf} \\
-        ${meta.caller} \\
+        ${caller} \\
         ${prefix}.vcf \\
         ${meta.id}
     bgzip ${prefix}.vcf

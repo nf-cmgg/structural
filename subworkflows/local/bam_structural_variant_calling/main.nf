@@ -9,7 +9,6 @@ include { BAM_VARIANT_CALLING_WHAMG                     } from '../bam_variant_c
 include { BAM_VARIANT_CALLING_SMOOVE                    } from '../bam_variant_calling_smoove/main'
 include { BAM_VARIANT_CALLING_SCRAMBLE                  } from '../bam_variant_calling_scramble/main'
 include { BAM_VARIANT_CALLING_GRIDSS                    } from '../bam_variant_calling_gridss/main'
-include { VCF_STANDARDIZE_VIOLA                         } from '../vcf_standardize_viola/main'
 include { VCF_MERGE_JASMINE                             } from '../vcf_merge_jasmine/main'
 
 // Import modules
@@ -131,23 +130,15 @@ workflow BAM_STRUCTURAL_VARIANT_CALLING {
     // Standardize and merge VCFs per sample for all callers
     //
 
-    VCF_STANDARDIZE_VIOLA(
-        ch_called_vcfs.map{ meta, vcf, tbi ->
-            [meta, vcf] 
+    ch_called_vcfs
+        .map { meta, vcf, tbi ->
+            [ meta, vcf ]
         }
-    )
-    ch_versions = ch_versions.mix(VCF_STANDARDIZE_VIOLA.out.versions)
-
-    VCF_STANDARDIZE_VIOLA.out.standardized_vcfs
-        .map { meta, vcf ->
-            new_meta = meta.caller == "gridss" ? meta - meta.subMap("read_length") : meta
-            [ new_meta, vcf ]
-        }
-        .set { ch_viola_output }
+        .set { ch_merge_input }
 
     if(val_callers.size() > 1){
         VCF_MERGE_JASMINE(
-            ch_viola_output,
+            ch_merge_input,
             ch_fasta,
             ch_fai,
         )
@@ -161,7 +152,7 @@ workflow BAM_STRUCTURAL_VARIANT_CALLING {
             .set { ch_new_header }
 
         REHEADER_CALLED_VCFS(
-            ch_viola_output,
+            ch_merge_input,
             ch_new_header,
             ch_fai
         )
@@ -177,8 +168,8 @@ workflow BAM_STRUCTURAL_VARIANT_CALLING {
         )
         ch_versions = ch_versions.mix(TABIX_TABIX.out.versions.first())
 
-        REHEADER_CALLED_VCFS.out.vcf
-        .join(TABIX_TABIX.out.tbi, failOnDuplicate:true, failOnMismatch:true)
+        BCFTOOLS_SORT.out.vcf
+            .join(TABIX_TABIX.out.tbi, failOnDuplicate:true, failOnMismatch:true)
             .map { meta, vcf, tbi ->
                 new_meta = meta - meta.subMap("caller")
                 [ new_meta, vcf, tbi ]

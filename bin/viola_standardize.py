@@ -47,7 +47,9 @@ if __name__ == "__main__":
         # TODO Analyse the amount of variants are inside the intervals 0-20 >20-40 >40-60 >60-80 >80
         genotype = vcf.get_table("formats")[["id", "sample", "format", "value"]].rename(columns={"value": "af"})
         genotypes = genotype[genotype["format"] == "AF"]
-        genotypes.loc[:, "gt"] = np.where(genotypes.loc[:, "af"] >= 0.75, "1/1", np.where(genotypes.loc[:, "af"] <= 0.25, "0/0", "0/1"))
+        genotypes.loc[:, "gt"] = np.where(
+            genotypes.loc[:, "af"] >= 0.75, "1/1", np.where(genotypes.loc[:, "af"] <= 0.25, "0/0", "0/1")
+        )
         genotypes.loc[:, "format"] = "GT"
         formats = pd.merge(vcf.get_table("formats"), genotypes, how="left", on=["format", "id", "sample"])
         formats.loc[formats["gt"].notna(), "value"] = formats["gt"]

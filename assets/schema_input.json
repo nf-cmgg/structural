@@ -11,17 +11,12 @@
         },
         "cram": {
             "type": "string",
-            "pattern": "^\\S+\\.cram$",
+            "pattern": "^\\S+\\.(cr|b)am$",
             "format": "file-path"
         },
         "crai": {
             "type": "string",
-            "pattern": "^\\S+\\.crai$",
-            "format": "file-path"
-        },
-        "small_variants": {
-            "type": "string",
-            "pattern": "^\\S+\\.vcf(\\.gz)?$",
+            "pattern": "^\\S+\\.(crai|bai|csi)$",
             "format": "file-path"
         },
         "small_variants": {

@@ -3,7 +3,6 @@
 //
 
 include { GRIDSS_GRIDSS             } from '../../../modules/nf-core/gridss/gridss/main'
-include { ESTIMATE_READ_LENGTH      } from '../../../modules/local/estimate_read_length/main'
 include { TABIX_TABIX               } from '../../../modules/nf-core/tabix/tabix/main'
 include { VIOLA                     } from '../../../modules/local/viola/main'
 include { BCFTOOLS_SORT             } from '../../../modules/nf-core/bcftools/sort/main'
@@ -19,13 +18,6 @@ workflow BAM_VARIANT_CALLING_GRIDSS {
     main:
 
     ch_versions     = Channel.empty()
-
-    ESTIMATE_READ_LENGTH(
-        ch_crams,
-        ch_fasta,
-        ch_fai
-    )
-    ch_versions = ch_versions.mix(ESTIMATE_READ_LENGTH.out.versions.first())
 
     GRIDSS_GRIDSS(
         ch_crams.map {meta, cram, crai -> [meta, cram, []]},

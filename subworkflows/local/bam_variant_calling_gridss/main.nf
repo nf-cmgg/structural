@@ -46,7 +46,7 @@ workflow BAM_VARIANT_CALLING_GRIDSS {
     BCFTOOLS_SORT.out.vcf
         .join(TABIX_TABIX.out.tbi, failOnMismatch:true, failOnDuplicate:true)
         .map{ meta, vcf, tbi ->
-            new_meta = (meta - meta.subMap("read_length")) + [caller:"gridss"]
+            new_meta = meta + [caller:"gridss"]
             [ new_meta, vcf, tbi ]
         }
         .dump(tag: 'gridss_vcfs', pretty: true)

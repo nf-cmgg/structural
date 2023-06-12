@@ -27,16 +27,8 @@ workflow BAM_VARIANT_CALLING_GRIDSS {
     )
     ch_versions = ch_versions.mix(GRIDSS_GRIDSS.out.versions.first())
 
-    GRIDSS_GRIDSS.out.vcf
-        .join(ESTIMATE_READ_LENGTH.out.read_length, failOnDuplicate:true, failOnMismatch:true)
-        .map { meta, vcf, read_length ->
-            new_meta = meta + [read_length:read_length]
-            [ new_meta, vcf ]
-        }
-        .set { ch_viola_input }
-
     VIOLA(
-        ch_viola_input,
+        GRIDSS_GRIDSS.out.vcf,
         "gridss"
     )
     ch_versions = ch_versions.mix(VIOLA.out.versions.first())

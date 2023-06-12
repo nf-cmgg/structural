@@ -6,6 +6,7 @@ include { GRIDSS_GRIDSS             } from '../../../modules/nf-core/gridss/grid
 include { ESTIMATE_READ_LENGTH      } from '../../../modules/local/estimate_read_length/main'
 include { TABIX_TABIX               } from '../../../modules/nf-core/tabix/tabix/main'
 include { VIOLA                     } from '../../../modules/local/viola/main'
+include { BCFTOOLS_SORT             } from '../../../modules/nf-core/bcftools/sort/main'
 
 
 workflow BAM_VARIANT_CALLING_GRIDSS {
@@ -48,12 +49,17 @@ workflow BAM_VARIANT_CALLING_GRIDSS {
     )
     ch_versions = ch_versions.mix(VIOLA.out.versions.first())
 
-    TABIX_TABIX(
+    BCFTOOLS_SORT(
         VIOLA.out.vcf
+    )
+    ch_versions = ch_versions.mix(BCFTOOLS_SORT.out.versions.first())
+
+    TABIX_TABIX(
+        BCFTOOLS_SORT.out.vcf
     )
     ch_versions = ch_versions.mix(TABIX_TABIX.out.versions.first())
 
-    VIOLA.out.vcf
+    BCFTOOLS_SORT.out.vcf
         .join(TABIX_TABIX.out.tbi, failOnMismatch:true, failOnDuplicate:true)
         .map{ meta, vcf, tbi ->
             new_meta = (meta - meta.subMap("read_length")) + [caller:"gridss"]

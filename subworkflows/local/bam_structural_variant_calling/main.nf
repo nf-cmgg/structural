@@ -136,46 +136,14 @@ workflow BAM_STRUCTURAL_VARIANT_CALLING {
         }
         .set { ch_merge_input }
 
-    if(val_callers.size() > 1){
-        VCF_MERGE_JASMINE(
-            ch_merge_input,
-            ch_fasta,
-            ch_fai,
-        )
-        ch_versions = ch_versions.mix(VCF_MERGE_JASMINE.out.versions)
+    VCF_MERGE_JASMINE(
+        ch_merge_input,
+        ch_fasta,
+        ch_fai,
+    )
+    ch_versions = ch_versions.mix(VCF_MERGE_JASMINE.out.versions)
 
-        VCF_MERGE_JASMINE.out.merged_vcfs.set { ch_merged_vcfs }
-    } else {
-
-        Channel.fromPath("${projectDir}/assets/header.txt")
-            .collect()
-            .set { ch_new_header }
-
-        REHEADER_CALLED_VCFS(
-            ch_merge_input,
-            ch_new_header,
-            ch_fai
-        )
-        ch_versions = ch_versions.mix(REHEADER_CALLED_VCFS.out.versions.first())
-        
-        BCFTOOLS_SORT(
-            REHEADER_CALLED_VCFS.out.vcf
-        )
-        ch_versions = ch_versions.mix(BCFTOOLS_SORT.out.versions.first())
-
-        TABIX_TABIX(
-            BCFTOOLS_SORT.out.vcf
-        )
-        ch_versions = ch_versions.mix(TABIX_TABIX.out.versions.first())
-
-        BCFTOOLS_SORT.out.vcf
-            .join(TABIX_TABIX.out.tbi, failOnDuplicate:true, failOnMismatch:true)
-            .map { meta, vcf, tbi ->
-                new_meta = meta - meta.subMap("caller")
-                [ new_meta, vcf, tbi ]
-            }
-            .set { ch_merged_vcfs }
-    }
+    VCF_MERGE_JASMINE.out.merged_vcfs.set { ch_merged_vcfs }
 
     emit:
     vcfs                = ch_merged_vcfs    // channel: [ val(meta), path(vcf), path(tbi) ]

@@ -9,5 +9,16 @@ Changes in module 'nf-core/gridss/gridss'
  
      conda "bioconda::gridss=2.13.2"
      container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
+@@ -37,8 +37,8 @@
+         --reference ${fasta} \\
+         --threads ${task.cpus} \\
+         ${assembly} \\
+-        --jvmheap ${task.memory.toGiga() - 1}g \\
+-        --otherjvmheap ${task.memory.toGiga() - 1}g \\
++        ${args} \\
++        --jvmheap ${task.memory.toGiga() - 2}g \\
+         ${inputs}
+ 
+     cat <<-END_VERSIONS > versions.yml
 
 ************************************************************

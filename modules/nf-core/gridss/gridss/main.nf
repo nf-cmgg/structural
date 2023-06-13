@@ -37,8 +37,8 @@ process GRIDSS_GRIDSS {
         --reference ${fasta} \\
         --threads ${task.cpus} \\
         ${assembly} \\
-        --jvmheap ${task.memory.toGiga() - 1}g \\
-        --otherjvmheap ${task.memory.toGiga() - 1}g \\
+        ${args} \\
+        --jvmheap ${task.memory.toGiga() - 2}g \\
         ${inputs}
 
     cat <<-END_VERSIONS > versions.yml

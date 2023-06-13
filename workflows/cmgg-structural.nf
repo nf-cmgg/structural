@@ -42,6 +42,12 @@ if ("whamg" in callers) {
     error("Whamg currently isn't functional. This will be fixed in a further build of the pipeline")
 }
 
+def sv_callers_to_use = callers.intersect(params.sv_callers)
+
+if (sv_callers_to_use && params.callers_support > sv_callers_to_use.size()) {
+    error("The --callers_support parameter (${params.callers_support}) is higher than the amount of SV callers in --callers (${sv_callers_to_use.size()}). Please adjust --callers_support to a value lower of equal to the amount of SV callers to use.")
+}
+
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     CONFIG FILES

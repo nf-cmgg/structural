@@ -315,8 +315,8 @@
             "properties": {
                 "callers": {
                     "type": "string",
-                    "default": "manta",
-                    "description": "A comma-seperated list of callers to use. Can be one or more these: smoove|delly|manta"
+                    "default": "manta,smoove,delly,expansionhunter",
+                    "description": "A comma-seperated list of callers to use. Can be one or more these: smoove|delly|manta|gridss|expansionhunter. At the moment Gridss runs very slowly compared to all other tools so it's only advised to use it when it's needed."
                 },
                 "output_callers": {
                     "type": "boolean",

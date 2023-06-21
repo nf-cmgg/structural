@@ -68,7 +68,7 @@ ch_multiqc_custom_methods_description = params.multiqc_methods_description ? fil
 //
 // SUBWORKFLOW: Consisting of a mix of local and nf-core/modules
 //
-include { BAM_STRUCTURAL_VARIANT_CALLING        } from '../subworkflows/local/bam_structural_variant_calling/main'
+include { BAM_SV_CALLING                        } from '../subworkflows/local/bam_sv_calling/main'
 include { VCF_ANNOTATE_VEP_ANNOTSV_VCFANNO      } from '../subworkflows/local/vcf_annotate_vep_annotsv_vcfanno/main'
 include { BAM_REPEAT_ESTIMATION_EXPANSIONHUNTER } from '../subworkflows/local/bam_repeat_estimation_expansionhunter/main'
 include { VCF_CONCAT_BCFTOOLS                   } from '../subworkflows/local/vcf_concat_bcftools/main'
@@ -213,15 +213,15 @@ workflow CMGGSTRUCTURAL {
 
         count_types++
 
-        BAM_STRUCTURAL_VARIANT_CALLING(
+        BAM_SV_CALLING(
             ch_inputs.crams,
             ch_fasta_ready,
             ch_fai_ready,
             ch_bwa_index_ready
         )
 
-        ch_versions = ch_versions.mix(BAM_STRUCTURAL_VARIANT_CALLING.out.versions)
-        ch_reports  = ch_reports.mix(BAM_STRUCTURAL_VARIANT_CALLING.out.reports)
+        ch_versions = ch_versions.mix(BAM_SV_CALLING.out.versions)
+        ch_reports  = ch_reports.mix(BAM_SV_CALLING.out.reports)
 
         //
         // Annotate the variants
@@ -229,7 +229,7 @@ workflow CMGGSTRUCTURAL {
 
         if(params.annotate) {
             VCF_ANNOTATE_VEP_ANNOTSV_VCFANNO(
-                BAM_STRUCTURAL_VARIANT_CALLING.out.vcfs,
+                BAM_SV_CALLING.out.vcfs,
                 ch_inputs.small_variants,
                 ch_fasta_ready,
                 ch_fai_ready,
@@ -246,9 +246,27 @@ workflow CMGGSTRUCTURAL {
             ch_versions = ch_versions.mix(VCF_ANNOTATE_VEP_ANNOTSV_VCFANNO.out.versions)
             ch_outputs  = ch_outputs.mix(VCF_ANNOTATE_VEP_ANNOTSV_VCFANNO.out.vcfs)
         } else {
-            ch_outputs  = ch_outputs.mix(BAM_STRUCTURAL_VARIANT_CALLING.out.vcfs)
+            ch_outputs  = ch_outputs.mix(BAM_SV_CALLING.out.vcfs)
         }
     }
+
+    //
+    // Copy number calling
+    //
+
+    // if(callers.intersect(params.cnv_callers)){
+
+    //     count_types++
+
+    //     BAM_CNV_CALLING(
+    //         ch_inputs.crams
+    //         ch_fasta_ready,
+    //         ch_fai_ready
+    //     )
+    //     ch_versions = ch_versions.mix(BAM_CNV_CALLING.out.versions)
+    //     ch_outputs  = ch_outputs.mix(BAM_CNV_CALLING.out.vcfs)
+
+    // }
 
     //
     // Estimate repeat sizes
@@ -268,6 +286,10 @@ workflow CMGGSTRUCTURAL {
         ch_outputs  = ch_outputs.mix(BAM_REPEAT_ESTIMATION_EXPANSIONHUNTER.out.vcfs)
 
     }
+
+    //
+    // Concatenate the VCF files from different types of analysis
+    //
 
     if(count_types > 1 && params.concat_output) {
 

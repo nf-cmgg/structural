@@ -1,5 +1,5 @@
 //
-// Gather Sample Evidence
+// Call structural variants
 //
 
 // Import subworkflows
@@ -17,7 +17,7 @@ include { REHEADER_CALLED_VCFS                          } from '../../../modules
 include { BCFTOOLS_SORT                                 } from '../../../modules/nf-core/bcftools/sort/main'
 include { TABIX_TABIX                                   } from '../../../modules/nf-core/tabix/tabix/main'
 
-workflow BAM_STRUCTURAL_VARIANT_CALLING {
+workflow BAM_SV_CALLING {
     take:
         ch_crams        // channel: [mandatory] [ meta, cram, crai, bed ] => The aligned CRAMs per sample with the regions they should be called on
         ch_fasta        // channel: [mandatory] [ meta, fasta ] => The fasta reference file

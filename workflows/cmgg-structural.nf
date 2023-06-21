@@ -32,14 +32,10 @@ if (params.input) { ch_input = file(params.input, checkIfExists: true) } else { 
 // Check callers
 def callers = params.callers.tokenize(",")
 
-def availableCallers = params.sv_callers + params.repeats_callers
+def availableCallers = params.sv_callers + params.repeats_callers + params.cnv_callers
 
 for (caller in callers) {
     if(!(caller in availableCallers)) { error("The caller '${caller}' is not supported please specify a comma delimited list with on or more of the following callers: ${availableCallers}".toString()) }
-}
-
-if ("whamg" in callers) {
-    error("Whamg currently isn't functional. This will be fixed in a further build of the pipeline")
 }
 
 def sv_callers_to_use = callers.intersect(params.sv_callers)
@@ -69,6 +65,7 @@ ch_multiqc_custom_methods_description = params.multiqc_methods_description ? fil
 // SUBWORKFLOW: Consisting of a mix of local and nf-core/modules
 //
 include { BAM_SV_CALLING                        } from '../subworkflows/local/bam_sv_calling/main'
+include { BAM_CNV_CALLING                       } from '../subworkflows/local/bam_cnv_calling/main'
 include { VCF_ANNOTATE_VEP_ANNOTSV_VCFANNO      } from '../subworkflows/local/vcf_annotate_vep_annotsv_vcfanno/main'
 include { BAM_REPEAT_ESTIMATION_EXPANSIONHUNTER } from '../subworkflows/local/bam_repeat_estimation_expansionhunter/main'
 include { VCF_CONCAT_BCFTOOLS                   } from '../subworkflows/local/vcf_concat_bcftools/main'
@@ -119,7 +116,8 @@ workflow CMGGSTRUCTURAL {
     ch_annotsv_candidate_genes  = params.annotsv_candidate_genes ?  Channel.fromPath(params.annotsv_candidate_genes).map{[[], it]}.collect() : [[],[]]
     ch_annotsv_gene_transcripts = params.annotsv_gene_transcripts ? Channel.fromPath(params.annotsv_gene_transcripts).map{[[], it]}.collect() : [[],[]]
     ch_vcfanno_lua              = params.vcfanno_lua ?              Channel.fromPath(params.vcfanno_lua).collect() : []
-    ch_catalog                  = params.expansionhunter_catalog ?  Channel.fromPath(params.expansionhunter_catalog).map{[[id:'catalog'], it]}.collect() : [[],[]]    
+    ch_catalog                  = params.expansionhunter_catalog ?  Channel.fromPath(params.expansionhunter_catalog).map{[[id:'catalog'], it]}.collect() : [[id:'catalog'],[file("https://github.com/Illumina/ExpansionHunter/raw/master/variant_catalog/grch38/variant_catalog.json", checkIfExists:true)]]    
+    ch_qdnaseq_reference        = params.qdnaseq_reference ?        Channel.fromPath(params.qdnaseq_reference).map{[[id:'qdnaseq'], it]}.collect() : [[],[]]    
 
     val_vcfanno_resources       = params.vcfanno_resources ?        params.vcfanno_resources.split(",").collect{file(it, checkIfExists:true)}.flatten() : []
 
@@ -254,19 +252,20 @@ workflow CMGGSTRUCTURAL {
     // Copy number calling
     //
 
-    // if(callers.intersect(params.cnv_callers)){
+    if(callers.intersect(params.cnv_callers)){
 
-    //     count_types++
+        count_types++
 
-    //     BAM_CNV_CALLING(
-    //         ch_inputs.crams
-    //         ch_fasta_ready,
-    //         ch_fai_ready
-    //     )
-    //     ch_versions = ch_versions.mix(BAM_CNV_CALLING.out.versions)
-    //     ch_outputs  = ch_outputs.mix(BAM_CNV_CALLING.out.vcfs)
+        BAM_CNV_CALLING(
+            ch_inputs.crams,
+            ch_fasta_ready,
+            ch_fai_ready,
+            ch_qdnaseq_reference
+        )
+        ch_versions = ch_versions.mix(BAM_CNV_CALLING.out.versions)
+        ch_outputs  = ch_outputs.mix(BAM_CNV_CALLING.out.vcfs)
 
-    // }
+    }
 
     //
     // Estimate repeat sizes

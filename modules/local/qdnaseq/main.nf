@@ -2,10 +2,7 @@ process QDNASEQ {
     tag "$meta.id"
     label 'process_low'
 
-    conda "bioconda::bioconductor-qdnaseq==1.34.0"
-    container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
-        'https://depot.galaxyproject.org/singularity/bioconductor-qdnaseq:1.34.0--r42hdfd78af_0':
-        'biocontainers/bioconductor-qdnaseq:1.34.0--r42hdfd78af_0' }"
+    container "quay.io/cmgg/qdnaseq:0.0.4"
 
     input:
     tuple val(meta), path(bam), path(bai)
@@ -22,23 +19,7 @@ process QDNASEQ {
     task.ext.when == null || task.ext.when
 
     script:
-    def prefix = task.ext.prefix ?: "${meta.id}"
-    def VERSION = "1.34.0"
-
-    """
-    # TODO fix the taxonomy ID
-    qDNAseq.R \\
-        ${bam} \\
-        ${prefix} \\
-        123456 \\ 
-        ${annotations}
-
-
-    cat <<-END_VERSIONS > versions.yml
-    "${task.process}":
-        qDNAseq: ${VERSION}
-    END_VERSIONS
-    """
+    template "qDNAseq.R"
 
     stub:
     def prefix = task.ext.prefix ?: "${meta.id}"

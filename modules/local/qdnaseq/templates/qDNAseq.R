@@ -1,23 +1,22 @@
 #!/usr/bin/env Rscript
-#Arguments
-args<-commandArgs(TRUE)
-bamfile<-args[1]
-name <- args[2]
-tax_id <- args[3]
-annotations<-args[4]
+
+bamfile<-"$bam"
+name <- "${task.ext.prefix ?: meta.id}"
+tax_id <- 12345 #TODO fix this 
+annotations<-"$annotations"
 
 #Functions
-log2offset <- function(offset=.Machine$double.xmin) {
+log2offset <- function(offset=.Machine\$double.xmin) {
     # Get offset?
     if (missing(offset)) {
-        offset <- getOption("QDNAseq::log2offset", .Machine$double.xmin)
+        offset <- getOption("QDNAseq::log2offset", .Machine\$double.xmin)
         offset <- as.double(offset);
         stopifnot(is.finite(offset));
         return(offset);
     }
 
     # Reset offset?
-    if (is.null(offset)) offset <- eval(formals(log2offset)$offset);
+    if (is.null(offset)) offset <- eval(formals(log2offset)\$offset);
 
     # Set offset
     stopifnot(length(offset) == 1L);
@@ -68,7 +67,7 @@ library('lsr')
 #Calculations
 
 #QDNAseq
-bins <- readRDS(file=annotations)
+attach(annotations, name="bins")
 readCounts <- binReadCounts(bins, bamfile, minMapq=40)
 if(grepl('noresidual',annotations,ignore.case=TRUE) | grepl('noblacklist',annotations,ignore.case=TRUE)){
   if( grepl('noresidual',annotations,ignore.case=TRUE) && !grepl('noblacklist',annotations,ignore.case=TRUE)){
@@ -108,17 +107,23 @@ write.table(segment, paste(name,"_segments.txt", sep = ""), sep="\t",row.names =
 #calculate avg/chr
 cghdata <- read.table(paste(name,"cna", sep="."), header=TRUE)
 colnames(cghdata)[5]<-"value"
-averages <- tapply(cghdata$value, cghdata$chromosome, mean)
-medians <- tapply(cghdata$value, cghdata$chromosome, median)
+averages <- tapply(cghdata\$value, cghdata\$chromosome, mean)
+medians <- tapply(cghdata\$value, cghdata\$chromosome, median)
 names(averages) <- paste("chr",names(averages),sep="")
 names(medians) <- paste("median_chr",names(medians),sep="")
 
 #calculate stdev
-std <- sd(cghdata[cghdata$chromosome != c("X","Y"),]$value)
-mad <- mad(cghdata[cghdata$chromosome != c("X","Y"),]$value)
-aad <- aad(cghdata[cghdata$chromosome != c("X","Y"),]$value)
+std <- sd(cghdata[cghdata\$chromosome != c("X","Y"),]\$value)
+mad <- mad(cghdata[cghdata\$chromosome != c("X","Y"),]\$value)
+aad <- aad(cghdata[cghdata\$chromosome != c("X","Y"),]\$value)
 write.table(averages, file="statistics.out", col.names = FALSE, row.names=names(averages), dec = "," )
 write.table(medians, file="statistics.out", append = TRUE, col.names = FALSE, row.names=names(medians), dec = "," )
 write.table(std, file="statistics.out", append = TRUE, col.names = FALSE, row.names=c("stdev"), dec = ",")
 write.table(mad, file="statistics.out", append = TRUE, col.names = FALSE, row.names=c("mad"), dec = ",")
 write.table(aad, file="statistics.out", append = TRUE, col.names = FALSE, row.names=c("aad"), dec = ",")
+
+
+sink("versions.yml")
+cat("\\"task.process\\":\n")
+cat("    bioconductor-qdnaseq: 1.34.0\n")
+cat("    r-lsr: 0.5.2\n")

@@ -68,6 +68,7 @@ ch_multiqc_custom_methods_description = params.multiqc_methods_description ? fil
 //
 // SUBWORKFLOW: Consisting of a mix of local and nf-core/modules
 //
+include { BAM_PREPARE_SAMTOOLS                  } from '../subworkflows/local/bam_prepare_samtools/main'
 include { BAM_SV_CALLING                        } from '../subworkflows/local/bam_sv_calling/main'
 include { BAM_CNV_CALLING                       } from '../subworkflows/local/bam_cnv_calling/main'
 include { VCF_ANNOTATE_VEP_ANNOTSV_VCFANNO      } from '../subworkflows/local/vcf_annotate_vep_annotsv_vcfanno/main'
@@ -208,6 +209,17 @@ workflow CMGGSTRUCTURAL {
         .set { ch_inputs }
 
     //
+    // Prepare the inputs
+    //
+
+    BAM_PREPARE_SAMTOOLS(
+        ch_inputs.crams,
+        ch_fasta_ready,
+        ch_fai_ready
+    )
+    ch_versions = ch_versions.mix(BAM_PREPARE_SAMTOOLS.out.versions)
+
+    //
     // Call the variants
     //
 
@@ -216,7 +228,7 @@ workflow CMGGSTRUCTURAL {
         count_types++
 
         BAM_SV_CALLING(
-            ch_inputs.crams,
+            BAM_PREPARE_SAMTOOLS.out.crams,
             ch_fasta_ready,
             ch_fai_ready,
             ch_bwa_index_ready
@@ -261,7 +273,7 @@ workflow CMGGSTRUCTURAL {
         count_types++
 
         BAM_CNV_CALLING(
-            ch_inputs.crams,
+            BAM_PREPARE_SAMTOOLS.out.crams,
             ch_fasta_ready,
             ch_fai_ready,
             ch_qdnaseq_reference
@@ -280,7 +292,7 @@ workflow CMGGSTRUCTURAL {
         count_types++
 
         BAM_REPEAT_ESTIMATION_EXPANSIONHUNTER(
-            ch_inputs.crams,
+            BAM_PREPARE_SAMTOOLS.out.crams,
             ch_fasta_ready,
             ch_fai_ready,
             ch_catalog

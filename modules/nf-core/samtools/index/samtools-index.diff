@@ -1,0 +1,19 @@
+Changes in module 'nf-core/samtools/index'
+--- modules/nf-core/samtools/index/main.nf
++++ modules/nf-core/samtools/index/main.nf
+@@ -11,10 +11,9 @@
+     tuple val(meta), path(input)
+ 
+     output:
+-    tuple val(meta), path("*.bai") , optional:true, emit: bai
+-    tuple val(meta), path("*.csi") , optional:true, emit: csi
+-    tuple val(meta), path("*.crai"), optional:true, emit: crai
+-    path  "versions.yml"           , emit: versions
++    tuple val(meta), path("*.{bai,crai}") , optional:true, emit: index
++    tuple val(meta), path("*.csi")        , optional:true, emit: csi
++    path  "versions.yml"                  , emit: versions
+ 
+     when:
+     task.ext.when == null || task.ext.when
+
+************************************************************

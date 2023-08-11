@@ -149,6 +149,16 @@
                         "branch": "master",
                         "git_sha": "603ecbd9f45300c9788f197d2a15a005685b4220",
                         "installed_by": ["modules"]
+                    },
+                    "wisecondorx/convert": {
+                        "branch": "master",
+                        "git_sha": "911696ea0b62df80e900ef244d7867d177971f73",
+                        "installed_by": ["modules"]
+                    },
+                    "wisecondorx/predict": {
+                        "branch": "master",
+                        "git_sha": "1ee4e6cb8f49fcb4a1982cb3888b6f7cfa9f7a99",
+                        "installed_by": ["modules"]
                     }
                 }
             }

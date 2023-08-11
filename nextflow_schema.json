@@ -83,7 +83,21 @@
                 },
                 "qdnaseq_reference": {
                     "type": "string",
-                    "default": null
+                    "default": null,
+                    "pattern": "^\\S+\\.rda$",
+                    "description": "Path to the qdnaseq reference file"
+                },
+                "wisecondorx_reference": {
+                    "type": "string",
+                    "default": null,
+                    "pattern": "^\\S+\\.npz$",
+                    "description": "Path to the wisecondorx reference file"
+                },
+                "blacklist": {
+                    "type": "string",
+                    "default": null,
+                    "pattern": "^\\S+\\.bed$",
+                    "description": "Path to the blacklist file"
                 },
                 "igenomes_base": {
                     "type": "string",

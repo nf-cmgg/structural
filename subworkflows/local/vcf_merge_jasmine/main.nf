@@ -18,7 +18,7 @@ workflow VCF_MERGE_JASMINE {
 
     ch_versions     = Channel.empty()
 
-    sv_callers = params.callers.tokenize(",").intersect(params.sv_callers)
+    sv_callers = params.callers.tokenize(",").intersect(GlobalVariables.svCallers)
 
     ch_vcfs
         .map { meta, vcf ->

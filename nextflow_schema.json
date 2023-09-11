@@ -485,29 +485,6 @@
                     "description": "A comma-delimited list of files referenced in the VCFanno config. This can contain glob patterns as well. Place all filenames together between double qoutes to not cause any irregularities"
                 }
             }
-        },
-        "hidden_pipeline_parameters": {
-            "title": "Hidden pipeline parameters",
-            "type": "object",
-            "description": "A group of hidden pipeline parameters which shouldn't be changed",
-            "default": "",
-            "properties": {
-                "sv_callers": {
-                    "type": "array",
-                    "hidden": true,
-                    "description": "All possible SV callers"
-                },
-                "repeats_callers": {
-                    "type": "array",
-                    "hidden": true,
-                    "description": "All possible repeats callers"
-                },
-                "cnv_callers": {
-                    "type": "array",
-                    "hidden": true,
-                    "description": "All possible CNV callers"
-                }
-            }
         }
     },
     "allOf": [
@@ -540,9 +517,6 @@
         },
         {
             "$ref": "#/definitions/vcfanno_options"
-        },
-        {
-            "$ref": "#/definitions/hidden_pipeline_parameters"
         }
     ]
 }

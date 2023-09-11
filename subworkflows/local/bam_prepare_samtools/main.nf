@@ -14,8 +14,6 @@ workflow BAM_PREPARE_SAMTOOLS {
 
     main:
 
-    val_callers     = params.callers.tokenize(",").intersect(params.cnv_callers)
-
     ch_versions     = Channel.empty()
 
     ch_crams

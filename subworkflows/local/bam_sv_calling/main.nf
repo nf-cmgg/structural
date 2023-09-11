@@ -26,7 +26,7 @@ workflow BAM_SV_CALLING {
 
     main:
 
-    val_callers     = params.callers.tokenize(",").intersect(params.sv_callers)
+    val_callers     = params.callers.tokenize(",").intersect(GlobalVariables.svCallers)
 
     ch_versions     = Channel.empty()
     ch_reports      = Channel.empty()

@@ -32,13 +32,11 @@ if (params.input) { ch_input = file(params.input, checkIfExists: true) } else { 
 // Check callers
 def callers = params.callers.tokenize(",")
 
-def availableCallers = params.sv_callers + params.repeats_callers + params.cnv_callers
-
 for (caller in callers) {
-    if(!(caller in availableCallers)) { error("The caller '${caller}' is not supported please specify a comma delimited list with on or more of the following callers: ${availableCallers}".toString()) }
+    if(!(caller in GlobalVariables.allCallers)) { error("The caller '${caller}' is not supported please specify a comma delimited list with on or more of the following callers: ${GlobalVariables.allCallers}".toString()) }
 }
 
-def sv_callers_to_use = callers.intersect(params.sv_callers)
+def sv_callers_to_use = callers.intersect(GlobalVariables.svCallers)
 
 if (sv_callers_to_use && params.callers_support > sv_callers_to_use.size()) {
     error("The --callers_support parameter (${params.callers_support}) is higher than the amount of SV callers in --callers (${sv_callers_to_use.size()}). Please adjust --callers_support to a value lower of equal to the amount of SV callers to use.")
@@ -176,7 +174,7 @@ workflow CMGGSTRUCTURAL {
         ch_bwa_index_ready = ch_bwa_index
     }
 
-    if(params.annotate && !ch_annotsv_annotations && callers.intersect(params.sv_callers)) {
+    if(params.annotate && !ch_annotsv_annotations && callers.intersect(GlobalVariables.svCallers)) {
         ANNOTSV_INSTALLANNOTATIONS()
         ch_versions = ch_versions.mix(ANNOTSV_INSTALLANNOTATIONS.out.versions)
 
@@ -185,7 +183,7 @@ workflow CMGGSTRUCTURAL {
             .collect()
             .set { ch_annotsv_annotations_ready }
     } 
-    else if(params.annotate && callers.intersect(params.sv_callers) && params.annotsv_annotations.endsWith(".tar.gz")) {
+    else if(params.annotate && callers.intersect(GlobalVariables.svCallers) && params.annotsv_annotations.endsWith(".tar.gz")) {
         UNTAR_ANNOTSV(
             ch_annotsv_annotations
         )
@@ -225,7 +223,7 @@ workflow CMGGSTRUCTURAL {
     // Call the variants
     //
 
-    if(callers.intersect(params.sv_callers)){
+    if(callers.intersect(GlobalVariables.svCallers)){
 
         count_types++
 
@@ -270,7 +268,7 @@ workflow CMGGSTRUCTURAL {
     // Copy number calling
     //
 
-    if(callers.intersect(params.cnv_callers)){
+    if(callers.intersect(GlobalVariables.cnvCallers)){
 
         count_types++
 
@@ -289,7 +287,7 @@ workflow CMGGSTRUCTURAL {
     // Estimate repeat sizes
     //
 
-    if(callers.intersect(params.repeats_callers)){
+    if(callers.intersect(GlobalVariables.repeatsCallers)){
 
         count_types++
 

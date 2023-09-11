@@ -17,13 +17,13 @@ workflow BAM_CNV_CALLING {
 
     main:
 
-    val_callers     = params.callers.tokenize(",").intersect(params.cnv_callers)
+    val_callers     = params.callers.tokenize(",").intersect(GlobalVariables.cnvCallers)
 
     ch_versions     = Channel.empty()
     ch_reports      = Channel.empty()
     ch_called_vcfs  = Channel.empty()
 
-    if("qndaseq" in val_callers) {
+    if("qdnaseq" in val_callers) {
         BAM_VARIANT_CALLING_QDNASEQ(
             ch_crams,
             ch_fasta,

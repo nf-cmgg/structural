@@ -8,7 +8,7 @@ include { fromSamplesheet; paramsSummaryMap } from 'plugin/nf-validation'
 
 def summary_params = paramsSummaryMap(workflow)
 
-// Check callers
+// Check callers (see lib/GlobalVariables.groovy for the list of supported callers)
 def callers = params.callers.tokenize(",")
 
 for (caller in callers) {
@@ -248,8 +248,6 @@ workflow CMGGSTRUCTURAL {
     //
 
     if(callers.intersect(GlobalVariables.cnvCallers)){
-
-        count_types++
 
         BAM_CNV_CALLING(
             BAM_PREPARE_SAMTOOLS.out.crams,

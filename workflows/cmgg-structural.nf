@@ -249,6 +249,9 @@ workflow CMGGSTRUCTURAL {
 
     if(callers.intersect(GlobalVariables.cnvCallers)){
 
+        // Uncomment when CNV VCF files can be made
+        // count_types++
+
         BAM_CNV_CALLING(
             BAM_PREPARE_SAMTOOLS.out.crams,
             ch_fasta_ready,

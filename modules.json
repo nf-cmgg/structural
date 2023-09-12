@@ -33,7 +33,7 @@
                     },
                     "bwa/index": {
                         "branch": "master",
-                        "git_sha": "911696ea0b62df80e900ef244d7867d177971f73",
+                        "git_sha": "bfed129da5134b4439b1821c917972570d44d39c",
                         "installed_by": ["modules"]
                     },
                     "custom/dumpsoftwareversions": {

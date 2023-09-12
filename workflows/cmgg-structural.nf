@@ -22,7 +22,11 @@ if (sv_callers_to_use && params.callers_support > sv_callers_to_use.size()) {
 }
 
 if ("qdnaseq" in callers && !params.qdnaseq_reference) {
-    error("Please give the qDNAseq reference using --qdnaseq_reference")
+    error("Please give the QDNAseq reference using --qdnaseq_reference")
+}
+
+if ("wisecondorx" in callers && !params.wisecondorx_reference) {
+    error("Please give the WisecondorX reference using --wisecondorx_reference")
 }
 
 /*
@@ -84,17 +88,14 @@ workflow CMGGSTRUCTURAL {
     ch_versions = Channel.empty()
     ch_reports  = Channel.empty()
     ch_outputs  = Channel.empty()
-    count_types = 0
+    count_types = 0 // The amount of different variant types that can be concatenated
 
     //
     // Create input channels from parameters
     //
 
-    ch_fasta_ready              = Channel.fromPath(params.fasta).map{[[id:'fasta'], it]}.collect()
-    ch_fai                      = params.fai ?                      Channel.fromPath(params.fai).map{[[id:"fai"],it]}.collect() : null
-    ch_bwa_index                = params.bwa ?                      Channel.fromPath(params.bwa).map{[[id:"bwa"],it]}.collect() : null
+    ch_fasta                    = Channel.fromPath(params.fasta).map{[[id:'fasta'], it]}.collect()
     ch_vep_cache                = params.vep_cache ?                Channel.fromPath(params.vep_cache).map{[[id:"vep_cache"],it]}.collect() : []
-    ch_annotsv_annotations      = params.annotsv_annotations ?      Channel.fromPath(params.annotsv_annotations).map{[[id:"annotsv_annotations"], it]}.collect() :  null
     ch_annotsv_candidate_genes  = params.annotsv_candidate_genes ?  Channel.fromPath(params.annotsv_candidate_genes).map{[[], it]}.collect() : [[],[]]
     ch_annotsv_gene_transcripts = params.annotsv_gene_transcripts ? Channel.fromPath(params.annotsv_gene_transcripts).map{[[], it]}.collect() : [[],[]]
     ch_vcfanno_lua              = params.vcfanno_lua ?              Channel.fromPath(params.vcfanno_lua).collect() : []
@@ -119,61 +120,71 @@ workflow CMGGSTRUCTURAL {
     // Create optional inputs
     //
 
-    if(!ch_fai){
+    if(!params.fai){
         SAMTOOLS_FAIDX(
-            ch_fasta_ready
+            ch_fasta
         )
 
-        ch_versions  = ch_versions.mix(SAMTOOLS_FAIDX.out.versions)
-        ch_fai_ready = SAMTOOLS_FAIDX.out.fai.map{[[id:'fai'], it]}.collect()
+        ch_versions = ch_versions.mix(SAMTOOLS_FAIDX.out.versions)
+        ch_fai      = SAMTOOLS_FAIDX.out.fai.map{[[id:'fai'], it]}.collect()
     }
     else {
-        ch_fai_ready = ch_fai
+        ch_fai = Channel.fromPath(params.fai).map{[[id:"fai"],it]}.collect()
     }
 
-    if(!ch_bwa_index && "gridss" in callers){
+    if(!params.bwa && "gridss" in callers){
         BWA_INDEX(
-            ch_fasta_ready
+            ch_fasta
         )
 
-        ch_versions        = ch_versions.mix(BWA_INDEX.out.versions)
-        ch_bwa_index_ready = BWA_INDEX.out.index.map{[[id:'bwa'], it[1]]}.collect()
+        ch_versions  = ch_versions.mix(BWA_INDEX.out.versions)
+        ch_bwa_index = BWA_INDEX.out.index.map{[[id:'bwa'], it[1]]}.collect()
     }
-    else if(ch_bwa_index && params.bwa.endsWith(".tar.gz") && "gridss" in callers) {
-        UNTAR_BWA(
-            ch_bwa_index
-        )
-        ch_versions = ch_versions.mix(UNTAR_BWA.out.versions)
+    else if(params.bwa && "gridss" in callers) {
+        ch_bwa_index_input = Channel.fromPath(params.bwa).map{[[id:"bwa"],it]}.collect()
+        if(params.bwa.endsWith(".tar.gz")) {
+            UNTAR_BWA(
+                ch_bwa_index_input
+            )
+            ch_versions = ch_versions.mix(UNTAR_BWA.out.versions)
 
-        UNTAR_BWA.out.untar
-            .collect()
-            .set { ch_bwa_index_ready }
+            UNTAR_BWA.out.untar
+                .collect()
+                .set { ch_bwa_index }
+        } else {
+            ch_bwa_index = ch_bwa_index_input
+        }
     }
     else {
-        ch_bwa_index_ready = ch_bwa_index
+        ch_bwa_index = Channel.empty()
     }
 
-    if(params.annotate && !ch_annotsv_annotations && callers.intersect(GlobalVariables.svCallers)) {
+    if(params.annotate && !params.annotsv_annotations && callers.intersect(GlobalVariables.svCallers)) {
         ANNOTSV_INSTALLANNOTATIONS()
         ch_versions = ch_versions.mix(ANNOTSV_INSTALLANNOTATIONS.out.versions)
 
         ANNOTSV_INSTALLANNOTATIONS.out.annotations
-            .map { [[id:"annotations"], it] }
+            .map { [[id:"annotsv"], it] }
             .collect()
-            .set { ch_annotsv_annotations_ready }
+            .set { ch_annotsv_annotations }
     } 
-    else if(params.annotate && callers.intersect(GlobalVariables.svCallers) && params.annotsv_annotations.endsWith(".tar.gz")) {
-        UNTAR_ANNOTSV(
-            ch_annotsv_annotations
-        )
-        ch_versions = ch_versions.mix(UNTAR_ANNOTSV.out.versions)
+    else if(params.annotate && callers.intersect(GlobalVariables.svCallers)) {
+        ch_annotsv_annotations_input = Channel.fromPath(params.annotsv_annotations).map{[[id:"annotsv_annotations"], it]}.collect()
+        if(params.annotsv_annotations.endsWith(".tar.gz")){
+            UNTAR_ANNOTSV(
+                ch_annotsv_annotations
+            )
+            ch_versions = ch_versions.mix(UNTAR_ANNOTSV.out.versions)
 
-        UNTAR_ANNOTSV.out.untar
-            .collect()
-            .set { ch_annotsv_annotations_ready }
+            UNTAR_ANNOTSV.out.untar
+                .collect()
+                .set { ch_annotsv_annotations }
+        } else {
+            ch_annotsv_annotations = Channel.fromPath(params.annotsv_annotations).map{[[id:"annotsv_annotations"], it]}.collect()
+        }        
     }
     else {
-        ch_annotsv_annotations_ready = ch_annotsv_annotations
+        ch_annotsv_annotations = Channel.empty()
     }
 
     //
@@ -193,8 +204,8 @@ workflow CMGGSTRUCTURAL {
 
     BAM_PREPARE_SAMTOOLS(
         ch_inputs.crams,
-        ch_fasta_ready,
-        ch_fai_ready
+        ch_fasta,
+        ch_fai
     )
     ch_versions = ch_versions.mix(BAM_PREPARE_SAMTOOLS.out.versions)
 
@@ -208,9 +219,9 @@ workflow CMGGSTRUCTURAL {
 
         BAM_SV_CALLING(
             BAM_PREPARE_SAMTOOLS.out.crams,
-            ch_fasta_ready,
-            ch_fai_ready,
-            ch_bwa_index_ready
+            ch_fasta,
+            ch_fai,
+            ch_bwa_index
         )
 
         ch_versions = ch_versions.mix(BAM_SV_CALLING.out.versions)
@@ -224,9 +235,9 @@ workflow CMGGSTRUCTURAL {
             VCF_ANNOTATE_VEP_ANNOTSV_VCFANNO(
                 BAM_SV_CALLING.out.vcfs,
                 ch_inputs.small_variants,
-                ch_fasta_ready,
-                ch_fai_ready,
-                ch_annotsv_annotations_ready,
+                ch_fasta,
+                ch_fai,
+                ch_annotsv_annotations,
                 ch_annotsv_candidate_genes,
                 ch_annotsv_gene_transcripts,
                 ch_vep_cache,
@@ -254,8 +265,8 @@ workflow CMGGSTRUCTURAL {
 
         BAM_CNV_CALLING(
             BAM_PREPARE_SAMTOOLS.out.crams,
-            ch_fasta_ready,
-            ch_fai_ready,
+            ch_fasta,
+            ch_fai,
             ch_qdnaseq_reference,
             ch_wisecondorx_reference,
             ch_blacklist
@@ -273,8 +284,8 @@ workflow CMGGSTRUCTURAL {
 
         BAM_REPEAT_ESTIMATION_EXPANSIONHUNTER(
             BAM_PREPARE_SAMTOOLS.out.crams,
-            ch_fasta_ready,
-            ch_fai_ready,
+            ch_fasta,
+            ch_fai,
             ch_catalog
         )
         ch_versions = ch_versions.mix(BAM_REPEAT_ESTIMATION_EXPANSIONHUNTER.out.versions)

@@ -8,27 +8,6 @@ include { fromSamplesheet; paramsSummaryMap } from 'plugin/nf-validation'
 
 def summary_params = paramsSummaryMap(workflow)
 
-// Check input path parameters to see if they exist
-def checkPathParamList = [
-    params.input,
-    params.multiqc_config,
-    params.fasta,
-    params.fai,
-    params.vep_cache,
-    params.phenotypes,
-    params.phenotypes_tbi,
-    params.annotsv_annotations,
-    params.phenotypes_tbi,
-    params.annotsv_annotations,
-    params.vcfanno_toml,
-    params.vcfanno_lua,
-    params.expansionhunter_catalog
-]
-for (param in checkPathParamList) { if (param) { file(param, checkIfExists: true) } }
-
-// Check mandatory parameters
-if (params.input) { ch_input = file(params.input, checkIfExists: true) } else { exit 1, 'Input samplesheet not specified!' }
-
 // Check callers
 def callers = params.callers.tokenize(",")
 

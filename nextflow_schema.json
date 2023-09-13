@@ -458,7 +458,7 @@
                     "type": "string",
                     "description": "The full path to the AnnotSV annotations folder. This can be a tarzipped folder. When --annotate is set to true and this isn't given, the annotations will be downloaded automatically (this is not recommended though)",
                     "exists": true,
-                    "format": "directory-path"
+                    "format": "path"
                 },
                 "annotsv_candidate_genes": {
                     "type": "string",

@@ -28,7 +28,7 @@
                     },
                     "bcftools/sort": {
                         "branch": "master",
-                        "git_sha": "911696ea0b62df80e900ef244d7867d177971f73",
+                        "git_sha": "d6d112a1af2ee8c97fc1932df008183341e7d8fe",
                         "installed_by": ["modules"]
                     },
                     "bwa/index": {
@@ -38,7 +38,7 @@
                     },
                     "custom/dumpsoftwareversions": {
                         "branch": "master",
-                        "git_sha": "911696ea0b62df80e900ef244d7867d177971f73",
+                        "git_sha": "05c280924b6c768d484c7c443dad5e605c4ff4b4",
                         "installed_by": ["modules"]
                     },
                     "delly/call": {
@@ -47,9 +47,14 @@
                         "installed_by": ["modules"],
                         "patch": "modules/nf-core/delly/call/delly-call.diff"
                     },
+                    "ensemblvep/download": {
+                        "branch": "master",
+                        "git_sha": "9f9e1fc31cb35876922070c0e601ae05abae5cae",
+                        "installed_by": ["modules"]
+                    },
                     "ensemblvep/vep": {
                         "branch": "master",
-                        "git_sha": "911696ea0b62df80e900ef244d7867d177971f73",
+                        "git_sha": "9f9e1fc31cb35876922070c0e601ae05abae5cae",
                         "installed_by": ["modules"]
                     },
                     "expansionhunter": {
@@ -80,7 +85,7 @@
                     },
                     "multiqc": {
                         "branch": "master",
-                        "git_sha": "911696ea0b62df80e900ef244d7867d177971f73",
+                        "git_sha": "a6e11ac655e744f7ebc724be669dd568ffdc0e80",
                         "installed_by": ["modules"]
                     },
                     "samtools/convert": {
@@ -127,7 +132,7 @@
                     },
                     "tabix/bgziptabix": {
                         "branch": "master",
-                        "git_sha": "01b3b2509d76625b6d6cd613b349fb4777712a15",
+                        "git_sha": "591b71642820933dcb3c954c934b397bd00d8e5e",
                         "installed_by": ["modules"]
                     },
                     "tabix/tabix": {
@@ -137,7 +142,7 @@
                     },
                     "untar": {
                         "branch": "master",
-                        "git_sha": "5c460c5a4736974abde2843294f35307ee2b0e5e",
+                        "git_sha": "d0b4fc03af52a1cc8c6fb4493b921b57352b1dd8",
                         "installed_by": ["modules"]
                     },
                     "vcfanno": {

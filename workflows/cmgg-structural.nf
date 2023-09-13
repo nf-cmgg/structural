@@ -68,6 +68,7 @@ include { VCF_CONCAT_BCFTOOLS                   } from '../subworkflows/local/vc
 include { TABIX_BGZIPTABIX                  } from '../modules/nf-core/tabix/bgziptabix/main'
 include { SAMTOOLS_FAIDX                    } from '../modules/nf-core/samtools/faidx/main'
 include { BWA_INDEX                         } from '../modules/nf-core/bwa/index/main'
+include { ENSEMBLVEP_DOWNLOAD               } from '../modules/nf-core/ensemblvep/download/main'
 include { ANNOTSV_INSTALLANNOTATIONS        } from '../modules/nf-core/annotsv/installannotations/main'
 include { UNTAR as UNTAR_ANNOTSV            } from '../modules/nf-core/untar/main'
 include { UNTAR as UNTAR_BWA                } from '../modules/nf-core/untar/main'
@@ -95,7 +96,6 @@ workflow CMGGSTRUCTURAL {
     //
 
     ch_fasta                    = Channel.fromPath(params.fasta).map{[[id:'fasta'], it]}.collect()
-    ch_vep_cache                = params.vep_cache ?                Channel.fromPath(params.vep_cache).map{[[id:"vep_cache"],it]}.collect() : []
     ch_annotsv_candidate_genes  = params.annotsv_candidate_genes ?  Channel.fromPath(params.annotsv_candidate_genes).map{[[], it]}.collect() : [[],[]]
     ch_annotsv_gene_transcripts = params.annotsv_gene_transcripts ? Channel.fromPath(params.annotsv_gene_transcripts).map{[[], it]}.collect() : [[],[]]
     ch_vcfanno_lua              = params.vcfanno_lua ?              Channel.fromPath(params.vcfanno_lua).collect() : []
@@ -185,6 +185,21 @@ workflow CMGGSTRUCTURAL {
     }
     else {
         ch_annotsv_annotations = Channel.empty()
+    }
+
+    if(!params.vep_cache && params.annotate && callers.intersect(GlobalVariables.svCallers)) {
+        ENSEMBLVEP_DOWNLOAD(
+            Channel.of([[id:"vep_cache"], params.vep_assembly, params.species, params.vep_cache_version]).collect()
+        )
+        ch_versions = ch_versions.mix(ENSEMBLVEP_DOWNLOAD.out.versions)
+
+        ch_vep_cache = ENSEMBLVEP_DOWNLOAD.out.cache.map{it[1]}.collect()
+    }
+    else if (params.vep_cache && params.annotate && callers.intersect(GlobalVariables.svCallers)) {
+        ch_vep_cache = Channel.fromPath(params.vep_cache).collect()
+    }
+    else {
+        ch_vep_cache = Channel.empty()
     }
 
     //

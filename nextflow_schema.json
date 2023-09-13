@@ -404,6 +404,12 @@
             "description": "Options for the annotation with VEP",
             "default": "",
             "properties": {
+                "vep_assembly": {
+                    "type": "string",
+                    "default": "GRCh38",
+                    "description": "The genome assembly to download the cache of.",
+                    "help_text": "This only needs to be supplied when no vep_cache is given"
+                },
                 "vep_cache_version": {
                     "type": "string",
                     "default": "108",

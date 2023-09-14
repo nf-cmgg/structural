@@ -172,7 +172,7 @@ workflow CMGGSTRUCTURAL {
         ch_annotsv_annotations_input = Channel.fromPath(params.annotsv_annotations).map{[[id:"annotsv_annotations"], it]}.collect()
         if(params.annotsv_annotations.endsWith(".tar.gz")){
             UNTAR_ANNOTSV(
-                ch_annotsv_annotations
+                ch_annotsv_annotations_input
             )
             ch_versions = ch_versions.mix(UNTAR_ANNOTSV.out.versions)
 

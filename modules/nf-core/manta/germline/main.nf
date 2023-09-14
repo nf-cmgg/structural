@@ -34,7 +34,7 @@ process MANTA_GERMLINE {
     """
     configManta.py \
         ${input_files} \
-        --referenceFasta $fasta \
+        --reference $fasta \
         --runDir manta \
         $options_manta \
         $args

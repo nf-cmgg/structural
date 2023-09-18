@@ -59,7 +59,7 @@
                     },
                     "expansionhunter": {
                         "branch": "master",
-                        "git_sha": "0260e5d22372eae434816d6970dedf3f5adc0053",
+                        "git_sha": "c129842342431d0c8a0547dad63f5919a5be26ab",
                         "installed_by": ["modules"]
                     },
                     "gridss/gridss": {

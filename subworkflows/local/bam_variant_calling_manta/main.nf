@@ -1,6 +1,8 @@
 //
 // Run Manta
 //
+include { TABIX_BGZIPTABIX       } from '../../../modules/nf-core/tabix/bgziptabix/main'
+include { GAWK                   } from '../../../modules/nf-core/gawk/main'
 include { MANTA_GERMLINE         } from '../../../modules/nf-core/manta/germline/main'
 include { MANTA_CONVERTINVERSION } from '../../../modules/nf-core/manta/convertinversion/main'
 
@@ -10,11 +12,32 @@ workflow BAM_VARIANT_CALLING_MANTA {
         ch_fasta            // channel: [mandatory] [ meta, fasta ] => The fasta reference file
         ch_fai              // channel: [mandatory] [ meta, fai ] => The index of the fasta reference file
         ch_manta_config     // channel: [optional]  [ config ] => The config to pass to Manta
-        ch_contigs          // channel: [optional]  [ bed, bed_gz, tbi ] => The contigs from the genome
 
     main:
 
     ch_versions     = Channel.empty()
+
+    //
+    // Create a contigs BED file
+    //
+
+    GAWK(
+        ch_fai,
+        []
+    )
+    ch_versions = ch_versions.mix(GAWK.out.versions)
+
+    TABIX_BGZIPTABIX(
+        GAWK.out.output
+    )
+    ch_versions = ch_versions.mix(TABIX_BGZIPTABIX.out.versions)
+
+    TABIX_BGZIPTABIX.out.gz_tbi
+        .map { meta, bed_gz, tbi ->
+            [bed_gz, tbi]
+        }
+        .collect()
+        .set { ch_contigs }
 
     //
     // Calling variants using Manta
@@ -22,9 +45,6 @@ workflow BAM_VARIANT_CALLING_MANTA {
 
     ch_crams
         .combine(ch_contigs)
-        .map { meta, cram, crai, bed, bed_gz, tbi ->
-            [ meta, cram, crai, bed_gz, tbi ]
-        }
         .dump(tag: 'manta_input', pretty: true)
         .set { ch_manta_input }
 

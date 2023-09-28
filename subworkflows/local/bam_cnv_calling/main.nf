@@ -11,7 +11,8 @@ workflow BAM_CNV_CALLING {
         ch_crams                    // channel: [mandatory] [ meta, cram, crai, bed ] => The aligned CRAMs per sample with the regions they should be called on
         ch_fasta                    // channel: [mandatory] [ meta, fasta ] => The fasta reference file
         ch_fai                      // channel: [mandatory] [ meta, fai ] => The index of the fasta reference file
-        ch_qdnaseq_reference        // channel: [mandatory] [ meta, qdnaseq_reference ] => The reference for qDNAseq
+        ch_qdnaseq_male             // channel: [mandatory] [ meta, qdnaseq_reference ] => The male reference for qDNAseq
+        ch_qdnaseq_female           // channel: [mandatory] [ meta, qdnaseq_reference ] => The female reference for qDNAseq
         ch_wisecondorx_reference    // channel: [mandatory] [ meta, wisecondorx_reference ] => The reference for WisecondorX
         ch_blacklist                // channel: [optional]  [ meta, bed ] => The blacklist regions to be excluded from the Wisecondorx analysis
 
@@ -28,7 +29,8 @@ workflow BAM_CNV_CALLING {
             ch_crams,
             ch_fasta,
             ch_fai,
-            ch_qdnaseq_reference
+            ch_qdnaseq_male,
+            ch_qdnaseq_female
         )
         ch_versions = ch_versions.mix(BAM_VARIANT_CALLING_QDNASEQ.out.versions)
     }

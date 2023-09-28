@@ -91,10 +91,18 @@
                     "format": "file-path",
                     "mimetype": "application/json"
                 },
-                "qdnaseq_reference": {
+                "qdnaseq_male": {
                     "type": "string",
                     "pattern": "^\\S+\\.rda$",
-                    "description": "Path to the qdnaseq reference file",
+                    "description": "Path to the male qdnaseq reference file",
+                    "exists": true,
+                    "format": "file-path",
+                    "mimetype": "application/octet-stream"
+                },
+                "qdnaseq_female": {
+                    "type": "string",
+                    "pattern": "^\\S+\\.rda$",
+                    "description": "Path to the female qdnaseq reference file",
                     "exists": true,
                     "format": "file-path",
                     "mimetype": "application/octet-stream"
@@ -411,6 +419,20 @@
                 }
             }
         },
+        "qdnaseq_parameters": {
+            "title": "qDNAseq parameters",
+            "type": "object",
+            "description": "Options specific for the qDNAseq execution",
+            "default": "",
+            "properties": {
+                "qdnaseq_bin_size": {
+                    "type": "integer",
+                    "default": 100000,
+                    "description": "The bin size to use for manta",
+                    "enum": [5000,50000,100000,500000]
+                }
+            }
+        },
         "vep_options": {
             "title": "VEP options",
             "type": "object",
@@ -554,6 +576,9 @@
         },
         {
             "$ref": "#/definitions/manta_parameters"
+        },
+        {
+            "$ref": "#/definitions/qdnaseq_parameters"
         },
         {
             "$ref": "#/definitions/vep_options"

@@ -28,6 +28,11 @@
                 "pattern": "^\\S+\\.vcf(\\.gz)?$",
                 "format": "file-path",
                 "exists": true
+            },
+            "gender": {
+                "type": "string",
+                "meta": ["gender"],
+                "enum": ["male", "female"]
             }
         },
         "required": ["sample", "cram"]

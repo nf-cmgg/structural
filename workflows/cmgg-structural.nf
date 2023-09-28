@@ -21,8 +21,10 @@ if (sv_callers_to_use && params.callers_support > sv_callers_to_use.size()) {
     error("The --callers_support parameter (${params.callers_support}) is higher than the amount of SV callers in --callers (${sv_callers_to_use.size()}). Please adjust --callers_support to a value lower of equal to the amount of SV callers to use.")
 }
 
-if ("qdnaseq" in callers && !params.qdnaseq_reference) {
-    error("Please give the QDNAseq reference using --qdnaseq_reference")
+if ("qdnaseq" in callers && (!params.qdnaseq_male || !params.qdnaseq_female)) {
+    println(params.qdnaseq_female)
+    println(params.qdnaseq_male)
+    error("Please give the QDNAseq references using --qdnaseq_male and --qdnaseq_female")
 }
 
 if ("wisecondorx" in callers && !params.wisecondorx_reference) {
@@ -100,7 +102,8 @@ workflow CMGGSTRUCTURAL {
     ch_annotsv_gene_transcripts = params.annotsv_gene_transcripts ? Channel.fromPath(params.annotsv_gene_transcripts).map{[[], it]}.collect() : [[],[]]
     ch_vcfanno_lua              = params.vcfanno_lua ?              Channel.fromPath(params.vcfanno_lua).collect() : []
     ch_catalog                  = params.expansionhunter_catalog ?  Channel.fromPath(params.expansionhunter_catalog).map{[[id:'catalog'], it]}.collect() : [[id:'catalog'],[file("https://github.com/Illumina/ExpansionHunter/raw/master/variant_catalog/grch38/variant_catalog.json", checkIfExists:true)]]    
-    ch_qdnaseq_reference        = params.qdnaseq_reference ?        Channel.fromPath(params.qdnaseq_reference).map{[[id:'qdnaseq'], it]}.collect() : [[],[]]    
+    ch_qdnaseq_male             = params.qdnaseq_male ?             Channel.fromPath(params.qdnaseq_male).map{[[id:'qdnaseq'], it]}.collect() : [[],[]]    
+    ch_qdnaseq_female           = params.qdnaseq_female ?           Channel.fromPath(params.qdnaseq_female).map{[[id:'qdnaseq'], it]}.collect() : [[],[]]    
     ch_wisecondorx_reference    = params.wisecondorx_reference ?    Channel.fromPath(params.wisecondorx_reference).map{[[id:'wisecondorx'], it]}.collect() : [[],[]]    
     ch_blacklist                = params.blacklist ?                Channel.fromPath(params.blacklist).map{[[id:'blacklist'], it]}.collect() : [[],[]]    
     ch_manta_config             = params.manta_config ?             Channel.fromPath(params.manta_config).collect() : null
@@ -284,7 +287,8 @@ workflow CMGGSTRUCTURAL {
             BAM_PREPARE_SAMTOOLS.out.crams,
             ch_fasta,
             ch_fai,
-            ch_qdnaseq_reference,
+            ch_qdnaseq_male,
+            ch_qdnaseq_female,
             ch_wisecondorx_reference,
             ch_blacklist
         )

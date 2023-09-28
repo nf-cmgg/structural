@@ -25,7 +25,8 @@ params.phenotypes               = WorkflowMain.getGenomeAttribute(params, 'pheno
 params.phenotypes_tbi           = WorkflowMain.getGenomeAttribute(params, 'phenotypes_tbi')
 params.annotsv_annotations      = WorkflowMain.getGenomeAttribute(params, 'annotsv_annotations')
 params.expansionhunter_catalog  = WorkflowMain.getGenomeAttribute(params, 'expansionhunter_catalog')
-params.qdnaseq_reference        = WorkflowMain.getGenomeAttribute(params, 'qdnaseq_reference')
+params.qdnaseq_male             = WorkflowMain.getGenomeAttribute(params, "qdnaseq_male_${params.qdnaseq_bin_size.toInteger() / 1000}kbp".toString())
+params.qdnaseq_female           = WorkflowMain.getGenomeAttribute(params, "qdnaseq_female_${params.qdnaseq_bin_size.toInteger() / 1000}kbp".toString())
 params.wisecondorx_reference    = WorkflowMain.getGenomeAttribute(params, 'wisecondorx_reference')
 
 /*

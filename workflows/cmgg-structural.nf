@@ -74,6 +74,7 @@ include { ENSEMBLVEP_DOWNLOAD               } from '../modules/nf-core/ensemblve
 include { ANNOTSV_INSTALLANNOTATIONS        } from '../modules/nf-core/annotsv/installannotations/main'
 include { UNTAR as UNTAR_ANNOTSV            } from '../modules/nf-core/untar/main'
 include { UNTAR as UNTAR_BWA                } from '../modules/nf-core/untar/main'
+include { GAWK                              } from '../modules/nf-core/gawk/main'
 include { MULTIQC                           } from '../modules/nf-core/multiqc/main'
 include { CUSTOM_DUMPSOFTWAREVERSIONS       } from '../modules/nf-core/custom/dumpsoftwareversions/main'
 
@@ -207,6 +208,29 @@ workflow CMGGSTRUCTURAL {
     }
 
     //
+    // Create a contigs BED file
+    //
+
+    GAWK(
+        ch_fai,
+        []
+    )
+    ch_versions = ch_versions.mix(GAWK.out.versions)
+
+    TABIX_BGZIPTABIX(
+        GAWK.out.output
+    )
+    ch_versions = ch_versions.mix(TABIX_BGZIPTABIX.out.versions)
+
+    GAWK.out.output
+        .join(TABIX_BGZIPTABIX.out.gz_tbi, failOnDuplicate:true, failOnMismatch:true)
+        .map { meta, bed, bed_gz, tbi ->
+            [bed, bed_gz, tbi]
+        }
+        .collect()
+        .set { ch_contigs }
+
+    //
     // Create the input channel
     //
 
@@ -241,7 +265,8 @@ workflow CMGGSTRUCTURAL {
             ch_fasta,
             ch_fai,
             ch_bwa_index,
-            ch_manta_config
+            ch_manta_config,
+            ch_contigs
         )
 
         ch_versions = ch_versions.mix(BAM_SV_CALLING.out.versions)

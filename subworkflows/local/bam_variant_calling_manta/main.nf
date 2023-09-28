@@ -10,6 +10,7 @@ workflow BAM_VARIANT_CALLING_MANTA {
         ch_fasta            // channel: [mandatory] [ meta, fasta ] => The fasta reference file
         ch_fai              // channel: [mandatory] [ meta, fai ] => The index of the fasta reference file
         ch_manta_config     // channel: [optional]  [ config ] => The config to pass to Manta
+        ch_contigs          // channel: [optional]  [ bed, bed_gz, tbi ] => The contigs from the genome
 
     main:
 
@@ -20,8 +21,9 @@ workflow BAM_VARIANT_CALLING_MANTA {
     //
 
     ch_crams
-        .map { meta, cram, crai ->
-            [ meta, cram, crai, [], [] ]
+        .combine(ch_contigs)
+        .map { meta, cram, crai, bed, bed_gz, tbi ->
+            [ meta, cram, crai, bed_gz, tbi ]
         }
         .dump(tag: 'manta_input', pretty: true)
         .set { ch_manta_input }

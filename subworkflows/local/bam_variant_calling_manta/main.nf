@@ -6,9 +6,10 @@ include { MANTA_CONVERTINVERSION } from '../../../modules/nf-core/manta/converti
 
 workflow BAM_VARIANT_CALLING_MANTA {
     take:
-        ch_crams    // channel: [mandatory] [ meta, cram, crai ] => The aligned CRAMs per sample with the regions they should be called on
-        ch_fasta    // channel: [mandatory] [ meta, fasta ] => The fasta reference file
-        ch_fai      // channel: [mandatory] [ meta, fai ] => The index of the fasta reference file
+        ch_crams            // channel: [mandatory] [ meta, cram, crai ] => The aligned CRAMs per sample with the regions they should be called on
+        ch_fasta            // channel: [mandatory] [ meta, fasta ] => The fasta reference file
+        ch_fai              // channel: [mandatory] [ meta, fai ] => The index of the fasta reference file
+        ch_manta_config     // channel: [optional]  [ config ] => The config to pass to Manta
 
     main:
 
@@ -28,7 +29,8 @@ workflow BAM_VARIANT_CALLING_MANTA {
     MANTA_GERMLINE(
         ch_manta_input,
         ch_fasta,
-        ch_fai
+        ch_fai,
+        ch_manta_config
     )
 
     ch_versions = ch_versions.mix(MANTA_GERMLINE.out.versions.first())

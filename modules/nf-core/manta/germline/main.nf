@@ -13,6 +13,7 @@ process MANTA_GERMLINE {
     tuple val(meta), path(input), path(index), path(target_bed), path(target_bed_tbi)
     tuple val(meta2), path(fasta)
     tuple val(meta3), path(fai)
+    path(config)
 
     output:
     tuple val(meta), path("*candidate_small_indels.vcf.gz")    , emit: candidate_small_indels_vcf
@@ -31,12 +32,14 @@ process MANTA_GERMLINE {
     def prefix = task.ext.prefix ?: "${meta.id}"
     def input_files = input.collect{"--bam ${it}"}.join(' ')
     def options_manta = target_bed ? "--callRegions $target_bed" : ""
+    def config_option = config ? "--config ${config}" : ""
     """
-    configManta.py \
-        ${input_files} \
-        --reference $fasta \
-        --runDir manta \
-        $options_manta \
+    configManta.py \\
+        ${input_files} \\
+        ${config_option} \\
+        --reference $fasta \\
+        --runDir manta \\
+        $options_manta \\
         $args
 
     python manta/runWorkflow.py -m local -j $task.cpus

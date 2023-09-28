@@ -103,6 +103,7 @@ workflow CMGGSTRUCTURAL {
     ch_qdnaseq_reference        = params.qdnaseq_reference ?        Channel.fromPath(params.qdnaseq_reference).map{[[id:'qdnaseq'], it]}.collect() : [[],[]]    
     ch_wisecondorx_reference    = params.wisecondorx_reference ?    Channel.fromPath(params.wisecondorx_reference).map{[[id:'wisecondorx'], it]}.collect() : [[],[]]    
     ch_blacklist                = params.blacklist ?                Channel.fromPath(params.blacklist).map{[[id:'blacklist'], it]}.collect() : [[],[]]    
+    ch_manta_config             = params.manta_config ?             Channel.fromPath(params.manta_config).collect() : null
 
     val_vcfanno_resources       = params.vcfanno_resources ?        params.vcfanno_resources.split(",").collect{file(it, checkIfExists:true)}.flatten() : []
 
@@ -236,7 +237,8 @@ workflow CMGGSTRUCTURAL {
             BAM_PREPARE_SAMTOOLS.out.crams,
             ch_fasta,
             ch_fai,
-            ch_bwa_index
+            ch_bwa_index,
+            ch_manta_config
         )
 
         ch_versions = ch_versions.mix(BAM_SV_CALLING.out.versions)

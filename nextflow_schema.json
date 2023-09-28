@@ -398,6 +398,19 @@
                 }
             }
         },
+        "manta_parameters": {
+            "title": "Manta parameters",
+            "type": "object",
+            "description": "Options specific for the Manta execution",
+            "default": "",
+            "properties": {
+                "manta_config": {
+                    "type": "string",
+                    "default": "assets/manta_config.ini",
+                    "description": "A config file to supply to manta"
+                }
+            }
+        },
         "vep_options": {
             "title": "VEP options",
             "type": "object",
@@ -538,6 +551,9 @@
         },
         {
             "$ref": "#/definitions/delly_parameters"
+        },
+        {
+            "$ref": "#/definitions/manta_parameters"
         },
         {
             "$ref": "#/definitions/vep_options"

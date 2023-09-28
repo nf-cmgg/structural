@@ -23,6 +23,7 @@ workflow BAM_SV_CALLING {
         ch_fasta        // channel: [mandatory] [ meta, fasta ] => The fasta reference file
         ch_fai          // channel: [mandatory] [ meta, fai ] => The index of the fasta reference file
         ch_bwa_index    // channel: [optional]  [ meta, index ] => The BWA MEM index
+        ch_manta_config // channel: [optional]  [ config ] => The config to pass to Manta
 
     main:
 
@@ -40,7 +41,8 @@ workflow BAM_SV_CALLING {
         BAM_VARIANT_CALLING_MANTA(
             ch_crams,
             ch_fasta,
-            ch_fai
+            ch_fai,
+            ch_manta_config
         )
 
         ch_called_vcfs  = ch_called_vcfs.mix(BAM_VARIANT_CALLING_MANTA.out.manta_vcfs)

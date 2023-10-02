@@ -2,7 +2,7 @@
 
 bamfile<-"$bam"
 name <- "${task.ext.prefix ?: meta.id}"
-tax_id <- 12345 #TODO fix this 
+tax_id <- 12345 #TODO fix this
 annotations<-"$annotations"
 
 #Functions

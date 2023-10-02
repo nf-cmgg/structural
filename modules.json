@@ -85,7 +85,7 @@
                     },
                     "manta/germline": {
                         "branch": "master",
-                        "git_sha": "80dbd95c558a0ebb2123d95f50c093a7f714a0d7",
+                        "git_sha": "20d58a67ae6068261a887ac0e5881b8c22ec9ff3",
                         "installed_by": ["modules"]
                     },
                     "multiqc": {
@@ -172,7 +172,7 @@
                     },
                     "wisecondorx/predict": {
                         "branch": "master",
-                        "git_sha": "1ee4e6cb8f49fcb4a1982cb3888b6f7cfa9f7a99",
+                        "git_sha": "1a44315c87d1724e3a753fdb4bfae5b28c723d4a",
                         "installed_by": ["modules"]
                     }
                 }

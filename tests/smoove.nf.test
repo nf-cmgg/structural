@@ -1,12 +1,13 @@
 nextflow_pipeline {
 
-    name "Tests using only Manta"
+    name "Tests using only Smoove"
     script "main.nf"
+    tag "smoove"
 
     test("Success") {
         when {
             params {
-                callers = "manta"
+                callers = "smoove"
             }
         }
 

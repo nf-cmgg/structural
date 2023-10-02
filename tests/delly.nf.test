@@ -1,12 +1,13 @@
 nextflow_pipeline {
 
-    name "Tests using only Gridss"
+    name "Tests using only Delly"
     script "main.nf"
+    tag "delly"
 
     test("Success") {
         when {
             params {
-                callers = "gridss"
+                callers = "delly"
             }
         }
 

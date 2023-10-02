@@ -70,19 +70,19 @@ library('lsr')
 attach(annotations, name="bins")
 readCounts <- binReadCounts(bins, bamfile, minMapq=40)
 if(grepl('noresidual',annotations,ignore.case=TRUE) | grepl('noblacklist',annotations,ignore.case=TRUE)){
-  if( grepl('noresidual',annotations,ignore.case=TRUE) && !grepl('noblacklist',annotations,ignore.case=TRUE)){
-    readCountsFiltered <- applyFilters(readCounts, residual=NA)
-  }else if(!grepl('noresidual',annotations,ignore.case=TRUE) && grepl('noblacklist',annotations,ignore.case=TRUE)){
-    readCountsFiltered <- applyFilters(readCounts, blacklist=NA)
-  }else if( grepl('noresidual',annotations,ignore.case=TRUE) && grepl('noblacklist',annotations,ignore.case=TRUE)){
-    readCountsFiltered <- applyFilters(readCounts, residual=NA, blacklist=NA)
-  }
+    if( grepl('noresidual',annotations,ignore.case=TRUE) && !grepl('noblacklist',annotations,ignore.case=TRUE)){
+        readCountsFiltered <- applyFilters(readCounts, residual=NA)
+    }else if(!grepl('noresidual',annotations,ignore.case=TRUE) && grepl('noblacklist',annotations,ignore.case=TRUE)){
+        readCountsFiltered <- applyFilters(readCounts, blacklist=NA)
+    }else if( grepl('noresidual',annotations,ignore.case=TRUE) && grepl('noblacklist',annotations,ignore.case=TRUE)){
+        readCountsFiltered <- applyFilters(readCounts, residual=NA, blacklist=NA)
+    }
 }else{
-  readCountsFiltered <- applyFilters(readCounts)
+    readCountsFiltered <- applyFilters(readCounts)
 }
 readCountsFiltered <- estimateCorrection(readCountsFiltered)
 if ( tax_id != "10090"){
-  readCountsFiltered <- applyFilters(readCountsFiltered,chromosomes =c())
+    readCountsFiltered <- applyFilters(readCountsFiltered,chromosomes =c())
 }
 copyNumbers <- correctBins(readCountsFiltered)
 copyNumbersNormalized <- normalizeBins(copyNumbers)

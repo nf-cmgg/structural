@@ -5,7 +5,6 @@
 include { QDNASEQ as QDNASEQ_MALE       } from '../../../modules/local/qdnaseq/main'
 include { QDNASEQ as QDNASEQ_FEMALE     } from '../../../modules/local/qdnaseq/main'
 include { SAMTOOLS_CONVERT              } from '../../../modules/nf-core/samtools/convert/main'
-include { NGSBITS_SAMPLEGENDER          } from '../../../modules/nf-core/ngsbits/samplegender/main'
 
 workflow BAM_VARIANT_CALLING_QDNASEQ {
     take:
@@ -19,30 +18,6 @@ workflow BAM_VARIANT_CALLING_QDNASEQ {
 
     ch_versions     = Channel.empty()
 
-    ch_crams
-        .branch { meta, cram, crai ->
-            sex: meta.sex
-                return [meta, meta.sex]
-            no_gender: !meta.sex
-        }
-        .set { ch_samplegender_input }
-
-    NGSBITS_SAMPLEGENDER(
-        ch_samplegender_input.no_gender,
-        ch_fasta,
-        ch_fai,
-        "xy"
-    )
-    ch_versions = ch_versions.mix(NGSBITS_SAMPLEGENDER.out.versions.first())
-
-    NGSBITS_SAMPLEGENDER.out.tsv
-        .map { meta, tsv ->
-            sex = get_sex(tsv)
-            [ meta, sex ]
-        }
-        .mix(ch_samplegender_input.sex)
-        .set { ch_genders }
-
     SAMTOOLS_CONVERT(
         ch_crams,
         ch_fasta.map { it[1] },
@@ -50,29 +25,15 @@ workflow BAM_VARIANT_CALLING_QDNASEQ {
     )
     ch_versions = ch_versions.mix(SAMTOOLS_CONVERT.out.versions.first())
 
-    ch_genders
-        .join(SAMTOOLS_CONVERT.out.alignment_index, failOnDuplicate:true, failOnMismatch:true)
-        .map { meta, sex, bam, bai ->
-            new_meta = meta + [sex:sex]
-            [ new_meta, bam, bai ]
-        }
+    SAMTOOLS_CONVERT.out.alignment_index
         .branch { meta, bam, bai ->
             male: meta.sex == "male"
             female: meta.sex == "female"
-            other: true
         }
         .set { ch_qdnaseq_input }
 
-    ch_qdnaseq_input.other.view { meta, bam, bai ->
-        log.warn("Couldn't define the sex of sample ${meta.id}. Defaulting to male. (Specify the sex in the samplesheet to avoid this warning.)")
-    }
-
-    ch_qdnaseq_input.male
-        .mix(ch_qdnaseq_input.other)
-        .set { ch_males_and_others }
-
     QDNASEQ_MALE(
-        ch_males_and_others,
+        ch_qdnaseq_input.male,
         ch_qdnaseq_male
     )
     ch_versions = ch_versions.mix(QDNASEQ_MALE.out.versions.first())
@@ -93,10 +54,3 @@ workflow BAM_VARIANT_CALLING_QDNASEQ {
     versions    = ch_versions
 }
 
-def get_sex(tsv) {
-    if(workflow.stubRun) {
-        return "other"
-    }
-    split_tsv = tsv.splitCsv(sep:"\t", header:true, strip:true)
-    return split_tsv[0].gender
-}

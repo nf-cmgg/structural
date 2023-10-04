@@ -73,6 +73,7 @@ include { ENSEMBLVEP_DOWNLOAD               } from '../modules/nf-core/ensemblve
 include { ANNOTSV_INSTALLANNOTATIONS        } from '../modules/nf-core/annotsv/installannotations/main'
 include { UNTAR as UNTAR_ANNOTSV            } from '../modules/nf-core/untar/main'
 include { UNTAR as UNTAR_BWA                } from '../modules/nf-core/untar/main'
+include { NGSBITS_SAMPLEGENDER              } from '../modules/nf-core/ngsbits/samplegender/main'
 include { MULTIQC                           } from '../modules/nf-core/multiqc/main'
 include { CUSTOM_DUMPSOFTWAREVERSIONS       } from '../modules/nf-core/custom/dumpsoftwareversions/main'
 
@@ -210,11 +211,48 @@ workflow CMGGSTRUCTURAL {
     //
 
     Channel.fromSamplesheet("input", immutable_meta:false)
-        .multiMap({ meta, cram, crai, small_variants ->
-            crams:          [ meta, cram, crai ]
-            small_variants: [ meta, small_variants ]
-        })
-        .set { ch_inputs }
+        .set { ch_raw_input }
+
+    //
+    // Determine the gender if needed
+    //
+
+    if(callers.intersect(GlobalVariables.sexCallers)) {
+        ch_raw_input
+            .branch { meta, cram, crai, small_variants ->
+                sex: meta.sex
+                no_sex: !meta.sex
+            }
+            .set { ch_samplegender_input }
+
+        NGSBITS_SAMPLEGENDER(
+            ch_samplegender_input.no_sex.map{ meta, cram, crai, small_variants -> [meta, cram, crai]},
+            ch_fasta,
+            ch_fai,
+            "xy"
+        )
+        ch_versions = ch_versions.mix(NGSBITS_SAMPLEGENDER.out.versions.first())
+
+        NGSBITS_SAMPLEGENDER.out.tsv
+            .join(ch_samplegender_input.no_sex, failOnDuplicate:true, failOnMismatch:true)
+            .map { meta, tsv, cram, crai, small_variants ->
+                new_meta = meta + [sex:get_sex(tsv, meta.sample)]
+                [ new_meta, cram, crai, small_variants ]
+            }
+            .mix(ch_samplegender_input.sex)
+            .multiMap({ meta, cram, crai, small_variants ->
+                crams:          [ meta, cram, crai ]
+                small_variants: [ meta, small_variants ]
+            })
+            .set { ch_inputs }
+    } else {
+        ch_raw_input
+            .multiMap({ meta, cram, crai, small_variants ->
+                crams:          [ meta, cram, crai ]
+                small_variants: [ meta, small_variants ]
+            })
+            .set { ch_inputs }
+    }
 
     //
     // Prepare the inputs
@@ -375,6 +413,26 @@ workflow.onComplete {
     if (params.hook_url) {
         NfcoreTemplate.IM_notification(workflow, params, summary_params, projectDir, log)
     }
+}
+
+/*
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    FUNCTIONS
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+*/
+
+def get_sex(tsv, id) {
+    if(workflow.stubRun) {
+        return "male"
+        log.warn("Couldn't define the sex of sample ${id}. Defaulting to male. (Specify the sex in the samplesheet to avoid this warning.)")
+    }
+    split_tsv = tsv.splitCsv(sep:"\t", header:true, strip:true)
+    sex = split_tsv[0].gender
+    if(sex == "others") {
+        sex = "male"
+        log.warn("Couldn't define the sex of sample ${id}. Defaulting to male. (Specify the sex in the samplesheet to avoid this warning.)")
+    }
+    return sex
 }
 
 /*

@@ -29,9 +29,9 @@
                 "format": "file-path",
                 "exists": true
             },
-            "gender": {
+            "sex": {
                 "type": "string",
-                "meta": ["gender"],
+                "meta": ["sex"],
                 "enum": ["male", "female"]
             }
         },

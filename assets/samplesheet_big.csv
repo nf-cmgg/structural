@@ -1,5 +1,5 @@
-sample,cram,crai
-PosCon1,s3://test-data/genomics/homo_sapiens/illumina/cram/SVcontrol/big/PosCon1_chr16.cram,s3://test-data/genomics/homo_sapiens/illumina/cram/SVcontrol/big/PosCon1_chr16.cram.crai
-PosCon2,s3://test-data/genomics/homo_sapiens/illumina/cram/SVcontrol/big/PosCon2_chr16.cram,s3://test-data/genomics/homo_sapiens/illumina/cram/SVcontrol/big/PosCon2_chr16.cram.crai
-PosCon3,s3://test-data/genomics/homo_sapiens/illumina/cram/SVcontrol/big/PosCon3_chr14.cram,s3://test-data/genomics/homo_sapiens/illumina/cram/SVcontrol/big/PosCon3_chr14.cram.crai
-PosCon4,s3://test-data/genomics/homo_sapiens/illumina/cram/SVcontrol/big/PosCon4_chrX.cram,s3://test-data/genomics/homo_sapiens/illumina/cram/SVcontrol/big/PosCon4_chrX.cram.crai
+sample,cram,crai,sex
+PosCon1,s3://test-data/genomics/homo_sapiens/illumina/cram/SVcontrol/big/PosCon1_chr16.cram,s3://test-data/genomics/homo_sapiens/illumina/cram/SVcontrol/big/PosCon1_chr16.cram.crai,male
+PosCon2,s3://test-data/genomics/homo_sapiens/illumina/cram/SVcontrol/big/PosCon2_chr16.cram,s3://test-data/genomics/homo_sapiens/illumina/cram/SVcontrol/big/PosCon2_chr16.cram.crai,male
+PosCon3,s3://test-data/genomics/homo_sapiens/illumina/cram/SVcontrol/big/PosCon3_chr14.cram,s3://test-data/genomics/homo_sapiens/illumina/cram/SVcontrol/big/PosCon3_chr14.cram.crai,female
+PosCon4,s3://test-data/genomics/homo_sapiens/illumina/cram/SVcontrol/big/PosCon4_chrX.cram,s3://test-data/genomics/homo_sapiens/illumina/cram/SVcontrol/big/PosCon4_chrX.cram.crai,male

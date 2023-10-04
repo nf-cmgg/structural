@@ -21,9 +21,9 @@ workflow BAM_VARIANT_CALLING_QDNASEQ {
 
     ch_crams
         .branch { meta, cram, crai ->
-            gender: meta.gender
-                return [meta, meta.gender]
-            no_gender: !meta.gender
+            sex: meta.sex
+                return [meta, meta.sex]
+            no_gender: !meta.sex
         }
         .set { ch_samplegender_input }
 
@@ -37,10 +37,10 @@ workflow BAM_VARIANT_CALLING_QDNASEQ {
 
     NGSBITS_SAMPLEGENDER.out.tsv
         .map { meta, tsv ->
-            gender = get_gender(tsv)
-            [ meta, gender ]
+            sex = get_sex(tsv)
+            [ meta, sex ]
         }
-        .mix(ch_samplegender_input.gender)
+        .mix(ch_samplegender_input.sex)
         .set { ch_genders }
 
     SAMTOOLS_CONVERT(
@@ -52,19 +52,19 @@ workflow BAM_VARIANT_CALLING_QDNASEQ {
 
     ch_genders
         .join(SAMTOOLS_CONVERT.out.alignment_index, failOnDuplicate:true, failOnMismatch:true)
-        .map { meta, gender, bam, bai ->
-            new_meta = meta + [gender:gender]
+        .map { meta, sex, bam, bai ->
+            new_meta = meta + [sex:sex]
             [ new_meta, bam, bai ]
         }
         .branch { meta, bam, bai ->
-            male: meta.gender == "male"
-            female: meta.gender == "female"
+            male: meta.sex == "male"
+            female: meta.sex == "female"
             other: true
         }
         .set { ch_qdnaseq_input }
 
     ch_qdnaseq_input.other.view { meta, bam, bai ->
-        log.warn("Couldn't define the gender of sample ${meta.id}. Defaulting to male. (Specify the gender in the samplesheet to avoid this warning.)")
+        log.warn("Couldn't define the sex of sample ${meta.id}. Defaulting to male. (Specify the sex in the samplesheet to avoid this warning.)")
     }
 
     ch_qdnaseq_input.male

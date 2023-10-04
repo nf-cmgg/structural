@@ -54,9 +54,10 @@ jobs:
         with:
           version: "${{ matrix.NXF_VER }}"
 
+      # TODO remove the version pinning once nf-test outputDir bug is fixed
       - name: Install nf-test
         run: |
-          conda install -c bioconda nf-test
+          conda install -c bioconda nf-test==0.7.3 
 
       - name: Run pipeline with test data
         run: |

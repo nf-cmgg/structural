@@ -93,7 +93,7 @@ workflow BAM_VARIANT_CALLING_QDNASEQ {
     versions    = ch_versions
 }
 
-def get_gender(tsv) {
+def get_sex(tsv) {
     if(workflow.stubRun) {
         return "other"
     }

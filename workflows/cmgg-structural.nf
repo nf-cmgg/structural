@@ -423,14 +423,14 @@ workflow.onComplete {
 
 def get_sex(tsv, id) {
     if(workflow.stubRun) {
-        return "male"
-        log.warn("Couldn't define the sex of sample ${id}. Defaulting to male. (Specify the sex in the samplesheet to avoid this warning.)")
+        return "female"
+        log.warn("Couldn't define the sex of sample ${id}. Defaulting to female. (Specify the sex in the samplesheet to avoid this warning.)")
     }
     split_tsv = tsv.splitCsv(sep:"\t", header:true, strip:true)
     sex = split_tsv[0].gender
     if(sex == "others") {
-        sex = "male"
-        log.warn("Couldn't define the sex of sample ${id}. Defaulting to male. (Specify the sex in the samplesheet to avoid this warning.)")
+        sex = "female"
+        log.warn("Couldn't define the sex of sample ${id}. Defaulting to female. (Specify the sex in the samplesheet to avoid this warning.)")
     }
     return sex
 }

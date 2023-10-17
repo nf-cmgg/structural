@@ -1,0 +1,28 @@
+nextflow_pipeline {
+
+    name "Tests using only Expansionhunter"
+    script "main.nf"
+    tag "expansionhunter"
+
+    test("Success") {
+        when {
+            params {
+                callers = "expansionhunter"
+            }
+        }
+
+        then {
+            assert workflow.success
+            assert file("${outputDir}/PosCon1/PosCon1.repeats.vcf.gz").exists()
+            assert file("${outputDir}/PosCon1/PosCon1.repeats.vcf.gz.tbi").exists()
+            assert file("${outputDir}/PosCon2/PosCon2.repeats.vcf.gz").exists()
+            assert file("${outputDir}/PosCon2/PosCon2.repeats.vcf.gz.tbi").exists()
+            assert file("${outputDir}/PosCon3/PosCon3.repeats.vcf.gz").exists()
+            assert file("${outputDir}/PosCon3/PosCon3.repeats.vcf.gz.tbi").exists()
+            assert file("${outputDir}/PosCon4/PosCon4.repeats.vcf.gz").exists()
+            assert file("${outputDir}/PosCon4/PosCon4.repeats.vcf.gz.tbi").exists()
+            assert file("${outputDir}/PosCon5/PosCon5.repeats.vcf.gz").exists()
+            assert file("${outputDir}/PosCon5/PosCon5.repeats.vcf.gz.tbi").exists()
+        }
+    }
+}

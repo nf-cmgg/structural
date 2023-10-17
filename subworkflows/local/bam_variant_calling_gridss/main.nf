@@ -2,52 +2,57 @@
 // Run Gridss
 //
 
-include { SIMPLE_EVENT_ANNOTATION   } from '../../../modules/local/gridss/simple_event_annotation/main'
-
 include { GRIDSS_GRIDSS             } from '../../../modules/nf-core/gridss/gridss/main'
 include { TABIX_TABIX               } from '../../../modules/nf-core/tabix/tabix/main'
+include { VIOLA                     } from '../../../modules/local/viola/main'
+include { BCFTOOLS_SORT             } from '../../../modules/nf-core/bcftools/sort/main'
+
 
 workflow BAM_VARIANT_CALLING_GRIDSS {
     take:
-        crams                   // channel: [mandatory] [ meta, cram, crai ] => The aligned CRAMs per sample with the regions they should be called on
-        fasta                   // channel: [mandatory] [ fasta ] => The fasta reference file
-        fai               // channel: [mandatory] [ fai ] => The index of the fasta reference file
-        bwa_index               // channel: [mandatory] [ index ] => The BWA MEM index
+        ch_crams       // channel: [mandatory] [ meta, cram, crai ] => The aligned CRAMs per sample with the regions they should be called on
+        ch_fasta       // channel: [mandatory] [ meta, fasta ] => The fasta reference file
+        ch_fai         // channel: [mandatory] [ meta, fai ] => The index of the fasta reference file
+        ch_bwa_index   // channel: [mandatory] [ meta, index ] => The BWA MEM index
 
     main:
 
     ch_versions     = Channel.empty()
 
     GRIDSS_GRIDSS(
-        crams.map {meta, cram, crai -> [meta, cram, []]},
-        fasta.map {[[],it]},
-        fai.map {[[],it]},
-        bwa_index
+        ch_crams.map {meta, cram, crai -> [meta, cram, []]},
+        ch_fasta,
+        ch_fai,
+        ch_bwa_index
     )
-    ch_versions = ch_versions.mix(GRIDSS_GRIDSS.out.versions)
+    ch_versions = ch_versions.mix(GRIDSS_GRIDSS.out.versions.first())
 
-    SIMPLE_EVENT_ANNOTATION(
-        GRIDSS_GRIDSS.out.vcf
+    VIOLA(
+        GRIDSS_GRIDSS.out.vcf,
+        "gridss"
     )
-    ch_versions = ch_versions.mix(SIMPLE_EVENT_ANNOTATION.out.versions)
+    ch_versions = ch_versions.mix(VIOLA.out.versions.first())
+
+    BCFTOOLS_SORT(
+        VIOLA.out.vcf
+    )
+    ch_versions = ch_versions.mix(BCFTOOLS_SORT.out.versions.first())
 
     TABIX_TABIX(
-        SIMPLE_EVENT_ANNOTATION.out.vcf
+        BCFTOOLS_SORT.out.vcf
     )
-    ch_versions = ch_versions.mix(TABIX_TABIX.out.versions)
+    ch_versions = ch_versions.mix(TABIX_TABIX.out.versions.first())
 
-    SIMPLE_EVENT_ANNOTATION.out.vcf
+    BCFTOOLS_SORT.out.vcf
         .join(TABIX_TABIX.out.tbi, failOnMismatch:true, failOnDuplicate:true)
-        .map(
-            { meta, vcf, tbi ->
-                new_meta = meta + [caller:"gridss"]
-                [ new_meta, vcf, tbi ]
-            }
-        )
+        .map{ meta, vcf, tbi ->
+            new_meta = meta + [caller:"gridss"]
+            [ new_meta, vcf, tbi ]
+        }
         .dump(tag: 'gridss_vcfs', pretty: true)
-        .set { gridss_vcfs }
+        .set { ch_gridss_vcfs }
 
     emit:
-    gridss_vcfs
-    versions = ch_versions
+    gridss_vcfs = ch_gridss_vcfs // channel: [ val(meta), path(vcf), path(tbi) ]
+    versions    = ch_versions
 }

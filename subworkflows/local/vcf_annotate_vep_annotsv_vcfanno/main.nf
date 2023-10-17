@@ -8,13 +8,14 @@ include { VCFANNO                               } from '../../../modules/nf-core
 include { TABIX_BGZIPTABIX as TABIX_ANNOTATED   } from '../../../modules/nf-core/tabix/bgziptabix/main'
 include { TABIX_BGZIPTABIX as TABIX_ANNOTSV     } from '../../../modules/nf-core/tabix/bgziptabix/main'
 include { TABIX_TABIX as TABIX_VEP              } from '../../../modules/nf-core/tabix/tabix/main'
+include { BCFTOOLS_FILTER                       } from '../../../modules/nf-core/bcftools/filter/main'
 
 workflow VCF_ANNOTATE_VEP_ANNOTSV_VCFANNO {
     take:
         ch_vcfs                                 // channel: [mandatory] [ val(meta), path(vcf), path(tbi) ] VCFs containing the called structural variants
         ch_small_variants                       // channel: [mandatory] [ val(meta), path(vcf) ] VCFs containing small variants used in AnnotSV
-        ch_fasta                                // channel: [mandatory] [ path(fasta) ] => The fasta reference file
-        ch_fai                                  // channel: [mandatory] [ path(fai) ] => The index of the fasta reference file
+        ch_fasta                                // channel: [mandatory] [ val(meta), path(fasta) ] => The fasta reference file
+        ch_fai                                  // channel: [mandatory] [ val(meta), path(fai) ] => The index of the fasta reference file
         ch_annotsv_annotations                  // channel: [mandatory] [ val(meta), path(annotations) ] => The annotations for AnnotSV
         ch_annotsv_candidate_genes              // channel: [optional]  [ val(meta), path(candidate_genes) ]
         ch_annotsv_gene_transcripts             // channel: [optional]  [ val(meta), path(gene_transcripts) ]
@@ -31,6 +32,20 @@ workflow VCF_ANNOTATE_VEP_ANNOTSV_VCFANNO {
     // Run AnnotSV and VEP in parallel and merge TSV from AnnotSV with VCF from VEP during VCFanno
 
     ch_vcfs
+        .map { meta, vcf, tbi ->
+            [ meta, vcf ]
+        }
+        .set { ch_bcftools_input }
+
+    BCFTOOLS_FILTER(
+        ch_bcftools_input
+    )
+    ch_versions = ch_versions.mix(BCFTOOLS_FILTER.out.versions.first())
+
+    BCFTOOLS_FILTER.out.vcf
+        .map { meta, vcf ->
+            [ meta, vcf, [] ]
+        }
         .join(ch_small_variants, failOnDuplicate:true, failOnMismatch:true)
         .set { ch_annotsv_input }
 
@@ -43,20 +58,8 @@ workflow VCF_ANNOTATE_VEP_ANNOTSV_VCFANNO {
     )
     ch_versions = ch_versions.mix(ANNOTSV_ANNOTSV.out.versions.first())
 
-    ANNOTSV_ANNOTSV.out.vcf
-        .map { meta, vcf ->
-            // Artifically create a single variant annotated VCF if the VCF is empty
-            // This will only affect test runs that create VCFs with no variants
-            // TODO make sure the tests don't actually need this!
-            if(vcf.size() == 0){
-                vcf.text = file("${projectDir}/assets/dummy_annotsv.vcf", checkIfExists:true).text
-            }
-            [ meta, vcf ]
-        }
-        .set { ch_bgzip_input }
-
     TABIX_ANNOTSV(
-        ch_bgzip_input
+        ANNOTSV_ANNOTSV.out.vcf
     )
     ch_versions = ch_versions.mix(TABIX_ANNOTSV.out.versions.first())
 
@@ -66,7 +69,7 @@ workflow VCF_ANNOTATE_VEP_ANNOTSV_VCFANNO {
         params.species,
         params.vep_cache_version,
         ch_vep_cache,
-        ch_fasta.map { [[], it] },
+        ch_fasta,
         ch_vep_extra_files
     )
     ch_reports  = ch_reports.mix(ENSEMBLVEP_VEP.out.report)
@@ -104,8 +107,11 @@ workflow VCF_ANNOTATE_VEP_ANNOTSV_VCFANNO {
     )
     ch_versions = ch_versions.mix(TABIX_ANNOTATED.out.versions)
     
+    TABIX_ANNOTATED.out.gz_tbi
+        .set { ch_annotated_vcfs }
+
     emit:
-    // annotated_vcfs  = TABIX_ANNOTATED.out.gz_tbi  // channel: [ val(meta), path(vcf), path(tbi) ]
+    vcfs            = ch_annotated_vcfs  // channel: [ val(meta), path(vcf), path(tbi) ]
 
     reports         = ch_reports
     versions        = ch_versions

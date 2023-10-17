@@ -1,0 +1,28 @@
+nextflow_pipeline {
+
+    name "Tests using only Smoove"
+    script "main.nf"
+    tag "smoove"
+
+    test("Success") {
+        when {
+            params {
+                callers = "smoove"
+            }
+        }
+
+        then {
+            assert workflow.success
+            assert file("${outputDir}/PosCon1/PosCon1.sv.vcf.gz").exists()
+            assert file("${outputDir}/PosCon1/PosCon1.sv.vcf.gz.tbi").exists()
+            assert file("${outputDir}/PosCon2/PosCon2.sv.vcf.gz").exists()
+            assert file("${outputDir}/PosCon2/PosCon2.sv.vcf.gz.tbi").exists()
+            assert file("${outputDir}/PosCon3/PosCon3.sv.vcf.gz").exists()
+            assert file("${outputDir}/PosCon3/PosCon3.sv.vcf.gz.tbi").exists()
+            assert file("${outputDir}/PosCon4/PosCon4.sv.vcf.gz").exists()
+            assert file("${outputDir}/PosCon4/PosCon4.sv.vcf.gz.tbi").exists()
+            assert file("${outputDir}/PosCon5/PosCon5.sv.vcf.gz").exists()
+            assert file("${outputDir}/PosCon5/PosCon5.sv.vcf.gz.tbi").exists()
+        }
+    }
+}

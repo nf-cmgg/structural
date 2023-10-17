@@ -3,41 +3,38 @@
     "$id": "https://raw.githubusercontent.com/CenterForMedicalGeneticsGhent/nf-cmgg-structural/master/assets/schema_input.json",
     "title": "CenterForMedicalGeneticsGhent/nf-cmgg-structural pipeline - params.input schema",
     "description": "Schema for the file provided with params.input",
-    "type": "object",
-    "properties": {
-        "sample": {
-            "type": "string",
-            "meta": "id,sample"
+    "type": "array",
+    "items": {
+        "type": "object",
+        "properties": {
+            "sample": {
+                "type": "string",
+                "meta": ["id", "sample"]
+            },
+            "cram": {
+                "type": "string",
+                "pattern": "^\\S+\\.(cr|b)am$",
+                "format": "file-path",
+                "exists": true
+            },
+            "crai": {
+                "type": "string",
+                "pattern": "^\\S+\\.(crai|bai|csi)$",
+                "format": "file-path",
+                "exists": true
+            },
+            "small_variants": {
+                "type": "string",
+                "pattern": "^\\S+\\.vcf(\\.gz)?$",
+                "format": "file-path",
+                "exists": true
+            },
+            "sex": {
+                "type": "string",
+                "meta": ["sex"],
+                "enum": ["male", "female"]
+            }
         },
-        "family": {
-            "type": "string",
-            "meta": "family"
-        },
-        "cram": {
-            "type": "string",
-            "pattern": "^\\S+\\.cram$",
-            "format": "file-path"
-        },
-        "crai": {
-            "type": "string",
-            "pattern": "^\\S+\\.crai$",
-            "format": "file-path"
-        },
-        "bed": {
-            "type": "string",
-            "pattern": "^\\S+\\.bed$",
-            "format": "file-path"
-        },
-        "ped": {
-            "type": "string",
-            "pattern": "^\\S+\\.ped$",
-            "format": "file-path"
-        },
-        "small_variants": {
-            "type": "string",
-            "pattern": "^\\S+\\.vcf(\\.gz)?$",
-            "format": "file-path"
-        }
-    },
-    "required": ["sample", "cram"]
+        "required": ["sample", "cram"]
+    }
 }

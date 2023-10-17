@@ -1,0 +1,39 @@
+nextflow_pipeline {
+
+    name "Tests using only QDNAseq"
+    script "main.nf"
+    options "-stub"
+    tag "qdnaseq"
+
+    test("Success") {
+        when {
+            params {
+                callers = "qdnaseq"
+            }
+        }
+
+        then {
+            assert workflow.success
+            assert file("${outputDir}/PosCon1/PosCon1.qdnaseq_segments.txt").exists()
+            assert file("${outputDir}/PosCon1/PosCon1.qdnaseq.bed").exists()
+            assert file("${outputDir}/PosCon1/PosCon1.qdnaseq.cna").exists()
+            assert file("${outputDir}/PosCon1/statistics.out").exists()
+            assert file("${outputDir}/PosCon2/PosCon2.qdnaseq_segments.txt").exists()
+            assert file("${outputDir}/PosCon2/PosCon2.qdnaseq.bed").exists()
+            assert file("${outputDir}/PosCon2/PosCon2.qdnaseq.cna").exists()
+            assert file("${outputDir}/PosCon2/statistics.out").exists()
+            assert file("${outputDir}/PosCon3/PosCon3.qdnaseq_segments.txt").exists()
+            assert file("${outputDir}/PosCon3/PosCon3.qdnaseq.bed").exists()
+            assert file("${outputDir}/PosCon3/PosCon3.qdnaseq.cna").exists()
+            assert file("${outputDir}/PosCon3/statistics.out").exists()
+            assert file("${outputDir}/PosCon4/PosCon4.qdnaseq_segments.txt").exists()
+            assert file("${outputDir}/PosCon4/PosCon4.qdnaseq.bed").exists()
+            assert file("${outputDir}/PosCon4/PosCon4.qdnaseq.cna").exists()
+            assert file("${outputDir}/PosCon4/statistics.out").exists()
+            assert file("${outputDir}/PosCon5/PosCon5.qdnaseq_segments.txt").exists()
+            assert file("${outputDir}/PosCon5/PosCon5.qdnaseq.bed").exists()
+            assert file("${outputDir}/PosCon5/PosCon5.qdnaseq.cna").exists()
+            assert file("${outputDir}/PosCon5/statistics.out").exists()
+        }
+    }
+}

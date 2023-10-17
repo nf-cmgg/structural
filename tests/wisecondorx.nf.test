@@ -1,0 +1,34 @@
+nextflow_pipeline {
+
+    name "Tests using only WisecondorX"
+    script "main.nf"
+    options "-stub"
+    tag "wisecondorx"
+
+    test("Success") {
+        when {
+            params {
+                callers = "wisecondorx"
+            }
+        }
+
+        then {
+            assert workflow.success
+            assert file("${outputDir}/PosCon1/PosCon1.wisecondorx_aberrations.bed").exists()
+            assert file("${outputDir}/PosCon1/PosCon1.wisecondorx_bins.bed").exists()
+            assert file("${outputDir}/PosCon1/PosCon1.wisecondorx_segments.bed").exists()
+            assert file("${outputDir}/PosCon2/PosCon2.wisecondorx_aberrations.bed").exists()
+            assert file("${outputDir}/PosCon2/PosCon2.wisecondorx_bins.bed").exists()
+            assert file("${outputDir}/PosCon2/PosCon2.wisecondorx_segments.bed").exists()
+            assert file("${outputDir}/PosCon3/PosCon3.wisecondorx_aberrations.bed").exists()
+            assert file("${outputDir}/PosCon3/PosCon3.wisecondorx_bins.bed").exists()
+            assert file("${outputDir}/PosCon3/PosCon3.wisecondorx_segments.bed").exists()
+            assert file("${outputDir}/PosCon4/PosCon4.wisecondorx_aberrations.bed").exists()
+            assert file("${outputDir}/PosCon4/PosCon4.wisecondorx_bins.bed").exists()
+            assert file("${outputDir}/PosCon4/PosCon4.wisecondorx_segments.bed").exists()
+            assert file("${outputDir}/PosCon5/PosCon5.wisecondorx_aberrations.bed").exists()
+            assert file("${outputDir}/PosCon5/PosCon5.wisecondorx_bins.bed").exists()
+            assert file("${outputDir}/PosCon5/PosCon5.wisecondorx_segments.bed").exists()
+        }
+    }
+}

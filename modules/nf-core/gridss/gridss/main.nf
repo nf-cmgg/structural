@@ -1,6 +1,6 @@
 process GRIDSS_GRIDSS {
     tag "$meta.id"
-    label 'process_medium'
+    label 'process_high'
 
     conda "bioconda::gridss=2.13.2"
     container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
@@ -37,8 +37,7 @@ process GRIDSS_GRIDSS {
         --reference ${fasta} \\
         --threads ${task.cpus} \\
         ${assembly} \\
-        --jvmheap ${task.memory.toGiga() - 1}g \\
-        --otherjvmheap ${task.memory.toGiga() - 1}g \\
+        ${args} \\
         ${inputs}
 
     cat <<-END_VERSIONS > versions.yml

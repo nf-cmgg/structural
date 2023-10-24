@@ -22,7 +22,7 @@ class DynamicContainers {
         def jsonResponse = parser.parseText(biocontainersGet.getInputStream().getText())
 
         def ArrayList images = jsonResponse["images"].findAll { it["image_type"].toLowerCase() == type }
-        if(images.size() > 1) {
+        if(images.size() > 1 && type != "conda") {
             return this.getLatestImage(images)
         } else {
             return images[0]["image_name"]

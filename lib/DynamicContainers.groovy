@@ -1,6 +1,10 @@
 class DynamicContainers {
     static String apiUrl = "https://api.biocontainers.pro/ga4gh/trs/v2"
 
+    public static String findLatest(String containerName, Double version, String type="docker") {
+        this.findLatest(containerName, version as String, type)
+    }
+
     public static String findLatest(String containerName, Float version, String type="docker") {
         this.findLatest(containerName, version as String, type)
     }

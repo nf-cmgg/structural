@@ -28,7 +28,7 @@ class DynamicContainers {
         def ArrayList images = jsonResponse["images"].findAll { it["image_type"].toLowerCase() == type }
         if(images.size() > 1 && type != "conda") {
             return this.getLatestImage(images)
-        } 
+        }
         else if(images.size() == 0 && type == "singularity") {
             images = jsonResponse["images"].findAll { it["image_type"].toLowerCase() == "docker" }
             return this.getLatestImage(images)

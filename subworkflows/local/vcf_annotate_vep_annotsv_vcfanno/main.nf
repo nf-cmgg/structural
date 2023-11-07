@@ -2,13 +2,15 @@
 // Annotate the VCFs
 //
 
-include { ANNOTSV_ANNOTSV                       } from '../../../modules/nf-core/annotsv/annotsv/main'
-include { ENSEMBLVEP_VEP                        } from '../../../modules/nf-core/ensemblvep/vep/main'
-include { VCFANNO                               } from '../../../modules/nf-core/vcfanno/main'
-include { TABIX_BGZIPTABIX as TABIX_ANNOTATED   } from '../../../modules/nf-core/tabix/bgziptabix/main'
-include { TABIX_BGZIPTABIX as TABIX_ANNOTSV     } from '../../../modules/nf-core/tabix/bgziptabix/main'
-include { TABIX_TABIX as TABIX_VEP              } from '../../../modules/nf-core/tabix/tabix/main'
-include { BCFTOOLS_FILTER                       } from '../../../modules/nf-core/bcftools/filter/main'
+include { ANNOTSV_ANNOTSV                           } from '../../../modules/nf-core/annotsv/annotsv/main'
+include { ENSEMBLVEP_VEP                            } from '../../../modules/nf-core/ensemblvep/vep/main'
+include { VCFANNO                                   } from '../../../modules/nf-core/vcfanno/main'
+include { TABIX_BGZIPTABIX as TABIX_ANNOTATED       } from '../../../modules/nf-core/tabix/bgziptabix/main'
+include { TABIX_BGZIPTABIX as TABIX_ANNOTSV         } from '../../../modules/nf-core/tabix/bgziptabix/main'
+include { TABIX_TABIX as TABIX_VEP                  } from '../../../modules/nf-core/tabix/tabix/main'
+include { BCFTOOLS_FILTER                           } from '../../../modules/nf-core/bcftools/filter/main'
+include { BCFTOOLS_FILTER as BCFTOOLS_FILTER_COMMON } from '../../../modules/nf-core/bcftools/filter/main'
+include { TABIX_TABIX as TABIX_FILTER               } from '../../../modules/nf-core/tabix/tabix/main'
 
 workflow VCF_ANNOTATE_VEP_ANNOTSV_VCFANNO {
     take:
@@ -102,13 +104,30 @@ workflow VCF_ANNOTATE_VEP_ANNOTSV_VCFANNO {
     )
     ch_versions = ch_versions.mix(VCFANNO.out.versions)
 
-    TABIX_ANNOTATED(
-        VCFANNO.out.vcf
-    )
-    ch_versions = ch_versions.mix(TABIX_ANNOTATED.out.versions)
     
-    TABIX_ANNOTATED.out.gz_tbi
-        .set { ch_annotated_vcfs }
+    if(!params.annotations_filter) {
+        TABIX_ANNOTATED(
+            VCFANNO.out.vcf
+        )
+        ch_versions = ch_versions.mix(TABIX_ANNOTATED.out.versions)
+
+        TABIX_ANNOTATED.out.gz_tbi
+            .set { ch_annotated_vcfs }
+    }
+
+    if(params.annotations_filter) {
+        BCFTOOLS_FILTER_COMMON(
+            VCFANNO.out.vcf
+        )
+        ch_versions = ch_versions.mix(BCFTOOLS_FILTER_COMMON.out.versions.first())
+
+        TABIX_FILTER(
+            BCFTOOLS_FILTER_COMMON.out.vcf
+        )
+        ch_versions = ch_versions.mix(TABIX_FILTER.out.versions.first())
+
+        ch_annotated_vcfs = BCFTOOLS_FILTER_COMMON.out.vcf.join(TABIX_FILTER.out.tbi, failOnDuplicate:true, failOnMismatch:true)
+    }
 
     emit:
     vcfs            = ch_annotated_vcfs  // channel: [ val(meta), path(vcf), path(tbi) ]

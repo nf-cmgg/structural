@@ -367,6 +367,10 @@
                 "concat_output": {
                     "type": "boolean",
                     "description": "Also output a concatenated VCF with all types analysed included (with the exception of CNVs)"
+                },
+                "annotations_filter": {
+                    "type": "string",
+                    "description": "The filter arguments to use after annotating. e.g. to filter out common variants."
                 }
             },
             "required": ["callers"]

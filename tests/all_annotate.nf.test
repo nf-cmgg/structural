@@ -11,6 +11,7 @@ nextflow_pipeline {
                 callers  = "delly,manta,smoove,gridss,expansionhunter,qdnaseq,wisecondorx"
                 annotate = true
                 concat_output = true
+                annotations_filter = '-i FILTER="PASS"'
             }
         }
 

@@ -279,7 +279,7 @@
                     "fa_icon": "fas fa-file-upload",
                     "hidden": true
                 },
-                "monochrome_logs": {
+                "monochromeLogs": {
                     "type": "boolean",
                     "description": "Do not use coloured log outputs.",
                     "fa_icon": "fas fa-palette",

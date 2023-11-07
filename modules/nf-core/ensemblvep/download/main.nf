@@ -2,10 +2,8 @@ process ENSEMBLVEP_DOWNLOAD {
     tag "$meta.id"
     label 'process_medium'
 
-    conda "bioconda::ensembl-vep=110.0"
-    container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
-        'https://depot.galaxyproject.org/singularity/ensembl-vep:110.0--pl5321h2a3209d_0' :
-        'biocontainers/ensembl-vep:110.0--pl5321h2a3209d_0' }"
+    conda "${ DynamicContainers.findLatest('ensembl-vep', params.vep_version, 'conda') }"
+    container "${ DynamicContainers.findLatest('ensembl-vep', params.vep_version, workflow.containerEngine) }"
 
     input:
     tuple val(meta), val(assembly), val(species), val(cache_version)

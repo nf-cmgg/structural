@@ -1,5 +1,7 @@
 include { WISECONDORX_CONVERT } from '../../../modules/nf-core/wisecondorx/convert/main'
 include { WISECONDORX_PREDICT } from '../../../modules/nf-core/wisecondorx/predict/main'
+include { BEDGOVCF            } from '../../../modules/nf-core/bedgovcf/main'
+include { TABIX_TABIX         } from '../../../modules/nf-core/tabix/tabix/main'
 
 workflow BAM_VARIANT_CALLING_WISECONDORX {
 
@@ -28,6 +30,27 @@ workflow BAM_VARIANT_CALLING_WISECONDORX {
     )
     ch_versions = ch_versions.mix(WISECONDORX_PREDICT.out.versions.first())
 
+    WISECONDORX_PREDICT.out.aberrations_bed
+        .map { meta, bed ->
+            [ meta, bed, file("${projectDir}/assets/bedgovcf/wisecondorx.yaml", checkIfExists:true)]
+        }
+        .set { ch_bedgovcf_input }
+
+    BEDGOVCF(
+        ch_bedgovcf_input,
+        ch_fai
+    )
+    ch_versions = ch_versions.mix(BEDGOVCF.out.versions.first())
+
+    TABIX_TABIX(
+        BEDGOVCF.out.vcf
+    )
+    ch_versions = ch_versions.mix(TABIX_TABIX.out.versions.first())
+
+    BEDGOVCF.out.vcf
+        .join(TABIX_TABIX.out.tbi, failOnDuplicate:true, failOnMismatch:true)
+        .set { ch_vcf }
+
     emit:
     aberrations_bed = WISECONDORX_PREDICT.out.aberrations_bed   // channel: [ val(meta), path(bed) ]
     bins_bed        = WISECONDORX_PREDICT.out.bins_bed          // channel: [ val(meta), path(bed) ]
@@ -35,6 +58,7 @@ workflow BAM_VARIANT_CALLING_WISECONDORX {
     chr_statistics  = WISECONDORX_PREDICT.out.chr_statistics    // channel: [ val(meta), path(txt) ]
     chr_plots       = WISECONDORX_PREDICT.out.chr_plots         // channel: [ val(meta), [ path(png), path(png), ... ] ]
     genome_plot     = WISECONDORX_PREDICT.out.genome_plot       // channel: [ val(meta), path(png) ]
+    vcf             = ch_vcf                                    // channel: [ val(meta), path(vcf) ]
 
     versions        = ch_versions                               // channel: path(versions.yml)
 }

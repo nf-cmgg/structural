@@ -43,9 +43,12 @@ workflow BAM_CNV_CALLING {
             ch_wisecondorx_reference,
             ch_blacklist
         )
+        ch_versions = ch_versions.mix(BAM_VARIANT_CALLING_WISECONDORX.out.versions)
+        ch_called_vcfs = ch_called_vcfs.mix(BAM_VARIANT_CALLING_WISECONDORX.out.vcf)
     }
 
     emit:
     versions            = ch_versions
     reports             = ch_reports
+    vcfs                = ch_called_vcfs
 }

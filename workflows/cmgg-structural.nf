@@ -317,8 +317,7 @@ workflow CMGGSTRUCTURAL {
 
     if(callers.intersect(GlobalVariables.cnvCallers)){
 
-        // Uncomment when CNV VCF files can be made
-        // count_types++
+        count_types++
 
         BAM_CNV_CALLING(
             BAM_PREPARE_SAMTOOLS.out.crams,
@@ -330,6 +329,7 @@ workflow CMGGSTRUCTURAL {
             ch_blacklist
         )
         ch_versions = ch_versions.mix(BAM_CNV_CALLING.out.versions)
+        ch_outputs  = ch_outputs.mix(BAM_CNV_CALLING.out.vcfs)
     }
 
     //

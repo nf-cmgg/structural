@@ -1,6 +1,9 @@
 # Use --header with this config
 chrom:
+  value: $chr
   prefix: chr
+pos:
+  value: $start
 id:
   prefix: wisecondorx_
 alt:

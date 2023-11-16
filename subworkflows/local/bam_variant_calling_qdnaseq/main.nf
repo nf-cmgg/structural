@@ -21,8 +21,15 @@ workflow BAM_VARIANT_CALLING_QDNASEQ {
 
     ch_versions     = Channel.empty()
 
+    ch_crams
+        .map { meta, cram, crai ->
+            def new_meta = meta + [caller:'qdnaseq']
+            [ new_meta, cram, crai ]
+        }
+        .set { ch_caller_crams }
+
     SAMTOOLS_CONVERT(
-        ch_crams,
+        ch_caller_crams,
         ch_fasta.map { it[1] },
         ch_fai.map { it[1] }
     )
@@ -69,18 +76,23 @@ workflow BAM_VARIANT_CALLING_QDNASEQ {
     )
     ch_versions = ch_versions.mix(BEDGOVCF.out.versions.first())
 
-    TABIX_TABIX(
-        BEDGOVCF.out.vcf
-    )
-    ch_versions = ch_versions.mix(TABIX_TABIX.out.versions.first())
-
     BEDGOVCF.out.vcf
-        .join(TABIX_TABIX.out.tbi, failOnDuplicate:true, failOnMismatch:true)
+        .map { meta, vcf ->
+            def new_meta = meta - meta.subMap("caller")
+            [ new_meta, vcf ]
+        }
         .set { ch_vcf }
+
+    if(params.output_callers) {
+        TABIX_TABIX(
+            BEDGOVCF.out.vcf
+        )
+        ch_versions = ch_versions.mix(TABIX_TABIX.out.versions.first())
+    }
 
     emit:
     qdnaseq_beds    = ch_qdnaseq_beds  // channel: [ val(meta), path(bed) ]
-    vcf             = ch_vcf           // channel: [ val(meta), path(vcf), path(tbi) ]
+    vcf             = ch_vcf           // channel: [ val(meta), path(vcf) ]
 
     versions        = ch_versions
 }

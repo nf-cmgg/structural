@@ -6,7 +6,7 @@ include { TABIX_TABIX         } from '../../../modules/nf-core/tabix/tabix/main'
 workflow BAM_VARIANT_CALLING_WISECONDORX {
 
     take:
-    ch_bam          // channel: [ val(meta), path(bam), path(bai) ]
+    ch_crams        // channel: [ val(meta),  path(cram), path(crai) ]
     ch_fasta        // channel: [ val(meta2), path(fasta) ]
     ch_fai          // channel: [ val(meta3), path(fai) ]
     ch_ref          // channel: [ val(meta4), path(reference) ]
@@ -16,8 +16,15 @@ workflow BAM_VARIANT_CALLING_WISECONDORX {
 
     ch_versions = Channel.empty()
 
+    ch_crams
+        .map { meta, cram, crai ->
+            def new_meta = meta + [caller:'wisecondorx']
+            [ new_meta, cram, crai ]
+        }
+        .set { ch_caller_crams }
+
     WISECONDORX_CONVERT(
-        ch_bam,
+        ch_caller_crams,
         ch_fasta,
         ch_fai
     )
@@ -42,14 +49,19 @@ workflow BAM_VARIANT_CALLING_WISECONDORX {
     )
     ch_versions = ch_versions.mix(BEDGOVCF.out.versions.first())
 
-    TABIX_TABIX(
-        BEDGOVCF.out.vcf
-    )
-    ch_versions = ch_versions.mix(TABIX_TABIX.out.versions.first())
-
     BEDGOVCF.out.vcf
-        .join(TABIX_TABIX.out.tbi, failOnDuplicate:true, failOnMismatch:true)
+        .map { meta, vcf ->
+            def new_meta = meta - meta.subMap("caller")
+            [ new_meta, vcf ]
+        }
         .set { ch_vcf }
+
+    if(params.output_callers) {
+        TABIX_TABIX(
+            BEDGOVCF.out.vcf
+        )
+        ch_versions = ch_versions.mix(TABIX_TABIX.out.versions.first())
+    }
 
     emit:
     aberrations_bed = WISECONDORX_PREDICT.out.aberrations_bed   // channel: [ val(meta), path(bed) ]

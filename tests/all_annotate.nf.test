@@ -12,6 +12,7 @@ nextflow_pipeline {
                 annotate = true
                 concat_output = true
                 annotations_filter = '-i FILTER="PASS"'
+                outdir = "${outputDir}"
             }
         }
 
@@ -49,22 +50,32 @@ nextflow_pipeline {
             assert file("${outputDir}/PosCon5/PosCon5.concat.vcf.gz.tbi").exists()
             assert file("${outputDir}/PosCon1/PosCon1.qdnaseq_segments.txt").exists()
             assert file("${outputDir}/PosCon1/PosCon1.qdnaseq.bed").exists()
+            assert file("${outputDir}/PosCon1/PosCon1.cnv.vcf.gz").exists()
+            assert file("${outputDir}/PosCon1/PosCon1.cnv.vcf.gz.tbi").exists()
             assert file("${outputDir}/PosCon1/PosCon1.qdnaseq.cna").exists()
             assert file("${outputDir}/PosCon1/statistics.out").exists()
             assert file("${outputDir}/PosCon2/PosCon2.qdnaseq_segments.txt").exists()
             assert file("${outputDir}/PosCon2/PosCon2.qdnaseq.bed").exists()
+            assert file("${outputDir}/PosCon2/PosCon2.cnv.vcf.gz").exists()
+            assert file("${outputDir}/PosCon2/PosCon2.cnv.vcf.gz.tbi").exists()
             assert file("${outputDir}/PosCon2/PosCon2.qdnaseq.cna").exists()
             assert file("${outputDir}/PosCon2/statistics.out").exists()
             assert file("${outputDir}/PosCon3/PosCon3.qdnaseq_segments.txt").exists()
             assert file("${outputDir}/PosCon3/PosCon3.qdnaseq.bed").exists()
+            assert file("${outputDir}/PosCon3/PosCon3.cnv.vcf.gz").exists()
+            assert file("${outputDir}/PosCon3/PosCon3.cnv.vcf.gz.tbi").exists()
             assert file("${outputDir}/PosCon3/PosCon3.qdnaseq.cna").exists()
             assert file("${outputDir}/PosCon3/statistics.out").exists()
             assert file("${outputDir}/PosCon4/PosCon4.qdnaseq_segments.txt").exists()
             assert file("${outputDir}/PosCon4/PosCon4.qdnaseq.bed").exists()
+            assert file("${outputDir}/PosCon4/PosCon4.cnv.vcf.gz").exists()
+            assert file("${outputDir}/PosCon4/PosCon4.cnv.vcf.gz.tbi").exists()
             assert file("${outputDir}/PosCon4/PosCon4.qdnaseq.cna").exists()
             assert file("${outputDir}/PosCon4/statistics.out").exists()
             assert file("${outputDir}/PosCon5/PosCon5.qdnaseq_segments.txt").exists()
             assert file("${outputDir}/PosCon5/PosCon5.qdnaseq.bed").exists()
+            assert file("${outputDir}/PosCon5/PosCon5.cnv.vcf.gz").exists()
+            assert file("${outputDir}/PosCon5/PosCon5.cnv.vcf.gz.tbi").exists()
             assert file("${outputDir}/PosCon5/PosCon5.qdnaseq.cna").exists()
             assert file("${outputDir}/PosCon5/statistics.out").exists()
             assert file("${outputDir}/PosCon1/PosCon1.wisecondorx_aberrations.bed").exists()

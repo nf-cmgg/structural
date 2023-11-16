@@ -8,6 +8,7 @@ nextflow_pipeline {
         when {
             params {
                 callers = "expansionhunter"
+                outdir = "${outputDir}"
             }
         }
 

@@ -8,6 +8,7 @@ nextflow_pipeline {
         when {
             params {
                 callers = "delly,manta,smoove,gridss,expansionhunter"
+                outdir = "${outputDir}"
             }
         }
 

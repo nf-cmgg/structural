@@ -5,6 +5,8 @@
 include { QDNASEQ as QDNASEQ_MALE       } from '../../../modules/local/qdnaseq/main'
 include { QDNASEQ as QDNASEQ_FEMALE     } from '../../../modules/local/qdnaseq/main'
 include { SAMTOOLS_CONVERT              } from '../../../modules/nf-core/samtools/convert/main'
+include { BEDGOVCF            } from '../../../modules/nf-core/bedgovcf/main'
+include { TABIX_TABIX         } from '../../../modules/nf-core/tabix/tabix/main'
 
 workflow BAM_VARIANT_CALLING_QDNASEQ {
     take:
@@ -48,9 +50,31 @@ workflow BAM_VARIANT_CALLING_QDNASEQ {
         .mix(QDNASEQ_FEMALE.out.bed)
         .set { ch_qdnaseq_beds }
 
-    emit:
-    qdnaseq_beds  = ch_qdnaseq_beds  // channel: [ val(meta), path(bed) ]
+    ch_qdnaseq_beds
+        .map { meta, bed ->
+            [ meta, bed, file("${projectDir}/assets/bedgovcf/qdnaseq.yaml", checkIfExists:true)]
+        }
+        .set { ch_bedgovcf_input }
 
-    versions    = ch_versions
+    BEDGOVCF(
+        ch_bedgovcf_input,
+        ch_fai
+    )
+    ch_versions = ch_versions.mix(BEDGOVCF.out.versions.first())
+
+    TABIX_TABIX(
+        BEDGOVCF.out.vcf
+    )
+    ch_versions = ch_versions.mix(TABIX_TABIX.out.versions.first())
+
+    BEDGOVCF.out.vcf
+        .join(TABIX_TABIX.out.tbi, failOnDuplicate:true, failOnMismatch:true)
+        .set { ch_vcf }
+
+    emit:
+    qdnaseq_beds    = ch_qdnaseq_beds  // channel: [ val(meta), path(bed) ]
+    vcf             = ch_vcf           // channel: [ val(meta), path(vcf), path(tbi) ]
+
+    versions        = ch_versions
 }
 

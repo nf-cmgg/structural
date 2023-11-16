@@ -33,6 +33,7 @@ workflow BAM_CNV_CALLING {
             ch_qdnaseq_female
         )
         ch_versions = ch_versions.mix(BAM_VARIANT_CALLING_QDNASEQ.out.versions)
+        ch_called_vcfs = ch_called_vcfs.mix(BAM_VARIANT_CALLING_QDNASEQ.out.vcf)
     }
 
     if("wisecondorx" in val_callers) {

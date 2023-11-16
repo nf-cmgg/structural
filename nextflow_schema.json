@@ -420,8 +420,13 @@
                 "qdnaseq_bin_size": {
                     "type": "integer",
                     "default": 100000,
-                    "description": "The bin size to use for manta",
+                    "description": "The bin size to use for qdnaseq",
                     "enum": [5000, 50000, 100000, 500000]
+                },
+                "qdnaseq_cnv_ratio": {
+                    "type": "number",
+                    "default": 0.5,
+                    "description": "The minimum value of the absolute cnv ratio for a variant to be considered a CNV"
                 }
             }
         },

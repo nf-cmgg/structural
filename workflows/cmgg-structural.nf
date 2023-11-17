@@ -368,8 +368,15 @@ workflow CMGGSTRUCTURAL {
 
     if(count_types > 1 && params.concat_output) {
 
+        ch_outputs
+            .map { meta, vcf, tbi ->
+                def new_meta = meta - meta.subMap("variant_type")
+                [ new_meta, vcf, tbi ]
+            }
+            .set { ch_concat_input }
+
         VCF_CONCAT_BCFTOOLS(
-            ch_outputs,
+            ch_concat_input,
             count_types
         )
         ch_versions = ch_versions.mix(VCF_CONCAT_BCFTOOLS.out.versions)

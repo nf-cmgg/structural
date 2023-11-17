@@ -2,13 +2,10 @@
 // Call copy number variants
 //
 
-// Import modules
-include { JASMINESV     } from '../../../modules/nf-core/jasminesv/main'
-include { TABIX_TABIX   } from '../../../modules/nf-core/tabix/tabix/main'
-
 // Import subworkflows
 include { BAM_VARIANT_CALLING_QDNASEQ       } from '../bam_variant_calling_qdnaseq/main'
 include { BAM_VARIANT_CALLING_WISECONDORX   } from '../bam_variant_calling_wisecondorx/main'
+include { VCF_MERGE_JASMINE                 } from '../vcf_merge_jasmine/main'
 
 workflow BAM_CNV_CALLING {
     take:
@@ -52,40 +49,17 @@ workflow BAM_CNV_CALLING {
         ch_called_vcfs = ch_called_vcfs.mix(BAM_VARIANT_CALLING_WISECONDORX.out.vcf)
     }
 
-    if(val_callers.size() > 1) {
-        ch_called_vcfs
-            .groupTuple(size:val_callers.size())
-            .map { meta, vcfs ->
-                [ meta, vcfs, [], []]
-            }
-            .set { ch_jasmine_input }
-
-        JASMINESV(
-            ch_jasmine_input,
-            ch_fasta.map { it[1] },
-            ch_fai.map { it[1] },
-            []
-        )
-        ch_versions = ch_versions.mix(JASMINESV.out.versions.first())
-
-        JASMINESV.out.vcf
-            .set { ch_vcfs }
-    } else {
-        ch_called_vcfs
-            .set { ch_vcfs }
-    }
-
-    TABIX_TABIX(
-        ch_vcfs
+    VCF_MERGE_JASMINE(
+        ch_called_vcfs,
+        ch_fasta,
+        ch_fai,
+        val_callers,
+        "cnv"
     )
-    ch_versions = ch_versions.mix(TABIX_TABIX.out.versions.first())
-
-    ch_vcfs
-        .join(TABIX_TABIX.out.tbi, failOnMismatch:true, failOnDuplicate:true)
-        .set { ch_vcfs_out }
+    ch_versions = ch_versions.mix(VCF_MERGE_JASMINE.out.versions)
 
     emit:
     versions            = ch_versions
     reports             = ch_reports
-    vcfs                = ch_vcfs_out
+    vcfs                = VCF_MERGE_JASMINE.out.vcfs
 }

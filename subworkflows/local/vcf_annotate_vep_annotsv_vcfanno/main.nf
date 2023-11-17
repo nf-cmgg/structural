@@ -25,6 +25,7 @@ workflow VCF_ANNOTATE_VEP_ANNOTSV_VCFANNO {
         ch_vep_extra_files                      // channel: [optional]  [ path(file1, file2, file3...) ] => The VEP extra files
         ch_vcfanno_lua                          // channel: [optional]  [ path(lua) ] => The lua script to influence VCFanno
         val_vcfanno_resources                   // list:    [optional]  [ path(file1, file2, file3...) ] => The extra VCFanno files
+        val_variant_types                       // list:    [mandatory] => The variant types
 
     main:
 
@@ -44,11 +45,19 @@ workflow VCF_ANNOTATE_VEP_ANNOTSV_VCFANNO {
     )
     ch_versions = ch_versions.mix(BCFTOOLS_FILTER.out.versions.first())
 
+    ch_small_variants
+        .combine(Channel.fromList(val_variant_types))
+        .map { meta, vcf, type ->
+            def new_meta = meta + [ variant_type:type ]
+            [ new_meta, vcf ]
+        }
+        .set { ch_small_variants_types }
+
     BCFTOOLS_FILTER.out.vcf
         .map { meta, vcf ->
             [ meta, vcf, [] ]
         }
-        .join(ch_small_variants, failOnDuplicate:true, failOnMismatch:true)
+        .join(ch_small_variants_types, failOnDuplicate:true, failOnMismatch:true)
         .set { ch_annotsv_input }
 
     ANNOTSV_ANNOTSV(

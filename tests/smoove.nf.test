@@ -8,7 +8,7 @@ nextflow_pipeline {
         when {
             params {
                 callers = "smoove"
-                outdir = ${outputDir}
+                outdir = "${outputDir}"
             }
         }
 

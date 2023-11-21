@@ -216,23 +216,39 @@ workflow CMGGSTRUCTURAL {
     // Create the input channel
     //
 
-    Channel.fromSamplesheet("input", immutable_meta:false)
-        .set { ch_raw_input }
+    Channel.fromSamplesheet("input")
+        .map { 
+            def meta = it[0]
+            def new_meta = meta.family ? meta : meta + [family:meta.sample]
+            return [ new_meta.family, new_meta ] + it.subList(1, it.size())
+        }
+        .tap { ch_raw_input }
+        .reduce([:]) { counts, entry -> 
+            def family = entry[0]
+            counts[family] = ((counts[family] ?: 0) + 1)
+            return counts
+        }
+        .combine(ch_raw_input)
+        .map { // counts, family, meta, ...
+            it[2] = it[2] + ["family_count":it[0][it[1]]]
+            return it.subList(2, it.size())
+        }
+        .set { ch_input_no_sex }
 
     //
     // Determine the gender if needed
     //
 
     if(callers.intersect(GlobalVariables.sexCallers)) {
-        ch_raw_input
-            .branch { meta, cram, crai, small_variants ->
-                sex: meta.sex
-                no_sex: !meta.sex
+        ch_input_no_sex
+            .branch {
+                sex: it[0].sex
+                no_sex: !it[0].sex
             }
             .set { ch_samplegender_input }
 
         NGSBITS_SAMPLEGENDER(
-            ch_samplegender_input.no_sex.map{ meta, cram, crai, small_variants -> [meta, cram, crai]},
+            ch_samplegender_input.no_sex.map{ it.subList(0, 2) },
             ch_fasta,
             ch_fai,
             "xy"
@@ -241,24 +257,22 @@ workflow CMGGSTRUCTURAL {
 
         NGSBITS_SAMPLEGENDER.out.tsv
             .join(ch_samplegender_input.no_sex, failOnDuplicate:true, failOnMismatch:true)
-            .map { meta, tsv, cram, crai, small_variants ->
-                new_meta = meta + [sex:get_sex(tsv, meta.sample)]
-                [ new_meta, cram, crai, small_variants ]
+            .map { 
+                new_meta = it[0] + [sex:get_sex(tsv, it[0].sample)]
+                return [ new_meta ] + it.subList(1, it.size())
             }
             .mix(ch_samplegender_input.sex)
-            .multiMap({ meta, cram, crai, small_variants ->
-                crams:          [ meta, cram, crai ]
-                small_variants: [ meta, small_variants ]
-            })
-            .set { ch_inputs }
+            .set { ch_input_sex }
     } else {
-        ch_raw_input
-            .multiMap({ meta, cram, crai, small_variants ->
-                crams:          [ meta, cram, crai ]
-                small_variants: [ meta, small_variants ]
-            })
-            .set { ch_inputs }
+        ch_input_no_sex.set { ch_input_sex }
     }
+
+    ch_input_sex
+        .multiMap({ meta, cram, crai, small_variants ->
+            crams:          [ meta, cram, crai ]
+            small_variants: [ meta, small_variants ]
+        })
+        .set { ch_inputs }
 
     //
     // Prepare the inputs

@@ -11,6 +11,10 @@
                 "type": "string",
                 "meta": ["id", "sample"]
             },
+            "family": {
+                "type": "string",
+                "meta": ["family"]
+            },
             "cram": {
                 "type": "string",
                 "pattern": "^\\S+\\.(cr|b)am$",

@@ -8,7 +8,7 @@ include { BCFTOOLS_SORT                                 } from '../../../modules
 
 include { REHEADER_CALLED_VCFS                          } from '../../../modules/local/bcftools/reheader_called_vcfs/main'
 
-workflow VCF_MERGE_JASMINE {
+workflow VCF_MERGE_CALLERS_JASMINE {
     take:
         ch_vcfs     // channel: [mandatory] [ meta, vcf ] => The bgzipped called VCFs
         ch_fasta    // channel: [mandatory] [ meta, fasta ] => The fasta reference file

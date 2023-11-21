@@ -60,6 +60,7 @@ include { BAM_CNV_CALLING                       } from '../subworkflows/local/ba
 include { VCF_ANNOTATE_VEP_ANNOTSV_VCFANNO      } from '../subworkflows/local/vcf_annotate_vep_annotsv_vcfanno/main'
 include { BAM_REPEAT_ESTIMATION_EXPANSIONHUNTER } from '../subworkflows/local/bam_repeat_estimation_expansionhunter/main'
 include { VCF_CONCAT_BCFTOOLS                   } from '../subworkflows/local/vcf_concat_bcftools/main'
+include { VCF_MERGE_FAMILY_JASMINE              } from '../subworkflows/local/vcf_merge_family_jasmine/main'
 
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -395,7 +396,23 @@ workflow CMGGSTRUCTURAL {
         )
         ch_versions = ch_versions.mix(VCF_CONCAT_BCFTOOLS.out.versions)
 
+        VCF_CONCAT_BCFTOOLS.out.vcf
+            .set { ch_concat_vcfs }
+
+    } else {
+        ch_outputs
+            .set { ch_concat_vcfs }
     }
+
+    //
+    // Merge VCFs of the same family into a multi-sample VCF
+    //
+
+    VCF_MERGE_FAMILY_JASMINE(
+        ch_concat_vcfs.map { meta, vcf, tbi -> [ meta, vcf ]},
+        ch_fasta,
+        ch_fai
+    )
 
     //
     // Dump the software versions

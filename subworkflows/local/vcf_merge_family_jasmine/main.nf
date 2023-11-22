@@ -6,7 +6,7 @@ include { TABIX_TABIX                                   } from '../../../modules
 include { JASMINESV                                     } from '../../../modules/nf-core/jasminesv/main'
 include { BCFTOOLS_SORT                                 } from '../../../modules/nf-core/bcftools/sort/main'
 
-include { REHEADER_CALLED_VCFS                          } from '../../../modules/local/bcftools/reheader_called_vcfs/main'
+include { BCFTOOLS_REHEADER                          } from '../../../modules/nf-core/bcftools/reheader/main'
 
 workflow VCF_MERGE_FAMILY_JASMINE {
     take:
@@ -22,12 +22,30 @@ workflow VCF_MERGE_FAMILY_JASMINE {
         .filter { it[0].family_count > 1 }
         .map { meta, vcf ->
             def new_meta = meta - meta.subMap("sample", "sex") + ["id":meta.family]
-            [ groupKey(new_meta, meta.family_count), vcf ]
+            [ groupKey(new_meta, meta.family_count), vcf, meta.sample ]
         }
         .groupTuple()
-        .map { meta, vcfs ->
-            [ meta, vcfs, [], [] ]
+        .map { meta, vcfs, samples ->
+            def new_meta = meta + ["samples":samples]
+            [ new_meta, vcfs ]
         }
+        .map { meta, vcfs -> 
+            [ meta.id, meta, vcfs ]
+        }
+        .tap { ch_meta_file_list }
+        .map { id, meta, vcfs ->
+            [ "${id}.vcf_list.txt", vcfs.collect { it.baseName }.join("\n") ]
+        }
+        .collectFile()
+        .map { 
+            def id = it.name.replaceAll(".vcf_list.txt\$", "")
+            [ id, it ]
+        }
+        .join(ch_meta_file_list, failOnMismatch:true, failOnDuplicate:true)
+        .map { id, file_list, meta, vcfs ->
+            [ meta, vcfs, [], [], file_list ]
+        }
+        .view { it[4].text } 
         .set { ch_jasmine_input }
 
     JASMINESV(
@@ -39,21 +57,42 @@ workflow VCF_MERGE_FAMILY_JASMINE {
     ch_versions = ch_versions.mix(JASMINESV.out.versions.first())
 
     JASMINESV.out.vcf
-        .view()
+        .map { meta, vcf ->
+            [ meta.id, meta ]
+        }
+        .tap { ch_meta }
+        .map { id, meta ->
+            [ "${meta.id}.samples.txt", meta.samples.join("\n") ]
+        }
+        .collectFile()
+        .map { 
+            def id = it.name.replaceAll(".samples.txt\$", "")
+            [ id, it ]
+        }
+        .join(ch_meta, by:0, failOnMismatch:true, failOnDuplicate:true)
+        .map { id, samples, meta ->
+            [ meta, samples ]
+        }
+        .view { it[1].text } 
+        .set { ch_samples }
 
-    // Channel.fromPath("${projectDir}/assets/header.txt")
-    //     .collect()
-    //     .set { ch_new_header }
+    Channel.fromPath("${projectDir}/assets/header.txt")
+        .collect()
+        .set { ch_new_header }
 
-    // REHEADER_CALLED_VCFS(
-    //     JASMINESV.out.vcf,
-    //     ch_new_header,
-    //     ch_fai
-    // )
-    // ch_versions = ch_versions.mix(REHEADER_CALLED_VCFS.out.versions.first())
+    JASMINESV.out.vcf
+        .combine(ch_new_header)
+        .join(ch_samples, failOnDuplicate:true, failOnMismatch:true)
+        .set { ch_reheader_input}
+
+    BCFTOOLS_REHEADER(
+        ch_reheader_input,
+        ch_fai
+    )
+    ch_versions = ch_versions.mix(BCFTOOLS_REHEADER.out.versions.first())
 
     // BCFTOOLS_SORT(
-    //     REHEADER_CALLED_VCFS.out.vcf
+    //     BCFTOOLS_REHEADER.out.vcf
     // )
     // ch_versions = ch_versions.mix(BCFTOOLS_SORT.out.versions.first())
 

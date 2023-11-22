@@ -26,6 +26,12 @@
                         "installed_by": ["modules"],
                         "patch": "modules/nf-core/bcftools/filter/bcftools-filter.diff"
                     },
+                    "bcftools/reheader": {
+                        "branch": "master",
+                        "git_sha": "f99333e98d7839c073ebdb1f2d059162a72c5fa5",
+                        "installed_by": ["modules"],
+                        "patch": "modules/nf-core/bcftools/reheader/bcftools-reheader.diff"
+                    },
                     "bcftools/sort": {
                         "branch": "master",
                         "git_sha": "d6d112a1af2ee8c97fc1932df008183341e7d8fe",
@@ -83,7 +89,8 @@
                     "jasminesv": {
                         "branch": "master",
                         "git_sha": "911696ea0b62df80e900ef244d7867d177971f73",
-                        "installed_by": ["modules"]
+                        "installed_by": ["modules"],
+                        "patch": "modules/nf-core/jasminesv/jasminesv.diff"
                     },
                     "manta/convertinversion": {
                         "branch": "master",

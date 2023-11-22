@@ -6,7 +6,7 @@ include { TABIX_TABIX                                   } from '../../../modules
 include { JASMINESV                                     } from '../../../modules/nf-core/jasminesv/main'
 include { BCFTOOLS_SORT                                 } from '../../../modules/nf-core/bcftools/sort/main'
 
-include { REHEADER_CALLED_VCFS                          } from '../../../modules/local/bcftools/reheader_called_vcfs/main'
+include { BCFTOOLS_REHEADER                          } from '../../../modules/nf-core/bcftools/reheader/main'
 
 workflow VCF_MERGE_CALLERS_JASMINE {
     take:
@@ -28,7 +28,7 @@ workflow VCF_MERGE_CALLERS_JASMINE {
             }
             .groupTuple(size:val_callers.size())
             .map { meta, vcfs ->
-                [ meta, vcfs, [], [] ]
+                [ meta, vcfs, [], [], [] ]
             }
             .dump(tag:'jasmine_input', pretty:true)
             .set { ch_jasmine_input }
@@ -42,18 +42,20 @@ workflow VCF_MERGE_CALLERS_JASMINE {
         ch_versions = ch_versions.mix(JASMINESV.out.versions.first())
 
         Channel.fromPath("${projectDir}/assets/header.txt")
+            .map { meta, header ->
+                [ meta, header, [] ]
+            }
             .collect()
             .set { ch_new_header }
 
-        REHEADER_CALLED_VCFS(
-            JASMINESV.out.vcf,
-            ch_new_header,
+        BCFTOOLS_REHEADER(
+            JASMINESV.out.vcf.combine(ch_new_header),
             ch_fai
         )
-        ch_versions = ch_versions.mix(REHEADER_CALLED_VCFS.out.versions.first())
+        ch_versions = ch_versions.mix(BCFTOOLS_REHEADER.out.versions.first())
 
         BCFTOOLS_SORT(
-            REHEADER_CALLED_VCFS.out.vcf
+            BCFTOOLS_REHEADER.out.vcf
         )
         ch_versions = ch_versions.mix(BCFTOOLS_SORT.out.versions.first())
 

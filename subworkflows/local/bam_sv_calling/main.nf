@@ -12,8 +12,6 @@ include { BAM_VARIANT_CALLING_GRIDSS                    } from '../bam_variant_c
 include { VCF_MERGE_CALLERS_JASMINE                             } from '../vcf_merge_callers_jasmine/main'
 
 // Import modules
-include { REHEADER_CALLED_VCFS                          } from '../../../modules/local/bcftools/reheader_called_vcfs/main'
-
 include { BCFTOOLS_SORT                                 } from '../../../modules/nf-core/bcftools/sort/main'
 include { TABIX_TABIX                                   } from '../../../modules/nf-core/tabix/tabix/main'
 

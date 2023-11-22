@@ -396,7 +396,7 @@ workflow CMGGSTRUCTURAL {
         )
         ch_versions = ch_versions.mix(VCF_CONCAT_BCFTOOLS.out.versions)
 
-        VCF_CONCAT_BCFTOOLS.out.vcf
+        VCF_CONCAT_BCFTOOLS.out.vcfs
             .set { ch_concat_vcfs }
 
     } else {

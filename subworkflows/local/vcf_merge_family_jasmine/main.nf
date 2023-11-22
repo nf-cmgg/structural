@@ -45,7 +45,6 @@ workflow VCF_MERGE_FAMILY_JASMINE {
         .map { id, file_list, meta, vcfs ->
             [ meta, vcfs, [], [], file_list ]
         }
-        .view { it[4].text } 
         .set { ch_jasmine_input }
 
     JASMINESV(
@@ -73,7 +72,6 @@ workflow VCF_MERGE_FAMILY_JASMINE {
         .map { id, samples, meta ->
             [ meta, samples ]
         }
-        .view { it[1].text } 
         .set { ch_samples }
 
     Channel.fromPath("${projectDir}/assets/header.txt")
@@ -83,7 +81,7 @@ workflow VCF_MERGE_FAMILY_JASMINE {
     JASMINESV.out.vcf
         .combine(ch_new_header)
         .join(ch_samples, failOnDuplicate:true, failOnMismatch:true)
-        .set { ch_reheader_input}
+        .set { ch_reheader_input }
 
     BCFTOOLS_REHEADER(
         ch_reheader_input,
@@ -91,26 +89,22 @@ workflow VCF_MERGE_FAMILY_JASMINE {
     )
     ch_versions = ch_versions.mix(BCFTOOLS_REHEADER.out.versions.first())
 
-    // BCFTOOLS_SORT(
-    //     BCFTOOLS_REHEADER.out.vcf
-    // )
-    // ch_versions = ch_versions.mix(BCFTOOLS_SORT.out.versions.first())
+    BCFTOOLS_SORT(
+        BCFTOOLS_REHEADER.out.vcf
+    )
+    ch_versions = ch_versions.mix(BCFTOOLS_SORT.out.versions.first())
 
-    // BCFTOOLS_SORT.out.vcf
-    //     .set { ch_merged_vcfs }
+    TABIX_TABIX(
+        BCFTOOLS_SORT.out.vcf
+    )
+    ch_versions = ch_versions.mix(TABIX_TABIX.out.versions.first())
 
-
-    // TABIX_TABIX(
-    //     ch_merged_vcfs
-    // )
-    // ch_versions = ch_versions.mix(TABIX_TABIX.out.versions.first())
-
-    // ch_merged_vcfs
-    //     .join(TABIX_TABIX.out.tbi, failOnMismatch:true, failOnDuplicate:true)
-    //     .set { ch_vcfs_out }
+    BCFTOOLS_SORT.out.vcf
+        .join(TABIX_TABIX.out.tbi, failOnMismatch:true, failOnDuplicate:true)
+        .set { ch_vcfs_out }
 
     emit:
-    vcfs        = []    // channel: [ val(meta), path(vcf), path(tbi) ]
+    vcfs        = ch_vcfs_out    // channel: [ val(meta), path(vcf), path(tbi) ]
 
     versions    = ch_versions
 }

@@ -21,7 +21,7 @@ workflow VCF_MERGE_FAMILY_JASMINE {
     ch_vcfs
         .filter { it[0].family_count > 1 }
         .map { meta, vcf ->
-            def new_meta = meta - meta.subMap("sample", "sex") + ["id":meta.family]
+            def new_meta = meta - meta.subMap("sample", "sex") + ["id":meta.variant_type ? "${meta.family}.${meta.variant_type}" : meta.family]
             [ groupKey(new_meta, meta.family_count), vcf, meta.sample ]
         }
         .groupTuple()
@@ -34,11 +34,11 @@ workflow VCF_MERGE_FAMILY_JASMINE {
         }
         .tap { ch_meta_file_list }
         .map { id, meta, vcfs ->
-            [ "${id}.vcf_list.txt", vcfs.collect { it.baseName }.join("\n") ]
+            [ "${id}_list.txt", vcfs.collect { it.baseName }.join("\n") ]
         }
         .collectFile()
         .map { 
-            def id = it.name.replaceAll(".vcf_list.txt\$", "")
+            def id = it.name.replaceAll("_list.txt\$", "")
             [ id, it ]
         }
         .join(ch_meta_file_list, failOnMismatch:true, failOnDuplicate:true)
@@ -48,7 +48,7 @@ workflow VCF_MERGE_FAMILY_JASMINE {
         .set { ch_jasmine_input }
 
     JASMINESV(
-        ch_jasmine_input,
+        ch_jasmine_input.view(),
         ch_fasta.map{it[1]},
         ch_fai.map{it[1]},
         []
@@ -89,8 +89,16 @@ workflow VCF_MERGE_FAMILY_JASMINE {
     )
     ch_versions = ch_versions.mix(BCFTOOLS_REHEADER.out.versions.first())
 
+    // samples need to be removed so the joining later happens correctly
+    BCFTOOLS_REHEADER.out.vcf
+        .map { meta, vcf ->
+            def new_meta = meta - meta.subMap("samples")
+            [ new_meta, vcf ]
+        }
+        .set { ch_sort_input }
+
     BCFTOOLS_SORT(
-        BCFTOOLS_REHEADER.out.vcf
+        ch_sort_input
     )
     ch_versions = ch_versions.mix(BCFTOOLS_SORT.out.versions.first())
 

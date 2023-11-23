@@ -42,8 +42,8 @@ workflow VCF_MERGE_CALLERS_JASMINE {
         ch_versions = ch_versions.mix(JASMINESV.out.versions.first())
 
         Channel.fromPath("${projectDir}/assets/header.txt")
-            .map { meta, header ->
-                [ meta, header, [] ]
+            .map { header ->
+                [ header, [] ]
             }
             .collect()
             .set { ch_new_header }

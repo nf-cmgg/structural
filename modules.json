@@ -15,6 +15,11 @@
                         "git_sha": "a8741f8d429a47dfe07f64e776187318519a8f2b",
                         "installed_by": ["modules"]
                     },
+                    "bcftools/annotate": {
+                        "branch": "master",
+                        "git_sha": "3f5420aa22e00bd030a2556dfdffc9e164ec0ec5",
+                        "installed_by": ["modules"]
+                    },
                     "bcftools/concat": {
                         "branch": "master",
                         "git_sha": "911696ea0b62df80e900ef244d7867d177971f73",

@@ -5,6 +5,7 @@
 // Import subworkflows
 include { BAM_VARIANT_CALLING_QDNASEQ       } from '../bam_variant_calling_qdnaseq/main'
 include { BAM_VARIANT_CALLING_WISECONDORX   } from '../bam_variant_calling_wisecondorx/main'
+include { VCF_MERGE_JASMINE                 } from '../vcf_merge_jasmine/main'
 
 workflow BAM_CNV_CALLING {
     take:
@@ -33,6 +34,7 @@ workflow BAM_CNV_CALLING {
             ch_qdnaseq_female
         )
         ch_versions = ch_versions.mix(BAM_VARIANT_CALLING_QDNASEQ.out.versions)
+        ch_called_vcfs = ch_called_vcfs.mix(BAM_VARIANT_CALLING_QDNASEQ.out.vcf)
     }
 
     if("wisecondorx" in val_callers) {
@@ -43,9 +45,21 @@ workflow BAM_CNV_CALLING {
             ch_wisecondorx_reference,
             ch_blacklist
         )
+        ch_versions = ch_versions.mix(BAM_VARIANT_CALLING_WISECONDORX.out.versions)
+        ch_called_vcfs = ch_called_vcfs.mix(BAM_VARIANT_CALLING_WISECONDORX.out.vcf)
     }
+
+    VCF_MERGE_JASMINE(
+        ch_called_vcfs,
+        ch_fasta,
+        ch_fai,
+        val_callers,
+        "cnv"
+    )
+    ch_versions = ch_versions.mix(VCF_MERGE_JASMINE.out.versions)
 
     emit:
     versions            = ch_versions
     reports             = ch_reports
+    vcfs                = VCF_MERGE_JASMINE.out.vcfs
 }

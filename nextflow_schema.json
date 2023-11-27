@@ -355,10 +355,15 @@
                     "type": "boolean",
                     "description": "Output the VCF files from different callers. Warning: This produces a lot of additional output and should only be used for testing purposes"
                 },
-                "callers_support": {
+                "sv_callers_support": {
                     "type": "integer",
                     "default": 1,
-                    "description": "The minimum amount of callers that should detect a variant. All variants that have a lower amount of callers supporting it, will be removed. (Only used when more than one caller is given)"
+                    "description": "The minimum amount of SV callers that should detect a variant. All variants that have a lower amount of callers supporting it, will be removed. (Only used when more than one caller is given)"
+                },
+                "cnv_callers_support": {
+                    "type": "integer",
+                    "default": 1,
+                    "description": "The minimum amount of CNV callers that should detect a variant. All variants that have a lower amount of callers supporting it, will be removed. (Only used when more than one caller is given)"
                 },
                 "annotate": {
                     "type": "boolean",
@@ -420,8 +425,13 @@
                 "qdnaseq_bin_size": {
                     "type": "integer",
                     "default": 100000,
-                    "description": "The bin size to use for manta",
+                    "description": "The bin size to use for qdnaseq",
                     "enum": [5000, 50000, 100000, 500000]
+                },
+                "qdnaseq_cnv_ratio": {
+                    "type": "number",
+                    "default": 0.5,
+                    "description": "The minimum value of the absolute cnv ratio for a variant to be considered a CNV"
                 }
             }
         },

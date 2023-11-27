@@ -31,6 +31,11 @@
                         "git_sha": "d6d112a1af2ee8c97fc1932df008183341e7d8fe",
                         "installed_by": ["modules"]
                     },
+                    "bedgovcf": {
+                        "branch": "master",
+                        "git_sha": "338a5572efbda56110cea2f657615920d8dce58c",
+                        "installed_by": ["modules"]
+                    },
                     "bwa/index": {
                         "branch": "master",
                         "git_sha": "bfed129da5134b4439b1821c917972570d44d39c",

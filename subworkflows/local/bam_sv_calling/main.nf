@@ -142,13 +142,13 @@ workflow BAM_SV_CALLING {
         ch_merge_input,
         ch_fasta,
         ch_fai,
+        val_callers,
+        "sv"
     )
     ch_versions = ch_versions.mix(VCF_MERGE_JASMINE.out.versions)
 
-    VCF_MERGE_JASMINE.out.merged_vcfs.set { ch_merged_vcfs }
-
     emit:
-    vcfs                = ch_merged_vcfs    // channel: [ val(meta), path(vcf), path(tbi) ]
+    vcfs                = VCF_MERGE_JASMINE.out.vcfs    // channel: [ val(meta), path(vcf), path(tbi) ]
 
     versions            = ch_versions
     reports             = ch_reports

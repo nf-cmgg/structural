@@ -57,7 +57,7 @@ jobs:
       # TODO remove the version pinning once nf-test outputDir bug is fixed
       - name: Install nf-test
         run: |
-          conda install -c bioconda nf-test==0.7.3
+          conda install -c bioconda nf-test
 
       - name: Run pipeline with test data
         run: |

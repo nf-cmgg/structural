@@ -16,14 +16,17 @@ for (caller in callers) {
 }
 
 def sv_callers_to_use = callers.intersect(GlobalVariables.svCallers)
+def cnv_callers_to_use = callers.intersect(GlobalVariables.cnvCallers)
 
-if (sv_callers_to_use && params.callers_support > sv_callers_to_use.size()) {
-    error("The --callers_support parameter (${params.callers_support}) is higher than the amount of SV callers in --callers (${sv_callers_to_use.size()}). Please adjust --callers_support to a value lower of equal to the amount of SV callers to use.")
+if (sv_callers_to_use && params.sv_callers_support > sv_callers_to_use.size()) {
+    error("The --sv_callers_support parameter (${params.sv_callers_support}) is higher than the amount of SV callers in --callers (${sv_callers_to_use.size()}). Please adjust --sv_callers_support to a value lower of equal to the amount of SV callers to use.")
+}
+
+if (cnv_callers_to_use && params.cnv_callers_support > cnv_callers_to_use.size()) {
+    error("The --cnv_callers_support parameter (${params.cnv_callers_support}) is higher than the amount of CNV callers in --callers (${cnv_callers_to_use.size()}). Please adjust --cnv_callers_support to a value lower of equal to the amount of CNV callers to use.")
 }
 
 if ("qdnaseq" in callers && (!params.qdnaseq_male || !params.qdnaseq_female)) {
-    println(params.qdnaseq_female)
-    println(params.qdnaseq_male)
     error("Please give the QDNAseq references using --qdnaseq_male and --qdnaseq_female")
 }
 
@@ -88,9 +91,12 @@ def multiqc_report = []
 
 workflow CMGGSTRUCTURAL {
 
-    ch_versions = Channel.empty()
-    ch_reports  = Channel.empty()
-    ch_outputs  = Channel.empty()
+    ch_versions         = Channel.empty()
+    ch_reports          = Channel.empty()
+    ch_outputs          = Channel.empty()
+    ch_annotation_input = Channel.empty()
+
+    variant_types = [] // The variant types that can be annotated this run
     count_types = 0 // The amount of different variant types that can be concatenated
 
     //
@@ -269,9 +275,10 @@ workflow CMGGSTRUCTURAL {
     // Call the variants
     //
 
-    if(callers.intersect(GlobalVariables.svCallers)){
+    if(sv_callers_to_use){
 
         count_types++
+        variant_types.add("sv")
 
         BAM_SV_CALLING(
             BAM_PREPARE_SAMTOOLS.out.crams,
@@ -283,42 +290,18 @@ workflow CMGGSTRUCTURAL {
 
         ch_versions = ch_versions.mix(BAM_SV_CALLING.out.versions)
         ch_reports  = ch_reports.mix(BAM_SV_CALLING.out.reports)
+        ch_annotation_input = ch_annotation_input.mix(BAM_SV_CALLING.out.vcfs)
 
-        //
-        // Annotate the variants
-        //
-
-        if(params.annotate) {
-            VCF_ANNOTATE_VEP_ANNOTSV_VCFANNO(
-                BAM_SV_CALLING.out.vcfs,
-                ch_inputs.small_variants,
-                ch_fasta,
-                ch_fai,
-                ch_annotsv_annotations,
-                ch_annotsv_candidate_genes,
-                ch_annotsv_gene_transcripts,
-                ch_vep_cache,
-                ch_vep_extra_files,
-                ch_vcfanno_lua,
-                val_vcfanno_resources
-            )
-
-            ch_reports  = ch_reports.mix(VCF_ANNOTATE_VEP_ANNOTSV_VCFANNO.out.reports)
-            ch_versions = ch_versions.mix(VCF_ANNOTATE_VEP_ANNOTSV_VCFANNO.out.versions)
-            ch_outputs  = ch_outputs.mix(VCF_ANNOTATE_VEP_ANNOTSV_VCFANNO.out.vcfs)
-        } else {
-            ch_outputs  = ch_outputs.mix(BAM_SV_CALLING.out.vcfs)
-        }
     }
 
     //
     // Copy number calling
     //
 
-    if(callers.intersect(GlobalVariables.cnvCallers)){
+    if(cnv_callers_to_use){
 
-        // Uncomment when CNV VCF files can be made
-        // count_types++
+        count_types++
+        variant_types.add("cnv")
 
         BAM_CNV_CALLING(
             BAM_PREPARE_SAMTOOLS.out.crams,
@@ -329,7 +312,35 @@ workflow CMGGSTRUCTURAL {
             ch_wisecondorx_reference,
             ch_blacklist
         )
-        ch_versions = ch_versions.mix(BAM_CNV_CALLING.out.versions)
+        ch_versions         = ch_versions.mix(BAM_CNV_CALLING.out.versions)
+        ch_annotation_input = ch_annotation_input.mix(BAM_CNV_CALLING.out.vcfs)
+    }
+
+    //
+    // Annotate the variants
+    //
+
+    if(params.annotate) {
+        VCF_ANNOTATE_VEP_ANNOTSV_VCFANNO(
+            ch_annotation_input,
+            ch_inputs.small_variants,
+            ch_fasta,
+            ch_fai,
+            ch_annotsv_annotations,
+            ch_annotsv_candidate_genes,
+            ch_annotsv_gene_transcripts,
+            ch_vep_cache,
+            ch_vep_extra_files,
+            ch_vcfanno_lua,
+            val_vcfanno_resources,
+            variant_types
+        )
+
+        ch_reports  = ch_reports.mix(VCF_ANNOTATE_VEP_ANNOTSV_VCFANNO.out.reports)
+        ch_versions = ch_versions.mix(VCF_ANNOTATE_VEP_ANNOTSV_VCFANNO.out.versions)
+        ch_outputs  = ch_outputs.mix(VCF_ANNOTATE_VEP_ANNOTSV_VCFANNO.out.vcfs)
+    } else {
+        ch_outputs  = ch_outputs.mix(ch_annotation_input)
     }
 
     //
@@ -357,8 +368,15 @@ workflow CMGGSTRUCTURAL {
 
     if(count_types > 1 && params.concat_output) {
 
+        ch_outputs
+            .map { meta, vcf, tbi ->
+                def new_meta = meta - meta.subMap("variant_type")
+                [ new_meta, vcf, tbi ]
+            }
+            .set { ch_concat_input }
+
         VCF_CONCAT_BCFTOOLS(
-            ch_outputs,
+            ch_concat_input,
             count_types
         )
         ch_versions = ch_versions.mix(VCF_CONCAT_BCFTOOLS.out.versions)

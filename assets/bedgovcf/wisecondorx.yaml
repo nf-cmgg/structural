@@ -1,0 +1,54 @@
+# Use --header with this config
+chrom:
+  value: $chr
+  prefix: chr
+pos:
+  value: $start
+id:
+  prefix: wisecondorx_
+alt:
+  value: ~if $type == loss <DEL> <DUP>
+  options:
+    - name: DEL
+      description: "Deletion"
+    - name: DUP
+      description: "Duplication"
+    - name: CNV
+      description: "Copy number variation"
+info:
+  - name: CNV_RATIO
+    value: $ratio
+    type: float
+    number: 1
+    description: "Copy number ratio"
+  - name: ZSCORE
+    value: $zscore
+    type: float
+    number: 1
+    description: "The z-score of the variant"
+  - name: SVTYPE
+    value: CNV
+    type: string
+    number: 1
+    description: "The type of structural variant"
+  - name: END
+    value: $end
+    type: integer
+    number: 1
+    description: "End position of the variant"
+  - name: SVLEN
+    value: ~min $end $start -1
+    type: integer
+    number: 1
+    description: "The total length of the structural variant"
+format:
+  - name: GT
+    value: "."
+    type: string
+    number: 1
+    description: "Genotype"
+  - name: CN
+    value: ~round $ratio
+    type: integer
+    number: 1
+    description: "Copy number"

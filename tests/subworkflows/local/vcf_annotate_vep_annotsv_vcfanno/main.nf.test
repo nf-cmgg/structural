@@ -1,0 +1,174 @@
+nextflow_workflow {
+
+    name "Test Workflow VCF_ANNOTATE_VEP_ANNOTSV_VCFANNO"
+    script "subworkflows/local/vcf_annotate_vep_annotsv_vcfanno/main.nf"
+    workflow "VCF_ANNOTATE_VEP_ANNOTSV_VCFANNO"
+
+    tag "subworkflows"
+    tag "subworkflows_local"
+    tag "vcf_annotate_vep_annotsv_vcfanno"
+
+    options "-stub"
+    config "./nextflow.config"
+
+    test("homo_sapiens - cnv, filter") {
+
+        when {
+            params {
+                annotations_filter = "-i FILTER='PASS'"
+                genome = "GRCh38"
+                species = "homo_sapiens"
+                vep_cache_version = 110
+                annotsv_file_name = "annotsv_annotated"
+            }
+            workflow {
+                """
+                input[0] = Channel.of([
+                    [id:"test", sample:"test", sex:"male", variant_type:"cnv"],
+                    file(params.cnv_vcf1, checkIfExists:true),
+                    file(params.cnv_tbi1, checkIfExists:true)
+                ])
+                input[1] = Channel.of([
+                    [id:"test", sample:"test", sex:"male"],
+                    []
+                ])
+                input[2] = Channel.value([
+                    [id:"fasta"],
+                    file(params.fasta, checkIfExists: true)
+                ])
+                input[3] = Channel.value([
+                    [id:"fai"],
+                    file(params.fai, checkIfExists: true)
+                ])
+                input[4] = [[],[]]
+                input[5] = [[],[]]
+                input[6] = [[],[]]
+                input[7] = []
+                input[8] = []
+                input[9] = []
+                input[10] = []
+                input[11] = ["cnv"]
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert workflow.success },
+                { assert snapshot(
+                    workflow.out.vcfs,
+                    workflow.out.reports
+                ).match() }
+            )
+        }
+
+    }
+
+    test("homo_sapiens - sv, no_filter") {
+
+        when {
+            params {
+                genome = "GRCh38"
+                species = "homo_sapiens"
+                vep_cache_version = 110
+                annotsv_file_name = "annotsv_annotated"
+            }
+            workflow {
+                """
+                input[0] = Channel.of([
+                    [id:"test", sample:"test", sex:"male", variant_type:"sv"],
+                    file(params.sv_vcf1, checkIfExists:true),
+                    file(params.sv_tbi1, checkIfExists:true)
+                ])
+                input[1] = Channel.of([
+                    [id:"test", sample:"test", sex:"male"],
+                    []
+                ])
+                input[2] = Channel.value([
+                    [id:"fasta"],
+                    file(params.fasta, checkIfExists: true)
+                ])
+                input[3] = Channel.value([
+                    [id:"fai"],
+                    file(params.fai, checkIfExists: true)
+                ])
+                input[4] = [[],[]]
+                input[5] = [[],[]]
+                input[6] = [[],[]]
+                input[7] = []
+                input[8] = []
+                input[9] = []
+                input[10] = []
+                input[11] = ["sv"]
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert workflow.success },
+                { assert snapshot(
+                    workflow.out.vcfs,
+                    workflow.out.reports
+                ).match() }
+            )
+        }
+
+    }
+
+    test("homo_sapiens - sv & cnv") {
+
+        when {
+            params {
+                genome = "GRCh38"
+                species = "homo_sapiens"
+                vep_cache_version = 110
+                annotsv_file_name = "annotsv_annotated"
+            }
+            workflow {
+                """
+                input[0] = Channel.of([
+                    [id:"test", sample:"test", sex:"male", variant_type:"sv"],
+                    file(params.sv_vcf1, checkIfExists:true),
+                    file(params.sv_tbi1, checkIfExists:true)
+                ], [
+                    [id:"test", sample:"test", sex:"male", variant_type:"cnv"],
+                    file(params.cnv_vcf1, checkIfExists:true),
+                    file(params.cnv_tbi1, checkIfExists:true)
+                ])
+                input[1] = Channel.of([
+                    [id:"test", sample:"test", sex:"male"],
+                    []
+                ])
+                input[2] = Channel.value([
+                    [id:"fasta"],
+                    file(params.fasta, checkIfExists: true)
+                ])
+                input[3] = Channel.value([
+                    [id:"fai"],
+                    file(params.fai, checkIfExists: true)
+                ])
+                input[4] = [[],[]]
+                input[5] = [[],[]]
+                input[6] = [[],[]]
+                input[7] = []
+                input[8] = []
+                input[9] = []
+                input[10] = []
+                input[11] = ["sv", "cnv"]
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert workflow.success },
+                { assert snapshot(
+                    workflow.out.vcfs,
+                    workflow.out.reports
+                ).match() }
+            )
+        }
+
+    }
+}

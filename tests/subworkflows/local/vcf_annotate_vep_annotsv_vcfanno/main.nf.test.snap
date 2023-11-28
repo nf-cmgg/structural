@@ -1,0 +1,73 @@
+{
+    "homo_sapiens - sv, no_filter": {
+        "content": [
+            [
+                [
+                    {
+                        "id": "test",
+                        "sample": "test",
+                        "sex": "male",
+                        "variant_type": "sv"
+                    },
+                    "test.sv.vcf.gz:md5,d41d8cd98f00b204e9800998ecf8427e",
+                    "test.sv.vcf.gz.tbi:md5,d41d8cd98f00b204e9800998ecf8427e"
+                ]
+            ],
+            [
+                "test.vep.summary.html:md5,d41d8cd98f00b204e9800998ecf8427e"
+            ]
+        ],
+        "timestamp": "2023-11-28T16:22:37.200250278"
+    },
+    "homo_sapiens - sv & cnv": {
+        "content": [
+            [
+                [
+                    {
+                        "id": "test",
+                        "sample": "test",
+                        "sex": "male",
+                        "variant_type": "cnv"
+                    },
+                    "test.cnv.vcf.gz:md5,d41d8cd98f00b204e9800998ecf8427e",
+                    "test.cnv.vcf.gz.tbi:md5,d41d8cd98f00b204e9800998ecf8427e"
+                ],
+                [
+                    {
+                        "id": "test",
+                        "sample": "test",
+                        "sex": "male",
+                        "variant_type": "sv"
+                    },
+                    "test.sv.vcf.gz:md5,d41d8cd98f00b204e9800998ecf8427e",
+                    "test.sv.vcf.gz.tbi:md5,d41d8cd98f00b204e9800998ecf8427e"
+                ]
+            ],
+            [
+                "test.vep.summary.html:md5,d41d8cd98f00b204e9800998ecf8427e",
+                "test.vep.summary.html:md5,d41d8cd98f00b204e9800998ecf8427e"
+            ]
+        ],
+        "timestamp": "2023-11-28T16:22:54.135854427"
+    },
+    "homo_sapiens - cnv, filter": {
+        "content": [
+            [
+                [
+                    {
+                        "id": "test",
+                        "sample": "test",
+                        "sex": "male",
+                        "variant_type": "cnv"
+                    },
+                    "test.cnv.vcf:md5,d41d8cd98f00b204e9800998ecf8427e",
+                    "test.cnv.vcf.tbi:md5,d41d8cd98f00b204e9800998ecf8427e"
+                ]
+            ],
+            [
+                "test.vep.summary.html:md5,d41d8cd98f00b204e9800998ecf8427e"
+            ]
+        ],
+        "timestamp": "2023-11-28T16:20:31.322893085"
+    }
+}

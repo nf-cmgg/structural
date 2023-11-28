@@ -1,0 +1,46 @@
+{
+    "homo_sapiens": {
+        "content": [
+            [
+                [
+                    {
+                        "id": "test",
+                        "sample": "test",
+                        "sex": "male"
+                    },
+                    "test.qdnaseq.vcf.gz:md5,d032c063dd19057fea0f9c985f845a34"
+                ],
+                [
+                    {
+                        "id": "test2",
+                        "sample": "test2",
+                        "sex": "female"
+                    },
+                    "test2.qdnaseq.vcf.gz:md5,d4d7b8884cc1ba0147482f724a4a40b7"
+                ]
+            ],
+            [
+                [
+                    {
+                        "id": "test",
+                        "sample": "test",
+                        "sex": "male",
+                        "caller": "qdnaseq"
+                    },
+                    "test.bed:md5,19be72c3f56297070c6070ded3419dee"
+                ],
+                [
+                    {
+                        "id": "test2",
+                        "sample": "test2",
+                        "sex": "female",
+                        "caller": "qdnaseq"
+                    },
+                    "test2.bed:md5,fed14c95db6bed194f40f262d68399d1"
+                ]
+            ],
+            10
+        ],
+        "timestamp": "2023-11-28T14:42:28.705399045"
+    }
+}

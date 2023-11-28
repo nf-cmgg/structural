@@ -163,6 +163,7 @@
 ##INFO=<ID=RL,Number=1,Type=Integer,Description="The repeat length in basepairs">
 ##INFO=<ID=REPID,Number=1,Type=String,Description="The ID of the repeat">
 ##INFO=<ID=VARID,Number=1,Type=String,Description="Variant identifier as specified in the variant catalog">
+##INFO=<ID=ZSCORE,Number=1,Type=Float,Description="The z-score defined for the CNV">
 ##FORMAT=<ID=CN,Number=1,Type=Integer,Description="Copy number">
 ##FORMAT=<ID=GT,Number=1,Type=String,Description="Genotype">
 ##FORMAT=<ID=GL,Number=G,Type=Float,Description="Log10-scaled genotype likelihoods for RR,RA,AA genotypes">

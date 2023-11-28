@@ -249,7 +249,7 @@ workflow CMGGSTRUCTURAL {
             .set { ch_samplegender_input }
 
         NGSBITS_SAMPLEGENDER(
-            ch_samplegender_input.no_sex.map{ it.subList(0, 2) },
+            ch_samplegender_input.no_sex.map{ it.subList(0, 3) },
             ch_fasta,
             ch_fai,
             "xy"
@@ -259,8 +259,8 @@ workflow CMGGSTRUCTURAL {
         NGSBITS_SAMPLEGENDER.out.tsv
             .join(ch_samplegender_input.no_sex, failOnDuplicate:true, failOnMismatch:true)
             .map { 
-                new_meta = it[0] + [sex:get_sex(tsv, it[0].sample)]
-                return [ new_meta ] + it.subList(1, it.size())
+                new_meta = it[0] + [sex:get_sex(it[1], it[0].sample)]
+                return [ new_meta ] + it.subList(2, it.size())
             }
             .mix(ch_samplegender_input.sex)
             .set { ch_input_sex }

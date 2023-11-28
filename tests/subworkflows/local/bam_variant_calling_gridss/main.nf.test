@@ -52,7 +52,8 @@ nextflow_workflow {
                 { assert workflow.success },
                 { assert snapshot(
                     path(workflow.out.gridss_vcfs[0][1]).linesGzip[-4..-1],
-                    file(workflow.out.gridss_vcfs[0][2]).name
+                    file(workflow.out.gridss_vcfs[0][2]).name,
+                    workflow.trace.succeeded().size()
                 ).match() }
             )
         }

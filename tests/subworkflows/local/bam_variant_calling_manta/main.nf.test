@@ -1,12 +1,12 @@
 nextflow_workflow {
 
-    name "Test Workflow BAM_VARIANT_CALLING_DELLY"
-    script "subworkflows/local/bam_variant_calling_delly/main.nf"
-    workflow "BAM_VARIANT_CALLING_DELLY"
+    name "Test Workflow BAM_VARIANT_CALLING_MANTA"
+    script "subworkflows/local/bam_variant_calling_manta/main.nf"
+    workflow "BAM_VARIANT_CALLING_MANTA"
 
     tag "subworkflows"
     tag "subworkflows_local"
-    tag "bam_variant_calling_delly"
+    tag "bam_variant_calling_manta"
 
     test("homo_sapiens") {
 
@@ -26,6 +26,9 @@ nextflow_workflow {
                     [id:"fai"],
                     file(params.fai, checkIfExists: true)
                 ])
+                input[3] = Channel.value([
+                    file(params.manta_config, checkIfExists: true)
+                ])
                 """
             }
         }
@@ -34,8 +37,8 @@ nextflow_workflow {
             assertAll(
                 { assert workflow.success },
                 { assert snapshot(
-                    path(workflow.out.delly_vcfs[0][1]).linesGzip[-4..-1],
-                    file(workflow.out.delly_vcfs[0][2]).name,
+                    path(workflow.out.manta_vcfs[0][1]).linesGzip[-4..-1],
+                    file(workflow.out.manta_vcfs[0][2]).name,
                     workflow.trace.succeeded().size()
                 ).match() }
             )

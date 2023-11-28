@@ -1,0 +1,50 @@
+nextflow_workflow {
+
+    name "Test Workflow BAM_VARIANT_CALLING_SMOOVE"
+    script "subworkflows/local/bam_variant_calling_smoove/main.nf"
+    workflow "BAM_VARIANT_CALLING_SMOOVE"
+
+    tag "subworkflows"
+    tag "subworkflows_local"
+    tag "bam_variant_calling_smoove"
+
+    test("homo_sapiens") {
+
+        when {
+            workflow {
+                """
+                input[0] = Channel.of([
+                    [id:"test", sample:"test", sex:"male"],
+                    file(params.cram1, checkIfExists: true),
+                    file(params.crai1, checkIfExists: true)
+                ], [
+                    [id:"test2", sample:"test2", sex:"female"],
+                    file(params.cram2, checkIfExists: true),
+                    file(params.crai2, checkIfExists: true)
+                ])
+                input[1] = Channel.value([
+                    [id:"fasta"],
+                    file(params.fasta, checkIfExists: true)
+                ])
+                input[2] = Channel.value([
+                    [id:"fai"],
+                    file(params.fai, checkIfExists: true)
+                ])
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert workflow.success },
+                { assert snapshot(
+                    path(workflow.out.smoove_vcfs[0][1]).linesGzip[-4..-1],
+                    file(workflow.out.smoove_vcfs[0][2]).name,
+                    workflow.trace.succeeded().size()
+                ).match() }
+            )
+        }
+
+    }
+
+}

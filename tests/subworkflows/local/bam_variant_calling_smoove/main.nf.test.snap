@@ -1,0 +1,15 @@
+{
+    "homo_sapiens": {
+        "content": [
+            [
+                "##FORMAT=<ID=PE,Number=1,Type=Integer,Description=\"Number of paired-end reads supporting the variant\">",
+                "##FORMAT=<ID=SR,Number=1,Type=Integer,Description=\"Number of split reads supporting the variant\">",
+                "##FORMAT=<ID=BD,Number=1,Type=Integer,Description=\"Amount of BED evidence supporting the variant\">",
+                "#CHROM\tPOS\tID\tREF\tALT\tQUAL\tFILTER\tINFO\tFORMAT\tPosCon1"
+            ],
+            "test.smoove.vcf.gz.tbi",
+            6
+        ],
+        "timestamp": "2023-11-28T14:45:59.166898036"
+    }
+}

@@ -8,7 +8,7 @@ process JASMINESV {
         'biocontainers/jasminesv:1.1.5--hdfd78af_0' }"
 
     input:
-    tuple val(meta), path(vcfs), path(bams), path(sample_dists)
+    tuple val(meta), path(vcfs), path(bams), path(sample_dists), path(vcf_list)
     path(fasta)
     path(fasta_fai)
     path(chr_norm)
@@ -31,16 +31,18 @@ process JASMINESV {
     iris_argument = args2 != '' ? "iris_args=${args2}" : ""
     sample_dists_argument = sample_dists ? "sample_dists=${sample_dists}" : ""
     chr_norm_argument = chr_norm ? "chr_norm_file=${chr_norm}" : ""
+    make_list = vcf_list ? "" : "ls *.vcf > vcfs.txt"
+    file_list = vcf_list ?: "vcfs.txt"
 
     unzip_inputs = vcfs.collect { it.extension == "gz" ? "    bgzip -d --threads ${task.cpus} ${args2} ${it}" : "" }.join("\n")
     """
     ${unzip_inputs}
 
-    ls *.vcf > vcfs.txt
+    ${make_list}
     ${make_bam}
 
     jasmine \\
-        file_list=vcfs.txt \\
+        file_list=${file_list} \\
         out_file=${prefix}.vcf \\
         threads=${task.cpus} \\
         genome_file=${fasta} \\

@@ -1,0 +1,28 @@
+Changes in module 'nf-core/bcftools/reheader'
+--- modules/nf-core/bcftools/reheader/main.nf
++++ modules/nf-core/bcftools/reheader/main.nf
+@@ -22,7 +22,7 @@
+     def args = task.ext.args ?: ''
+     def prefix = task.ext.prefix ?: "${meta.id}"
+     def fai_argument      = fai ? "--fai $fai" : ""
+-    def header_argument   = header ? "--header $header" : ""
++    def header_argument   = header ? "--header new_header.vcf" : ""
+     def samples_argument  = samples ? "--samples $samples" : ""
+ 
+     def args2 = task.ext.args2 ?: '--output-type z'
+@@ -32,6 +32,13 @@
+                     args2.contains("--output-type v") || args2.contains("-Ov") ? "vcf" :
+                     "vcf"
+     """
++    bcftools view -h ${vcf} | grep -E \\#\\#fileformat=VCF\\|\\#\\#fileDate=\\|\\#\\#reference=\\|\\#\\#smoove_counts_stats= \\
++        > new_header.vcf
++
++    cat ${header} >> new_header.vcf
++
++    bcftools view -h ${vcf} | grep -E \\#CHROM >> new_header.vcf
++
+     bcftools \\
+         reheader \\
+         $fai_argument \\
+
+************************************************************

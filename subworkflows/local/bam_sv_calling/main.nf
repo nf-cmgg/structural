@@ -9,11 +9,9 @@ include { BAM_VARIANT_CALLING_WHAMG                     } from '../bam_variant_c
 include { BAM_VARIANT_CALLING_SMOOVE                    } from '../bam_variant_calling_smoove/main'
 include { BAM_VARIANT_CALLING_SCRAMBLE                  } from '../bam_variant_calling_scramble/main'
 include { BAM_VARIANT_CALLING_GRIDSS                    } from '../bam_variant_calling_gridss/main'
-include { VCF_MERGE_JASMINE                             } from '../vcf_merge_jasmine/main'
+include { VCF_MERGE_CALLERS_JASMINE                             } from '../vcf_merge_callers_jasmine/main'
 
 // Import modules
-include { REHEADER_CALLED_VCFS                          } from '../../../modules/local/bcftools/reheader_called_vcfs/main'
-
 include { BCFTOOLS_SORT                                 } from '../../../modules/nf-core/bcftools/sort/main'
 include { TABIX_TABIX                                   } from '../../../modules/nf-core/tabix/tabix/main'
 
@@ -138,17 +136,17 @@ workflow BAM_SV_CALLING {
         }
         .set { ch_merge_input }
 
-    VCF_MERGE_JASMINE(
+    VCF_MERGE_CALLERS_JASMINE(
         ch_merge_input,
         ch_fasta,
         ch_fai,
         val_callers,
         "sv"
     )
-    ch_versions = ch_versions.mix(VCF_MERGE_JASMINE.out.versions)
+    ch_versions = ch_versions.mix(VCF_MERGE_CALLERS_JASMINE.out.versions)
 
     emit:
-    vcfs                = VCF_MERGE_JASMINE.out.vcfs    // channel: [ val(meta), path(vcf), path(tbi) ]
+    vcfs                = VCF_MERGE_CALLERS_JASMINE.out.vcfs    // channel: [ val(meta), path(vcf), path(tbi) ]
 
     versions            = ch_versions
     reports             = ch_reports

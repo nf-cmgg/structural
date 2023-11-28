@@ -37,6 +37,8 @@ jobs:
           - "expansionhunter"
           - "qdnaseq"
           - "wisecondorx"
+          - "delly_family"
+          - "multi_family"
 
     steps:
       - name: Free some space

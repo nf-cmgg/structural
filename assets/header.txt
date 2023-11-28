@@ -21,6 +21,7 @@
 ##FILTER=<ID=SINGLE_ASSEMBLY,Description="Only one side of the breakpoint could be assembled.">
 ##FILTER=<ID=SINGLE_SUPPORT,Description="Supported by fewer than 'variantcalling.minReads' fragments">
 ##FILTER=<ID=SMALL_EVENT,Description="Event size is smaller than the minimum reportable size specified by 'variantcalling.minSize'">
+##FILTER=<ID=LowDepth,Description="The overall locus depth is below 10x or number of reads spanning one or both breakends is below 5">
 ##ALT=<ID=DEL,Description="Deletion">
 ##ALT=<ID=DUP,Description="Duplication">
 ##ALT=<ID=INV,Description="Inversion">
@@ -157,6 +158,12 @@
 ##INFO=<ID=INTRASAMPLE_IDLIST,Number=.,Type=String,Description="The IDs which were merged in the most recent round of merging">
 ##INFO=<ID=SVLENORG,Number=1,Type=Integer,Description="The SV length calculated by the used variant caller">
 ##INFO=<ID=ORGBEID,Number=1,Type=String,Description="The original ID of the breakend">
+##INFO=<ID=RU,Number=1,Type=String,Description="The repeat unit of the STR">
+##INFO=<ID=REPREF,Number=1,Type=Integer,Description="How many repeats are in the reference">
+##INFO=<ID=RL,Number=1,Type=Integer,Description="The repeat length in basepairs">
+##INFO=<ID=REPID,Number=1,Type=String,Description="The ID of the repeat">
+##INFO=<ID=VARID,Number=1,Type=String,Description="Variant identifier as specified in the variant catalog">
+##INFO=<ID=ZSCORE,Number=1,Type=Float,Description="The z-score defined for the CNV">
 ##FORMAT=<ID=CN,Number=1,Type=Integer,Description="Copy number">
 ##FORMAT=<ID=GT,Number=1,Type=String,Description="Genotype">
 ##FORMAT=<ID=GL,Number=G,Type=Float,Description="Log10-scaled genotype likelihoods for RR,RA,AA genotypes">
@@ -208,3 +215,10 @@
 ##FORMAT=<ID=IS,Number=1,Type=String,Description="Whether or not the variant call was marked as specific due to high read support and length">
 ##FORMAT=<ID=OT,Number=1,Type=String,Description="The original type of the variant">
 ##FORMAT=<ID=DP,Number=1,Type=Integer,Description="Read Depth">
+##FORMAT=<ID=LC,Number=1,Type=Float,Description="Locus coverage">
+##FORMAT=<ID=SO,Number=1,Type=String,Description="The type of reads used to estimate the repeat expansions">
+##FORMAT=<ID=REPCN,Number=1,Type=String,Description="The mean copy number in this repeat expansion">
+##FORMAT=<ID=REPCI,Number=1,Type=String,Description="The confidence interval for the size of the expanded allele">
+##FORMAT=<ID=ADSP,Number=1,Type=String,Description="The amount of spanning reads consistent with the repeat allele">
+##FORMAT=<ID=ADFL,Number=1,Type=String,Description="The amount of flanking reads that overlap the repeat allele">
+##FORMAT=<ID=ADIR,Number=1,Type=String,Description="The amount of in-repeat reads that are consistent with the repeat allele">

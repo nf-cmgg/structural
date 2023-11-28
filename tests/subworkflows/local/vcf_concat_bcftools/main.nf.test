@@ -1,0 +1,48 @@
+nextflow_workflow {
+
+    name "Test Workflow VCF_CONCAT_BCFTOOLS"
+    script "subworkflows/local/vcf_concat_bcftools/main.nf"
+    workflow "VCF_CONCAT_BCFTOOLS"
+
+    tag "subworkflows"
+    tag "subworkflows_local"
+    tag "vcf_concat_bcftools"
+
+    config "./nextflow.config"
+
+    test("homo_sapiens") {
+
+        when {
+            workflow {
+                """
+                input[0] = Channel.of([
+                    [id:"test", sample:"test"],
+                    file(params.sv_vcf1, checkIfExists:true),
+                    file(params.sv_tbi1, checkIfExists:true)
+                ], [
+                    [id:"test", sample:"test"],
+                    file(params.cnv_vcf1, checkIfExists:true),
+                    file(params.cnv_tbi1, checkIfExists:true)
+                ], [
+                    [id:"test", sample:"test"],
+                    file(params.repeats_vcf1, checkIfExists:true),
+                    file(params.repeats_tbi1, checkIfExists:true)
+                ])
+                input[1] = 3
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert workflow.success },
+                { assert snapshot(
+                    path(workflow.out.vcfs[0][1]).linesGzip[-4..-1],
+                    file(workflow.out.vcfs[0][2]).name,
+                ).match() }
+            )
+        }
+
+    }
+
+}

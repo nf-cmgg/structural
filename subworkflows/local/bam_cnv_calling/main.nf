@@ -9,7 +9,7 @@ include { VCF_MERGE_CALLERS_JASMINE                 } from '../vcf_merge_callers
 
 workflow BAM_CNV_CALLING {
     take:
-        ch_crams                    // channel: [mandatory] [ meta, cram, crai, bed ] => The aligned CRAMs per sample with the regions they should be called on
+        ch_crams                    // channel: [mandatory] [ meta, cram, crai ] => The aligned CRAMs per sample with the regions they should be called on
         ch_fasta                    // channel: [mandatory] [ meta, fasta ] => The fasta reference file
         ch_fai                      // channel: [mandatory] [ meta, fai ] => The index of the fasta reference file
         ch_qdnaseq_male             // channel: [mandatory] [ meta, qdnaseq_reference ] => The male reference for qDNAseq

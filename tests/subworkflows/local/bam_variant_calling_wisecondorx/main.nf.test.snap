@@ -1,0 +1,87 @@
+{
+    "homo_sapiens": {
+        "content": [
+            [
+                [
+                    {
+                        "id": "test",
+                        "sample": "test",
+                        "sex": "male",
+                        "caller": "wisecondorx"
+                    },
+                    "test.wisecondorx_aberrations.bed:md5,d41d8cd98f00b204e9800998ecf8427e"
+                ]
+            ],
+            [
+                [
+                    {
+                        "id": "test",
+                        "sample": "test",
+                        "sex": "male",
+                        "caller": "wisecondorx"
+                    },
+                    "test.wisecondorx_bins.bed:md5,d41d8cd98f00b204e9800998ecf8427e"
+                ]
+            ],
+            [
+                [
+                    {
+                        "id": "test",
+                        "sample": "test",
+                        "sex": "male",
+                        "caller": "wisecondorx"
+                    },
+                    "test.wisecondorx_segments.bed:md5,d41d8cd98f00b204e9800998ecf8427e"
+                ]
+            ],
+            [
+                [
+                    {
+                        "id": "test",
+                        "sample": "test",
+                        "sex": "male",
+                        "caller": "wisecondorx"
+                    },
+                    "test.wisecondorx_chr_statistics.txt:md5,d41d8cd98f00b204e9800998ecf8427e"
+                ]
+            ],
+            [
+                [
+                    {
+                        "id": "test",
+                        "sample": "test",
+                        "sex": "male",
+                        "caller": "wisecondorx"
+                    },
+                    [
+                        "chr1.png:md5,d41d8cd98f00b204e9800998ecf8427e",
+                        "chr22.png:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ]
+            ],
+            [
+                [
+                    {
+                        "id": "test",
+                        "sample": "test",
+                        "sex": "male",
+                        "caller": "wisecondorx"
+                    },
+                    "genome_wide.png:md5,d41d8cd98f00b204e9800998ecf8427e"
+                ]
+            ],
+            [
+                [
+                    {
+                        "id": "test",
+                        "sample": "test",
+                        "sex": "male"
+                    },
+                    "test.vcf.gz:md5,d41d8cd98f00b204e9800998ecf8427e"
+                ]
+            ],
+            4
+        ],
+        "timestamp": "2023-11-28T14:53:51.631910304"
+    }
+}

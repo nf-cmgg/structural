@@ -1,0 +1,52 @@
+nextflow_workflow {
+
+    name "Test Workflow VCF_MERGE_FAMILY_JASMINE"
+    script "subworkflows/local/vcf_merge_family_jasmine/main.nf"
+    workflow "VCF_MERGE_FAMILY_JASMINE"
+
+    tag "subworkflows"
+    tag "subworkflows_local"
+    tag "vcf_merge_family_jasmine"
+
+    test("homo_sapiens - one family, variant types") {
+
+        when {
+            workflow {
+                """
+                input[0] = Channel.of([
+                    [id:"PosCon1", sample:"PosCon1", family:"fam", family_count:2, variant_type:"sv"],
+                    file(params.sv_vcf1, checkIfExists:true)
+                ],[
+                    [id:"PosCon2", sample:"PosCon2", family:"fam", family_count:2, variant_type:"sv"],
+                    file(params.sv_vcf2, checkIfExists:true)
+                ],[
+                    [id:"PosCon1", sample:"PosCon1", family:"fam", family_count:2, variant_type:"cnv"],
+                    file(params.cnv_vcf1, checkIfExists:true)
+                ],[
+                    [id:"PosCon2", sample:"PosCon2", family:"fam", family_count:2, variant_type:"cnv"],
+                    file(params.cnv_vcf2, checkIfExists:true)
+                ])
+                input[1] = Channel.value([
+                    [id:"fasta"],
+                    file(params.fasta, checkIfExists: true)
+                ])
+                input[2] = Channel.value([
+                    [id:"fai"],
+                    file(params.fai, checkIfExists: true)
+                ])
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert workflow.success },
+                { assert snapshot(
+                    workflow.out.vcfs
+                ).match() }
+            )
+        }
+
+    }
+
+}

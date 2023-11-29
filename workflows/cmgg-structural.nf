@@ -235,6 +235,24 @@ workflow CMGGSTRUCTURAL {
             it[2] = it[2] + ["family_count":it[0][it[1]].size()]
             return it.subList(2, it.size())
         }
+        .set { ch_input_prepare }
+
+    //
+    // Prepare the inputs
+    //
+
+    BAM_PREPARE_SAMTOOLS(
+        ch_input_prepare.map{ it.subList(0, 3) },
+        ch_fasta,
+        ch_fai
+    )
+    ch_versions = ch_versions.mix(BAM_PREPARE_SAMTOOLS.out.versions)
+
+    BAM_PREPARE_SAMTOOLS.out.crams
+        .join(ch_input_prepare, failOnDuplicate:true, failOnMismatch:true)
+        .map {
+            it.subList(0, 3) + it.subList(5, it.size())
+        }
         .set { ch_input_no_sex }
 
     //
@@ -277,17 +295,6 @@ workflow CMGGSTRUCTURAL {
         .set { ch_inputs }
 
     //
-    // Prepare the inputs
-    //
-
-    BAM_PREPARE_SAMTOOLS(
-        ch_inputs.crams,
-        ch_fasta,
-        ch_fai
-    )
-    ch_versions = ch_versions.mix(BAM_PREPARE_SAMTOOLS.out.versions)
-
-    //
     // Call the variants
     //
 
@@ -297,7 +304,7 @@ workflow CMGGSTRUCTURAL {
         variant_types.add("sv")
 
         BAM_SV_CALLING(
-            BAM_PREPARE_SAMTOOLS.out.crams,
+            ch_inputs.crams,
             ch_fasta,
             ch_fai,
             ch_bwa_index,
@@ -320,7 +327,7 @@ workflow CMGGSTRUCTURAL {
         variant_types.add("cnv")
 
         BAM_CNV_CALLING(
-            BAM_PREPARE_SAMTOOLS.out.crams,
+            ch_inputs.crams,
             ch_fasta,
             ch_fai,
             ch_qdnaseq_male,
@@ -368,7 +375,7 @@ workflow CMGGSTRUCTURAL {
         count_types++
 
         BAM_REPEAT_ESTIMATION_EXPANSIONHUNTER(
-            BAM_PREPARE_SAMTOOLS.out.crams,
+            ch_inputs.crams,
             ch_fasta,
             ch_fai,
             ch_catalog

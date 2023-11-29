@@ -226,12 +226,13 @@ workflow CMGGSTRUCTURAL {
         .tap { ch_raw_input }
         .reduce([:]) { counts, entry -> 
             def family = entry[0]
-            counts[family] = ((counts[family] ?: 0) + 1)
+            counts[family] = ((counts[family] ?: []) + [entry[1].id])
+            counts[family] = counts[family].unique()
             return counts
         }
         .combine(ch_raw_input)
         .map { // counts, family, meta, ...
-            it[2] = it[2] + ["family_count":it[0][it[1]]]
+            it[2] = it[2] + ["family_count":it[0][it[1]].size()]
             return it.subList(2, it.size())
         }
         .set { ch_input_no_sex }

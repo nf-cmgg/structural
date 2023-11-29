@@ -1,10 +1,434 @@
 {
-    "homo_sapiens - one family, variant types": {
+    "homo_sapiens - one family, no variant type": {
         "content": [
+            {
+                "stderr": [
+                    
+                ],
+                "errorReport": null,
+                "exitStatus": 0,
+                "out": {
+                    "0": [
+                        [
+                            {
+                                "id": "fam",
+                                "family": "fam",
+                                "family_count": 2
+                            },
+                            "fam.vcf.gz:md5,beed8ed332373c088c586e60c113dd97",
+                            "fam.vcf.gz.tbi:md5,e41d96db7c92be78567c8d3729cd14c9"
+                        ]
+                    ],
+                    "1": [
+                        "versions.yml:md5,308e0cccbb1af5afe294201d2f3a2a62",
+                        "versions.yml:md5,41ef4071fb9ab8433edd2434680a341d",
+                        "versions.yml:md5,8adb920a118f1589e7d1b33dcf1e44fa",
+                        "versions.yml:md5,e92065725efca251ec1c31565c416d6e"
+                    ],
+                    "vcfs": [
+                        [
+                            {
+                                "id": "fam",
+                                "family": "fam",
+                                "family_count": 2
+                            },
+                            "fam.vcf.gz:md5,beed8ed332373c088c586e60c113dd97",
+                            "fam.vcf.gz.tbi:md5,e41d96db7c92be78567c8d3729cd14c9"
+                        ]
+                    ],
+                    "versions": [
+                        "versions.yml:md5,308e0cccbb1af5afe294201d2f3a2a62",
+                        "versions.yml:md5,41ef4071fb9ab8433edd2434680a341d",
+                        "versions.yml:md5,8adb920a118f1589e7d1b33dcf1e44fa",
+                        "versions.yml:md5,e92065725efca251ec1c31565c416d6e"
+                    ]
+                },
+                "failed": false,
+                "stdout": [
+                    
+                ],
+                "errorMessage": null,
+                "trace": {
+                    "tasksFailed": 0,
+                    "tasksCount": 4,
+                    "tasksSucceeded": 4
+                },
+                "name": "workflow",
+                "success": true
+            },
+            [
+                [
+                    {
+                        "id": "fam",
+                        "family": "fam",
+                        "family_count": 2
+                    },
+                    "fam.vcf.gz:md5,beed8ed332373c088c586e60c113dd97",
+                    "fam.vcf.gz.tbi:md5,e41d96db7c92be78567c8d3729cd14c9"
+                ]
+            ]
+        ],
+        "timestamp": "2023-11-29T16:16:40.004849792"
+    },
+    "homo_sapiens - two samples, no variant type": {
+        "content": [
+            {
+                "stderr": [
+                    
+                ],
+                "errorReport": null,
+                "exitStatus": 0,
+                "out": {
+                    "0": [
+                        
+                    ],
+                    "1": [
+                        
+                    ],
+                    "vcfs": [
+                        
+                    ],
+                    "versions": [
+                        
+                    ]
+                },
+                "failed": false,
+                "stdout": [
+                    
+                ],
+                "errorMessage": null,
+                "trace": {
+                    "tasksFailed": 0,
+                    "tasksCount": 0,
+                    "tasksSucceeded": 0
+                },
+                "name": "workflow",
+                "success": true
+            },
             [
                 
             ]
         ],
-        "timestamp": "2023-11-28T17:00:22.104542075"
+        "timestamp": "2023-11-29T16:09:56.550910518"
+    },
+    "homo_sapiens - two samples, variant types": {
+        "content": [
+            {
+                "stderr": [
+                    
+                ],
+                "errorReport": null,
+                "exitStatus": 0,
+                "out": {
+                    "0": [
+                        
+                    ],
+                    "1": [
+                        
+                    ],
+                    "vcfs": [
+                        
+                    ],
+                    "versions": [
+                        
+                    ]
+                },
+                "failed": false,
+                "stdout": [
+                    
+                ],
+                "errorMessage": null,
+                "trace": {
+                    "tasksFailed": 0,
+                    "tasksCount": 0,
+                    "tasksSucceeded": 0
+                },
+                "name": "workflow",
+                "success": true
+            },
+            [
+                
+            ]
+        ],
+        "timestamp": "2023-11-29T16:09:04.015564676"
+    },
+    "homo_sapiens - one family, variant types": {
+        "content": [
+            {
+                "stderr": [
+                    
+                ],
+                "errorReport": null,
+                "exitStatus": 0,
+                "out": {
+                    "0": [
+                        [
+                            {
+                                "id": "fam.cnv",
+                                "family": "fam",
+                                "family_count": 2,
+                                "variant_type": "cnv"
+                            },
+                            "fam.cnv.vcf.gz:md5,d0f5e66e1e427b2606bc986d664ceb1a",
+                            "fam.cnv.vcf.gz.tbi:md5,9a537add2d1b26c3c9133944702d5c89"
+                        ],
+                        [
+                            {
+                                "id": "fam.sv",
+                                "family": "fam",
+                                "family_count": 2,
+                                "variant_type": "sv"
+                            },
+                            "fam.sv.vcf.gz:md5,450a97547a55c792e67170ec6e0fe1e6",
+                            "fam.sv.vcf.gz.tbi:md5,b4f8b5c0ccbd375b08c24c8fd4db9484"
+                        ]
+                    ],
+                    "1": [
+                        "versions.yml:md5,308e0cccbb1af5afe294201d2f3a2a62",
+                        "versions.yml:md5,41ef4071fb9ab8433edd2434680a341d",
+                        "versions.yml:md5,8adb920a118f1589e7d1b33dcf1e44fa",
+                        "versions.yml:md5,e92065725efca251ec1c31565c416d6e"
+                    ],
+                    "vcfs": [
+                        [
+                            {
+                                "id": "fam.cnv",
+                                "family": "fam",
+                                "family_count": 2,
+                                "variant_type": "cnv"
+                            },
+                            "fam.cnv.vcf.gz:md5,d0f5e66e1e427b2606bc986d664ceb1a",
+                            "fam.cnv.vcf.gz.tbi:md5,9a537add2d1b26c3c9133944702d5c89"
+                        ],
+                        [
+                            {
+                                "id": "fam.sv",
+                                "family": "fam",
+                                "family_count": 2,
+                                "variant_type": "sv"
+                            },
+                            "fam.sv.vcf.gz:md5,450a97547a55c792e67170ec6e0fe1e6",
+                            "fam.sv.vcf.gz.tbi:md5,b4f8b5c0ccbd375b08c24c8fd4db9484"
+                        ]
+                    ],
+                    "versions": [
+                        "versions.yml:md5,308e0cccbb1af5afe294201d2f3a2a62",
+                        "versions.yml:md5,41ef4071fb9ab8433edd2434680a341d",
+                        "versions.yml:md5,8adb920a118f1589e7d1b33dcf1e44fa",
+                        "versions.yml:md5,e92065725efca251ec1c31565c416d6e"
+                    ]
+                },
+                "failed": false,
+                "stdout": [
+                    
+                ],
+                "errorMessage": null,
+                "trace": {
+                    "tasksFailed": 0,
+                    "tasksCount": 8,
+                    "tasksSucceeded": 8
+                },
+                "name": "workflow",
+                "success": true
+            },
+            [
+                [
+                    {
+                        "id": "fam.cnv",
+                        "family": "fam",
+                        "family_count": 2,
+                        "variant_type": "cnv"
+                    },
+                    "fam.cnv.vcf.gz:md5,d0f5e66e1e427b2606bc986d664ceb1a",
+                    "fam.cnv.vcf.gz.tbi:md5,9a537add2d1b26c3c9133944702d5c89"
+                ],
+                [
+                    {
+                        "id": "fam.sv",
+                        "family": "fam",
+                        "family_count": 2,
+                        "variant_type": "sv"
+                    },
+                    "fam.sv.vcf.gz:md5,450a97547a55c792e67170ec6e0fe1e6",
+                    "fam.sv.vcf.gz.tbi:md5,b4f8b5c0ccbd375b08c24c8fd4db9484"
+                ]
+            ]
+        ],
+        "timestamp": "2023-11-29T16:15:12.992028528"
+    },
+    "homo_sapiens - one family & one sample, variant types": {
+        "content": [
+            {
+                "stderr": [
+                    
+                ],
+                "errorReport": null,
+                "exitStatus": 0,
+                "out": {
+                    "0": [
+                        [
+                            {
+                                "id": "fam1.cnv",
+                                "family": "fam1",
+                                "family_count": 2,
+                                "variant_type": "cnv"
+                            },
+                            "fam1.cnv.vcf.gz:md5,e5a06bb81bf3b3c45d5b16d815201b0e",
+                            "fam1.cnv.vcf.gz.tbi:md5,73ee5fb7b2898c647fb27e7a58c3fa52"
+                        ],
+                        [
+                            {
+                                "id": "fam1.sv",
+                                "family": "fam1",
+                                "family_count": 2,
+                                "variant_type": "sv"
+                            },
+                            "fam1.sv.vcf.gz:md5,db7acf435597c4545e95de4e23fb5dff",
+                            "fam1.sv.vcf.gz.tbi:md5,5a4ffd9c1b091ce954148d640fb6ebb6"
+                        ]
+                    ],
+                    "1": [
+                        "versions.yml:md5,308e0cccbb1af5afe294201d2f3a2a62",
+                        "versions.yml:md5,41ef4071fb9ab8433edd2434680a341d",
+                        "versions.yml:md5,8adb920a118f1589e7d1b33dcf1e44fa",
+                        "versions.yml:md5,e92065725efca251ec1c31565c416d6e"
+                    ],
+                    "vcfs": [
+                        [
+                            {
+                                "id": "fam1.cnv",
+                                "family": "fam1",
+                                "family_count": 2,
+                                "variant_type": "cnv"
+                            },
+                            "fam1.cnv.vcf.gz:md5,e5a06bb81bf3b3c45d5b16d815201b0e",
+                            "fam1.cnv.vcf.gz.tbi:md5,73ee5fb7b2898c647fb27e7a58c3fa52"
+                        ],
+                        [
+                            {
+                                "id": "fam1.sv",
+                                "family": "fam1",
+                                "family_count": 2,
+                                "variant_type": "sv"
+                            },
+                            "fam1.sv.vcf.gz:md5,db7acf435597c4545e95de4e23fb5dff",
+                            "fam1.sv.vcf.gz.tbi:md5,5a4ffd9c1b091ce954148d640fb6ebb6"
+                        ]
+                    ],
+                    "versions": [
+                        "versions.yml:md5,308e0cccbb1af5afe294201d2f3a2a62",
+                        "versions.yml:md5,41ef4071fb9ab8433edd2434680a341d",
+                        "versions.yml:md5,8adb920a118f1589e7d1b33dcf1e44fa",
+                        "versions.yml:md5,e92065725efca251ec1c31565c416d6e"
+                    ]
+                },
+                "failed": false,
+                "stdout": [
+                    
+                ],
+                "errorMessage": null,
+                "trace": {
+                    "tasksFailed": 0,
+                    "tasksCount": 8,
+                    "tasksSucceeded": 8
+                },
+                "name": "workflow",
+                "success": true
+            },
+            [
+                [
+                    {
+                        "id": "fam1.cnv",
+                        "family": "fam1",
+                        "family_count": 2,
+                        "variant_type": "cnv"
+                    },
+                    "fam1.cnv.vcf.gz:md5,e5a06bb81bf3b3c45d5b16d815201b0e",
+                    "fam1.cnv.vcf.gz.tbi:md5,73ee5fb7b2898c647fb27e7a58c3fa52"
+                ],
+                [
+                    {
+                        "id": "fam1.sv",
+                        "family": "fam1",
+                        "family_count": 2,
+                        "variant_type": "sv"
+                    },
+                    "fam1.sv.vcf.gz:md5,db7acf435597c4545e95de4e23fb5dff",
+                    "fam1.sv.vcf.gz.tbi:md5,5a4ffd9c1b091ce954148d640fb6ebb6"
+                ]
+            ]
+        ],
+        "timestamp": "2023-11-29T16:16:03.599627152"
+    },
+    "homo_sapiens - one family & one sample, no variant types": {
+        "content": [
+            {
+                "stderr": [
+                    
+                ],
+                "errorReport": null,
+                "exitStatus": 0,
+                "out": {
+                    "0": [
+                        [
+                            {
+                                "id": "fam1",
+                                "family": "fam1",
+                                "family_count": 2
+                            },
+                            "fam1.vcf.gz:md5,c46c56daa949a2153f3edb091fb3cbf0",
+                            "fam1.vcf.gz.tbi:md5,b4f8b5c0ccbd375b08c24c8fd4db9484"
+                        ]
+                    ],
+                    "1": [
+                        "versions.yml:md5,308e0cccbb1af5afe294201d2f3a2a62",
+                        "versions.yml:md5,41ef4071fb9ab8433edd2434680a341d",
+                        "versions.yml:md5,8adb920a118f1589e7d1b33dcf1e44fa",
+                        "versions.yml:md5,e92065725efca251ec1c31565c416d6e"
+                    ],
+                    "vcfs": [
+                        [
+                            {
+                                "id": "fam1",
+                                "family": "fam1",
+                                "family_count": 2
+                            },
+                            "fam1.vcf.gz:md5,c46c56daa949a2153f3edb091fb3cbf0",
+                            "fam1.vcf.gz.tbi:md5,b4f8b5c0ccbd375b08c24c8fd4db9484"
+                        ]
+                    ],
+                    "versions": [
+                        "versions.yml:md5,308e0cccbb1af5afe294201d2f3a2a62",
+                        "versions.yml:md5,41ef4071fb9ab8433edd2434680a341d",
+                        "versions.yml:md5,8adb920a118f1589e7d1b33dcf1e44fa",
+                        "versions.yml:md5,e92065725efca251ec1c31565c416d6e"
+                    ]
+                },
+                "failed": false,
+                "stdout": [
+                    
+                ],
+                "errorMessage": null,
+                "trace": {
+                    "tasksFailed": 0,
+                    "tasksCount": 4,
+                    "tasksSucceeded": 4
+                },
+                "name": "workflow",
+                "success": true
+            },
+            [
+                [
+                    {
+                        "id": "fam1",
+                        "family": "fam1",
+                        "family_count": 2
+                    },
+                    "fam1.vcf.gz:md5,c46c56daa949a2153f3edb091fb3cbf0",
+                    "fam1.vcf.gz.tbi:md5,b4f8b5c0ccbd375b08c24c8fd4db9484"
+                ]
+            ]
+        ],
+        "timestamp": "2023-11-29T16:17:26.635795758"
     }
 }

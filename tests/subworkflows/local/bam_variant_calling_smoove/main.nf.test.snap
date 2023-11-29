@@ -7,9 +7,10 @@
                 "##FORMAT=<ID=BD,Number=1,Type=Integer,Description=\"Amount of BED evidence supporting the variant\">",
                 "#CHROM\tPOS\tID\tREF\tALT\tQUAL\tFILTER\tINFO\tFORMAT\tPosCon1"
             ],
-            "test.smoove.vcf.gz.tbi",
-            3
+            "test.vcf.gz.tbi",
+            3,
+            0
         ],
-        "timestamp": "2023-11-28T14:54:51.405387435"
+        "timestamp": "2023-11-29T16:40:12.411028844"
     }
 }

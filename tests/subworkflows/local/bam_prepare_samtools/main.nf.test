@@ -35,7 +35,8 @@ nextflow_workflow {
                 { assert workflow.success },
                 { assert snapshot(
                     workflow.out.crams,
-                    workflow.trace.succeeded().size()
+                    workflow.trace.succeeded().size(),
+                    workflow.trace.failed().size()
                 ).match()}
             )
         }
@@ -74,7 +75,8 @@ nextflow_workflow {
                 { assert snapshot(
                     file(workflow.out.crams[0][1]).name,
                     file(workflow.out.crams[0][2]).name,
-                    workflow.trace.succeeded().size()
+                    workflow.trace.succeeded().size(),
+                    workflow.trace.failed().size()
                 ).match()}
             )
         }
@@ -112,7 +114,8 @@ nextflow_workflow {
                 { assert workflow.success },
                 { assert snapshot(
                     workflow.out.crams,
-                    workflow.trace.succeeded().size()
+                    workflow.trace.succeeded().size(),
+                    workflow.trace.failed().size()
                 ).match()}
             )
         }

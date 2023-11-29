@@ -36,7 +36,8 @@ nextflow_workflow {
                 { assert snapshot(
                     path(workflow.out.smoove_vcfs[0][1]).linesGzip[-4..-1],
                     file(workflow.out.smoove_vcfs[0][2]).name,
-                    workflow.trace.succeeded().size()
+                    workflow.trace.succeeded().size(),
+                    workflow.trace.failed().size()
                 ).match() }
             )
         }

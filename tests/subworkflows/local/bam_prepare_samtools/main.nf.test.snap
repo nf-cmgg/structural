@@ -12,17 +12,19 @@
                     "test.paired_end.sorted.cram.crai:md5,31ffc1b11f53210e4ac0d55092de0652"
                 ]
             ],
-            1
+            1,
+            0
         ],
-        "timestamp": "2023-11-28T13:19:21.600361731"
+        "timestamp": "2023-11-29T16:38:29.584284221"
     },
     "homo sapiens - [[cram, crai], [cram, []]], fasta, fai - One sample": {
         "content": [
             "test.cram",
             "test.cram.crai",
-            2
+            2,
+            0
         ],
-        "timestamp": "2023-11-28T13:24:23.217939263"
+        "timestamp": "2023-11-29T16:38:40.713398061"
     },
     "homo sapiens - [[cram, crai], [cram, []]], fasta, fai - Two samples": {
         "content": [
@@ -46,8 +48,9 @@
                     "test2.paired_end.sorted.cram.crai:md5,633a024a94932189bd5fbc84f62ce6ac"
                 ]
             ],
-            1
+            1,
+            0
         ],
-        "timestamp": "2023-11-28T13:22:41.340593018"
+        "timestamp": "2023-11-29T16:38:49.788373375"
     }
 }

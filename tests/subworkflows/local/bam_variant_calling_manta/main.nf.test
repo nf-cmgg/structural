@@ -8,6 +8,8 @@ nextflow_workflow {
     tag "subworkflows_local"
     tag "bam_variant_calling_manta"
 
+    config "./nextflow.config"
+
     test("homo_sapiens") {
 
         when {
@@ -39,7 +41,8 @@ nextflow_workflow {
                 { assert snapshot(
                     path(workflow.out.manta_vcfs[0][1]).linesGzip[-4..-1],
                     file(workflow.out.manta_vcfs[0][2]).name,
-                    workflow.trace.succeeded().size()
+                    workflow.trace.succeeded().size(),
+                    workflow.trace.failed().size()
                 ).match() }
             )
         }

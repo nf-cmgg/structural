@@ -15,9 +15,11 @@
             ],
             [
                 "test.vep.summary.html:md5,d41d8cd98f00b204e9800998ecf8427e"
-            ]
+            ],
+            7,
+            0
         ],
-        "timestamp": "2023-11-28T16:22:37.200250278"
+        "timestamp": "2023-11-29T16:42:17.024324881"
     },
     "homo_sapiens - sv & cnv": {
         "content": [
@@ -46,9 +48,11 @@
             [
                 "test.vep.summary.html:md5,d41d8cd98f00b204e9800998ecf8427e",
                 "test.vep.summary.html:md5,d41d8cd98f00b204e9800998ecf8427e"
-            ]
+            ],
+            14,
+            0
         ],
-        "timestamp": "2023-11-28T16:22:54.135854427"
+        "timestamp": "2023-11-29T16:42:37.482751046"
     },
     "homo_sapiens - cnv, filter": {
         "content": [
@@ -66,8 +70,10 @@
             ],
             [
                 "test.vep.summary.html:md5,d41d8cd98f00b204e9800998ecf8427e"
-            ]
+            ],
+            8,
+            0
         ],
-        "timestamp": "2023-11-28T16:20:31.322893085"
+        "timestamp": "2023-11-29T16:41:58.684631877"
     }
 }

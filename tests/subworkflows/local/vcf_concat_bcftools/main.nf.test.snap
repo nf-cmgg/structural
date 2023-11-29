@@ -7,8 +7,10 @@
                 "chr14\t1200\t.\tC\t.\t.\tLowDepth\tEND=12560;REPREF=3786;RL=11360;RU=GCT;VARID=ATXN3;REPID=ATXN3\tGT:SO:REPCN:REPCI:ADSP:ADFL:ADIR:LC\t./.:./.:./.:./.:./.:./.:.:0",
                 "chr14\t15000\t.\tA\t.\t.\tLowDepth\tEND=16550;REPREF=516;RL=1550;RU=GCT;VARID=ATXN2;REPID=ATXN2\tGT:SO:REPCN:REPCI:ADSP:ADFL:ADIR:LC\t./.:./.:./.:./.:./.:./.:.:0"
             ],
-            "test.vcf.gz.tbi"
+            "test.vcf.gz.tbi",
+            2,
+            0
         ],
-        "timestamp": "2023-11-28T16:32:17.674951106"
+        "timestamp": "2023-11-29T16:41:40.61392171"
     }
 }

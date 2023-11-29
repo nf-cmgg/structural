@@ -45,7 +45,8 @@ nextflow_workflow {
                 { assert snapshot(
                     workflow.out.reports,
                     workflow.out.vcfs,
-                    workflow.trace.succeeded().size()
+                    workflow.trace.succeeded().size(),
+                    workflow.trace.failed().size()
                 ).match() }
             )
         }
@@ -85,7 +86,8 @@ nextflow_workflow {
                 { assert snapshot(
                     workflow.out.reports,
                     workflow.out.vcfs,
-                    workflow.trace.succeeded().size()
+                    workflow.trace.succeeded().size(),
+                    workflow.trace.failed().size()
                 ).match() }
             )
         }
@@ -125,7 +127,8 @@ nextflow_workflow {
                 { assert snapshot(
                     workflow.out.reports,
                     workflow.out.vcfs,
-                    workflow.trace.succeeded().size()
+                    workflow.trace.succeeded().size(),
+                    workflow.trace.failed().size()
                 ).match() }
             )
         }
@@ -165,7 +168,8 @@ nextflow_workflow {
                 { assert snapshot(
                     workflow.out.reports,
                     workflow.out.vcfs,
-                    workflow.trace.succeeded().size()
+                    workflow.trace.succeeded().size(),
+                    workflow.trace.failed().size()
                 ).match() }
             )
         }
@@ -205,7 +209,8 @@ nextflow_workflow {
                 { assert snapshot(
                     workflow.out.reports,
                     workflow.out.vcfs,
-                    workflow.trace.succeeded().size()
+                    workflow.trace.succeeded().size(),
+                    workflow.trace.failed().size()
                 ).match() }
             )
         }

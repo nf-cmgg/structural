@@ -7,15 +7,19 @@
                 "chrX\t14586\t0_._duplicate4\tG\t.\t.\tLowDepth\tEND=35698;REPREF=5278;RL=21112;RU=CAGA;VARID=CNBP_CAGA;REPID=CNBP_CAGA;SVLEN=0;STARTVARIANCE=0.000000;ENDVARIANCE=0.000000;AVG_LEN=-1.000000;AVG_START=14586.000000;AVG_END=35698.000000;VARCALLS=1;ALLVARS_EXT=(.);SUPP_VEC_EXT=10;IDLIST_EXT=._duplicate4;SUPP_EXT=1;SUPP_VEC=10;SUPP=1;SVMETHOD=JASMINE;IDLIST=._duplicate4;INTRASAMPLE_IDLIST=._duplicate4\tGT:SO:REPCN:REPCI:ADSP:ADFL:ADIR:LC\t.:.:.:.:.:.:.:0",
                 "chrX\t15000\t0_._duplicate5\tA\t.\t.\tLowDepth\tEND=45826;REPREF=15413;RL=30826;RU=CA;VARID=CNBP_CA;REPID=CNBP_CA;SVLEN=0;STARTVARIANCE=0.000000;ENDVARIANCE=0.000000;AVG_LEN=-1.000000;AVG_START=15000.000000;AVG_END=45826.000000;VARCALLS=1;ALLVARS_EXT=(.);SUPP_VEC_EXT=10;IDLIST_EXT=._duplicate5;SUPP_EXT=1;SUPP_VEC=10;SUPP=1;SVMETHOD=JASMINE;IDLIST=._duplicate5;INTRASAMPLE_IDLIST=._duplicate5\tGT:SO:REPCN:REPCI:ADSP:ADFL:ADIR:LC\t.:.:.:.:.:.:.:0"
             ],
-            "test.sv.vcf.gz.tbi"
+            "test.sv.vcf.gz.tbi",
+            4,
+            0
         ],
-        "timestamp": "2023-11-28T16:52:07.160633346"
+        "timestamp": "2023-11-29T16:35:23.832398932"
     },
     "homo_sapiens - one caller": {
         "content": [
             "PosCon1.sv.vcf.gz",
-            "PosCon1.sv.vcf.gz.tbi"
+            "PosCon1.sv.vcf.gz.tbi",
+            1,
+            0
         ],
-        "timestamp": "2023-11-28T16:52:15.638281779"
+        "timestamp": "2023-11-29T16:35:33.798906194"
     }
 }

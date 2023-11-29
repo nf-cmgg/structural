@@ -44,8 +44,9 @@ nextflow_workflow {
             assertAll(
                 { assert workflow.success },
                 { assert snapshot(
-                    workflow,
-                    workflow.out.vcfs
+                    workflow.out.vcfs,
+                    workflow.trace.succeeded().size(),
+                    workflow.trace.failed().size()
                 ).match() }
             )
         }
@@ -86,8 +87,9 @@ nextflow_workflow {
             assertAll(
                 { assert workflow.success },
                 { assert snapshot(
-                    workflow,
-                    workflow.out.vcfs
+                    workflow.out.vcfs,
+                    workflow.trace.succeeded().size(),
+                    workflow.trace.failed().size()
                 ).match() }
             )
         }
@@ -134,8 +136,9 @@ nextflow_workflow {
             assertAll(
                 { assert workflow.success },
                 { assert snapshot(
-                    workflow,
-                    workflow.out.vcfs
+                    workflow.out.vcfs,
+                    workflow.trace.succeeded().size(),
+                    workflow.trace.failed().size()
                 ).match() }
             )
         }
@@ -170,8 +173,9 @@ nextflow_workflow {
             assertAll(
                 { assert workflow.success },
                 { assert snapshot(
-                    workflow,
-                    workflow.out.vcfs
+                    workflow.out.vcfs,
+                    workflow.trace.succeeded().size(),
+                    workflow.trace.failed().size()
                 ).match() }
             )
         }
@@ -206,8 +210,9 @@ nextflow_workflow {
             assertAll(
                 { assert workflow.success },
                 { assert snapshot(
-                    workflow,
-                    workflow.out.vcfs
+                    workflow.out.vcfs,
+                    workflow.trace.succeeded().size(),
+                    workflow.trace.failed().size()
                 ).match() }
             )
         }
@@ -245,8 +250,9 @@ nextflow_workflow {
             assertAll(
                 { assert workflow.success },
                 { assert snapshot(
-                    workflow,
-                    workflow.out.vcfs
+                    workflow.out.vcfs,
+                    workflow.trace.succeeded().size(),
+                    workflow.trace.failed().size()
                 ).match() }
             )
         }

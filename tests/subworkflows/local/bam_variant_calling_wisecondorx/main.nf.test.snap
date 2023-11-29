@@ -9,7 +9,7 @@
                         "sex": "male",
                         "caller": "wisecondorx"
                     },
-                    "test.wisecondorx_aberrations.bed:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    "test_aberrations.bed:md5,d41d8cd98f00b204e9800998ecf8427e"
                 ]
             ],
             [
@@ -20,7 +20,7 @@
                         "sex": "male",
                         "caller": "wisecondorx"
                     },
-                    "test.wisecondorx_bins.bed:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    "test_bins.bed:md5,d41d8cd98f00b204e9800998ecf8427e"
                 ]
             ],
             [
@@ -31,7 +31,7 @@
                         "sex": "male",
                         "caller": "wisecondorx"
                     },
-                    "test.wisecondorx_segments.bed:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    "test_segments.bed:md5,d41d8cd98f00b204e9800998ecf8427e"
                 ]
             ],
             [
@@ -42,7 +42,7 @@
                         "sex": "male",
                         "caller": "wisecondorx"
                     },
-                    "test.wisecondorx_chr_statistics.txt:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    "test_chr_statistics.txt:md5,d41d8cd98f00b204e9800998ecf8427e"
                 ]
             ],
             [
@@ -80,8 +80,9 @@
                     "test.vcf.gz:md5,d41d8cd98f00b204e9800998ecf8427e"
                 ]
             ],
-            4
+            4,
+            0
         ],
-        "timestamp": "2023-11-28T14:53:51.631910304"
+        "timestamp": "2023-11-29T16:38:20.994392088"
     }
 }

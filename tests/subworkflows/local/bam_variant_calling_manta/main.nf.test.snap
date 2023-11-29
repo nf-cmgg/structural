@@ -8,8 +8,9 @@
                 "chr16\t1061455\tMantaDEL:8:0:0:0:0:0\tGTTCCACTCATGTTGTTGCAGATTACTGGATCTCACTCTTTTTTATGGGTGAATCGTACTTCATAGTGTATATGTACC\tG\t619\tPASS\tEND=1061532;SVTYPE=DEL;SVLEN=-77;CIGAR=1M77D;CIPOS=0,5;HOMLEN=5;HOMSEQ=TTCCA\tGT:FT:GQ:PL:PR:SR\t1/1:PASS:59:672,62,0:0,0:0,19"
             ],
             "test.manta.vcf.gz.tbi",
-            4
+            4,
+            0
         ],
-        "timestamp": "2023-11-28T14:32:21.474383641"
+        "timestamp": "2023-11-29T16:46:28.352122332"
     }
 }

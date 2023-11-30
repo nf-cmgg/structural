@@ -18,7 +18,8 @@
                     "bcftools/annotate": {
                         "branch": "master",
                         "git_sha": "3f5420aa22e00bd030a2556dfdffc9e164ec0ec5",
-                        "installed_by": ["modules"]
+                        "installed_by": ["modules"],
+                        "patch": "modules/nf-core/bcftools/annotate/bcftools-annotate.diff"
                     },
                     "bcftools/concat": {
                         "branch": "master",
@@ -83,7 +84,8 @@
                     "gawk": {
                         "branch": "master",
                         "git_sha": "911696ea0b62df80e900ef244d7867d177971f73",
-                        "installed_by": ["modules"]
+                        "installed_by": ["modules"],
+                        "patch": "modules/nf-core/gawk/gawk.diff"
                     },
                     "gridss/gridss": {
                         "branch": "master",

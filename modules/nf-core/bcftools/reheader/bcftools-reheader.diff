@@ -1,7 +1,18 @@
 Changes in module 'nf-core/bcftools/reheader'
 --- modules/nf-core/bcftools/reheader/main.nf
 +++ modules/nf-core/bcftools/reheader/main.nf
-@@ -22,7 +22,7 @@
+@@ -12,8 +12,8 @@
+     tuple val(meta2), path(fai)
+ 
+     output:
+-    tuple val(meta), path("*.{vcf,vcf.gz,bcf,bcf.gz}"), emit: vcf
+-    path "versions.yml"                               , emit: versions
++    tuple val(meta), path("*.${extension}"), emit: vcf
++    path "versions.yml"                    , emit: versions
+ 
+     when:
+     task.ext.when == null || task.ext.when
+@@ -22,16 +22,23 @@
      def args = task.ext.args ?: ''
      def prefix = task.ext.prefix ?: "${meta.id}"
      def fai_argument      = fai ? "--fai $fai" : ""
@@ -10,7 +21,10 @@ Changes in module 'nf-core/bcftools/reheader'
      def samples_argument  = samples ? "--samples $samples" : ""
  
      def args2 = task.ext.args2 ?: '--output-type z'
-@@ -32,6 +32,13 @@
+-    def extension = args2.contains("--output-type b") || args2.contains("-Ob") ? "bcf.gz" :
++    extension = args2.contains("--output-type b") || args2.contains("-Ob") ? "bcf.gz" :
+                     args2.contains("--output-type u") || args2.contains("-Ou") ? "bcf" :
+                     args2.contains("--output-type z") || args2.contains("-Oz") ? "vcf.gz" :
                      args2.contains("--output-type v") || args2.contains("-Ov") ? "vcf" :
                      "vcf"
      """
@@ -24,5 +38,14 @@ Changes in module 'nf-core/bcftools/reheader'
      bcftools \\
          reheader \\
          $fai_argument \\
+@@ -54,7 +61,7 @@
+     def args2 = task.ext.args2 ?: '--output-type z'
+     def prefix = task.ext.prefix ?: "${meta.id}"
+ 
+-    def extension = args2.contains("--output-type b") || args2.contains("-Ob") ? "bcf.gz" :
++    extension = args2.contains("--output-type b") || args2.contains("-Ob") ? "bcf.gz" :
+                     args2.contains("--output-type u") || args2.contains("-Ou") ? "bcf" :
+                     args2.contains("--output-type z") || args2.contains("-Oz") ? "vcf.gz" :
+                     args2.contains("--output-type v") || args2.contains("-Ov") ? "vcf" :
 
 ************************************************************

@@ -1,0 +1,42 @@
+nextflow_pipeline {
+
+    name "Test Workflow main.nf"
+    script "main.nf"
+
+    tag "pipeline"
+    tag "pipeline_duplicates"
+
+    options "-stub"
+
+    test("duplicate of 2 lines + 1 sample") {
+
+        when {
+            params {
+                outdir = "${outputDir}"
+                input = "${baseDir}/tests/pipeline/duplicates/samplesheet_duplicate2.csv"
+                max_cpus   = 2
+                max_memory = '6.GB'
+                max_time   = '6.h'
+            }
+        }
+
+        then {
+            assertAll(
+                { assert workflow.success },
+                { assert snapshot(
+                    workflow.stdout,
+                    path("$outputDir").list().findAll{
+                        !it.toString().endsWith("pipeline_info")
+                    },
+                    path("$outputDir").list().collect{
+                        it.toString().split("/")[-1]
+                    }
+                ).match()}
+            )
+        }
+
+    }
+
+}
+
+

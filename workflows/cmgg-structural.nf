@@ -248,11 +248,16 @@ workflow CMGGSTRUCTURAL {
     )
     ch_versions = ch_versions.mix(BAM_PREPARE_SAMTOOLS.out.versions)
 
-    BAM_PREPARE_SAMTOOLS.out.crams
-        .join(ch_input_prepare, failOnDuplicate:true, failOnMismatch:true)
+    ch_input_prepare
+        .map{ [it[0]] + it.subList(3, it.size()) }
+        .groupTuple()
         .map {
-            it.subList(0, 3) + it.subList(5, it.size())
+            [ it[0] ] + it.subList(1, it.size()).collect { it.find { it != [] } ?: [] }
         }
+        .set { ch_deduplicated }
+
+    BAM_PREPARE_SAMTOOLS.out.crams
+        .join(ch_deduplicated, failOnDuplicate:true, failOnMismatch:true)
         .set { ch_input_no_sex }
 
     //

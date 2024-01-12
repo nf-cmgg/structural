@@ -1,24 +1,8 @@
 {
     "homo_sapiens": {
         "content": [
-            [
-                [
-                    {
-                        "id": "test",
-                        "sample": "test",
-                        "sex": "male"
-                    },
-                    "test.qdnaseq.vcf.gz:md5,d032c063dd19057fea0f9c985f845a34"
-                ],
-                [
-                    {
-                        "id": "test2",
-                        "sample": "test2",
-                        "sex": "female"
-                    },
-                    "test2.qdnaseq.vcf.gz:md5,d4d7b8884cc1ba0147482f724a4a40b7"
-                ]
-            ],
+            "test.qdnaseq.vcf.gz",
+            "test2.qdnaseq.vcf.gz",
             [
                 [
                     {
@@ -42,6 +26,6 @@
             10,
             0
         ],
-        "timestamp": "2023-11-29T16:39:34.961850643"
+        "timestamp": "2024-01-12T11:33:39.694814993"
     }
 }

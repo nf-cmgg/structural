@@ -81,7 +81,7 @@ jobs:
           report_paths: "default.xml"
 
       - name: Upload log file artifact
-        if: failed()
+        if: failure()
         uses: actions/upload-artifact@v3
         with:
           name: nf-test-workdir

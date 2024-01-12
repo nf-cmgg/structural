@@ -81,8 +81,8 @@ jobs:
           report_paths: "default.xml"
       
       - name: Upload log file artifact
-        if: ${{ always() }}
+        if: ${{ failed() }}
         uses: actions/upload-artifact@v3
         with:
-          name: nf-core-log-file
-          path: create-test-wf/log.txt
+          name: test-data-logs
+          path: ./

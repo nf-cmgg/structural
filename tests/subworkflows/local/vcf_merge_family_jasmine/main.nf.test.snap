@@ -1,21 +1,12 @@
 {
     "homo_sapiens - one family, no variant type": {
         "content": [
-            [
-                [
-                    {
-                        "id": "fam",
-                        "family": "fam",
-                        "family_count": 2
-                    },
-                    "fam.vcf.gz:md5,a97aa4a0fe7355ac26b7295d49faf11e",
-                    "fam.vcf.gz.tbi:md5,e41d96db7c92be78567c8d3729cd14c9"
-                ]
-            ],
+            "fam.vcf.gz",
+            "fam.vcf.gz.tbi",
             4,
             0
         ],
-        "timestamp": "2023-11-29T16:36:45.130738343"
+        "timestamp": "2024-01-12T14:06:35.803693267"
     },
     "homo_sapiens - two samples, no variant type": {
         "content": [
@@ -39,78 +30,29 @@
     },
     "homo_sapiens - one family, variant types": {
         "content": [
-            [
-                [
-                    {
-                        "id": "fam.cnv",
-                        "family": "fam",
-                        "family_count": 2,
-                        "variant_type": "cnv"
-                    },
-                    "fam.cnv.vcf.gz:md5,b3d9538517168d45f393dd08f0e8116b",
-                    "fam.cnv.vcf.gz.tbi:md5,8c6edd6a47064e9fca9a446a895d5539"
-                ],
-                [
-                    {
-                        "id": "fam.sv",
-                        "family": "fam",
-                        "family_count": 2,
-                        "variant_type": "sv"
-                    },
-                    "fam.sv.vcf.gz:md5,a0c536fb095c5e7a9d10a9730d7c165f",
-                    "fam.sv.vcf.gz.tbi:md5,606c76a1fc68057f10012c72da848d53"
-                ]
-            ],
+            "fam.cnv.vcf.gz",
+            "fam.cnv.vcf.gz.tbi",
             8,
             0
         ],
-        "timestamp": "2023-11-29T16:35:55.849808645"
+        "timestamp": "2024-01-12T14:05:29.802719932"
     },
     "homo_sapiens - one family & one sample, variant types": {
         "content": [
-            [
-                [
-                    {
-                        "id": "fam1.cnv",
-                        "family": "fam1",
-                        "family_count": 2,
-                        "variant_type": "cnv"
-                    },
-                    "fam1.cnv.vcf.gz:md5,ad6674e7a04de103a707c1b00c8c9bc3",
-                    "fam1.cnv.vcf.gz.tbi:md5,73ee5fb7b2898c647fb27e7a58c3fa52"
-                ],
-                [
-                    {
-                        "id": "fam1.sv",
-                        "family": "fam1",
-                        "family_count": 2,
-                        "variant_type": "sv"
-                    },
-                    "fam1.sv.vcf.gz:md5,45dea5279c9f7ee208711a0e02b23c9f",
-                    "fam1.sv.vcf.gz.tbi:md5,5a4ffd9c1b091ce954148d640fb6ebb6"
-                ]
-            ],
+            "fam1.cnv.vcf.gz",
+            "fam1.cnv.vcf.gz.tbi",
             8,
             0
         ],
-        "timestamp": "2023-11-29T16:36:26.267056157"
+        "timestamp": "2024-01-12T14:06:12.197270001"
     },
     "homo_sapiens - one family & one sample, no variant types": {
         "content": [
-            [
-                [
-                    {
-                        "id": "fam1",
-                        "family": "fam1",
-                        "family_count": 2
-                    },
-                    "fam1.vcf.gz:md5,82b547272da67ef67c5909bbf4b08a90",
-                    "fam1.vcf.gz.tbi:md5,b4f8b5c0ccbd375b08c24c8fd4db9484"
-                ]
-            ],
+            "fam1.vcf.gz",
+            "fam1.vcf.gz.tbi",
             4,
             0
         ],
-        "timestamp": "2023-11-29T16:37:12.573913561"
+        "timestamp": "2024-01-12T14:07:09.457160509"
     }
 }

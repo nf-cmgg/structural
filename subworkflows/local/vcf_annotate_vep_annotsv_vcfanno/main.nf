@@ -2,14 +2,19 @@
 // Annotate the VCFs
 //
 
+include { BCFTOOLS_SPLIT_BY_SVTYPE                  } from '../../../modules/local/bcftools/split_by_svtype'
+
 include { ANNOTSV_ANNOTSV                           } from '../../../modules/nf-core/annotsv/annotsv/main'
 include { ENSEMBLVEP_VEP                            } from '../../../modules/nf-core/ensemblvep/vep/main'
 include { VCFANNO                                   } from '../../../modules/nf-core/vcfanno/main'
 include { TABIX_BGZIPTABIX as TABIX_ANNOTATED       } from '../../../modules/nf-core/tabix/bgziptabix/main'
-include { TABIX_BGZIPTABIX as TABIX_ANNOTSV         } from '../../../modules/nf-core/tabix/bgziptabix/main'
+include { TABIX_TABIX as TABIX_ANNOTSV              } from '../../../modules/nf-core/tabix/tabix/main'
 include { TABIX_TABIX as TABIX_VEP                  } from '../../../modules/nf-core/tabix/tabix/main'
 include { BCFTOOLS_FILTER                           } from '../../../modules/nf-core/bcftools/filter/main'
 include { BCFTOOLS_FILTER as BCFTOOLS_FILTER_COMMON } from '../../../modules/nf-core/bcftools/filter/main'
+include { BCFTOOLS_CONCAT                           } from '../../../modules/nf-core/bcftools/concat/main'
+include { BCFTOOLS_ANNOTATE                         } from '../../../modules/nf-core/bcftools/annotate/main'
+include { BCFTOOLS_SORT                             } from '../../../modules/nf-core/bcftools/sort/main'
 include { TABIX_TABIX as TABIX_FILTER               } from '../../../modules/nf-core/tabix/tabix/main'
 
 workflow VCF_ANNOTATE_VEP_ANNOTSV_VCFANNO {
@@ -34,16 +39,15 @@ workflow VCF_ANNOTATE_VEP_ANNOTSV_VCFANNO {
 
     // Run AnnotSV and VEP in parallel and merge TSV from AnnotSV with VCF from VEP during VCFanno
 
-    ch_vcfs
-        .map { meta, vcf, tbi ->
-            [ meta, vcf ]
-        }
-        .set { ch_bcftools_input }
-
     BCFTOOLS_FILTER(
-        ch_bcftools_input
+        ch_vcfs.map { meta, vcf, tbi -> [ meta, vcf ]}
     )
     ch_versions = ch_versions.mix(BCFTOOLS_FILTER.out.versions.first())
+
+    BCFTOOLS_SPLIT_BY_SVTYPE(
+        BCFTOOLS_FILTER.out.vcf.map { meta, vcf -> [ meta, vcf, [] ]}
+    )
+    ch_versions = ch_versions.mix(BCFTOOLS_SPLIT_BY_SVTYPE.out.versions.first())
 
     ch_small_variants
         .combine(Channel.fromList(val_variant_types))
@@ -53,11 +57,17 @@ workflow VCF_ANNOTATE_VEP_ANNOTSV_VCFANNO {
         }
         .set { ch_small_variants_types }
 
-    BCFTOOLS_FILTER.out.vcf
-        .map { meta, vcf ->
-            [ meta, vcf, [] ]
-        }
+    BCFTOOLS_SPLIT_BY_SVTYPE.out.split_vcfs
         .join(ch_small_variants_types, failOnDuplicate:true, failOnMismatch:true)
+        .map { meta, vcfs, small_variants ->
+            def new_meta = meta + [vcf_count:vcfs instanceof ArrayList ? vcfs.size() : 1]
+            [ new_meta, vcfs instanceof ArrayList ? vcfs : [vcfs], small_variants ]
+        }
+        .transpose(by:1)
+        .map { meta, vcf, small_variants ->
+            def new_meta = meta + [id:vcf.name.replace(".vcf", "")]
+            [ new_meta, vcf, [], small_variants ]
+        }
         .set { ch_annotsv_input }
 
     ANNOTSV_ANNOTSV(
@@ -69,10 +79,50 @@ workflow VCF_ANNOTATE_VEP_ANNOTSV_VCFANNO {
     )
     ch_versions = ch_versions.mix(ANNOTSV_ANNOTSV.out.versions.first())
 
+    ANNOTSV_ANNOTSV.out.vcf
+        .map { meta, vcf ->
+            def new_meta = meta + [id:meta.sample] - meta.subMap("vcf_count")
+            [ new_meta, meta.id, meta.vcf_count, vcf ]
+        }
+        .combine(BCFTOOLS_SPLIT_BY_SVTYPE.out.header, by:0)
+        .map { meta, id, count, vcf, header ->
+            def new_meta = meta + [id:id, vcf_count:count]
+            [ new_meta, vcf, [], [], [], header]
+        }
+        .set { ch_bcftools_annotate_input }
+
+    BCFTOOLS_ANNOTATE(
+        ch_bcftools_annotate_input
+    )
+    ch_versions = ch_versions.mix(BCFTOOLS_ANNOTATE.out.versions.first())
+
+    BCFTOOLS_ANNOTATE.out.vcf
+        .map { meta, vcf ->
+            def new_meta = meta + [id:meta.sample] - meta.subMap("vcf_count")
+            [ groupKey(new_meta, meta.vcf_count), vcf ]
+        }
+        .groupTuple()
+        .map { meta, vcfs ->
+            [ meta, vcfs, [] ]
+        }
+        .set { ch_concat_input }
+
+    BCFTOOLS_CONCAT(
+        ch_concat_input
+    )
+    ch_versions = ch_versions.mix(BCFTOOLS_CONCAT.out.versions.first())
+
     TABIX_ANNOTSV(
-        ANNOTSV_ANNOTSV.out.vcf
+        BCFTOOLS_CONCAT.out.vcf
     )
     ch_versions = ch_versions.mix(TABIX_ANNOTSV.out.versions.first())
+
+    BCFTOOLS_CONCAT.out.vcf
+        .join(TABIX_ANNOTSV.out.tbi, failOnDuplicate:true, failOnMismatch:true)
+        .map { meta, vcf, tbi ->
+            [ meta, [vcf, tbi]]
+        }
+        .set { ch_annotsv_output }
 
     ENSEMBLVEP_VEP(
         ch_vcfs,
@@ -93,11 +143,7 @@ workflow VCF_ANNOTATE_VEP_ANNOTSV_VCFANNO {
 
     ENSEMBLVEP_VEP.out.vcf
         .join(TABIX_VEP.out.tbi, failOnDuplicate:true, failOnMismatch:true)
-        .join(TABIX_ANNOTSV.out.gz_tbi
-            .map { meta, vcf, tbi -> [ meta, [vcf, tbi] ]},
-            failOnDuplicate:true,
-            failOnMismatch:true
-        )
+        .join(ch_annotsv_output, failOnDuplicate:true, failOnMismatch:true)
         .set { ch_vcfanno_input }
 
     Channel.fromList(create_vcfanno_toml(val_vcfanno_resources))

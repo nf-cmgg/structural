@@ -24,10 +24,10 @@ process BCFTOOLS_CONCAT {
     def tbi_names = tbis.collect { it.name }
 
     def tabix_vcfs = vcfs.collect {
-        if (!("${it.name}" in tbi_names)) {
-            return "tabix ${it.name}"
+        if(tbi_names.contains("${it.name}.tbi" as String)) {
+            return ""
         }
-        return ""
+        return "tabix ${it.name}"
     }
 
     """

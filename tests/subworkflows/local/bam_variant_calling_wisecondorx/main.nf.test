@@ -1,0 +1,59 @@
+nextflow_workflow {
+
+    name "Test Workflow BAM_VARIANT_CALLING_WISECONDORX"
+    script "subworkflows/local/bam_variant_calling_wisecondorx/main.nf"
+    workflow "BAM_VARIANT_CALLING_WISECONDORX"
+
+    tag "subworkflows"
+    tag "subworkflows_local"
+    tag "bam_variant_calling_wisecondorx"
+
+    options "-stub"
+
+    test("homo_sapiens") {
+
+        when {
+            workflow {
+                """
+                input[0] = Channel.of([
+                    [id:"test", sample:"test", sex:"male"],
+                    file(params.cram1, checkIfExists: true),
+                    file(params.crai1, checkIfExists: true)
+                ])
+                input[1] = Channel.value([
+                    [id:"fasta"],
+                    file(params.fasta, checkIfExists: true)
+                ])
+                input[2] = Channel.value([
+                    [id:"fai"],
+                    file(params.fai, checkIfExists: true)
+                ])
+                input[3] = [
+                    [id:"ref"],
+                    file(params.wisecondorx_reference, checkIfExists:true)
+                ]
+                input[4] = [[],[]]
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert workflow.success },
+                { assert snapshot(
+                    workflow.out.aberrations_bed,
+                    workflow.out.bins_bed,
+                    workflow.out.segments_bed,
+                    workflow.out.chr_statistics,
+                    workflow.out.chr_plots,
+                    workflow.out.genome_plot,
+                    workflow.out.vcf,
+                    workflow.trace.succeeded().size(),
+                    workflow.trace.failed().size()
+                ).match() }
+            )
+        }
+
+    }
+
+}

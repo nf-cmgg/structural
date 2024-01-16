@@ -1,0 +1,16 @@
+{
+    "homo_sapiens": {
+        "content": [
+            [
+                "chrX\t12000\t.\tT\t.\t.\tLowDepth\tEND=50000;REF=9500;RL=38000;RU=CAGG;VARID=CNBP;REPID=CNBP\tGT:SO:REPCN:REPCI:ADSP:ADFL:ADIR:LC\t./.:./.:./.:./.:./.:./.:.:0",
+                "chrX\t12000\t.\tT\t.\t.\tLowDepth\tEND=123456;REF=18576;RL=111456;RU=GGCCCC;VARID=C9ORF72;REPID=C9ORF72\tGT:SO:REPCN:REPCI:ADSP:ADFL:ADIR:LC\t./.:./.:./.:./.:./.:./.:.:0",
+                "chrX\t14586\t.\tG\t.\t.\tLowDepth\tEND=35698;REF=5278;RL=21112;RU=CAGA;VARID=CNBP_CAGA;REPID=CNBP_CAGA\tGT:SO:REPCN:REPCI:ADSP:ADFL:ADIR:LC\t./.:./.:./.:./.:./.:./.:.:0",
+                "chrX\t15000\t.\tA\t.\t.\tLowDepth\tEND=45826;REF=15413;RL=30826;RU=CA;VARID=CNBP_CA;REPID=CNBP_CA\tGT:SO:REPCN:REPCI:ADSP:ADFL:ADIR:LC\t./.:./.:./.:./.:./.:./.:.:0"
+            ],
+            "test.vcf.gz.tbi",
+            4,
+            0
+        ],
+        "timestamp": "2023-11-29T16:35:05.957111129"
+    }
+}

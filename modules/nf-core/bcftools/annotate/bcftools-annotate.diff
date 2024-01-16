@@ -1,0 +1,14 @@
+Changes in module 'nf-core/bcftools/annotate'
+--- modules/nf-core/bcftools/annotate/main.nf
++++ modules/nf-core/bcftools/annotate/main.nf
+@@ -29,6 +29,8 @@
+                     "vcf"
+     if ("$input" == "${prefix}.${extension}") error "Input and output names are the same, set prefix in module configuration to disambiguate!"
+     """
++    tabix ${input}
++
+     bcftools \\
+         annotate \\
+         $args \\
+
+************************************************************

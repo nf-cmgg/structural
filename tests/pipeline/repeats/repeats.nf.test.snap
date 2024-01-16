@@ -1,0 +1,40 @@
+{
+    "expansionhunter": {
+        "content": [
+            [
+                
+            ],
+            [
+                [
+                    "PosCon1.repeats.vcf.gz:md5,d41d8cd98f00b204e9800998ecf8427e",
+                    "PosCon1.repeats.vcf.gz.tbi:md5,d41d8cd98f00b204e9800998ecf8427e"
+                ],
+                [
+                    "PosCon2.repeats.vcf.gz:md5,d41d8cd98f00b204e9800998ecf8427e",
+                    "PosCon2.repeats.vcf.gz.tbi:md5,d41d8cd98f00b204e9800998ecf8427e"
+                ],
+                [
+                    "PosCon3.repeats.vcf.gz:md5,d41d8cd98f00b204e9800998ecf8427e",
+                    "PosCon3.repeats.vcf.gz.tbi:md5,d41d8cd98f00b204e9800998ecf8427e"
+                ],
+                [
+                    "PosCon4.repeats.vcf.gz:md5,d41d8cd98f00b204e9800998ecf8427e",
+                    "PosCon4.repeats.vcf.gz.tbi:md5,d41d8cd98f00b204e9800998ecf8427e"
+                ],
+                [
+                    "PosCon5.repeats.vcf.gz:md5,d41d8cd98f00b204e9800998ecf8427e",
+                    "PosCon5.repeats.vcf.gz.tbi:md5,d41d8cd98f00b204e9800998ecf8427e"
+                ]
+            ],
+            [
+                "PosCon1",
+                "PosCon2",
+                "PosCon3",
+                "PosCon4",
+                "PosCon5",
+                "pipeline_info"
+            ]
+        ],
+        "timestamp": "2023-11-30T11:22:03.354074011"
+    }
+}

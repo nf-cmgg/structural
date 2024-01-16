@@ -226,14 +226,38 @@ workflow CMGGSTRUCTURAL {
         .tap { ch_raw_input }
         .reduce([:]) { counts, entry -> 
             def family = entry[0]
-            counts[family] = ((counts[family] ?: 0) + 1)
+            counts[family] = ((counts[family] ?: []) + [entry[1].id])
+            counts[family] = counts[family].unique()
             return counts
         }
         .combine(ch_raw_input)
         .map { // counts, family, meta, ...
-            it[2] = it[2] + ["family_count":it[0][it[1]]]
+            it[2] = it[2] + ["family_count":it[0][it[1]].size()]
             return it.subList(2, it.size())
         }
+        .set { ch_input_prepare }
+
+    //
+    // Prepare the inputs
+    //
+
+    BAM_PREPARE_SAMTOOLS(
+        ch_input_prepare.map{ it.subList(0, 3) },
+        ch_fasta,
+        ch_fai
+    )
+    ch_versions = ch_versions.mix(BAM_PREPARE_SAMTOOLS.out.versions)
+
+    ch_input_prepare
+        .map{ [it[0]] + it.subList(3, it.size()) }
+        .groupTuple()
+        .map {
+            [ it[0] ] + it.subList(1, it.size()).collect { it.find { it != [] } ?: [] }
+        }
+        .set { ch_deduplicated }
+
+    BAM_PREPARE_SAMTOOLS.out.crams
+        .join(ch_deduplicated, failOnDuplicate:true, failOnMismatch:true)
         .set { ch_input_no_sex }
 
     //
@@ -276,17 +300,6 @@ workflow CMGGSTRUCTURAL {
         .set { ch_inputs }
 
     //
-    // Prepare the inputs
-    //
-
-    BAM_PREPARE_SAMTOOLS(
-        ch_inputs.crams,
-        ch_fasta,
-        ch_fai
-    )
-    ch_versions = ch_versions.mix(BAM_PREPARE_SAMTOOLS.out.versions)
-
-    //
     // Call the variants
     //
 
@@ -296,7 +309,7 @@ workflow CMGGSTRUCTURAL {
         variant_types.add("sv")
 
         BAM_SV_CALLING(
-            BAM_PREPARE_SAMTOOLS.out.crams,
+            ch_inputs.crams,
             ch_fasta,
             ch_fai,
             ch_bwa_index,
@@ -319,7 +332,7 @@ workflow CMGGSTRUCTURAL {
         variant_types.add("cnv")
 
         BAM_CNV_CALLING(
-            BAM_PREPARE_SAMTOOLS.out.crams,
+            ch_inputs.crams,
             ch_fasta,
             ch_fai,
             ch_qdnaseq_male,
@@ -367,7 +380,7 @@ workflow CMGGSTRUCTURAL {
         count_types++
 
         BAM_REPEAT_ESTIMATION_EXPANSIONHUNTER(
-            BAM_PREPARE_SAMTOOLS.out.crams,
+            ch_inputs.crams,
             ch_fasta,
             ch_fai,
             ch_catalog

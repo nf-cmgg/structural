@@ -1,0 +1,90 @@
+nextflow_workflow {
+
+    name "Test Workflow VCF_MERGE_CALLERS_JASMINE"
+    script "subworkflows/local/vcf_merge_callers_jasmine/main.nf"
+    workflow "VCF_MERGE_CALLERS_JASMINE"
+
+    tag "subworkflows"
+    tag "subworkflows_local"
+    tag "vcf_merge_callers_jasmine"
+
+    config "./nextflow.config"
+
+    test("homo_sapiens - multiple callers") {
+
+        when {
+            workflow {
+                """
+                input[0] = Channel.of([
+                    [id:"test", sample:"test", caller:"delly"],
+                    file(params.sv_vcf1, checkIfExists:true)
+                ], [
+                    [id:"test", sample:"test", caller:"expansionhunter"],
+                    file(params.repeats_vcf1, checkIfExists:true)
+                ])
+                input[1] = Channel.value([
+                    [id:"fasta"],
+                    file(params.fasta, checkIfExists: true)
+                ])
+                input[2] = Channel.value([
+                    [id:"fai"],
+                    file(params.fai, checkIfExists: true)
+                ])
+                input[3] = ["delly", "expansionhunter"]
+                input[4] = "sv"
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert workflow.success },
+                { assert snapshot(
+                    path(workflow.out.vcfs[0][1]).linesGzip[-4..-1],
+                    file(workflow.out.vcfs[0][2]).name,
+                    workflow.trace.succeeded().size(),
+                    workflow.trace.failed().size()
+                ).match() }
+            )
+        }
+
+    }
+
+    test("homo_sapiens - one caller") {
+
+        when {
+            workflow {
+                """
+                input[0] = Channel.of([
+                    [id:"test", sample:"test", caller:"delly"],
+                    file(params.sv_vcf1, checkIfExists:true)
+                ])
+                input[1] = Channel.value([
+                    [id:"fasta"],
+                    file(params.fasta, checkIfExists: true)
+                ])
+                input[2] = Channel.value([
+                    [id:"fai"],
+                    file(params.fai, checkIfExists: true)
+                ])
+                input[3] = ["delly"]
+                input[4] = "sv"
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert workflow.success },
+                { assert snapshot(
+                    file(workflow.out.vcfs[0][1]).name,
+                    file(workflow.out.vcfs[0][2]).name,
+                    workflow.trace.succeeded().size(),
+                    workflow.trace.failed().size()
+                ).match() }
+            )
+        }
+
+    }
+
+}

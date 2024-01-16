@@ -1,0 +1,31 @@
+{
+    "homo_sapiens": {
+        "content": [
+            "test.qdnaseq.vcf.gz",
+            "test2.qdnaseq.vcf.gz",
+            [
+                [
+                    {
+                        "id": "test",
+                        "sample": "test",
+                        "sex": "male",
+                        "caller": "qdnaseq"
+                    },
+                    "test.bed:md5,19be72c3f56297070c6070ded3419dee"
+                ],
+                [
+                    {
+                        "id": "test2",
+                        "sample": "test2",
+                        "sex": "female",
+                        "caller": "qdnaseq"
+                    },
+                    "test2.bed:md5,fed14c95db6bed194f40f262d68399d1"
+                ]
+            ],
+            10,
+            0
+        ],
+        "timestamp": "2024-01-12T11:33:39.694814993"
+    }
+}

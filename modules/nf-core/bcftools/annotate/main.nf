@@ -20,7 +20,7 @@ process BCFTOOLS_ANNOTATE {
     script:
     def args    = task.ext.args ?: ''
     prefix  = task.ext.prefix ?: "${meta.id}"
-    def tabix   = task.ext.tabix ?: true
+    def tabix   = task.ext.tabix ? true : false
     def header_file = header_lines ? "--header-lines ${header_lines}" : ''
     def annotations_file = annotations ? "--annotations ${annotations}" : ''
     def extension = args.contains("--output-type b") || args.contains("-Ob") ? "bcf.gz" :

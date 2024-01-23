@@ -132,14 +132,8 @@ workflow BAM_SV_CALLING {
     //
 
     if(val_callers.size() > 1) {
-        ch_called_vcfs
-            .map { meta, vcf, tbi ->
-                [ meta, vcf ]
-            }
-            .set { ch_merge_input }
-
         VCF_MERGE_CALLERS_JASMINE(
-            ch_merge_input,
+            ch_called_vcfs,
             ch_fasta,
             ch_fai,
             val_callers,

@@ -2,15 +2,16 @@
 // Merge VCFs from multiple callers
 //
 
-include { TABIX_TABIX                                   } from '../../../modules/nf-core/tabix/tabix/main'
-include { JASMINESV                                     } from '../../../modules/nf-core/jasminesv/main'
-include { BCFTOOLS_SORT                                 } from '../../../modules/nf-core/bcftools/sort/main'
+include { TABIX_TABIX               } from '../../../modules/nf-core/tabix/tabix/main'
+include { JASMINESV                 } from '../../../modules/nf-core/jasminesv/main'
+include { BCFTOOLS_SORT             } from '../../../modules/nf-core/bcftools/sort/main'
+include { BCFTOOLS_ANNOTATE         } from '../../../modules/nf-core/bcftools/annotate/main'
 
-include { BCFTOOLS_REHEADER                          } from '../../../modules/nf-core/bcftools/reheader/main'
+include { BCFTOOLS_CONSENSUS_HEADER } from '../../../modules/local/bcftools/consensus_header/main'
 
 workflow VCF_MERGE_CALLERS_JASMINE {
     take:
-        ch_vcfs     // channel: [mandatory] [ meta, vcf ] => The bgzipped called VCFs
+        ch_vcfs     // channel: [mandatory] [ meta, vcf, tbi ] => The bgzipped called VCFs
         ch_fasta    // channel: [mandatory] [ meta, fasta ] => The fasta reference file
         ch_fai      // channel: [mandatory] [ meta, fai ] => The index of the fasta reference file
         val_callers // value:   [mandatory] => The callers used
@@ -21,12 +22,13 @@ workflow VCF_MERGE_CALLERS_JASMINE {
     ch_versions     = Channel.empty()
 
     ch_vcfs
-        .map { meta, vcf ->
+        .map { meta, vcf, tbi ->
             new_meta = meta - meta.subMap("caller") + ["variant_type":val_type]
-            [ new_meta, vcf ]
+            [ new_meta, vcf, tbi ]
         }
         .groupTuple(size:val_callers.size())
-        .map { meta, vcfs ->
+        .tap { ch_consensus_header_input }
+        .map { meta, vcfs, tbis ->
             [ meta, vcfs, [], [], [] ]
         }
         .dump(tag:'jasmine_input', pretty:true)
@@ -40,21 +42,25 @@ workflow VCF_MERGE_CALLERS_JASMINE {
     )
     ch_versions = ch_versions.mix(JASMINESV.out.versions.first())
 
-    Channel.fromPath("${projectDir}/assets/header.txt")
-        .map { header ->
-            [ header, [] ]
-        }
-        .collect()
-        .set { ch_new_header }
-
-    BCFTOOLS_REHEADER(
-        JASMINESV.out.vcf.combine(ch_new_header),
-        ch_fai
+    BCFTOOLS_CONSENSUS_HEADER(
+        ch_consensus_header_input
     )
-    ch_versions = ch_versions.mix(BCFTOOLS_REHEADER.out.versions.first())
+    ch_versions = ch_versions.mix(BCFTOOLS_CONSENSUS_HEADER.out.versions)
+
+    JASMINESV.out.vcf
+        .join(BCFTOOLS_CONSENSUS_HEADER.out.header)
+        .map { meta, vcf, header ->
+            [ meta, vcf, [], [], [], header ]
+        }
+        .set { ch_annotate_input }
+
+    BCFTOOLS_ANNOTATE(
+        ch_annotate_input
+    )
+    ch_versions = ch_versions.mix(BCFTOOLS_ANNOTATE.out.versions.first())
 
     BCFTOOLS_SORT(
-        BCFTOOLS_REHEADER.out.vcf
+        BCFTOOLS_ANNOTATE.out.vcf
     )
     ch_versions = ch_versions.mix(BCFTOOLS_SORT.out.versions.first())
 
@@ -63,7 +69,7 @@ workflow VCF_MERGE_CALLERS_JASMINE {
     )
     ch_versions = ch_versions.mix(TABIX_TABIX.out.versions.first())
 
-    BCFTOOLS_REHEADER.out.vcf
+    BCFTOOLS_SORT.out.vcf
         .join(TABIX_TABIX.out.tbi, failOnMismatch:true, failOnDuplicate:true)
         .set { ch_vcfs_out }
 

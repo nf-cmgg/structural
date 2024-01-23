@@ -48,7 +48,7 @@ workflow VCF_MERGE_FAMILY_JASMINE {
         .set { ch_jasmine_input }
 
     JASMINESV(
-        ch_jasmine_input,
+        ch_jasmine_input.view(),
         ch_fasta.map{it[1]},
         ch_fai.map{it[1]},
         []

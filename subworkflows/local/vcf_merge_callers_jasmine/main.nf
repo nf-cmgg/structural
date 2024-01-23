@@ -20,62 +20,50 @@ workflow VCF_MERGE_CALLERS_JASMINE {
 
     ch_versions     = Channel.empty()
 
-    if(val_callers.size() > 1){
-        ch_vcfs
-            .map { meta, vcf ->
-                new_meta = meta - meta.subMap("caller") + ["variant_type":val_type]
-                [ new_meta, vcf ]
-            }
-            .groupTuple(size:val_callers.size())
-            .map { meta, vcfs ->
-                [ meta, vcfs, [], [], [] ]
-            }
-            .dump(tag:'jasmine_input', pretty:true)
-            .set { ch_jasmine_input }
+    ch_vcfs
+        .map { meta, vcf ->
+            new_meta = meta - meta.subMap("caller") + ["variant_type":val_type]
+            [ new_meta, vcf ]
+        }
+        .groupTuple(size:val_callers.size())
+        .map { meta, vcfs ->
+            [ meta, vcfs, [], [], [] ]
+        }
+        .dump(tag:'jasmine_input', pretty:true)
+        .set { ch_jasmine_input }
 
-        JASMINESV(
-            ch_jasmine_input,
-            ch_fasta.map{it[1]},
-            ch_fai.map{it[1]},
-            []
-        )
-        ch_versions = ch_versions.mix(JASMINESV.out.versions.first())
+    JASMINESV(
+        ch_jasmine_input,
+        ch_fasta.map{it[1]},
+        ch_fai.map{it[1]},
+        []
+    )
+    ch_versions = ch_versions.mix(JASMINESV.out.versions.first())
 
-        Channel.fromPath("${projectDir}/assets/header.txt")
-            .map { header ->
-                [ header, [] ]
-            }
-            .collect()
-            .set { ch_new_header }
+    Channel.fromPath("${projectDir}/assets/header.txt")
+        .map { header ->
+            [ header, [] ]
+        }
+        .collect()
+        .set { ch_new_header }
 
-        BCFTOOLS_REHEADER(
-            JASMINESV.out.vcf.combine(ch_new_header),
-            ch_fai
-        )
-        ch_versions = ch_versions.mix(BCFTOOLS_REHEADER.out.versions.first())
+    BCFTOOLS_REHEADER(
+        JASMINESV.out.vcf.combine(ch_new_header),
+        ch_fai
+    )
+    ch_versions = ch_versions.mix(BCFTOOLS_REHEADER.out.versions.first())
 
-        BCFTOOLS_SORT(
-            BCFTOOLS_REHEADER.out.vcf
-        )
-        ch_versions = ch_versions.mix(BCFTOOLS_SORT.out.versions.first())
-
-        BCFTOOLS_SORT.out.vcf
-            .set { ch_merged_vcfs }
-    } else {
-        ch_vcfs
-            .map { meta, vcf ->
-                new_meta = meta - meta.subMap("caller") + ["variant_type":val_type]
-                [ new_meta, vcf ]
-            }
-            .set { ch_merged_vcfs }
-    }
+    BCFTOOLS_SORT(
+        BCFTOOLS_REHEADER.out.vcf
+    )
+    ch_versions = ch_versions.mix(BCFTOOLS_SORT.out.versions.first())
 
     TABIX_TABIX(
-        ch_merged_vcfs
+        BCFTOOLS_SORT.out.vcf
     )
     ch_versions = ch_versions.mix(TABIX_TABIX.out.versions.first())
 
-    ch_merged_vcfs
+    BCFTOOLS_REHEADER.out.vcf
         .join(TABIX_TABIX.out.tbi, failOnMismatch:true, failOnDuplicate:true)
         .set { ch_vcfs_out }
 

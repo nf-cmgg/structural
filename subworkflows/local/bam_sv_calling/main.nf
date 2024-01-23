@@ -131,23 +131,29 @@ workflow BAM_SV_CALLING {
     // Standardize and merge VCFs per sample for all callers
     //
 
-    ch_called_vcfs
-        .map { meta, vcf, tbi ->
-            [ meta, vcf ]
-        }
-        .set { ch_merge_input }
+    if(val_callers.size() > 1) {
+        ch_called_vcfs
+            .map { meta, vcf, tbi ->
+                [ meta, vcf ]
+            }
+            .set { ch_merge_input }
 
-    VCF_MERGE_CALLERS_JASMINE(
-        ch_merge_input,
-        ch_fasta,
-        ch_fai,
-        val_callers,
-        "sv"
-    )
-    ch_versions = ch_versions.mix(VCF_MERGE_CALLERS_JASMINE.out.versions)
+        VCF_MERGE_CALLERS_JASMINE(
+            ch_merge_input,
+            ch_fasta,
+            ch_fai,
+            val_callers,
+            "sv"
+        )
+        ch_versions = ch_versions.mix(VCF_MERGE_CALLERS_JASMINE.out.versions)
+        VCF_MERGE_CALLERS_JASMINE.out.vcfs.set { ch_merged_vcfs }
+    } else {    
+        ch_called_vcfs.set { ch_merged_vcfs }
+    }
+
 
     emit:
-    vcfs                = VCF_MERGE_CALLERS_JASMINE.out.vcfs    // channel: [ val(meta), path(vcf), path(tbi) ]
+    vcfs                = ch_merged_vcfs    // channel: [ val(meta), path(vcf), path(tbi) ]
 
     versions            = ch_versions
     reports             = ch_reports

@@ -422,7 +422,7 @@ workflow CMGGSTRUCTURAL {
     //
 
     VCF_MERGE_FAMILY_JASMINE(
-        ch_concat_vcfs.map { meta, vcf, tbi -> [ meta, vcf ]},
+        ch_concat_vcfs,
         ch_fasta,
         ch_fai
     )

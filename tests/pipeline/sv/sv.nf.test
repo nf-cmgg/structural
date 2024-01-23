@@ -43,7 +43,7 @@ nextflow_pipeline {
         when {
             params {
                 outdir = "${outputDir}"
-                callers = "delly,manta,smoove,gridss"
+                callers = "delly,manta,smoove" //,gridss
                 max_cpus   = 2
                 max_memory = '6.GB'
                 max_time   = '6.h'

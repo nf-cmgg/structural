@@ -8,7 +8,7 @@ include { BAM_VARIANT_CALLING_DELLY                     } from '../bam_variant_c
 include { BAM_VARIANT_CALLING_WHAMG                     } from '../bam_variant_calling_whamg/main'
 include { BAM_VARIANT_CALLING_SMOOVE                    } from '../bam_variant_calling_smoove/main'
 include { BAM_VARIANT_CALLING_SCRAMBLE                  } from '../bam_variant_calling_scramble/main'
-include { BAM_VARIANT_CALLING_GRIDSS                    } from '../bam_variant_calling_gridss/main'
+// include { BAM_VARIANT_CALLING_GRIDSS                    } from '../bam_variant_calling_gridss/main'
 include { VCF_MERGE_CALLERS_JASMINE                             } from '../vcf_merge_callers_jasmine/main'
 
 // Import modules
@@ -98,17 +98,18 @@ workflow BAM_SV_CALLING {
     // Calling variants using Gridss
     //
 
-    if("gridss" in val_callers){
-        BAM_VARIANT_CALLING_GRIDSS(
-            ch_crams,
-            ch_fasta,
-            ch_fai,
-            ch_bwa_index
-        )
+    // TODO reactivate gridss once breakend to breakpoint conversion has been added to svync
+    // if("gridss" in val_callers){
+    //     BAM_VARIANT_CALLING_GRIDSS(
+    //         ch_crams,
+    //         ch_fasta,
+    //         ch_fai,
+    //         ch_bwa_index
+    //     )
 
-        ch_called_vcfs  = ch_called_vcfs.mix(BAM_VARIANT_CALLING_GRIDSS.out.gridss_vcfs)
-        ch_versions     = ch_versions.mix(BAM_VARIANT_CALLING_GRIDSS.out.versions)
-    }
+    //     ch_called_vcfs  = ch_called_vcfs.mix(BAM_VARIANT_CALLING_GRIDSS.out.gridss_vcfs)
+    //     ch_versions     = ch_versions.mix(BAM_VARIANT_CALLING_GRIDSS.out.versions)
+    // }
 
     //
     // Calling variants using Scramble (I don't know if calling variants is the correct term here)

@@ -2,10 +2,13 @@
 // Call copy number variants
 //
 
+// Import modules
+include { TABIX_TABIX                       } from '../../../modules/nf-core/tabix/tabix/main'
+
 // Import subworkflows
 include { BAM_VARIANT_CALLING_QDNASEQ       } from '../bam_variant_calling_qdnaseq/main'
 include { BAM_VARIANT_CALLING_WISECONDORX   } from '../bam_variant_calling_wisecondorx/main'
-include { VCF_MERGE_CALLERS_JASMINE                 } from '../vcf_merge_callers_jasmine/main'
+include { VCF_MERGE_CALLERS_JASMINE         } from '../vcf_merge_callers_jasmine/main'
 
 workflow BAM_CNV_CALLING {
     take:
@@ -49,17 +52,36 @@ workflow BAM_CNV_CALLING {
         ch_called_vcfs = ch_called_vcfs.mix(BAM_VARIANT_CALLING_WISECONDORX.out.vcf)
     }
 
-    VCF_MERGE_CALLERS_JASMINE(
-        ch_called_vcfs,
-        ch_fasta,
-        ch_fai,
-        val_callers,
-        "cnv"
-    )
-    ch_versions = ch_versions.mix(VCF_MERGE_CALLERS_JASMINE.out.versions)
+    if(val_callers.size() > 1) {
+        VCF_MERGE_CALLERS_JASMINE(
+            ch_called_vcfs.map { it + [[]] },
+            ch_fasta,
+            ch_fai,
+            val_callers,
+            "cnv"
+        )
+        ch_versions = ch_versions.mix(VCF_MERGE_CALLERS_JASMINE.out.versions)
+        VCF_MERGE_CALLERS_JASMINE.out.vcfs
+            .set { ch_merged_vcfs }
+
+    } else {
+        TABIX_TABIX(
+            ch_called_vcfs
+        )
+        ch_versions = ch_versions.mix(TABIX_TABIX.out.versions.first())
+
+        ch_called_vcfs
+            .join(TABIX_TABIX.out.tbi, failOnDuplicate:true, failOnMismatch:true)
+            .map { meta, vcf, tbi ->
+                def new_meta = meta - meta.subMap("caller") + [variant_type:"cnv"]
+                [ new_meta, vcf, tbi ]
+            }
+            .set { ch_merged_vcfs }
+    }
+
 
     emit:
     versions            = ch_versions
     reports             = ch_reports
-    vcfs                = VCF_MERGE_CALLERS_JASMINE.out.vcfs
+    vcfs                = ch_merged_vcfs
 }

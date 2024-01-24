@@ -170,7 +170,7 @@ workflow CMGGSTRUCTURAL {
         ch_bwa_index = Channel.empty()
     }
 
-    if(params.annotate && !params.annotsv_annotations && callers.intersect(GlobalVariables.svCallers)) {
+    if(params.annotate && !params.annotsv_annotations && callers.intersect(GlobalVariables.annotationCallers)) {
         ANNOTSV_INSTALLANNOTATIONS()
         ch_versions = ch_versions.mix(ANNOTSV_INSTALLANNOTATIONS.out.versions)
 
@@ -179,7 +179,7 @@ workflow CMGGSTRUCTURAL {
             .collect()
             .set { ch_annotsv_annotations }
     } 
-    else if(params.annotate && callers.intersect(GlobalVariables.svCallers)) {
+    else if(params.annotate && callers.intersect(GlobalVariables.annotationCallers)) {
         ch_annotsv_annotations_input = Channel.fromPath(params.annotsv_annotations).map{[[id:"annotsv_annotations"], it]}.collect()
         if(params.annotsv_annotations.endsWith(".tar.gz")){
             UNTAR_ANNOTSV(
@@ -198,7 +198,7 @@ workflow CMGGSTRUCTURAL {
         ch_annotsv_annotations = Channel.empty()
     }
 
-    if(!params.vep_cache && params.annotate && callers.intersect(GlobalVariables.svCallers)) {
+    if(!params.vep_cache && params.annotate && callers.intersect(GlobalVariables.annotationCallers)) {
         ENSEMBLVEP_DOWNLOAD(
             Channel.of([[id:"vep_cache"], params.vep_assembly, params.species, params.vep_cache_version]).collect()
         )
@@ -206,7 +206,7 @@ workflow CMGGSTRUCTURAL {
 
         ch_vep_cache = ENSEMBLVEP_DOWNLOAD.out.cache.map{it[1]}.collect()
     }
-    else if (params.vep_cache && params.annotate && callers.intersect(GlobalVariables.svCallers)) {
+    else if (params.vep_cache && params.annotate && callers.intersect(GlobalVariables.annotationCallers)) {
         ch_vep_cache = Channel.fromPath(params.vep_cache).collect()
     }
     else {

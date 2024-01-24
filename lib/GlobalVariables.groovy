@@ -5,6 +5,7 @@ class GlobalVariables {
     public static List<String> repeatsCallers = ["expansionhunter"]
 
     public static List<String> allCallers = svCallers + cnvCallers + repeatsCallers
+    public static List<String> annotationCallers = svCallers + cnvCallers
 
     // Callers that need the sex
     public static List<String> sexCallers = ["expansionhunter", "qdnaseq"]

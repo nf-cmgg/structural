@@ -59,8 +59,7 @@ workflow VCF_MERGE_FAMILY_JASMINE {
     ch_versions = ch_versions.mix(JASMINESV.out.versions.first())
 
     JASMINESV.out.vcf
-        .view()
-        .join(BCFTOOLS_CONSENSUS_HEADER.out.header.view(), failOnDuplicate:true, failOnMismatch:true)
+        .join(BCFTOOLS_CONSENSUS_HEADER.out.header, failOnDuplicate:true, failOnMismatch:true)
         .map { meta, vcf, header ->
             [ meta, vcf, [], [], [], header ]
         }

@@ -43,7 +43,7 @@ workflow VCF_MERGE_CALLERS_JASMINE {
     ch_versions = ch_versions.mix(JASMINESV.out.versions.first())
 
     BCFTOOLS_CONSENSUS_HEADER(
-        ch_consensus_header_input
+        ch_consensus_header_input.map { meta, vcfs, tbis -> [meta, vcfs, tbis.findAll { it != [] }] }
     )
     ch_versions = ch_versions.mix(BCFTOOLS_CONSENSUS_HEADER.out.versions)
 

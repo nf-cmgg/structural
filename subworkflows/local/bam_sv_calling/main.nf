@@ -142,7 +142,12 @@ workflow BAM_SV_CALLING {
         ch_versions = ch_versions.mix(VCF_MERGE_CALLERS_JASMINE.out.versions)
         VCF_MERGE_CALLERS_JASMINE.out.vcfs.set { ch_merged_vcfs }
     } else {    
-        ch_called_vcfs.set { ch_merged_vcfs }
+        ch_called_vcfs
+            .map { meta, vcf, tbi ->
+                def new_meta = meta - meta.subMap("caller") + [variant_type:"sv"]
+                [ new_meta, vcf, tbi ]
+            }
+            .set { ch_merged_vcfs }
     }
 
 

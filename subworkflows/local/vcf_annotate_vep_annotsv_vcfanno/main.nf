@@ -72,7 +72,7 @@ workflow VCF_ANNOTATE_VEP_ANNOTSV_VCFANNO {
 
     ANNOTSV_ANNOTSV(
         ch_annotsv_input,
-        ch_annotsv_annotations,
+        ch_annotsv_annotations.view(),
         ch_annotsv_candidate_genes,
         [[],[]],
         ch_annotsv_gene_transcripts

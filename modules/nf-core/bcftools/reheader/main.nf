@@ -32,17 +32,16 @@ process BCFTOOLS_REHEADER {
                     args2.contains("--output-type v") || args2.contains("-Ov") ? "vcf" :
                     "vcf"
     """
-    bcftools view -h ${vcf} | grep -E \\#\\#fileformat=VCF\\|\\#\\#fileDate=\\|\\#\\#reference=\\|\\#\\#smoove_counts_stats= \\
-        > new_header.vcf
-
-    cat ${header} >> new_header.vcf
-
-    bcftools view -h ${vcf} | grep -E \\#CHROM >> new_header.vcf
+    # Get the header, append the missing fields and filter out duplicate lines
+    bcftools view --threads ${task.cpus} -h ${vcf} | grep -v "##contig" > ${prefix}.temp.header.vcf
+    sed -i '/##fileformat=/r ${header}' ${prefix}.temp.header.vcf
+    awk -F \\n '!seen[\$1]++' ${prefix}.temp.header.vcf > ${prefix}.header.vcf
+    rm ${prefix}.temp.header.vcf
 
     bcftools \\
         reheader \\
         $fai_argument \\
-        $header_argument \\
+        --header ${prefix}.header.vcf \\
         $samples_argument \\
         $args \\
         --threads $task.cpus \\
@@ -50,6 +49,8 @@ process BCFTOOLS_REHEADER {
         | bcftools view \\
         $args2 \\
         --output ${prefix}.${extension}
+
+    rm ${prefix}.header.vcf
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":

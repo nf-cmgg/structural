@@ -5,7 +5,7 @@
 include { TABIX_TABIX               } from '../../../modules/nf-core/tabix/tabix/main'
 include { JASMINESV                 } from '../../../modules/nf-core/jasminesv/main'
 include { BCFTOOLS_SORT             } from '../../../modules/nf-core/bcftools/sort/main'
-include { BCFTOOLS_ANNOTATE         } from '../../../modules/nf-core/bcftools/annotate/main'
+include { BCFTOOLS_REHEADER         } from '../../../modules/nf-core/bcftools/reheader/main'
 
 include { BCFTOOLS_CONSENSUS_HEADER } from '../../../modules/local/bcftools/consensus_header/main'
 
@@ -50,17 +50,18 @@ workflow VCF_MERGE_CALLERS_JASMINE {
     JASMINESV.out.vcf
         .join(BCFTOOLS_CONSENSUS_HEADER.out.header, failOnDuplicate:true, failOnMismatch:true)
         .map { meta, vcf, header ->
-            [ meta, vcf, [], [], [], header ]
+            [ meta, vcf, header, [] ]
         }
-        .set { ch_annotate_input }
+        .set { ch_reheader_input }
 
-    BCFTOOLS_ANNOTATE(
-        ch_annotate_input
+    BCFTOOLS_REHEADER(
+        ch_reheader_input,
+        ch_fai
     )
-    ch_versions = ch_versions.mix(BCFTOOLS_ANNOTATE.out.versions.first())
+    ch_versions = ch_versions.mix(BCFTOOLS_REHEADER.out.versions.first())
 
     BCFTOOLS_SORT(
-        BCFTOOLS_ANNOTATE.out.vcf
+        BCFTOOLS_REHEADER.out.vcf
     )
     ch_versions = ch_versions.mix(BCFTOOLS_SORT.out.versions.first())
 

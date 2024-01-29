@@ -4,10 +4,9 @@
 
 include { TABIX_TABIX               } from '../../../modules/nf-core/tabix/tabix/main'
 include { JASMINESV                 } from '../../../modules/nf-core/jasminesv/main'
-include { BCFTOOLS_REHEADER         } from '../../../modules/nf-core/bcftools/reheader/main'
 include { BCFTOOLS_SORT             } from '../../../modules/nf-core/bcftools/sort/main'
 
-include { BCFTOOLS_CONSENSUS_HEADER } from '../../../modules/local/bcftools/consensus_header/main'
+include { BCFTOOLS_CONSENSUS_REHEADER } from '../../../modules/local/bcftools/consensus_reheader/main'
 
 workflow VCF_MERGE_FAMILY_JASMINE {
     take:
@@ -26,7 +25,7 @@ workflow VCF_MERGE_FAMILY_JASMINE {
             [ groupKey(new_meta, meta.family_count), vcf, tbi ]
         }
         .groupTuple()
-        .tap { ch_consensus_header_input }
+        .tap { ch_consensus_reheader_input }
         .map { meta, vcfs, tbis -> 
             [ meta.id, meta, vcfs ]
         }
@@ -45,11 +44,6 @@ workflow VCF_MERGE_FAMILY_JASMINE {
         }
         .set { ch_jasmine_input }
 
-    BCFTOOLS_CONSENSUS_HEADER(
-        ch_consensus_header_input
-    )
-    ch_versions = ch_versions.mix(BCFTOOLS_CONSENSUS_HEADER.out.versions)
-
     JASMINESV(
         ch_jasmine_input,
         ch_fasta.map{it[1]},
@@ -59,20 +53,17 @@ workflow VCF_MERGE_FAMILY_JASMINE {
     ch_versions = ch_versions.mix(JASMINESV.out.versions.first())
 
     JASMINESV.out.vcf
-        .join(BCFTOOLS_CONSENSUS_HEADER.out.header, failOnDuplicate:true, failOnMismatch:true)
-        .map { meta, vcf, header ->
-            [ meta, vcf, header, [] ]
-        }
+        .join(ch_consensus_reheader_input, failOnDuplicate:true, failOnMismatch:true)
         .set { ch_reheader_input }
 
-    BCFTOOLS_REHEADER(
+    BCFTOOLS_CONSENSUS_REHEADER(
         ch_reheader_input,
         ch_fai
     )
-    ch_versions = ch_versions.mix(BCFTOOLS_REHEADER.out.versions.first())
+    ch_versions = ch_versions.mix(BCFTOOLS_CONSENSUS_REHEADER.out.versions.first())
 
     BCFTOOLS_SORT(
-        BCFTOOLS_REHEADER.out.vcf
+        BCFTOOLS_CONSENSUS_REHEADER.out.vcf
     )
     ch_versions = ch_versions.mix(BCFTOOLS_SORT.out.versions.first())
 

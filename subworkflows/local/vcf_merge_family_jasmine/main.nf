@@ -57,7 +57,7 @@ workflow VCF_MERGE_FAMILY_JASMINE {
         .set { ch_reheader_input }
 
     BCFTOOLS_CONSENSUS_REHEADER(
-        ch_reheader_input,
+        ch_reheader_input.view(),
         ch_fai
     )
     ch_versions = ch_versions.mix(BCFTOOLS_CONSENSUS_REHEADER.out.versions.first())

@@ -43,6 +43,9 @@ workflow VCF_MERGE_CALLERS_JASMINE {
 
     JASMINESV.out.vcf
         .join(ch_consensus_reheader_input, failOnDuplicate:true, failOnMismatch:true)
+        .map { meta, vcf, vcfs, tbis ->
+            [ meta, vcf, vcfs, [] ]
+        }
         .dump(tag:"caller_reheader_input", pretty: true)
         .set { ch_reheader_input }
 

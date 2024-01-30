@@ -54,10 +54,11 @@ workflow VCF_MERGE_FAMILY_JASMINE {
 
     JASMINESV.out.vcf
         .join(ch_consensus_reheader_input, failOnDuplicate:true, failOnMismatch:true)
+        .dump(tag:"vcf_merge_family_jasmine,bcftools_consensus_reheader", pretty: true)
         .set { ch_reheader_input }
 
     BCFTOOLS_CONSENSUS_REHEADER(
-        ch_reheader_input.view(),
+        ch_reheader_input,
         ch_fai
     )
     ch_versions = ch_versions.mix(BCFTOOLS_CONSENSUS_REHEADER.out.versions.first())

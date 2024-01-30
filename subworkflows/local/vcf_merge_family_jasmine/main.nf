@@ -54,7 +54,7 @@ workflow VCF_MERGE_FAMILY_JASMINE {
 
     JASMINESV.out.vcf
         .join(ch_consensus_reheader_input, failOnDuplicate:true, failOnMismatch:true)
-        .dump(tag:"vcf_merge_family_jasmine,bcftools_consensus_reheader", pretty: true)
+        .dump(tag:"family_reheader_input", pretty: true)
         .set { ch_reheader_input }
 
     BCFTOOLS_CONSENSUS_REHEADER(

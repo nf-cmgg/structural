@@ -10,7 +10,8 @@
                         "git_sha": "a8741f8d429a47dfe07f64e776187318519a8f2b",
                         "installed_by": [
                             "modules"
-                        ]
+                        ],
+                        "patch": "modules/nf-core/annotsv/annotsv/annotsv-annotsv.diff"
                     },
                     "annotsv/installannotations": {
                         "branch": "master",

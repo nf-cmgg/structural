@@ -44,6 +44,7 @@ process ANNOTSV_ANNOTSV {
         ${args}
 
     mv *_AnnotSV/* .
+    sed -i 's/contig=<ID=MT/contig=<ID=M/' ${prefix}.vcf
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":

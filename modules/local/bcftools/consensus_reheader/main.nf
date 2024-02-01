@@ -33,11 +33,11 @@ process BCFTOOLS_CONSENSUS_REHEADER {
     touch ${prefix}.temp.txt
     for FILE in ${merged_vcf} ${single_vcfs}; 
     do
-        bcftools view -h \$FILE | grep -vE '^(#CHROM|##fileformat|##filedate|##contig)' >> ${prefix}.temp.txt
+        bcftools view --threads ${task.cpus} -h \$FILE | grep -vE '^(#CHROM|##fileformat|##filedate|##contig)' >> ${prefix}.temp.txt
     done
 
     # Add fileformat and file date from the merged VCF
-    bcftools view -h ${merged_vcf} \\
+    bcftools view --threads ${task.cpus} -h ${merged_vcf} \\
         | grep -E '(##filedate|##fileformat)' \\
         > ${prefix}.header.vcf
 
@@ -46,9 +46,9 @@ process BCFTOOLS_CONSENSUS_REHEADER {
         | sort \\
         >> ${prefix}.header.vcf
 
-    # Add the CHROM line to the header
-    bcftools view -h ${merged_vcf} \\
-        | grep -E '(#CHROM)' \\
+    # Add the CHROM and contig lines to the header
+    bcftools view --threads ${task.cpus} -h ${merged_vcf} \\
+        | grep -E '(#CHROM|##contig)' \\
         >> ${prefix}.header.vcf
 
     bcftools \\

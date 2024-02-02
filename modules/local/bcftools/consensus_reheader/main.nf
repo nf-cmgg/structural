@@ -10,6 +10,7 @@ process BCFTOOLS_CONSENSUS_REHEADER {
     input:
     tuple val(meta), path(merged_vcf), path(single_vcfs), path(single_tbis)
     tuple val(meta2), path(fai)
+    val(additional_headers)
 
     output:
     tuple val(meta), path("*.${extension}"), emit: vcf
@@ -22,6 +23,12 @@ process BCFTOOLS_CONSENSUS_REHEADER {
     def args    = task.ext.args ?: ''
     def prefix  = task.ext.prefix ?: "${meta.id}"
     def fai_argument      = fai ? "--fai $fai" : ""
+    def add_additional = additional_headers ? 
+    """
+    cat <<-EOF >> ${prefix}.temp.txt
+    ${additional_headers.join("\t\n")}
+    EOF
+    """ : ""
 
     def args2 = task.ext.args2 ?: '--output-type z'
     extension = args2.contains("--output-type b") || args2.contains("-Ob") ? "bcf.gz" :
@@ -40,6 +47,9 @@ process BCFTOOLS_CONSENSUS_REHEADER {
     bcftools view --threads ${task.cpus} -h ${merged_vcf} \\
         | grep -E '(##filedate|##fileformat)' \\
         > ${prefix}.header.vcf
+
+    # Add aditional header lines
+    ${add_additional}
 
     # Remove duplicate header fields, sort and add them to the header
     awk -F, '!seen[substr(\$0, index(\$0, "##") + 1, index(\$0, ",") - index(\$0, "##") - 1)]++' ${prefix}.temp.txt \\

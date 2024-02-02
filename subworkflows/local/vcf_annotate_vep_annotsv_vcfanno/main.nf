@@ -86,9 +86,14 @@ workflow VCF_ANNOTATE_VEP_ANNOTSV_VCFANNO {
         }
         .set { ch_consensus_reheader_input }
 
+    val_additional_headers = [
+        '##INFO=<ID=BNDrescue,Number=0,Type=Flag,Description="The other BND of this pair can be recovered"'
+    ]
+
     BCFTOOLS_CONSENSUS_REHEADER(
         ch_consensus_reheader_input,
-        [[],[]]
+        [[],[]],
+        val_additional_headers
     )
     ch_versions = ch_versions.mix(BCFTOOLS_CONSENSUS_REHEADER.out.versions.first())
 

@@ -2,11 +2,11 @@ id: delly_$INFO/SVTYPE
 alt:
   BND: TRA
 info:
-  CALLER:
+  CALLERS:
     value: delly
-    number: 1
+    number: .
     type: string
-    description: The caller used to determine this variant
+    description: The callers used to determine this variant
   SVLEN:
     value: ~sub:$INFO/END,$POS
     number: 1

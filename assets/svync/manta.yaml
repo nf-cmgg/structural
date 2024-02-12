@@ -1,10 +1,10 @@
 id: manta_$INFO/SVTYPE
 info:
-  CALLER:
+  CALLERS:
     value: manta
-    number: 1
+    number: .
     type: string
-    description: The caller used to determine this variant
+    description: The callers used to determine this variant
   SVLEN:
     value: $INFO/SVLEN
     number: 1

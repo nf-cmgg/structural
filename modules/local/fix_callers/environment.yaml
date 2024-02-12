@@ -1,0 +1,8 @@
+name: python-tabix
+channels:
+  - conda-forge
+  - bioconda
+  - defaults
+dependencies:
+  - bioconda::tabix
+  - conda-forge::python=3.12

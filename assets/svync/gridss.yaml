@@ -1,10 +1,10 @@
 id: gridss_$INFO/SVTYPE
 info:
-  CALLER:
+  CALLERS:
     value: gridss
-    number: 1
+    number: .
     type: string
-    description: The caller used to determine this variant
+    description: The callers used to determine this variant
   SVLEN:
     value: ~sub:$INFO/END,$POS
     number: 1

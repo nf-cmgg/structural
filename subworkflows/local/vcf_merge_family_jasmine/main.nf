@@ -7,6 +7,7 @@ include { JASMINESV                 } from '../../../modules/nf-core/jasminesv/m
 include { BCFTOOLS_SORT             } from '../../../modules/nf-core/bcftools/sort/main'
 
 include { BCFTOOLS_CONSENSUS_REHEADER } from '../../../modules/local/bcftools/consensus_reheader/main'
+include { FIX_CALLERS                 } from '../../../modules/local/fix_callers/main'
 
 workflow VCF_MERGE_FAMILY_JASMINE {
     take:
@@ -52,7 +53,12 @@ workflow VCF_MERGE_FAMILY_JASMINE {
     )
     ch_versions = ch_versions.mix(JASMINESV.out.versions.first())
 
-    JASMINESV.out.vcf
+    FIX_CALLERS(
+        JASMINESV.out.vcf
+    )
+    ch_versions = ch_versions.mix(FIX_CALLERS.out.versions.first())
+
+    FIX_CALLERS.out.vcf
         .join(ch_consensus_reheader_input, failOnDuplicate:true, failOnMismatch:true)
         .dump(tag:"family_reheader_input", pretty: true)
         .set { ch_reheader_input }

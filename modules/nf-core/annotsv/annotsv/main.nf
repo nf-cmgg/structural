@@ -44,7 +44,7 @@ process ANNOTSV_ANNOTSV {
         ${args}
 
     mv *_AnnotSV/* .
-    awk 'BEGIN { FS=OFS="\t" } { if (NR > 1 && NF >= 8) \$1 = \$8; print }' ${prefix}.raw.tsv > ${prefix}.tsv
+    awk 'BEGIN { FS=OFS="\t" } { if (NR > 1 && NF >= 8) \$1 = \$1 "_" NR; print }' ${prefix}.raw.tsv > ${prefix}.tsv
 
     variantconvert convert -i ${prefix}.tsv -o ${prefix}.vcf -fi annotsv -fo vcf -c /usr/local/share/python3/variantconvert/configs/GRCh38/annotsv3_from_vcf.json
     sed -i 's/contig=<ID=MT/contig=<ID=M/' ${prefix}.vcf

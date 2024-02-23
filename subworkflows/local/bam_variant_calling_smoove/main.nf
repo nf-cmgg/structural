@@ -30,8 +30,8 @@ workflow BAM_VARIANT_CALLING_SMOOVE {
 
     SMOOVE_CALL(
         ch_smoove_input,
-        ch_fasta.map{it[1]},
-        ch_fai.map{it[1]}
+        ch_fasta,
+        ch_fai
     )
 
     ch_versions = ch_versions.mix(SMOOVE_CALL.out.versions.first())

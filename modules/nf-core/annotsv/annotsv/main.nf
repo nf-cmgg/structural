@@ -17,7 +17,7 @@ process ANNOTSV_ANNOTSV {
     output:
     tuple val(meta), path("*.tsv")              , emit: tsv
     tuple val(meta), path("*.unannotated.tsv")  , emit: unannotated_tsv, optional: true
-    tuple val(meta), path("*.vcf")              , emit: vcf, optional: true
+    tuple val(meta), path("*.vcf")              , emit: vcf
     path "versions.yml"                         , emit: versions
 
     when:
@@ -59,12 +59,10 @@ process ANNOTSV_ANNOTSV {
     def args = task.ext.args ?: ''
     def prefix = task.ext.prefix ?: "${meta.id}"
 
-    def create_vcf = args.contains("-vcf 1") ? "touch ${prefix}.vcf" : ""
-
     """
     touch ${prefix}.tsv
     touch ${prefix}.unannotated.tsv
-    ${create_vcf}
+    touch ${prefix}.vcf
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":

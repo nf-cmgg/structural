@@ -40,7 +40,7 @@ format:
     number: 1
     description: "Genotype"
   - name: CN
-    value: ~round $4
+    value: ~if $4 == +Inf . ~if $4 == Inf . ~round $4
     type: integer
     number: 1
     description: "Copy number"

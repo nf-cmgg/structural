@@ -8,7 +8,7 @@ process BCFTOOLS_CONCAT {
         'biocontainers/bcftools:1.17--haef29d1_0' }"
 
     input:
-    tuple val(meta), path(vcfs), path(tbi)
+    tuple val(meta), path(vcfs), path(tbis)
 
     output:
     tuple val(meta), path("*.gz"), emit: vcf
@@ -19,8 +19,19 @@ process BCFTOOLS_CONCAT {
 
     script:
     def args = task.ext.args   ?: ''
-    prefix   = task.ext.prefix ?: "${meta.id}"
+    def prefix   = task.ext.prefix ?: "${meta.id}"
+
+    def tbi_names = tbis.collect { it.name }
+
+    def tabix_vcfs = vcfs.collect {
+        if(tbi_names.contains("${it.name}.tbi" as String)) {
+            return ""
+        }
+        return "tabix ${it.name}"
+    }
+
     """
+    ${tabix_vcfs.join("\n")}
     bcftools concat \\
         --output ${prefix}.vcf.gz \\
         $args \\

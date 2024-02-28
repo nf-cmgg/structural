@@ -23,5 +23,6 @@ lint:
     - .github/workflows/linting.yml
     - assets/email_template.txt
     - docs/README.md
+    - .prettierignore
   actions_ci: false
   pipeline_name_conventions: false

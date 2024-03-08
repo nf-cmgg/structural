@@ -88,7 +88,7 @@ process BCFTOOLS_CONSENSUS_REHEADER {
                     args2.contains("--output-type v") || args2.contains("-Ov") ? "vcf" :
                     "vcf"
     """
-    touch ${prefix}.${extension}
+    echo "" | gzip > ${prefix}.${extension}
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":

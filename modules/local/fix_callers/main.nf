@@ -38,7 +38,7 @@ process FIX_CALLERS {
         error "Input and output names are the same, use \"task.ext.prefix\" to disambiguate!"
     }
     """
-    touch ${prefix}.vcf.gz
+    echo "" | gzip > ${prefix}.vcf.gz
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":

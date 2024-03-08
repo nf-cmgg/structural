@@ -66,13 +66,13 @@ process BCFTOOLS_SPLIT_BY_SVTYPE {
                     args.contains("--output-type v") || args.contains("-Ov") ? "vcf" :
                     "vcf"
     """
-    touch ${prefix}.del.${extension}
-    touch ${prefix}.ins.${extension}
-    touch ${prefix}.inv.${extension}
-    touch ${prefix}.tra.${extension}
-    touch ${prefix}.bnd.${extension}
-    touch ${prefix}.dup.${extension}
-    touch ${prefix}.other.${extension}
+    echo "" | gzip > ${prefix}.del.${extension}
+    echo "" | gzip > ${prefix}.ins.${extension}
+    echo "" | gzip > ${prefix}.inv.${extension}
+    echo "" | gzip > ${prefix}.tra.${extension}
+    echo "" | gzip > ${prefix}.bnd.${extension}
+    echo "" | gzip > ${prefix}.dup.${extension}
+    echo "" | gzip > ${prefix}.other.${extension}
 
     touch ${prefix}.header.txt
 

@@ -23,7 +23,7 @@ process BCFTOOLS_CONSENSUS_REHEADER {
     def args    = task.ext.args ?: ''
     def prefix  = task.ext.prefix ?: "${meta.id}"
     def fai_argument      = fai ? "--fai $fai" : ""
-    def add_additional = additional_headers ? 
+    def add_additional = additional_headers ?
     """
     cat <<-EOF >> ${prefix}.temp.txt
     ${additional_headers.join("\t\n")}
@@ -38,7 +38,7 @@ process BCFTOOLS_CONSENSUS_REHEADER {
                     "vcf"
     """
     touch ${prefix}.temp.txt
-    for FILE in ${merged_vcf} ${single_vcfs}; 
+    for FILE in ${merged_vcf} ${single_vcfs};
     do
         bcftools view --threads ${task.cpus} -h \$FILE | grep -vE '^(#CHROM|##fileformat|##filedate|##contig)' >> ${prefix}.temp.txt
     done

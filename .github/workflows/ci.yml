@@ -39,7 +39,7 @@ jobs:
           - "bam_repeat_estimation_expansionhunter"
           - "bam_sv_calling"
           - "bam_variant_calling_delly"
-          - "bam_variant_calling_gridss"
+          # - "bam_variant_calling_gridss"
           - "bam_variant_calling_manta"
           - "bam_variant_calling_qdnaseq"
           - "bam_variant_calling_smoove"

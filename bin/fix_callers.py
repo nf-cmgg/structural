@@ -29,7 +29,9 @@ def process_file(file, output) -> None:
                 after_info = "\t".join(line.split("\t")[8:])
                 info_dict = {}
                 for field in info.split(";"):
-                    key, value = field.split("=", 1)
+                    split_field = field.split("=", 1)
+                    key, value = (split_field[0], split_field[1]) if len(split_field) == 2 else (split_field[0], "")
+                    print(key, value)
                     info_dict[key] = value
                 
                 info_dict["CALLERS"] = ",".join(set([it.split("_")[0] for it in info_dict["IDLIST_EXT"].replace(".", ",").split(",")]))

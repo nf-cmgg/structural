@@ -17,10 +17,12 @@ nextflow_workflow {
                 """
                 input[0] = Channel.of([
                     [id:"test", sample:"test", caller:"delly"],
-                    file(params.sv_vcf1, checkIfExists:true)
+                    file(params.sv_vcf1, checkIfExists:true),
+                    file(params.sv_tbi1, checkIfExists:true)
                 ], [
                     [id:"test", sample:"test", caller:"expansionhunter"],
-                    file(params.repeats_vcf1, checkIfExists:true)
+                    file(params.repeats_vcf1, checkIfExists:true),
+                    file(params.repeats_tbi1, checkIfExists:true)
                 ])
                 input[1] = Channel.value([
                     [id:"fasta"],
@@ -57,7 +59,8 @@ nextflow_workflow {
                 """
                 input[0] = Channel.of([
                     [id:"test", sample:"test", caller:"delly"],
-                    file(params.sv_vcf1, checkIfExists:true)
+                    file(params.sv_vcf1, checkIfExists:true),
+                    file(params.sv_tbi1, checkIfExists:true)
                 ])
                 input[1] = Channel.value([
                     [id:"fasta"],

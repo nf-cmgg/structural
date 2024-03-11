@@ -17,16 +17,20 @@ nextflow_workflow {
                 """
                 input[0] = Channel.of([
                     [id:"PosCon1", sample:"PosCon1", family:"fam", family_count:2, variant_type:"sv"],
-                    file(params.sv_vcf1, checkIfExists:true)
+                    file(params.sv_vcf1, checkIfExists:true),
+                    file(params.sv_tbi1, checkIfExists:true)
                 ],[
                     [id:"PosCon2", sample:"PosCon2", family:"fam", family_count:2, variant_type:"sv"],
-                    file(params.sv_vcf2, checkIfExists:true)
+                    file(params.sv_vcf2, checkIfExists:true),
+                    file(params.sv_tbi2, checkIfExists:true)
                 ],[
                     [id:"PosCon1", sample:"PosCon1", family:"fam", family_count:2, variant_type:"cnv"],
-                    file(params.cnv_vcf1, checkIfExists:true)
+                    file(params.cnv_vcf1, checkIfExists:true),
+                    file(params.cnv_tbi1, checkIfExists:true)
                 ],[
                     [id:"PosCon2", sample:"PosCon2", family:"fam", family_count:2, variant_type:"cnv"],
-                    file(params.cnv_vcf2, checkIfExists:true)
+                    file(params.cnv_vcf2, checkIfExists:true),
+                    file(params.cnv_tbi2, checkIfExists:true)
                 ])
                 input[1] = Channel.value([
                     [id:"fasta"],
@@ -44,8 +48,11 @@ nextflow_workflow {
             assertAll(
                 { assert workflow.success },
                 { assert snapshot(
-                    file(workflow.out.vcfs[0][1]).name,
-                    file(workflow.out.vcfs[0][2]).name,
+                    workflow.out.vcfs.collect { entry ->
+                        entry.collect { 
+                            it instanceof Map ? it : file(it).name.endsWith(".vcf.gz") ? path(it).linesGzip[-4..-1] : file(it).name
+                        }
+                    },
                     workflow.trace.succeeded().size(),
                     workflow.trace.failed().size()
                 ).match() }
@@ -60,17 +67,21 @@ nextflow_workflow {
             workflow {
                 """
                 input[0] = Channel.of([
-                    [id:"PosCon1", sample:"PosCon1", family:"fam1", family_count:1, variant_type:"sv"],
-                    file(params.sv_vcf1, checkIfExists:true)
+                    [id:"PosCon1", sample:"PosCon1", family:"fam", family_count:2, variant_type:"sv"],
+                    file(params.sv_vcf1, checkIfExists:true),
+                    file(params.sv_tbi1, checkIfExists:true)
                 ],[
-                    [id:"PosCon2", sample:"PosCon2", family:"fam2", family_count:1, variant_type:"sv"],
-                    file(params.sv_vcf2, checkIfExists:true)
+                    [id:"PosCon2", sample:"PosCon2", family:"fam", family_count:2, variant_type:"sv"],
+                    file(params.sv_vcf2, checkIfExists:true),
+                    file(params.sv_tbi2, checkIfExists:true)
                 ],[
-                    [id:"PosCon1", sample:"PosCon1", family:"fam1", family_count:1, variant_type:"cnv"],
-                    file(params.cnv_vcf1, checkIfExists:true)
+                    [id:"PosCon1", sample:"PosCon1", family:"fam", family_count:2, variant_type:"cnv"],
+                    file(params.cnv_vcf1, checkIfExists:true),
+                    file(params.cnv_tbi1, checkIfExists:true)
                 ],[
-                    [id:"PosCon2", sample:"PosCon2", family:"fam2", family_count:1, variant_type:"cnv"],
-                    file(params.cnv_vcf2, checkIfExists:true)
+                    [id:"PosCon2", sample:"PosCon2", family:"fam", family_count:2, variant_type:"cnv"],
+                    file(params.cnv_vcf2, checkIfExists:true),
+                    file(params.cnv_tbi2, checkIfExists:true)
                 ])
                 input[1] = Channel.value([
                     [id:"fasta"],
@@ -88,7 +99,11 @@ nextflow_workflow {
             assertAll(
                 { assert workflow.success },
                 { assert snapshot(
-                    workflow.out.vcfs,
+                    workflow.out.vcfs.collect { entry ->
+                        entry.collect { 
+                            it instanceof Map ? it : file(it).name.endsWith(".vcf.gz") ? path(it).linesGzip[-4..-1] : file(it).name
+                        }
+                    },
                     workflow.trace.succeeded().size(),
                     workflow.trace.failed().size()
                 ).match() }
@@ -104,22 +119,28 @@ nextflow_workflow {
                 """
                 input[0] = Channel.of([
                     [id:"PosCon1", sample:"PosCon1", family:"fam1", family_count:2, variant_type:"sv"],
-                    file(params.sv_vcf1, checkIfExists:true)
+                    file(params.sv_vcf1, checkIfExists:true),
+                    file(params.sv_tbi1, checkIfExists:true)
                 ],[
                     [id:"PosCon2", sample:"PosCon2", family:"fam1", family_count:2, variant_type:"sv"],
-                    file(params.sv_vcf2, checkIfExists:true)
+                    file(params.sv_vcf2, checkIfExists:true),
+                    file(params.sv_tbi2, checkIfExists:true)
                 ],[
                     [id:"PosCon3", sample:"PosCon3", family:"fam2", family_count:1, variant_type:"sv"],
-                    file(params.sv_vcf3, checkIfExists:true)
+                    file(params.sv_vcf3, checkIfExists:true),
+                    file(params.sv_tbi3, checkIfExists:true)
                 ],[
                     [id:"PosCon1", sample:"PosCon1", family:"fam1", family_count:2, variant_type:"cnv"],
-                    file(params.cnv_vcf1, checkIfExists:true)
+                    file(params.cnv_vcf1, checkIfExists:true),
+                    file(params.cnv_tbi1, checkIfExists:true)
                 ],[
                     [id:"PosCon2", sample:"PosCon2", family:"fam1", family_count:2, variant_type:"cnv"],
-                    file(params.cnv_vcf2, checkIfExists:true)
+                    file(params.cnv_vcf2, checkIfExists:true),
+                    file(params.cnv_tbi2, checkIfExists:true)
                 ],[
                     [id:"PosCon3", sample:"PosCon3", family:"fam2", family_count:1, variant_type:"cnv"],
-                    file(params.cnv_vcf3, checkIfExists:true)
+                    file(params.cnv_vcf3, checkIfExists:true),
+                    file(params.cnv_tbi3, checkIfExists:true)
                 ])
                 input[1] = Channel.value([
                     [id:"fasta"],
@@ -137,8 +158,11 @@ nextflow_workflow {
             assertAll(
                 { assert workflow.success },
                 { assert snapshot(
-                    file(workflow.out.vcfs[0][1]).name,
-                    file(workflow.out.vcfs[0][2]).name,
+                    workflow.out.vcfs.collect { entry ->
+                        entry.collect { 
+                            it instanceof Map ? it : file(it).name.endsWith(".vcf.gz") ? path(it).linesGzip[-4..-1] : file(it).name
+                        }
+                    },
                     workflow.trace.succeeded().size(),
                     workflow.trace.failed().size()
                 ).match() }
@@ -154,10 +178,12 @@ nextflow_workflow {
                 """
                 input[0] = Channel.of([
                     [id:"PosCon1", sample:"PosCon1", family:"fam", family_count:2],
-                    file(params.sv_vcf1, checkIfExists:true)
+                    file(params.sv_vcf1, checkIfExists:true),
+                    file(params.sv_tbi1, checkIfExists:true)
                 ],[
                     [id:"PosCon2", sample:"PosCon2", family:"fam", family_count:2],
-                    file(params.sv_vcf2, checkIfExists:true)
+                    file(params.sv_vcf2, checkIfExists:true),
+                    file(params.sv_tbi2, checkIfExists:true)
                 ])
                 input[1] = Channel.value([
                     [id:"fasta"],
@@ -175,8 +201,11 @@ nextflow_workflow {
             assertAll(
                 { assert workflow.success },
                 { assert snapshot(
-                    file(workflow.out.vcfs[0][1]).name,
-                    file(workflow.out.vcfs[0][2]).name,
+                    workflow.out.vcfs.collect { entry ->
+                        entry.collect { 
+                            it instanceof Map ? it : file(it).name.endsWith(".vcf.gz") ? path(it).linesGzip[-4..-1] : file(it).name
+                        }
+                    },
                     workflow.trace.succeeded().size(),
                     workflow.trace.failed().size()
                 ).match() }
@@ -191,11 +220,13 @@ nextflow_workflow {
             workflow {
                 """
                 input[0] = Channel.of([
-                    [id:"PosCon1", sample:"PosCon1", family:"fam1", family_count:1],
-                    file(params.sv_vcf1, checkIfExists:true)
+                    [id:"PosCon1", sample:"PosCon1", family:"fam", family_count:2],
+                    file(params.sv_vcf1, checkIfExists:true),
+                    file(params.sv_tbi1, checkIfExists:true)
                 ],[
-                    [id:"PosCon2", sample:"PosCon2", family:"fam2", family_count:1],
-                    file(params.sv_vcf2, checkIfExists:true)
+                    [id:"PosCon2", sample:"PosCon2", family:"fam", family_count:2],
+                    file(params.sv_vcf2, checkIfExists:true),
+                    file(params.sv_tbi2, checkIfExists:true)
                 ])
                 input[1] = Channel.value([
                     [id:"fasta"],
@@ -213,7 +244,11 @@ nextflow_workflow {
             assertAll(
                 { assert workflow.success },
                 { assert snapshot(
-                    workflow.out.vcfs,
+                    workflow.out.vcfs.collect { entry ->
+                        entry.collect { 
+                            it instanceof Map ? it : file(it).name.endsWith(".vcf.gz") ? path(it).linesGzip[-4..-1] : file(it).name
+                        }
+                    },
                     workflow.trace.succeeded().size(),
                     workflow.trace.failed().size()
                 ).match() }
@@ -229,13 +264,16 @@ nextflow_workflow {
                 """
                 input[0] = Channel.of([
                     [id:"PosCon1", sample:"PosCon1", family:"fam1", family_count:2],
-                    file(params.sv_vcf1, checkIfExists:true)
+                    file(params.sv_vcf1, checkIfExists:true),
+                    file(params.sv_tbi1, checkIfExists:true)
                 ],[
                     [id:"PosCon2", sample:"PosCon2", family:"fam1", family_count:2],
-                    file(params.sv_vcf2, checkIfExists:true)
+                    file(params.sv_vcf2, checkIfExists:true),
+                    file(params.sv_tbi2, checkIfExists:true)
                 ],[
                     [id:"PosCon3", sample:"PosCon3", family:"PosCon3", family_count:1],
-                    file(params.sv_vcf3, checkIfExists:true)
+                    file(params.sv_vcf3, checkIfExists:true),
+                    file(params.sv_tbi3, checkIfExists:true)
                 ])
                 input[1] = Channel.value([
                     [id:"fasta"],
@@ -253,8 +291,11 @@ nextflow_workflow {
             assertAll(
                 { assert workflow.success },
                 { assert snapshot(
-                    file(workflow.out.vcfs[0][1]).name,
-                    file(workflow.out.vcfs[0][2]).name,
+                    workflow.out.vcfs.collect { entry ->
+                        entry.collect { 
+                            it instanceof Map ? it : file(it).name.endsWith(".vcf.gz") ? path(it).linesGzip[-4..-1] : file(it).name
+                        }
+                    },
                     workflow.trace.succeeded().size(),
                     workflow.trace.failed().size()
                 ).match() }

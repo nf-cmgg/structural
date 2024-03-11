@@ -11,7 +11,7 @@ include { FIX_CALLERS                 } from '../../../modules/local/fix_callers
 
 workflow VCF_MERGE_FAMILY_JASMINE {
     take:
-        ch_vcfs     // channel: [mandatory] [ meta, vcf ] => The bgzipped called VCFs
+        ch_vcfs     // channel: [mandatory] [ meta, vcf, tbi ] => The bgzipped called VCFs
         ch_fasta    // channel: [mandatory] [ meta, fasta ] => The fasta reference file
         ch_fai      // channel: [mandatory] [ meta, fai ] => The index of the fasta reference file
 

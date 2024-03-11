@@ -71,18 +71,20 @@
                 ]
             ],
             [
-                [
-                    {
-                        "id": "test",
-                        "sample": "test",
-                        "sex": "male"
-                    },
-                    "test.vcf.gz:md5,d41d8cd98f00b204e9800998ecf8427e"
-                ]
+                {
+                    "id": "test",
+                    "sample": "test",
+                    "sex": "male"
+                },
+                "test.vcf.gz"
             ],
             4,
             0
         ],
-        "timestamp": "2024-01-11T11:28:55.482182822"
+        "meta": {
+            "nf-test": "0.8.4",
+            "nextflow": "24.02.0"
+        },
+        "timestamp": "2024-03-11T14:28:06.577335662"
     }
 }

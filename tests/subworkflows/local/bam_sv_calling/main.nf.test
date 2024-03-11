@@ -44,7 +44,7 @@ nextflow_workflow {
                 { assert workflow.success },
                 { assert snapshot(
                     workflow.out.reports,
-                    workflow.out.vcfs,
+                    workflow.out.vcfs[0].collect { it instanceof Map ? it : file(it).name },
                     workflow.trace.succeeded().size(),
                     workflow.trace.failed().size()
                 ).match() }
@@ -85,7 +85,7 @@ nextflow_workflow {
                 { assert workflow.success },
                 { assert snapshot(
                     workflow.out.reports,
-                    workflow.out.vcfs,
+                    workflow.out.vcfs[0].collect { it instanceof Map ? it : file(it).name },
                     workflow.trace.succeeded().size(),
                     workflow.trace.failed().size()
                 ).match() }
@@ -126,7 +126,7 @@ nextflow_workflow {
                 { assert workflow.success },
                 { assert snapshot(
                     workflow.out.reports,
-                    workflow.out.vcfs,
+                    workflow.out.vcfs[0].collect { it instanceof Map ? it : file(it).name },
                     workflow.trace.succeeded().size(),
                     workflow.trace.failed().size()
                 ).match() }
@@ -167,7 +167,7 @@ nextflow_workflow {
     //             { assert workflow.success },
     //             { assert snapshot(
     //                 workflow.out.reports,
-    //                 workflow.out.vcfs,
+    //                 workflow.out.vcfs[0].collect { it instanceof Map ? it : file(it).name },
     //                 workflow.trace.succeeded().size(),
     //                 workflow.trace.failed().size()
     //             ).match() }
@@ -208,7 +208,7 @@ nextflow_workflow {
                 { assert workflow.success },
                 { assert snapshot(
                     workflow.out.reports,
-                    workflow.out.vcfs,
+                    workflow.out.vcfs[0].collect { it instanceof Map ? it : file(it).name },
                     workflow.trace.succeeded().size(),
                     workflow.trace.failed().size()
                 ).match() }

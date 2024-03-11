@@ -1,8 +1,24 @@
 {
     "homo_sapiens": {
         "content": [
-            "test.qdnaseq.vcf.gz",
-            "test2.qdnaseq.vcf.gz",
+            [
+                [
+                    {
+                        "id": "test",
+                        "sample": "test",
+                        "sex": "male"
+                    },
+                    "test.qdnaseq.vcf.gz:md5,9986dde8f8c44e05c92bdaeed138d6af"
+                ],
+                [
+                    {
+                        "id": "test2",
+                        "sample": "test2",
+                        "sex": "female"
+                    },
+                    "test2.qdnaseq.vcf.gz:md5,2ebc9fd7939164b3393f1f566be21da0"
+                ]
+            ],
             [
                 [
                     {
@@ -26,6 +42,10 @@
             10,
             0
         ],
-        "timestamp": "2024-01-12T11:33:39.694814993"
+        "meta": {
+            "nf-test": "0.8.4",
+            "nextflow": "24.02.0"
+        },
+        "timestamp": "2024-03-11T14:20:46.776654022"
     }
 }

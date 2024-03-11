@@ -2,15 +2,19 @@
     "homo_sapiens": {
         "content": [
             [
-                "##ALT=<ID=DUP:TANDEM,Description=\"Tandem Duplication\">",
-                "##cmdline=/usr/local/bin/configManta.py --bam PosCon1.cram --config manta_config.ini --reference reference.fasta --runDir manta --callRegions fai.bed.gz",
+                "##contig=<ID=chr16,length=2000001>",
+                "##contig=<ID=chrX,length=2000001>",
                 "#CHROM\tPOS\tID\tREF\tALT\tQUAL\tFILTER\tINFO\tFORMAT\tPosCon1",
-                "chr16\t1061455\tMantaDEL:8:0:0:0:0:0\tGTTCCACTCATGTTGTTGCAGATTACTGGATCTCACTCTTTTTTATGGGTGAATCGTACTTCATAGTGTATATGTACC\tG\t619\tPASS\tEND=1061532;SVTYPE=DEL;SVLEN=-77;CIGAR=1M77D;CIPOS=0,5;HOMLEN=5;HOMSEQ=TTCCA\tGT:FT:GQ:PL:PR:SR\t1/1:PASS:59:672,62,0:0,0:0,19"
+                "chr16\t1061455\tmanta_DEL_1\tGTTCCACTCATGTTGTTGCAGATTACTGGATCTCACTCTTTTTTATGGGTGAATCGTACTTCATAGTGTATATGTACC\tG\t619\tPASS\tCALLERS=manta;CIPOS=0,5;END=1061532;SVLEN=-77;SVTYPE=DEL\tGT:PE:SR\t1/1:0,0:0,19"
             ],
-            "test.manta.vcf.gz.tbi",
-            4,
+            "test.svync.manta.vcf.gz.tbi",
+            6,
             0
         ],
-        "timestamp": "2023-11-29T16:46:28.352122332"
+        "meta": {
+            "nf-test": "0.8.4",
+            "nextflow": "24.02.0"
+        },
+        "timestamp": "2024-03-11T14:12:51.499950856"
     }
 }

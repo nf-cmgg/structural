@@ -6,36 +6,34 @@
             ],
             [
                 [
-                    "PosCon1.cnv.vcf.gz:md5,d41d8cd98f00b204e9800998ecf8427e",
-                    "PosCon1.cnv.vcf.gz.tbi:md5,d41d8cd98f00b204e9800998ecf8427e",
-                    "PosCon1.repeats.vcf.gz:md5,d41d8cd98f00b204e9800998ecf8427e",
-                    "PosCon1.repeats.vcf.gz.tbi:md5,d41d8cd98f00b204e9800998ecf8427e",
-                    "PosCon1.sv.vcf.gz:md5,d41d8cd98f00b204e9800998ecf8427e",
-                    "PosCon1.sv.vcf.gz.tbi:md5,d41d8cd98f00b204e9800998ecf8427e",
-                    "PosCon1.wisecondorx.vcf.gz.tbi:md5,d41d8cd98f00b204e9800998ecf8427e",
-                    "PosCon1.wisecondorx_aberrations.bed:md5,d41d8cd98f00b204e9800998ecf8427e",
-                    "PosCon1.wisecondorx_bins.bed:md5,d41d8cd98f00b204e9800998ecf8427e",
-                    "PosCon1.wisecondorx_chr_statistics.txt:md5,d41d8cd98f00b204e9800998ecf8427e",
-                    "PosCon1.wisecondorx_segments.bed:md5,d41d8cd98f00b204e9800998ecf8427e",
-                    "chr1.png:md5,d41d8cd98f00b204e9800998ecf8427e",
-                    "chr22.png:md5,d41d8cd98f00b204e9800998ecf8427e",
-                    "genome_wide.png:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    "PosCon1.cnv.vcf.gz",
+                    "PosCon1.cnv.vcf.gz.tbi",
+                    "PosCon1.repeats.vcf.gz",
+                    "PosCon1.repeats.vcf.gz.tbi",
+                    "PosCon1.sv.vcf.gz",
+                    "PosCon1.sv.vcf.gz.tbi",
+                    "PosCon1.wisecondorx_aberrations.bed",
+                    "PosCon1.wisecondorx_bins.bed",
+                    "PosCon1.wisecondorx_chr_statistics.txt",
+                    "PosCon1.wisecondorx_segments.bed",
+                    "chr1.png",
+                    "chr22.png",
+                    "genome_wide.png"
                 ],
                 [
-                    "PosCon3.cnv.vcf.gz:md5,d41d8cd98f00b204e9800998ecf8427e",
-                    "PosCon3.cnv.vcf.gz.tbi:md5,d41d8cd98f00b204e9800998ecf8427e",
-                    "PosCon3.repeats.vcf.gz:md5,d41d8cd98f00b204e9800998ecf8427e",
-                    "PosCon3.repeats.vcf.gz.tbi:md5,d41d8cd98f00b204e9800998ecf8427e",
-                    "PosCon3.sv.vcf.gz:md5,d41d8cd98f00b204e9800998ecf8427e",
-                    "PosCon3.sv.vcf.gz.tbi:md5,d41d8cd98f00b204e9800998ecf8427e",
-                    "PosCon3.wisecondorx.vcf.gz.tbi:md5,d41d8cd98f00b204e9800998ecf8427e",
-                    "PosCon3.wisecondorx_aberrations.bed:md5,d41d8cd98f00b204e9800998ecf8427e",
-                    "PosCon3.wisecondorx_bins.bed:md5,d41d8cd98f00b204e9800998ecf8427e",
-                    "PosCon3.wisecondorx_chr_statistics.txt:md5,d41d8cd98f00b204e9800998ecf8427e",
-                    "PosCon3.wisecondorx_segments.bed:md5,d41d8cd98f00b204e9800998ecf8427e",
-                    "chr1.png:md5,d41d8cd98f00b204e9800998ecf8427e",
-                    "chr22.png:md5,d41d8cd98f00b204e9800998ecf8427e",
-                    "genome_wide.png:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    "PosCon3.cnv.vcf.gz",
+                    "PosCon3.cnv.vcf.gz.tbi",
+                    "PosCon3.repeats.vcf.gz",
+                    "PosCon3.repeats.vcf.gz.tbi",
+                    "PosCon3.sv.vcf.gz",
+                    "PosCon3.sv.vcf.gz.tbi",
+                    "PosCon3.wisecondorx_aberrations.bed",
+                    "PosCon3.wisecondorx_bins.bed",
+                    "PosCon3.wisecondorx_chr_statistics.txt",
+                    "PosCon3.wisecondorx_segments.bed",
+                    "chr1.png",
+                    "chr22.png",
+                    "genome_wide.png"
                 ]
             ],
             [
@@ -44,6 +42,10 @@
                 "pipeline_info"
             ]
         ],
-        "timestamp": "2023-11-30T13:19:08.640465122"
+        "meta": {
+            "nf-test": "0.8.4",
+            "nextflow": "24.02.0"
+        },
+        "timestamp": "2024-03-11T17:09:56.582078073"
     }
 }

@@ -6,84 +6,68 @@
             ],
             [
                 [
-                    "PosCon1.cnv.vcf.gz:md5,d41d8cd98f00b204e9800998ecf8427e",
-                    "PosCon1.cnv.vcf.gz.tbi:md5,d41d8cd98f00b204e9800998ecf8427e",
-                    "PosCon1.qdnaseq.abberations.bed:md5,d41d8cd98f00b204e9800998ecf8427e",
-                    "PosCon1.qdnaseq.bed:md5,d41d8cd98f00b204e9800998ecf8427e",
-                    "PosCon1.qdnaseq.cna:md5,d41d8cd98f00b204e9800998ecf8427e",
-                    "PosCon1.qdnaseq_segments.txt:md5,d41d8cd98f00b204e9800998ecf8427e",
-                    "PosCon1.wisecondorx_aberrations.bed:md5,d41d8cd98f00b204e9800998ecf8427e",
-                    "PosCon1.wisecondorx_bins.bed:md5,d41d8cd98f00b204e9800998ecf8427e",
-                    "PosCon1.wisecondorx_chr_statistics.txt:md5,d41d8cd98f00b204e9800998ecf8427e",
-                    "PosCon1.wisecondorx_segments.bed:md5,d41d8cd98f00b204e9800998ecf8427e",
-                    "chr1.png:md5,d41d8cd98f00b204e9800998ecf8427e",
-                    "chr22.png:md5,d41d8cd98f00b204e9800998ecf8427e",
-                    "genome_wide.png:md5,d41d8cd98f00b204e9800998ecf8427e",
-                    "statistics.out:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    "PosCon1.cnv.vcf.gz",
+                    "PosCon1.cnv.vcf.gz.tbi",
+                    "PosCon1.qdnaseq.abberations.bed",
+                    "PosCon1.qdnaseq.bed",
+                    "PosCon1.qdnaseq.cna",
+                    "PosCon1.qdnaseq_segments.txt",
+                    "PosCon1.wisecondorx_aberrations.bed",
+                    "PosCon1.wisecondorx_bins.bed",
+                    "PosCon1.wisecondorx_chr_statistics.txt",
+                    "PosCon1.wisecondorx_segments.bed",
+                    "chr1.png",
+                    "chr22.png",
+                    "genome_wide.png",
+                    "statistics.out"
                 ],
                 [
-                    "PosCon2.cnv.vcf.gz:md5,d41d8cd98f00b204e9800998ecf8427e",
-                    "PosCon2.cnv.vcf.gz.tbi:md5,d41d8cd98f00b204e9800998ecf8427e",
-                    "PosCon2.qdnaseq.abberations.bed:md5,d41d8cd98f00b204e9800998ecf8427e",
-                    "PosCon2.qdnaseq.bed:md5,d41d8cd98f00b204e9800998ecf8427e",
-                    "PosCon2.qdnaseq.cna:md5,d41d8cd98f00b204e9800998ecf8427e",
-                    "PosCon2.qdnaseq_segments.txt:md5,d41d8cd98f00b204e9800998ecf8427e",
-                    "PosCon2.wisecondorx_aberrations.bed:md5,d41d8cd98f00b204e9800998ecf8427e",
-                    "PosCon2.wisecondorx_bins.bed:md5,d41d8cd98f00b204e9800998ecf8427e",
-                    "PosCon2.wisecondorx_chr_statistics.txt:md5,d41d8cd98f00b204e9800998ecf8427e",
-                    "PosCon2.wisecondorx_segments.bed:md5,d41d8cd98f00b204e9800998ecf8427e",
-                    "chr1.png:md5,d41d8cd98f00b204e9800998ecf8427e",
-                    "chr22.png:md5,d41d8cd98f00b204e9800998ecf8427e",
-                    "genome_wide.png:md5,d41d8cd98f00b204e9800998ecf8427e",
-                    "statistics.out:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    "PosCon2.cnv.vcf.gz",
+                    "PosCon2.cnv.vcf.gz.tbi",
+                    "PosCon2.qdnaseq.abberations.bed",
+                    "PosCon2.qdnaseq.bed",
+                    "PosCon2.qdnaseq.cna",
+                    "PosCon2.qdnaseq_segments.txt",
+                    "PosCon2.wisecondorx_aberrations.bed",
+                    "PosCon2.wisecondorx_bins.bed",
+                    "PosCon2.wisecondorx_chr_statistics.txt",
+                    "PosCon2.wisecondorx_segments.bed",
+                    "chr1.png",
+                    "chr22.png",
+                    "genome_wide.png",
+                    "statistics.out"
                 ],
                 [
-                    "PosCon3.cnv.vcf.gz:md5,d41d8cd98f00b204e9800998ecf8427e",
-                    "PosCon3.cnv.vcf.gz.tbi:md5,d41d8cd98f00b204e9800998ecf8427e",
-                    "PosCon3.qdnaseq.abberations.bed:md5,d41d8cd98f00b204e9800998ecf8427e",
-                    "PosCon3.qdnaseq.bed:md5,d41d8cd98f00b204e9800998ecf8427e",
-                    "PosCon3.qdnaseq.cna:md5,d41d8cd98f00b204e9800998ecf8427e",
-                    "PosCon3.qdnaseq_segments.txt:md5,d41d8cd98f00b204e9800998ecf8427e",
-                    "PosCon3.wisecondorx_aberrations.bed:md5,d41d8cd98f00b204e9800998ecf8427e",
-                    "PosCon3.wisecondorx_bins.bed:md5,d41d8cd98f00b204e9800998ecf8427e",
-                    "PosCon3.wisecondorx_chr_statistics.txt:md5,d41d8cd98f00b204e9800998ecf8427e",
-                    "PosCon3.wisecondorx_segments.bed:md5,d41d8cd98f00b204e9800998ecf8427e",
-                    "chr1.png:md5,d41d8cd98f00b204e9800998ecf8427e",
-                    "chr22.png:md5,d41d8cd98f00b204e9800998ecf8427e",
-                    "genome_wide.png:md5,d41d8cd98f00b204e9800998ecf8427e",
-                    "statistics.out:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    "PosCon3.cnv.vcf.gz",
+                    "PosCon3.cnv.vcf.gz.tbi",
+                    "PosCon3.qdnaseq.abberations.bed",
+                    "PosCon3.qdnaseq.bed",
+                    "PosCon3.qdnaseq.cna",
+                    "PosCon3.qdnaseq_segments.txt",
+                    "PosCon3.wisecondorx_aberrations.bed",
+                    "PosCon3.wisecondorx_bins.bed",
+                    "PosCon3.wisecondorx_chr_statistics.txt",
+                    "PosCon3.wisecondorx_segments.bed",
+                    "chr1.png",
+                    "chr22.png",
+                    "genome_wide.png",
+                    "statistics.out"
                 ],
                 [
-                    "PosCon4.cnv.vcf.gz:md5,d41d8cd98f00b204e9800998ecf8427e",
-                    "PosCon4.cnv.vcf.gz.tbi:md5,d41d8cd98f00b204e9800998ecf8427e",
-                    "PosCon4.qdnaseq.abberations.bed:md5,d41d8cd98f00b204e9800998ecf8427e",
-                    "PosCon4.qdnaseq.bed:md5,d41d8cd98f00b204e9800998ecf8427e",
-                    "PosCon4.qdnaseq.cna:md5,d41d8cd98f00b204e9800998ecf8427e",
-                    "PosCon4.qdnaseq_segments.txt:md5,d41d8cd98f00b204e9800998ecf8427e",
-                    "PosCon4.wisecondorx_aberrations.bed:md5,d41d8cd98f00b204e9800998ecf8427e",
-                    "PosCon4.wisecondorx_bins.bed:md5,d41d8cd98f00b204e9800998ecf8427e",
-                    "PosCon4.wisecondorx_chr_statistics.txt:md5,d41d8cd98f00b204e9800998ecf8427e",
-                    "PosCon4.wisecondorx_segments.bed:md5,d41d8cd98f00b204e9800998ecf8427e",
-                    "chr1.png:md5,d41d8cd98f00b204e9800998ecf8427e",
-                    "chr22.png:md5,d41d8cd98f00b204e9800998ecf8427e",
-                    "genome_wide.png:md5,d41d8cd98f00b204e9800998ecf8427e",
-                    "statistics.out:md5,d41d8cd98f00b204e9800998ecf8427e"
-                ],
-                [
-                    "PosCon5.cnv.vcf.gz:md5,d41d8cd98f00b204e9800998ecf8427e",
-                    "PosCon5.cnv.vcf.gz.tbi:md5,d41d8cd98f00b204e9800998ecf8427e",
-                    "PosCon5.qdnaseq.abberations.bed:md5,d41d8cd98f00b204e9800998ecf8427e",
-                    "PosCon5.qdnaseq.bed:md5,d41d8cd98f00b204e9800998ecf8427e",
-                    "PosCon5.qdnaseq.cna:md5,d41d8cd98f00b204e9800998ecf8427e",
-                    "PosCon5.qdnaseq_segments.txt:md5,d41d8cd98f00b204e9800998ecf8427e",
-                    "PosCon5.wisecondorx_aberrations.bed:md5,d41d8cd98f00b204e9800998ecf8427e",
-                    "PosCon5.wisecondorx_bins.bed:md5,d41d8cd98f00b204e9800998ecf8427e",
-                    "PosCon5.wisecondorx_chr_statistics.txt:md5,d41d8cd98f00b204e9800998ecf8427e",
-                    "PosCon5.wisecondorx_segments.bed:md5,d41d8cd98f00b204e9800998ecf8427e",
-                    "chr1.png:md5,d41d8cd98f00b204e9800998ecf8427e",
-                    "chr22.png:md5,d41d8cd98f00b204e9800998ecf8427e",
-                    "genome_wide.png:md5,d41d8cd98f00b204e9800998ecf8427e",
-                    "statistics.out:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    "PosCon4.cnv.vcf.gz",
+                    "PosCon4.cnv.vcf.gz.tbi",
+                    "PosCon4.qdnaseq.abberations.bed",
+                    "PosCon4.qdnaseq.bed",
+                    "PosCon4.qdnaseq.cna",
+                    "PosCon4.qdnaseq_segments.txt",
+                    "PosCon4.wisecondorx_aberrations.bed",
+                    "PosCon4.wisecondorx_bins.bed",
+                    "PosCon4.wisecondorx_chr_statistics.txt",
+                    "PosCon4.wisecondorx_segments.bed",
+                    "chr1.png",
+                    "chr22.png",
+                    "genome_wide.png",
+                    "statistics.out"
                 ]
             ],
             [
@@ -91,11 +75,14 @@
                 "PosCon2",
                 "PosCon3",
                 "PosCon4",
-                "PosCon5",
                 "pipeline_info"
             ]
         ],
-        "timestamp": "2023-11-30T11:21:31.75636701"
+        "meta": {
+            "nf-test": "0.8.4",
+            "nextflow": "24.02.0"
+        },
+        "timestamp": "2024-03-11T17:06:43.133185621"
     },
     "qdnaseq": {
         "content": [
@@ -104,54 +91,40 @@
             ],
             [
                 [
-                    "PosCon1.cnv.vcf.gz:md5,d41d8cd98f00b204e9800998ecf8427e",
-                    "PosCon1.cnv.vcf.gz.tbi:md5,d41d8cd98f00b204e9800998ecf8427e",
-                    "PosCon1.qdnaseq.abberations.bed:md5,d41d8cd98f00b204e9800998ecf8427e",
-                    "PosCon1.qdnaseq.bed:md5,d41d8cd98f00b204e9800998ecf8427e",
-                    "PosCon1.qdnaseq.cna:md5,d41d8cd98f00b204e9800998ecf8427e",
-                    "PosCon1.qdnaseq.vcf.gz.tbi:md5,d41d8cd98f00b204e9800998ecf8427e",
-                    "PosCon1.qdnaseq_segments.txt:md5,d41d8cd98f00b204e9800998ecf8427e",
-                    "statistics.out:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    "PosCon1.cnv.vcf.gz",
+                    "PosCon1.cnv.vcf.gz.tbi",
+                    "PosCon1.qdnaseq.abberations.bed",
+                    "PosCon1.qdnaseq.bed",
+                    "PosCon1.qdnaseq.cna",
+                    "PosCon1.qdnaseq_segments.txt",
+                    "statistics.out"
                 ],
                 [
-                    "PosCon2.cnv.vcf.gz:md5,d41d8cd98f00b204e9800998ecf8427e",
-                    "PosCon2.cnv.vcf.gz.tbi:md5,d41d8cd98f00b204e9800998ecf8427e",
-                    "PosCon2.qdnaseq.abberations.bed:md5,d41d8cd98f00b204e9800998ecf8427e",
-                    "PosCon2.qdnaseq.bed:md5,d41d8cd98f00b204e9800998ecf8427e",
-                    "PosCon2.qdnaseq.cna:md5,d41d8cd98f00b204e9800998ecf8427e",
-                    "PosCon2.qdnaseq.vcf.gz.tbi:md5,d41d8cd98f00b204e9800998ecf8427e",
-                    "PosCon2.qdnaseq_segments.txt:md5,d41d8cd98f00b204e9800998ecf8427e",
-                    "statistics.out:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    "PosCon2.cnv.vcf.gz",
+                    "PosCon2.cnv.vcf.gz.tbi",
+                    "PosCon2.qdnaseq.abberations.bed",
+                    "PosCon2.qdnaseq.bed",
+                    "PosCon2.qdnaseq.cna",
+                    "PosCon2.qdnaseq_segments.txt",
+                    "statistics.out"
                 ],
                 [
-                    "PosCon3.cnv.vcf.gz:md5,d41d8cd98f00b204e9800998ecf8427e",
-                    "PosCon3.cnv.vcf.gz.tbi:md5,d41d8cd98f00b204e9800998ecf8427e",
-                    "PosCon3.qdnaseq.abberations.bed:md5,d41d8cd98f00b204e9800998ecf8427e",
-                    "PosCon3.qdnaseq.bed:md5,d41d8cd98f00b204e9800998ecf8427e",
-                    "PosCon3.qdnaseq.cna:md5,d41d8cd98f00b204e9800998ecf8427e",
-                    "PosCon3.qdnaseq.vcf.gz.tbi:md5,d41d8cd98f00b204e9800998ecf8427e",
-                    "PosCon3.qdnaseq_segments.txt:md5,d41d8cd98f00b204e9800998ecf8427e",
-                    "statistics.out:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    "PosCon3.cnv.vcf.gz",
+                    "PosCon3.cnv.vcf.gz.tbi",
+                    "PosCon3.qdnaseq.abberations.bed",
+                    "PosCon3.qdnaseq.bed",
+                    "PosCon3.qdnaseq.cna",
+                    "PosCon3.qdnaseq_segments.txt",
+                    "statistics.out"
                 ],
                 [
-                    "PosCon4.cnv.vcf.gz:md5,d41d8cd98f00b204e9800998ecf8427e",
-                    "PosCon4.cnv.vcf.gz.tbi:md5,d41d8cd98f00b204e9800998ecf8427e",
-                    "PosCon4.qdnaseq.abberations.bed:md5,d41d8cd98f00b204e9800998ecf8427e",
-                    "PosCon4.qdnaseq.bed:md5,d41d8cd98f00b204e9800998ecf8427e",
-                    "PosCon4.qdnaseq.cna:md5,d41d8cd98f00b204e9800998ecf8427e",
-                    "PosCon4.qdnaseq.vcf.gz.tbi:md5,d41d8cd98f00b204e9800998ecf8427e",
-                    "PosCon4.qdnaseq_segments.txt:md5,d41d8cd98f00b204e9800998ecf8427e",
-                    "statistics.out:md5,d41d8cd98f00b204e9800998ecf8427e"
-                ],
-                [
-                    "PosCon5.cnv.vcf.gz:md5,d41d8cd98f00b204e9800998ecf8427e",
-                    "PosCon5.cnv.vcf.gz.tbi:md5,d41d8cd98f00b204e9800998ecf8427e",
-                    "PosCon5.qdnaseq.abberations.bed:md5,d41d8cd98f00b204e9800998ecf8427e",
-                    "PosCon5.qdnaseq.bed:md5,d41d8cd98f00b204e9800998ecf8427e",
-                    "PosCon5.qdnaseq.cna:md5,d41d8cd98f00b204e9800998ecf8427e",
-                    "PosCon5.qdnaseq.vcf.gz.tbi:md5,d41d8cd98f00b204e9800998ecf8427e",
-                    "PosCon5.qdnaseq_segments.txt:md5,d41d8cd98f00b204e9800998ecf8427e",
-                    "statistics.out:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    "PosCon4.cnv.vcf.gz",
+                    "PosCon4.cnv.vcf.gz.tbi",
+                    "PosCon4.qdnaseq.abberations.bed",
+                    "PosCon4.qdnaseq.bed",
+                    "PosCon4.qdnaseq.cna",
+                    "PosCon4.qdnaseq_segments.txt",
+                    "statistics.out"
                 ]
             ],
             [
@@ -159,10 +132,13 @@
                 "PosCon2",
                 "PosCon3",
                 "PosCon4",
-                "PosCon5",
                 "pipeline_info"
             ]
         ],
-        "timestamp": "2023-11-30T11:20:34.761652819"
+        "meta": {
+            "nf-test": "0.8.4",
+            "nextflow": "24.02.0"
+        },
+        "timestamp": "2024-03-11T17:03:18.926724757"
     }
 }

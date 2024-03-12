@@ -6,24 +6,20 @@
             ],
             [
                 [
-                    "PosCon1.sv.vcf.gz:md5,d41d8cd98f00b204e9800998ecf8427e",
-                    "PosCon1.sv.vcf.gz.tbi:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    "PosCon1.sv.vcf.gz",
+                    "PosCon1.sv.vcf.gz.tbi"
                 ],
                 [
-                    "PosCon2.sv.vcf.gz:md5,d41d8cd98f00b204e9800998ecf8427e",
-                    "PosCon2.sv.vcf.gz.tbi:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    "PosCon2.sv.vcf.gz",
+                    "PosCon2.sv.vcf.gz.tbi"
                 ],
                 [
-                    "PosCon3.sv.vcf.gz:md5,d41d8cd98f00b204e9800998ecf8427e",
-                    "PosCon3.sv.vcf.gz.tbi:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    "PosCon3.sv.vcf.gz",
+                    "PosCon3.sv.vcf.gz.tbi"
                 ],
                 [
-                    "PosCon4.sv.vcf.gz:md5,d41d8cd98f00b204e9800998ecf8427e",
-                    "PosCon4.sv.vcf.gz.tbi:md5,d41d8cd98f00b204e9800998ecf8427e"
-                ],
-                [
-                    "PosCon5.sv.vcf.gz:md5,d41d8cd98f00b204e9800998ecf8427e",
-                    "PosCon5.sv.vcf.gz.tbi:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    "PosCon4.sv.vcf.gz",
+                    "PosCon4.sv.vcf.gz.tbi"
                 ]
             ],
             [
@@ -31,11 +27,14 @@
                 "PosCon2",
                 "PosCon3",
                 "PosCon4",
-                "PosCon5",
                 "pipeline_info"
             ]
         ],
-        "timestamp": "2023-11-30T11:27:25.782140497"
+        "meta": {
+            "nf-test": "0.8.4",
+            "nextflow": "24.02.0"
+        },
+        "timestamp": "2024-03-12T09:48:27.874158752"
     },
     "delly": {
         "content": [
@@ -44,24 +43,20 @@
             ],
             [
                 [
-                    "PosCon1.sv.vcf.gz:md5,d41d8cd98f00b204e9800998ecf8427e",
-                    "PosCon1.sv.vcf.gz.tbi:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    "PosCon1.sv.vcf.gz",
+                    "PosCon1.sv.vcf.gz.tbi"
                 ],
                 [
-                    "PosCon2.sv.vcf.gz:md5,d41d8cd98f00b204e9800998ecf8427e",
-                    "PosCon2.sv.vcf.gz.tbi:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    "PosCon2.sv.vcf.gz",
+                    "PosCon2.sv.vcf.gz.tbi"
                 ],
                 [
-                    "PosCon3.sv.vcf.gz:md5,d41d8cd98f00b204e9800998ecf8427e",
-                    "PosCon3.sv.vcf.gz.tbi:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    "PosCon3.sv.vcf.gz",
+                    "PosCon3.sv.vcf.gz.tbi"
                 ],
                 [
-                    "PosCon4.sv.vcf.gz:md5,d41d8cd98f00b204e9800998ecf8427e",
-                    "PosCon4.sv.vcf.gz.tbi:md5,d41d8cd98f00b204e9800998ecf8427e"
-                ],
-                [
-                    "PosCon5.sv.vcf.gz:md5,d41d8cd98f00b204e9800998ecf8427e",
-                    "PosCon5.sv.vcf.gz.tbi:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    "PosCon4.sv.vcf.gz",
+                    "PosCon4.sv.vcf.gz.tbi"
                 ]
             ],
             [
@@ -69,10 +64,13 @@
                 "PosCon2",
                 "PosCon3",
                 "PosCon4",
-                "PosCon5",
                 "pipeline_info"
             ]
         ],
-        "timestamp": "2023-11-30T11:26:21.928964044"
+        "meta": {
+            "nf-test": "0.8.4",
+            "nextflow": "24.02.0"
+        },
+        "timestamp": "2024-03-12T09:47:28.452109987"
     }
 }

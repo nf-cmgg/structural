@@ -49,9 +49,11 @@ nextflow_workflow {
                 { assert workflow.success },
                 { assert snapshot(
                     workflow.out.vcfs.collect { entry ->
-                        entry.collect { 
-                            it instanceof Map ? it : file(it).name.endsWith(".vcf.gz") ? path(it).linesGzip[-4..-1] : file(it).name
-                        }
+                        entry
+                            .findAll { !(it instanceof Map) }
+                            .collect { 
+                               file(it).name
+                            }
                     },
                     workflow.trace.succeeded().size(),
                     workflow.trace.failed().size()
@@ -100,9 +102,11 @@ nextflow_workflow {
                 { assert workflow.success },
                 { assert snapshot(
                     workflow.out.vcfs.collect { entry ->
-                        entry.collect { 
-                            it instanceof Map ? it : file(it).name.endsWith(".vcf.gz") ? path(it).linesGzip[-4..-1] : file(it).name
-                        }
+                        entry
+                            .findAll { !(it instanceof Map) }
+                            .collect { 
+                               file(it).name
+                            }
                     },
                     workflow.trace.succeeded().size(),
                     workflow.trace.failed().size()
@@ -159,9 +163,11 @@ nextflow_workflow {
                 { assert workflow.success },
                 { assert snapshot(
                     workflow.out.vcfs.collect { entry ->
-                        entry.collect { 
-                            it instanceof Map ? it : file(it).name.endsWith(".vcf.gz") ? path(it).linesGzip[-4..-1] : file(it).name
-                        }
+                        entry
+                            .findAll { !(it instanceof Map) }
+                            .collect { 
+                               file(it).name
+                            }
                     },
                     workflow.trace.succeeded().size(),
                     workflow.trace.failed().size()
@@ -202,9 +208,11 @@ nextflow_workflow {
                 { assert workflow.success },
                 { assert snapshot(
                     workflow.out.vcfs.collect { entry ->
-                        entry.collect { 
-                            it instanceof Map ? it : file(it).name.endsWith(".vcf.gz") ? path(it).linesGzip[-4..-1] : file(it).name
-                        }
+                        entry
+                            .findAll { !(it instanceof Map) }
+                            .collect { 
+                               file(it).name
+                            }
                     },
                     workflow.trace.succeeded().size(),
                     workflow.trace.failed().size()
@@ -245,9 +253,11 @@ nextflow_workflow {
                 { assert workflow.success },
                 { assert snapshot(
                     workflow.out.vcfs.collect { entry ->
-                        entry.collect { 
-                            it instanceof Map ? it : file(it).name.endsWith(".vcf.gz") ? path(it).linesGzip[-4..-1] : file(it).name
-                        }
+                        entry
+                            .findAll { !(it instanceof Map) }
+                            .collect { 
+                               file(it).name
+                            }
                     },
                     workflow.trace.succeeded().size(),
                     workflow.trace.failed().size()
@@ -292,9 +302,11 @@ nextflow_workflow {
                 { assert workflow.success },
                 { assert snapshot(
                     workflow.out.vcfs.collect { entry ->
-                        entry.collect { 
-                            it instanceof Map ? it : file(it).name.endsWith(".vcf.gz") ? path(it).linesGzip[-4..-1] : file(it).name
-                        }
+                        entry
+                            .findAll { !(it instanceof Map) }
+                            .collect { 
+                               file(it).name
+                            }
                     },
                     workflow.trace.succeeded().size(),
                     workflow.trace.failed().size()

@@ -3,20 +3,7 @@
         "content": [
             [
                 [
-                    {
-                        "groupSize": 2,
-                        "groupTarget": {
-                            "id": "fam",
-                            "family": "fam",
-                            "family_count": 2
-                        }
-                    },
-                    [
-                        "chr16\t1170971\t1_0_delly_INS_3\tC\t<INS>\t240\tPASS\tCALLERS=delly;CIEND=-31,31;CIPOS=-31,31;END=1170971;SVLEN=30;SVTYPE=INS;STARTVARIANCE=0.000000;ENDVARIANCE=0.000000;AVG_LEN=30.000000;AVG_START=1170971.000000;AVG_END=1170971.000000;VARCALLS=1;ALLVARS_EXT=((delly_INS_3));SUPP_VEC_EXT=0100;IDLIST_EXT=delly_INS_3;SUPP_EXT=1;SUPP_VEC=01;SUPP=1;SVMETHOD=JASMINE;IDLIST=0_delly_INS_3;INTRASAMPLE_IDLIST=delly_INS_3\tGT:IS:OT:DV:DR\t./.:NA:NA:NA:NA\t./.:.:INS:0:.",
-                        "chr16\t1409008\t1_0_delly_DEL_4\tA\t<DEL>\t120\tLowQual\tCALLERS=delly;CIEND=-257,257;CIPOS=-257,257;END=1409446;SVLEN=-438;SVTYPE=DEL;STARTVARIANCE=0.000000;ENDVARIANCE=0.000000;AVG_LEN=-438.000000;AVG_START=1409008.000000;AVG_END=1409446.000000;VARCALLS=1;ALLVARS_EXT=((delly_DEL_4));SUPP_VEC_EXT=0100;IDLIST_EXT=delly_DEL_4;SUPP_EXT=1;SUPP_VEC=01;SUPP=1;SVMETHOD=JASMINE;IDLIST=0_delly_DEL_4;INTRASAMPLE_IDLIST=delly_DEL_4\tGT:IS:OT:DV:DR\t./.:NA:NA:NA:NA\t0/1:.:DEL:0:.",
-                        "chr16\t1496066\t1_0_delly_INV_5\tG\t<INV>\t120\tLowQual\tCALLERS=delly;CIEND=-407,407;CIPOS=-407,407;END=1496998;SVLEN=932;SVTYPE=INV;STARTVARIANCE=0.000000;ENDVARIANCE=0.000000;AVG_LEN=932.000000;AVG_START=1496066.000000;AVG_END=1496998.000000;VARCALLS=1;ALLVARS_EXT=((delly_INV_5));SUPP_VEC_EXT=0100;IDLIST_EXT=delly_INV_5;SUPP_EXT=1;SUPP_VEC=01;SUPP=1;SVMETHOD=JASMINE;IDLIST=0_delly_INV_5;INTRASAMPLE_IDLIST=delly_INV_5\tGT:IS:OT:DV:DR\t./.:NA:NA:NA:NA\t0/1:.:INV:0:.",
-                        "chrX\t1120103\t1_0_delly_TRA_6\tG\t<TRA>\t240\tLowQual\tCALLERS=delly;CHR2=chr16;CIEND=-14,14;CIPOS=-14,14;END=1574808;SVLEN=1;SVTYPE=TRA;STARTVARIANCE=0.000000;ENDVARIANCE=0.000000;AVG_LEN=1.000000;AVG_START=1120103.000000;AVG_END=1574808.000000;VARCALLS=1;ALLVARS_EXT=((delly_TRA_6));SUPP_VEC_EXT=0100;IDLIST_EXT=delly_TRA_6;SUPP_EXT=1;SUPP_VEC=01;SUPP=1;SVMETHOD=JASMINE;IDLIST=0_delly_TRA_6;INTRASAMPLE_IDLIST=delly_TRA_6\tGT:IS:OT:DV:DR\t./.:NA:NA:NA:NA\t1/1:.:TRA:0:."
-                    ],
+                    "fam.vcf.gz",
                     "fam.vcf.gz.tbi"
                 ]
             ],
@@ -27,26 +14,13 @@
             "nf-test": "0.8.4",
             "nextflow": "24.02.0"
         },
-        "timestamp": "2024-03-11T15:40:35.071839802"
+        "timestamp": "2024-03-12T11:41:36.518885307"
     },
     "homo_sapiens - two samples, no variant type": {
         "content": [
             [
                 [
-                    {
-                        "groupSize": 2,
-                        "groupTarget": {
-                            "id": "fam",
-                            "family": "fam",
-                            "family_count": 2
-                        }
-                    },
-                    [
-                        "chr16\t1170971\t1_0_delly_INS_3\tC\t<INS>\t240\tPASS\tCALLERS=delly;CIEND=-31,31;CIPOS=-31,31;END=1170971;SVLEN=30;SVTYPE=INS;STARTVARIANCE=0.000000;ENDVARIANCE=0.000000;AVG_LEN=30.000000;AVG_START=1170971.000000;AVG_END=1170971.000000;VARCALLS=1;ALLVARS_EXT=((delly_INS_3));SUPP_VEC_EXT=0100;IDLIST_EXT=delly_INS_3;SUPP_EXT=1;SUPP_VEC=01;SUPP=1;SVMETHOD=JASMINE;IDLIST=0_delly_INS_3;INTRASAMPLE_IDLIST=delly_INS_3\tGT:IS:OT:DV:DR\t./.:NA:NA:NA:NA\t./.:.:INS:0:.",
-                        "chr16\t1409008\t1_0_delly_DEL_4\tA\t<DEL>\t120\tLowQual\tCALLERS=delly;CIEND=-257,257;CIPOS=-257,257;END=1409446;SVLEN=-438;SVTYPE=DEL;STARTVARIANCE=0.000000;ENDVARIANCE=0.000000;AVG_LEN=-438.000000;AVG_START=1409008.000000;AVG_END=1409446.000000;VARCALLS=1;ALLVARS_EXT=((delly_DEL_4));SUPP_VEC_EXT=0100;IDLIST_EXT=delly_DEL_4;SUPP_EXT=1;SUPP_VEC=01;SUPP=1;SVMETHOD=JASMINE;IDLIST=0_delly_DEL_4;INTRASAMPLE_IDLIST=delly_DEL_4\tGT:IS:OT:DV:DR\t./.:NA:NA:NA:NA\t0/1:.:DEL:0:.",
-                        "chr16\t1496066\t1_0_delly_INV_5\tG\t<INV>\t120\tLowQual\tCALLERS=delly;CIEND=-407,407;CIPOS=-407,407;END=1496998;SVLEN=932;SVTYPE=INV;STARTVARIANCE=0.000000;ENDVARIANCE=0.000000;AVG_LEN=932.000000;AVG_START=1496066.000000;AVG_END=1496998.000000;VARCALLS=1;ALLVARS_EXT=((delly_INV_5));SUPP_VEC_EXT=0100;IDLIST_EXT=delly_INV_5;SUPP_EXT=1;SUPP_VEC=01;SUPP=1;SVMETHOD=JASMINE;IDLIST=0_delly_INV_5;INTRASAMPLE_IDLIST=delly_INV_5\tGT:IS:OT:DV:DR\t./.:NA:NA:NA:NA\t0/1:.:INV:0:.",
-                        "chrX\t1120103\t1_0_delly_TRA_6\tG\t<TRA>\t240\tLowQual\tCALLERS=delly;CHR2=chr16;CIEND=-14,14;CIPOS=-14,14;END=1574808;SVLEN=1;SVTYPE=TRA;STARTVARIANCE=0.000000;ENDVARIANCE=0.000000;AVG_LEN=1.000000;AVG_START=1120103.000000;AVG_END=1574808.000000;VARCALLS=1;ALLVARS_EXT=((delly_TRA_6));SUPP_VEC_EXT=0100;IDLIST_EXT=delly_TRA_6;SUPP_EXT=1;SUPP_VEC=01;SUPP=1;SVMETHOD=JASMINE;IDLIST=0_delly_TRA_6;INTRASAMPLE_IDLIST=delly_TRA_6\tGT:IS:OT:DV:DR\t./.:NA:NA:NA:NA\t1/1:.:TRA:0:."
-                    ],
+                    "fam.vcf.gz",
                     "fam.vcf.gz.tbi"
                 ]
             ],
@@ -57,45 +31,17 @@
             "nf-test": "0.8.4",
             "nextflow": "24.02.0"
         },
-        "timestamp": "2024-03-11T15:41:00.32806357"
+        "timestamp": "2024-03-12T11:41:51.906665609"
     },
     "homo_sapiens - two samples, variant types": {
         "content": [
             [
                 [
-                    {
-                        "groupSize": 2,
-                        "groupTarget": {
-                            "id": "fam.cnv",
-                            "family": "fam",
-                            "family_count": 2,
-                            "variant_type": "cnv"
-                        }
-                    },
-                    [
-                        "chr16\t1690000\t0_qdnaseq_65\tN\t<DUP>\t.\tPASS\tCNV_RATIO=1022;SVTYPE=CNV;END=1700000;SVLEN=10000;CALLERS=qdnaseq;STARTVARIANCE=0.000000;ENDVARIANCE=0.000000;AVG_LEN=10000.000000;AVG_START=1690000.000000;AVG_END=1700000.000000;SUPP_VEC_EXT=10;IDLIST_EXT=qdnaseq_65;SUPP_EXT=1;SUPP_VEC=10;SUPP=1;SVMETHOD=JASMINE;IDLIST=qdnaseq_65\tGT:IS:OT:DV:DR\t.:.:CNV:0:.\t./.:NA:NA:NA:NA",
-                        "chr16\t1850000\t0_qdnaseq_66\tN\t<DUP>\t.\tPASS\tCNV_RATIO=1023;SVTYPE=CNV;END=1860000;SVLEN=10000;CALLERS=qdnaseq;STARTVARIANCE=0.000000;ENDVARIANCE=0.000000;AVG_LEN=10000.000000;AVG_START=1850000.000000;AVG_END=1860000.000000;SUPP_VEC_EXT=10;IDLIST_EXT=qdnaseq_66;SUPP_EXT=1;SUPP_VEC=10;SUPP=1;SVMETHOD=JASMINE;IDLIST=qdnaseq_66\tGT:IS:OT:DV:DR\t.:.:CNV:0:.\t./.:NA:NA:NA:NA",
-                        "chrX\t990000\t1_qdnaseq_66\tN\t<DUP>\t.\tPASS\tCNV_RATIO=1023;SVTYPE=CNV;END=1000000;SVLEN=10000;CALLERS=qdnaseq;STARTVARIANCE=0.000000;ENDVARIANCE=0.000000;AVG_LEN=10000.000000;AVG_START=990000.000000;AVG_END=1000000.000000;SUPP_VEC_EXT=01;IDLIST_EXT=qdnaseq_66;SUPP_EXT=1;SUPP_VEC=01;SUPP=1;SVMETHOD=JASMINE;IDLIST=qdnaseq_66\tGT:IS:OT:DV:DR\t./.:NA:NA:NA:NA\t.:.:CNV:0:.",
-                        "chrX\t1030000\t0_qdnaseq_67\tN\t<DUP>\t.\tPASS\tCNV_RATIO=1022;SVTYPE=CNV;END=1040000;SVLEN=10000;CALLERS=qdnaseq;STARTVARIANCE=0.000000;ENDVARIANCE=0.000000;AVG_LEN=10000.000000;AVG_START=1030000.000000;AVG_END=1040000.000000;SUPP_VEC_EXT=10;IDLIST_EXT=qdnaseq_67;SUPP_EXT=1;SUPP_VEC=10;SUPP=1;SVMETHOD=JASMINE;IDLIST=qdnaseq_67\tGT:IS:OT:DV:DR\t.:.:CNV:0:.\t./.:NA:NA:NA:NA"
-                    ],
+                    "fam.cnv.vcf.gz",
                     "fam.cnv.vcf.gz.tbi"
                 ],
                 [
-                    {
-                        "groupSize": 2,
-                        "groupTarget": {
-                            "id": "fam.sv",
-                            "family": "fam",
-                            "family_count": 2,
-                            "variant_type": "sv"
-                        }
-                    },
-                    [
-                        "chr16\t1170971\t1_0_delly_INS_3\tC\t<INS>\t240\tPASS\tCALLERS=delly;CIEND=-31,31;CIPOS=-31,31;END=1170971;SVLEN=30;SVTYPE=INS;STARTVARIANCE=0.000000;ENDVARIANCE=0.000000;AVG_LEN=30.000000;AVG_START=1170971.000000;AVG_END=1170971.000000;VARCALLS=1;ALLVARS_EXT=((delly_INS_3));SUPP_VEC_EXT=0100;IDLIST_EXT=delly_INS_3;SUPP_EXT=1;SUPP_VEC=01;SUPP=1;SVMETHOD=JASMINE;IDLIST=0_delly_INS_3;INTRASAMPLE_IDLIST=delly_INS_3\tGT:IS:OT:DV:DR\t./.:NA:NA:NA:NA\t./.:.:INS:0:.",
-                        "chr16\t1409008\t1_0_delly_DEL_4\tA\t<DEL>\t120\tLowQual\tCALLERS=delly;CIEND=-257,257;CIPOS=-257,257;END=1409446;SVLEN=-438;SVTYPE=DEL;STARTVARIANCE=0.000000;ENDVARIANCE=0.000000;AVG_LEN=-438.000000;AVG_START=1409008.000000;AVG_END=1409446.000000;VARCALLS=1;ALLVARS_EXT=((delly_DEL_4));SUPP_VEC_EXT=0100;IDLIST_EXT=delly_DEL_4;SUPP_EXT=1;SUPP_VEC=01;SUPP=1;SVMETHOD=JASMINE;IDLIST=0_delly_DEL_4;INTRASAMPLE_IDLIST=delly_DEL_4\tGT:IS:OT:DV:DR\t./.:NA:NA:NA:NA\t0/1:.:DEL:0:.",
-                        "chr16\t1496066\t1_0_delly_INV_5\tG\t<INV>\t120\tLowQual\tCALLERS=delly;CIEND=-407,407;CIPOS=-407,407;END=1496998;SVLEN=932;SVTYPE=INV;STARTVARIANCE=0.000000;ENDVARIANCE=0.000000;AVG_LEN=932.000000;AVG_START=1496066.000000;AVG_END=1496998.000000;VARCALLS=1;ALLVARS_EXT=((delly_INV_5));SUPP_VEC_EXT=0100;IDLIST_EXT=delly_INV_5;SUPP_EXT=1;SUPP_VEC=01;SUPP=1;SVMETHOD=JASMINE;IDLIST=0_delly_INV_5;INTRASAMPLE_IDLIST=delly_INV_5\tGT:IS:OT:DV:DR\t./.:NA:NA:NA:NA\t0/1:.:INV:0:.",
-                        "chrX\t1120103\t1_0_delly_TRA_6\tG\t<TRA>\t240\tLowQual\tCALLERS=delly;CHR2=chr16;CIEND=-14,14;CIPOS=-14,14;END=1574808;SVLEN=1;SVTYPE=TRA;STARTVARIANCE=0.000000;ENDVARIANCE=0.000000;AVG_LEN=1.000000;AVG_START=1120103.000000;AVG_END=1574808.000000;VARCALLS=1;ALLVARS_EXT=((delly_TRA_6));SUPP_VEC_EXT=0100;IDLIST_EXT=delly_TRA_6;SUPP_EXT=1;SUPP_VEC=01;SUPP=1;SVMETHOD=JASMINE;IDLIST=0_delly_TRA_6;INTRASAMPLE_IDLIST=delly_TRA_6\tGT:IS:OT:DV:DR\t./.:NA:NA:NA:NA\t1/1:.:TRA:0:."
-                    ],
+                    "fam.sv.vcf.gz",
                     "fam.sv.vcf.gz.tbi"
                 ]
             ],
@@ -106,45 +52,17 @@
             "nf-test": "0.8.4",
             "nextflow": "24.02.0"
         },
-        "timestamp": "2024-03-11T15:39:31.343330381"
+        "timestamp": "2024-03-12T11:40:56.296762018"
     },
     "homo_sapiens - one family, variant types": {
         "content": [
             [
                 [
-                    {
-                        "groupSize": 2,
-                        "groupTarget": {
-                            "id": "fam.cnv",
-                            "family": "fam",
-                            "family_count": 2,
-                            "variant_type": "cnv"
-                        }
-                    },
-                    [
-                        "chr16\t1690000\t0_qdnaseq_65\tN\t<DUP>\t.\tPASS\tCNV_RATIO=1022;SVTYPE=CNV;END=1700000;SVLEN=10000;CALLERS=qdnaseq;STARTVARIANCE=0.000000;ENDVARIANCE=0.000000;AVG_LEN=10000.000000;AVG_START=1690000.000000;AVG_END=1700000.000000;SUPP_VEC_EXT=10;IDLIST_EXT=qdnaseq_65;SUPP_EXT=1;SUPP_VEC=10;SUPP=1;SVMETHOD=JASMINE;IDLIST=qdnaseq_65\tGT:IS:OT:DV:DR\t.:.:CNV:0:.\t./.:NA:NA:NA:NA",
-                        "chr16\t1850000\t0_qdnaseq_66\tN\t<DUP>\t.\tPASS\tCNV_RATIO=1023;SVTYPE=CNV;END=1860000;SVLEN=10000;CALLERS=qdnaseq;STARTVARIANCE=0.000000;ENDVARIANCE=0.000000;AVG_LEN=10000.000000;AVG_START=1850000.000000;AVG_END=1860000.000000;SUPP_VEC_EXT=10;IDLIST_EXT=qdnaseq_66;SUPP_EXT=1;SUPP_VEC=10;SUPP=1;SVMETHOD=JASMINE;IDLIST=qdnaseq_66\tGT:IS:OT:DV:DR\t.:.:CNV:0:.\t./.:NA:NA:NA:NA",
-                        "chrX\t990000\t1_qdnaseq_66\tN\t<DUP>\t.\tPASS\tCNV_RATIO=1023;SVTYPE=CNV;END=1000000;SVLEN=10000;CALLERS=qdnaseq;STARTVARIANCE=0.000000;ENDVARIANCE=0.000000;AVG_LEN=10000.000000;AVG_START=990000.000000;AVG_END=1000000.000000;SUPP_VEC_EXT=01;IDLIST_EXT=qdnaseq_66;SUPP_EXT=1;SUPP_VEC=01;SUPP=1;SVMETHOD=JASMINE;IDLIST=qdnaseq_66\tGT:IS:OT:DV:DR\t./.:NA:NA:NA:NA\t.:.:CNV:0:.",
-                        "chrX\t1030000\t0_qdnaseq_67\tN\t<DUP>\t.\tPASS\tCNV_RATIO=1022;SVTYPE=CNV;END=1040000;SVLEN=10000;CALLERS=qdnaseq;STARTVARIANCE=0.000000;ENDVARIANCE=0.000000;AVG_LEN=10000.000000;AVG_START=1030000.000000;AVG_END=1040000.000000;SUPP_VEC_EXT=10;IDLIST_EXT=qdnaseq_67;SUPP_EXT=1;SUPP_VEC=10;SUPP=1;SVMETHOD=JASMINE;IDLIST=qdnaseq_67\tGT:IS:OT:DV:DR\t.:.:CNV:0:.\t./.:NA:NA:NA:NA"
-                    ],
+                    "fam.cnv.vcf.gz",
                     "fam.cnv.vcf.gz.tbi"
                 ],
                 [
-                    {
-                        "groupSize": 2,
-                        "groupTarget": {
-                            "id": "fam.sv",
-                            "family": "fam",
-                            "family_count": 2,
-                            "variant_type": "sv"
-                        }
-                    },
-                    [
-                        "chr16\t1170971\t1_0_delly_INS_3\tC\t<INS>\t240\tPASS\tCALLERS=delly;CIEND=-31,31;CIPOS=-31,31;END=1170971;SVLEN=30;SVTYPE=INS;STARTVARIANCE=0.000000;ENDVARIANCE=0.000000;AVG_LEN=30.000000;AVG_START=1170971.000000;AVG_END=1170971.000000;VARCALLS=1;ALLVARS_EXT=((delly_INS_3));SUPP_VEC_EXT=0100;IDLIST_EXT=delly_INS_3;SUPP_EXT=1;SUPP_VEC=01;SUPP=1;SVMETHOD=JASMINE;IDLIST=0_delly_INS_3;INTRASAMPLE_IDLIST=delly_INS_3\tGT:IS:OT:DV:DR\t./.:NA:NA:NA:NA\t./.:.:INS:0:.",
-                        "chr16\t1409008\t1_0_delly_DEL_4\tA\t<DEL>\t120\tLowQual\tCALLERS=delly;CIEND=-257,257;CIPOS=-257,257;END=1409446;SVLEN=-438;SVTYPE=DEL;STARTVARIANCE=0.000000;ENDVARIANCE=0.000000;AVG_LEN=-438.000000;AVG_START=1409008.000000;AVG_END=1409446.000000;VARCALLS=1;ALLVARS_EXT=((delly_DEL_4));SUPP_VEC_EXT=0100;IDLIST_EXT=delly_DEL_4;SUPP_EXT=1;SUPP_VEC=01;SUPP=1;SVMETHOD=JASMINE;IDLIST=0_delly_DEL_4;INTRASAMPLE_IDLIST=delly_DEL_4\tGT:IS:OT:DV:DR\t./.:NA:NA:NA:NA\t0/1:.:DEL:0:.",
-                        "chr16\t1496066\t1_0_delly_INV_5\tG\t<INV>\t120\tLowQual\tCALLERS=delly;CIEND=-407,407;CIPOS=-407,407;END=1496998;SVLEN=932;SVTYPE=INV;STARTVARIANCE=0.000000;ENDVARIANCE=0.000000;AVG_LEN=932.000000;AVG_START=1496066.000000;AVG_END=1496998.000000;VARCALLS=1;ALLVARS_EXT=((delly_INV_5));SUPP_VEC_EXT=0100;IDLIST_EXT=delly_INV_5;SUPP_EXT=1;SUPP_VEC=01;SUPP=1;SVMETHOD=JASMINE;IDLIST=0_delly_INV_5;INTRASAMPLE_IDLIST=delly_INV_5\tGT:IS:OT:DV:DR\t./.:NA:NA:NA:NA\t0/1:.:INV:0:.",
-                        "chrX\t1120103\t1_0_delly_TRA_6\tG\t<TRA>\t240\tLowQual\tCALLERS=delly;CHR2=chr16;CIEND=-14,14;CIPOS=-14,14;END=1574808;SVLEN=1;SVTYPE=TRA;STARTVARIANCE=0.000000;ENDVARIANCE=0.000000;AVG_LEN=1.000000;AVG_START=1120103.000000;AVG_END=1574808.000000;VARCALLS=1;ALLVARS_EXT=((delly_TRA_6));SUPP_VEC_EXT=0100;IDLIST_EXT=delly_TRA_6;SUPP_EXT=1;SUPP_VEC=01;SUPP=1;SVMETHOD=JASMINE;IDLIST=0_delly_TRA_6;INTRASAMPLE_IDLIST=delly_TRA_6\tGT:IS:OT:DV:DR\t./.:NA:NA:NA:NA\t1/1:.:TRA:0:."
-                    ],
+                    "fam.sv.vcf.gz",
                     "fam.sv.vcf.gz.tbi"
                 ]
             ],
@@ -155,45 +73,17 @@
             "nf-test": "0.8.4",
             "nextflow": "24.02.0"
         },
-        "timestamp": "2024-03-11T15:38:55.631091718"
+        "timestamp": "2024-03-12T11:40:39.237020519"
     },
     "homo_sapiens - one family & one sample, variant types": {
         "content": [
             [
                 [
-                    {
-                        "groupSize": 2,
-                        "groupTarget": {
-                            "id": "fam1.cnv",
-                            "family": "fam1",
-                            "family_count": 2,
-                            "variant_type": "cnv"
-                        }
-                    },
-                    [
-                        "chr16\t1690000\t0_qdnaseq_65\tN\t<DUP>\t.\tPASS\tCNV_RATIO=1022;SVTYPE=CNV;END=1700000;SVLEN=10000;CALLERS=qdnaseq;STARTVARIANCE=0.000000;ENDVARIANCE=0.000000;AVG_LEN=10000.000000;AVG_START=1690000.000000;AVG_END=1700000.000000;SUPP_VEC_EXT=10;IDLIST_EXT=qdnaseq_65;SUPP_EXT=1;SUPP_VEC=10;SUPP=1;SVMETHOD=JASMINE;IDLIST=qdnaseq_65\tGT:IS:OT:DV:DR\t.:.:CNV:0:.\t./.:NA:NA:NA:NA",
-                        "chr16\t1850000\t0_qdnaseq_66\tN\t<DUP>\t.\tPASS\tCNV_RATIO=1023;SVTYPE=CNV;END=1860000;SVLEN=10000;CALLERS=qdnaseq;STARTVARIANCE=0.000000;ENDVARIANCE=0.000000;AVG_LEN=10000.000000;AVG_START=1850000.000000;AVG_END=1860000.000000;SUPP_VEC_EXT=10;IDLIST_EXT=qdnaseq_66;SUPP_EXT=1;SUPP_VEC=10;SUPP=1;SVMETHOD=JASMINE;IDLIST=qdnaseq_66\tGT:IS:OT:DV:DR\t.:.:CNV:0:.\t./.:NA:NA:NA:NA",
-                        "chrX\t990000\t1_qdnaseq_66\tN\t<DUP>\t.\tPASS\tCNV_RATIO=1023;SVTYPE=CNV;END=1000000;SVLEN=10000;CALLERS=qdnaseq;STARTVARIANCE=0.000000;ENDVARIANCE=0.000000;AVG_LEN=10000.000000;AVG_START=990000.000000;AVG_END=1000000.000000;SUPP_VEC_EXT=01;IDLIST_EXT=qdnaseq_66;SUPP_EXT=1;SUPP_VEC=01;SUPP=1;SVMETHOD=JASMINE;IDLIST=qdnaseq_66\tGT:IS:OT:DV:DR\t./.:NA:NA:NA:NA\t.:.:CNV:0:.",
-                        "chrX\t1030000\t0_qdnaseq_67\tN\t<DUP>\t.\tPASS\tCNV_RATIO=1022;SVTYPE=CNV;END=1040000;SVLEN=10000;CALLERS=qdnaseq;STARTVARIANCE=0.000000;ENDVARIANCE=0.000000;AVG_LEN=10000.000000;AVG_START=1030000.000000;AVG_END=1040000.000000;SUPP_VEC_EXT=10;IDLIST_EXT=qdnaseq_67;SUPP_EXT=1;SUPP_VEC=10;SUPP=1;SVMETHOD=JASMINE;IDLIST=qdnaseq_67\tGT:IS:OT:DV:DR\t.:.:CNV:0:.\t./.:NA:NA:NA:NA"
-                    ],
+                    "fam1.cnv.vcf.gz",
                     "fam1.cnv.vcf.gz.tbi"
                 ],
                 [
-                    {
-                        "groupSize": 2,
-                        "groupTarget": {
-                            "id": "fam1.sv",
-                            "family": "fam1",
-                            "family_count": 2,
-                            "variant_type": "sv"
-                        }
-                    },
-                    [
-                        "chr16\t1170971\t1_0_delly_INS_3\tC\t<INS>\t240\tPASS\tCALLERS=delly;CIEND=-31,31;CIPOS=-31,31;END=1170971;SVLEN=30;SVTYPE=INS;STARTVARIANCE=0.000000;ENDVARIANCE=0.000000;AVG_LEN=30.000000;AVG_START=1170971.000000;AVG_END=1170971.000000;VARCALLS=1;ALLVARS_EXT=((delly_INS_3));SUPP_VEC_EXT=0100;IDLIST_EXT=delly_INS_3;SUPP_EXT=1;SUPP_VEC=01;SUPP=1;SVMETHOD=JASMINE;IDLIST=0_delly_INS_3;INTRASAMPLE_IDLIST=delly_INS_3\tGT:IS:OT:DV:DR\t./.:NA:NA:NA:NA\t./.:.:INS:0:.",
-                        "chr16\t1409008\t1_0_delly_DEL_4\tA\t<DEL>\t120\tLowQual\tCALLERS=delly;CIEND=-257,257;CIPOS=-257,257;END=1409446;SVLEN=-438;SVTYPE=DEL;STARTVARIANCE=0.000000;ENDVARIANCE=0.000000;AVG_LEN=-438.000000;AVG_START=1409008.000000;AVG_END=1409446.000000;VARCALLS=1;ALLVARS_EXT=((delly_DEL_4));SUPP_VEC_EXT=0100;IDLIST_EXT=delly_DEL_4;SUPP_EXT=1;SUPP_VEC=01;SUPP=1;SVMETHOD=JASMINE;IDLIST=0_delly_DEL_4;INTRASAMPLE_IDLIST=delly_DEL_4\tGT:IS:OT:DV:DR\t./.:NA:NA:NA:NA\t0/1:.:DEL:0:.",
-                        "chr16\t1496066\t1_0_delly_INV_5\tG\t<INV>\t120\tLowQual\tCALLERS=delly;CIEND=-407,407;CIPOS=-407,407;END=1496998;SVLEN=932;SVTYPE=INV;STARTVARIANCE=0.000000;ENDVARIANCE=0.000000;AVG_LEN=932.000000;AVG_START=1496066.000000;AVG_END=1496998.000000;VARCALLS=1;ALLVARS_EXT=((delly_INV_5));SUPP_VEC_EXT=0100;IDLIST_EXT=delly_INV_5;SUPP_EXT=1;SUPP_VEC=01;SUPP=1;SVMETHOD=JASMINE;IDLIST=0_delly_INV_5;INTRASAMPLE_IDLIST=delly_INV_5\tGT:IS:OT:DV:DR\t./.:NA:NA:NA:NA\t0/1:.:INV:0:.",
-                        "chrX\t1120103\t1_0_delly_TRA_6\tG\t<TRA>\t240\tLowQual\tCALLERS=delly;CHR2=chr16;CIEND=-14,14;CIPOS=-14,14;END=1574808;SVLEN=1;SVTYPE=TRA;STARTVARIANCE=0.000000;ENDVARIANCE=0.000000;AVG_LEN=1.000000;AVG_START=1120103.000000;AVG_END=1574808.000000;VARCALLS=1;ALLVARS_EXT=((delly_TRA_6));SUPP_VEC_EXT=0100;IDLIST_EXT=delly_TRA_6;SUPP_EXT=1;SUPP_VEC=01;SUPP=1;SVMETHOD=JASMINE;IDLIST=0_delly_TRA_6;INTRASAMPLE_IDLIST=delly_TRA_6\tGT:IS:OT:DV:DR\t./.:NA:NA:NA:NA\t1/1:.:TRA:0:."
-                    ],
+                    "fam1.sv.vcf.gz",
                     "fam1.sv.vcf.gz.tbi"
                 ]
             ],
@@ -204,26 +94,13 @@
             "nf-test": "0.8.4",
             "nextflow": "24.02.0"
         },
-        "timestamp": "2024-03-11T15:40:10.746188726"
+        "timestamp": "2024-03-12T11:41:20.367538619"
     },
     "homo_sapiens - one family & one sample, no variant types": {
         "content": [
             [
                 [
-                    {
-                        "groupSize": 2,
-                        "groupTarget": {
-                            "id": "fam1",
-                            "family": "fam1",
-                            "family_count": 2
-                        }
-                    },
-                    [
-                        "chr16\t1170971\t1_0_delly_INS_3\tC\t<INS>\t240\tPASS\tCALLERS=delly;CIEND=-31,31;CIPOS=-31,31;END=1170971;SVLEN=30;SVTYPE=INS;STARTVARIANCE=0.000000;ENDVARIANCE=0.000000;AVG_LEN=30.000000;AVG_START=1170971.000000;AVG_END=1170971.000000;VARCALLS=1;ALLVARS_EXT=((delly_INS_3));SUPP_VEC_EXT=0100;IDLIST_EXT=delly_INS_3;SUPP_EXT=1;SUPP_VEC=01;SUPP=1;SVMETHOD=JASMINE;IDLIST=0_delly_INS_3;INTRASAMPLE_IDLIST=delly_INS_3\tGT:IS:OT:DV:DR\t./.:NA:NA:NA:NA\t./.:.:INS:0:.",
-                        "chr16\t1409008\t1_0_delly_DEL_4\tA\t<DEL>\t120\tLowQual\tCALLERS=delly;CIEND=-257,257;CIPOS=-257,257;END=1409446;SVLEN=-438;SVTYPE=DEL;STARTVARIANCE=0.000000;ENDVARIANCE=0.000000;AVG_LEN=-438.000000;AVG_START=1409008.000000;AVG_END=1409446.000000;VARCALLS=1;ALLVARS_EXT=((delly_DEL_4));SUPP_VEC_EXT=0100;IDLIST_EXT=delly_DEL_4;SUPP_EXT=1;SUPP_VEC=01;SUPP=1;SVMETHOD=JASMINE;IDLIST=0_delly_DEL_4;INTRASAMPLE_IDLIST=delly_DEL_4\tGT:IS:OT:DV:DR\t./.:NA:NA:NA:NA\t0/1:.:DEL:0:.",
-                        "chr16\t1496066\t1_0_delly_INV_5\tG\t<INV>\t120\tLowQual\tCALLERS=delly;CIEND=-407,407;CIPOS=-407,407;END=1496998;SVLEN=932;SVTYPE=INV;STARTVARIANCE=0.000000;ENDVARIANCE=0.000000;AVG_LEN=932.000000;AVG_START=1496066.000000;AVG_END=1496998.000000;VARCALLS=1;ALLVARS_EXT=((delly_INV_5));SUPP_VEC_EXT=0100;IDLIST_EXT=delly_INV_5;SUPP_EXT=1;SUPP_VEC=01;SUPP=1;SVMETHOD=JASMINE;IDLIST=0_delly_INV_5;INTRASAMPLE_IDLIST=delly_INV_5\tGT:IS:OT:DV:DR\t./.:NA:NA:NA:NA\t0/1:.:INV:0:.",
-                        "chrX\t1120103\t1_0_delly_TRA_6\tG\t<TRA>\t240\tLowQual\tCALLERS=delly;CHR2=chr16;CIEND=-14,14;CIPOS=-14,14;END=1574808;SVLEN=1;SVTYPE=TRA;STARTVARIANCE=0.000000;ENDVARIANCE=0.000000;AVG_LEN=1.000000;AVG_START=1120103.000000;AVG_END=1574808.000000;VARCALLS=1;ALLVARS_EXT=((delly_TRA_6));SUPP_VEC_EXT=0100;IDLIST_EXT=delly_TRA_6;SUPP_EXT=1;SUPP_VEC=01;SUPP=1;SVMETHOD=JASMINE;IDLIST=0_delly_TRA_6;INTRASAMPLE_IDLIST=delly_TRA_6\tGT:IS:OT:DV:DR\t./.:NA:NA:NA:NA\t1/1:.:TRA:0:."
-                    ],
+                    "fam1.vcf.gz",
                     "fam1.vcf.gz.tbi"
                 ]
             ],
@@ -234,6 +111,6 @@
             "nf-test": "0.8.4",
             "nextflow": "24.02.0"
         },
-        "timestamp": "2024-03-11T15:41:23.493031365"
+        "timestamp": "2024-03-12T11:42:07.437700938"
     }
 }

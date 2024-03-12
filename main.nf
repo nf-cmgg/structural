@@ -18,17 +18,17 @@ nextflow.enable.dsl = 2
 */
 include { getGenomeAttribute      } from './subworkflows/local/utils_nfcore_structural_pipeline'
 
-params.fasta                    = getGenomeAttribute(params, 'fasta')
-params.fai                      = getGenomeAttribute(params, 'fai')
-params.vep_cache                = getGenomeAttribute(params, 'vep_cache')
-params.bwa                      = getGenomeAttribute(params, 'bwa')
-params.phenotypes               = getGenomeAttribute(params, 'phenotypes')
-params.phenotypes_tbi           = getGenomeAttribute(params, 'phenotypes_tbi')
-params.annotsv_annotations      = getGenomeAttribute(params, 'annotsv_annotations')
-params.expansionhunter_catalog  = getGenomeAttribute(params, 'expansionhunter_catalog')
-params.qdnaseq_male             = getGenomeAttribute(params, "qdnaseq_male_${params.qdnaseq_bin_size.toInteger() / 1000}kbp".toString())
-params.qdnaseq_female           = getGenomeAttribute(params, "qdnaseq_female_${params.qdnaseq_bin_size.toInteger() / 1000}kbp".toString())
-params.wisecondorx_reference    = getGenomeAttribute(params, 'wisecondorx_reference')
+params.fasta                    = getGenomeAttribute('fasta')
+params.fai                      = getGenomeAttribute('fai')
+params.vep_cache                = getGenomeAttribute('vep_cache')
+params.bwa                      = getGenomeAttribute('bwa')
+params.phenotypes               = getGenomeAttribute('phenotypes')
+params.phenotypes_tbi           = getGenomeAttribute('phenotypes_tbi')
+params.annotsv_annotations      = getGenomeAttribute('annotsv_annotations')
+params.expansionhunter_catalog  = getGenomeAttribute('expansionhunter_catalog')
+params.qdnaseq_male             = getGenomeAttribute("qdnaseq_male_${params.qdnaseq_bin_size.toInteger() / 1000}kbp".toString())
+params.qdnaseq_female           = getGenomeAttribute("qdnaseq_female_${params.qdnaseq_bin_size.toInteger() / 1000}kbp".toString())
+params.wisecondorx_reference    = getGenomeAttribute('wisecondorx_reference')
 
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

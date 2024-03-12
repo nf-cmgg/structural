@@ -19,11 +19,9 @@
                     "schema": "assets/schema_input.json",
                     "mimetype": "text/csv",
                     "pattern": "^\\S+\\.(csv|tsv|yaml|yml)$",
-                    "schema": "assets/schema_input.json",
                     "description": "Path to comma-separated file containing information about the samples in the experiment.",
                     "help_text": "You will need to create a design file with information about the samples in your experiment before running the pipeline. Use this parameter to specify its location. It has to be a comma-separated file with 3 columns, and a header row.",
-                    "fa_icon": "fas fa-file-csv",
-                    "exists": true
+                    "fa_icon": "fas fa-file-csv"
                 },
                 "outdir": {
                     "type": "string",
@@ -83,7 +81,6 @@
                 },
                 "expansionhunter_catalog": {
                     "type": "string",
-                    "default": "https://github.com/Illumina/ExpansionHunter/raw/master/variant_catalog/grch38/variant_catalog.json",
                     "description": "Path to the expansionhunter catalog",
                     "exists": true,
                     "pattern": "^\\S+\\.json$",
@@ -131,7 +128,6 @@
                 },
                 "genomes_base": {
                     "type": "string",
-                    "default": "/references/",
                     "description": "The base path where the references can be found",
                     "exists": true,
                     "format": "directory-path"
@@ -294,13 +290,6 @@
                     "help_text": "Incoming hook URL for messaging service. Currently, MS Teams and Slack are supported.",
                     "hidden": true
                 },
-                "hook_url": {
-                    "type": "string",
-                    "description": "Incoming hook URL for messaging service",
-                    "fa_icon": "fas fa-people-group",
-                    "help_text": "Incoming hook URL for messaging service. Currently, MS Teams and Slack are supported.",
-                    "hidden": true
-                },
                 "multiqc_config": {
                     "type": "string",
                     "format": "file-path",
@@ -321,17 +310,6 @@
                     "description": "Custom MultiQC yaml file containing HTML including a methods description.",
                     "fa_icon": "fas fa-cog"
                 },
-                "multiqc_logo": {
-                    "type": "string",
-                    "description": "Custom logo file to supply to MultiQC. File name must also be set in the MultiQC config file",
-                    "fa_icon": "fas fa-image",
-                    "hidden": true
-                },
-                "multiqc_methods_description": {
-                    "type": "string",
-                    "description": "Custom MultiQC yaml file containing HTML including a methods description.",
-                    "fa_icon": "fas fa-cog"
-                },
                 "validate_params": {
                     "type": "boolean",
                     "description": "Boolean whether to validate parameters against the schema at runtime",
@@ -346,11 +324,19 @@
                     "hidden": true,
                     "help_text": "By default, parameters set as _hidden_ in the schema are not shown on the command line when a user runs with `--help`. Specifying this option will tell the pipeline to show all parameters."
                 },
-                "validationSchemaIgnoreParams": {
-                    "type": "string",
-                    "default": "genomes,test_data,igenomes_base",
-                    "description": "Which parameters should be ignored by the validation",
-                    "hidden": true
+                "validationFailUnrecognisedParams": {
+                    "type": "boolean",
+                    "fa_icon": "far fa-check-circle",
+                    "description": "Validation of parameters fails when an unrecognised parameter is found.",
+                    "hidden": true,
+                    "help_text": "By default, when an unrecognised parameter is found, it returns a warinig."
+                },
+                "validationLenientMode": {
+                    "type": "boolean",
+                    "fa_icon": "far fa-check-circle",
+                    "description": "Validation of parameters in lenient more.",
+                    "hidden": true,
+                    "help_text": "Allows string values that are parseable as numbers or booleans. For further information see [JSONSchema docs](https://github.com/everit-org/json-schema#lenient-mode)."
                 }
             }
         },
@@ -425,8 +411,9 @@
             "properties": {
                 "manta_config": {
                     "type": "string",
-                    "default": "assets/manta_config.ini",
-                    "description": "A config file to supply to manta"
+                    "description": "A config file to supply to manta",
+                    "format": "file-path",
+                    "exists": true
                 }
             }
         },
@@ -475,7 +462,7 @@
                 },
                 "vep_version": {
                     "type": "number",
-                    "default": 108.2,
+                    "default": 109.3,
                     "description": "The version of VEP to use"
                 },
                 "species": {

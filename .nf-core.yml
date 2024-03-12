@@ -4,7 +4,7 @@ lint:
     - .github/ISSUE_TEMPLATE/config.yml
     - .github/workflows/awstest.yml
     - .github/workflows/awsfulltest.yml
-    - assets/nf-core-germline_logo_light.png
+    - assets/nf-core-structural_logo_light.png
     - docs/images/nf-core-structural_logo_light.png
     - docs/images/nf-core-structural_logo_dark.png
   nextflow_config:
@@ -12,6 +12,12 @@ lint:
     - manifest.homePage
   files_unchanged:
     - LICENSE
+    - .github/CONTRIBUTING.md
+    - .github/ISSUE_TEMPLATE/bug_report.yml
+    - .github/workflows/linting.yml
+    - assets/email_template.txt
+    - docs/README.md
+    - .prettierignore
   actions_ci: false
 repository_type: pipeline
 template:

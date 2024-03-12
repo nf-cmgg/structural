@@ -80,23 +80,23 @@ workflow PIPELINE_INITIALISATION {
     //
     // Create channel from input file provided through params.input
     //
-    Channel
-        .fromSamplesheet("input")
-        .map {
-            meta, fastq_1, fastq_2 ->
-                if (!fastq_2) {
-                    return [ meta.id, meta + [ single_end:true ], [ fastq_1 ] ]
-                } else {
-                    return [ meta.id, meta + [ single_end:false ], [ fastq_1, fastq_2 ] ]
-                }
+    Channel.fromSamplesheet("input")
+        .map { 
+            def meta = it[0]
+            def new_meta = meta.family ? meta : meta + [family:meta.sample]
+            return [ new_meta.family, new_meta ] + it.subList(1, it.size())
         }
-        .groupTuple()
-        .map {
-            validateInputSamplesheet(it)
+        .tap { ch_raw_input }
+        .reduce([:]) { counts, entry -> 
+            def family = entry[0]
+            counts[family] = ((counts[family] ?: []) + [entry[1].id])
+            counts[family] = counts[family].unique()
+            return counts
         }
-        .map {
-            meta, fastqs ->
-                return [ meta, fastqs.flatten() ]
+        .combine(ch_raw_input)
+        .map { // counts, family, meta, ...
+            it[2] = it[2] + ["family_count":it[0][it[1]].size()]
+            return it.subList(2, it.size())
         }
         .set { ch_samplesheet }
 

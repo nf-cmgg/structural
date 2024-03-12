@@ -11,6 +11,61 @@ nextflow_workflow {
     options "-stub"
     config "./nextflow.config"
 
+    test("homo_sapiens - sv, no_filter") {
+
+        when {
+            params {
+                annotations_filter = null
+                genome = "GRCh38"
+                species = "homo_sapiens"
+                vep_cache_version = 110
+                annotsv_file_name = "annotsv_annotated"
+            }
+            workflow {
+                """
+                input[0] = Channel.of([
+                    [id:"test", sample:"test", sex:"male", variant_type:"sv"],
+                    file(params.sv_vcf1, checkIfExists:true),
+                    file(params.sv_tbi1, checkIfExists:true)
+                ])
+                input[1] = Channel.of([
+                    [id:"test", sample:"test", sex:"male"],
+                    []
+                ])
+                input[2] = Channel.value([
+                    [id:"fasta"],
+                    file(params.fasta, checkIfExists: true)
+                ])
+                input[3] = Channel.value([
+                    [id:"fai"],
+                    file(params.fai, checkIfExists: true)
+                ])
+                input[4] = [[],[]]
+                input[5] = [[],[]]
+                input[6] = [[],[]]
+                input[7] = []
+                input[8] = []
+                input[9] = []
+                input[10] = []
+                input[11] = ["sv"]
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert workflow.success },
+                { assert snapshot(
+                    workflow.out.vcfs[0][1..2].collect { file(it).name },
+                    workflow.out.reports,
+                    workflow.trace.succeeded().size(),
+                    workflow.trace.failed().size()
+                ).match() }
+            )
+        }
+
+    }
+
     test("homo_sapiens - cnv, filter") {
 
         when {
@@ -48,61 +103,6 @@ nextflow_workflow {
                 input[9] = []
                 input[10] = []
                 input[11] = ["cnv"]
-                """
-            }
-        }
-
-        then {
-            assertAll(
-                { assert workflow.success },
-                { assert snapshot(
-                    workflow.out.vcfs[0][1..2].collect { file(it).name },
-                    workflow.out.reports,
-                    workflow.trace.succeeded().size(),
-                    workflow.trace.failed().size()
-                ).match() }
-            )
-        }
-
-    }
-
-    test("homo_sapiens - sv, no_filter") {
-
-        when {
-            params {
-                annotations_filter = "-i FILTER='PASS'"
-                genome = "GRCh38"
-                species = "homo_sapiens"
-                vep_cache_version = 110
-                annotsv_file_name = "annotsv_annotated"
-            }
-            workflow {
-                """
-                input[0] = Channel.of([
-                    [id:"test", sample:"test", sex:"male", variant_type:"sv"],
-                    file(params.sv_vcf1, checkIfExists:true),
-                    file(params.sv_tbi1, checkIfExists:true)
-                ])
-                input[1] = Channel.of([
-                    [id:"test", sample:"test", sex:"male"],
-                    []
-                ])
-                input[2] = Channel.value([
-                    [id:"fasta"],
-                    file(params.fasta, checkIfExists: true)
-                ])
-                input[3] = Channel.value([
-                    [id:"fai"],
-                    file(params.fai, checkIfExists: true)
-                ])
-                input[4] = [[],[]]
-                input[5] = [[],[]]
-                input[6] = [[],[]]
-                input[7] = []
-                input[8] = []
-                input[9] = []
-                input[10] = []
-                input[11] = ["sv"]
                 """
             }
         }

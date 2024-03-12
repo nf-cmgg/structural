@@ -2,15 +2,16 @@
 // Merge VCFs from multiple callers
 //
 
-include { TABIX_TABIX                                   } from '../../../modules/nf-core/tabix/tabix/main'
-include { JASMINESV                                     } from '../../../modules/nf-core/jasminesv/main'
-include { BCFTOOLS_SORT                                 } from '../../../modules/nf-core/bcftools/sort/main'
+include { TABIX_TABIX               } from '../../../modules/nf-core/tabix/tabix/main'
+include { JASMINESV                 } from '../../../modules/nf-core/jasminesv/main'
+include { BCFTOOLS_SORT             } from '../../../modules/nf-core/bcftools/sort/main'
 
-include { BCFTOOLS_REHEADER                          } from '../../../modules/nf-core/bcftools/reheader/main'
+include { BCFTOOLS_CONSENSUS_REHEADER } from '../../../modules/local/bcftools/consensus_reheader/main'
+include { FIX_CALLERS                 } from '../../../modules/local/fix_callers/main'
 
 workflow VCF_MERGE_CALLERS_JASMINE {
     take:
-        ch_vcfs     // channel: [mandatory] [ meta, vcf ] => The bgzipped called VCFs
+        ch_vcfs     // channel: [mandatory] [ meta, vcf, tbi ] => The bgzipped called VCFs
         ch_fasta    // channel: [mandatory] [ meta, fasta ] => The fasta reference file
         ch_fai      // channel: [mandatory] [ meta, fai ] => The index of the fasta reference file
         val_callers // value:   [mandatory] => The callers used
@@ -20,62 +21,58 @@ workflow VCF_MERGE_CALLERS_JASMINE {
 
     ch_versions     = Channel.empty()
 
-    if(val_callers.size() > 1){
-        ch_vcfs
-            .map { meta, vcf ->
-                new_meta = meta - meta.subMap("caller") + ["variant_type":val_type]
-                [ new_meta, vcf ]
-            }
-            .groupTuple(size:val_callers.size())
-            .map { meta, vcfs ->
-                [ meta, vcfs, [], [], [] ]
-            }
-            .dump(tag:'jasmine_input', pretty:true)
-            .set { ch_jasmine_input }
+    ch_vcfs
+        .map { meta, vcf, tbi ->
+            new_meta = meta - meta.subMap("caller") + ["variant_type":val_type]
+            [ new_meta, vcf, tbi ]
+        }
+        .groupTuple(size:val_callers.size())
+        .tap { ch_consensus_reheader_input }
+        .map { meta, vcfs, tbis ->
+            [ meta, vcfs, [], [], [] ]
+        }
+        .dump(tag:'jasmine_input', pretty:true)
+        .set { ch_jasmine_input }
 
-        JASMINESV(
-            ch_jasmine_input,
-            ch_fasta.map{it[1]},
-            ch_fai.map{it[1]},
-            []
-        )
-        ch_versions = ch_versions.mix(JASMINESV.out.versions.first())
+    JASMINESV(
+        ch_jasmine_input,
+        ch_fasta.map{it[1]},
+        ch_fai.map{it[1]},
+        []
+    )
+    ch_versions = ch_versions.mix(JASMINESV.out.versions.first())
 
-        Channel.fromPath("${projectDir}/assets/header.txt")
-            .map { header ->
-                [ header, [] ]
-            }
-            .collect()
-            .set { ch_new_header }
+    FIX_CALLERS(
+        JASMINESV.out.vcf
+    )
+    ch_versions = ch_versions.mix(FIX_CALLERS.out.versions.first())
 
-        BCFTOOLS_REHEADER(
-            JASMINESV.out.vcf.combine(ch_new_header),
-            ch_fai
-        )
-        ch_versions = ch_versions.mix(BCFTOOLS_REHEADER.out.versions.first())
+    FIX_CALLERS.out.vcf
+        .join(ch_consensus_reheader_input, failOnDuplicate:true, failOnMismatch:true)
+        .map { meta, vcf, vcfs, tbis ->
+            [ meta, vcf, vcfs, [] ]
+        }
+        .dump(tag:"caller_reheader_input", pretty: true)
+        .set { ch_reheader_input }
 
-        BCFTOOLS_SORT(
-            BCFTOOLS_REHEADER.out.vcf
-        )
-        ch_versions = ch_versions.mix(BCFTOOLS_SORT.out.versions.first())
+    BCFTOOLS_CONSENSUS_REHEADER(
+        ch_reheader_input,
+        ch_fai,
+        []
+    )
+    ch_versions = ch_versions.mix(BCFTOOLS_CONSENSUS_REHEADER.out.versions.first())
 
-        BCFTOOLS_SORT.out.vcf
-            .set { ch_merged_vcfs }
-    } else {
-        ch_vcfs
-            .map { meta, vcf ->
-                new_meta = meta - meta.subMap("caller") + ["variant_type":val_type]
-                [ new_meta, vcf ]
-            }
-            .set { ch_merged_vcfs }
-    }
+    BCFTOOLS_SORT(
+        BCFTOOLS_CONSENSUS_REHEADER.out.vcf
+    )
+    ch_versions = ch_versions.mix(BCFTOOLS_SORT.out.versions.first())
 
     TABIX_TABIX(
-        ch_merged_vcfs
+        BCFTOOLS_SORT.out.vcf
     )
     ch_versions = ch_versions.mix(TABIX_TABIX.out.versions.first())
 
-    ch_merged_vcfs
+    BCFTOOLS_SORT.out.vcf
         .join(TABIX_TABIX.out.tbi, failOnMismatch:true, failOnDuplicate:true)
         .set { ch_vcfs_out }
 

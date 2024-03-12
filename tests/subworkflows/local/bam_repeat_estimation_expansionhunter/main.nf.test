@@ -3,6 +3,7 @@ nextflow_workflow {
     name "Test Workflow BAM_REPEAT_ESTIMATION_EXPANSIONHUNTER"
     script "subworkflows/local/bam_repeat_estimation_expansionhunter/main.nf"
     workflow "BAM_REPEAT_ESTIMATION_EXPANSIONHUNTER"
+    config "./nextflow.config"
 
     tag "subworkflows"
     tag "subworkflows_local"

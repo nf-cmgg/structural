@@ -8,7 +8,8 @@
                     "annotsv/annotsv": {
                         "branch": "master",
                         "git_sha": "a8741f8d429a47dfe07f64e776187318519a8f2b",
-                        "installed_by": ["modules"]
+                        "installed_by": ["modules"],
+                        "patch": "modules/nf-core/annotsv/annotsv/annotsv-annotsv.diff"
                     },
                     "annotsv/installannotations": {
                         "branch": "master",
@@ -32,12 +33,6 @@
                         "git_sha": "bd4e0df3319c171072d09dade42e3c06fa373779",
                         "installed_by": ["modules"],
                         "patch": "modules/nf-core/bcftools/filter/bcftools-filter.diff"
-                    },
-                    "bcftools/reheader": {
-                        "branch": "master",
-                        "git_sha": "f99333e98d7839c073ebdb1f2d059162a72c5fa5",
-                        "installed_by": ["modules"],
-                        "patch": "modules/nf-core/bcftools/reheader/bcftools-reheader.diff"
                     },
                     "bcftools/sort": {
                         "branch": "master",
@@ -155,7 +150,12 @@
                     },
                     "smoove/call": {
                         "branch": "master",
-                        "git_sha": "911696ea0b62df80e900ef244d7867d177971f73",
+                        "git_sha": "f2fdc5e81efe36beff213752ce1a8e71fceeacba",
+                        "installed_by": ["modules"]
+                    },
+                    "svync": {
+                        "branch": "master",
+                        "git_sha": "5f474a9beb310377365ab8d431855fa3efab5f3f",
                         "installed_by": ["modules"]
                     },
                     "tabix/bgzip": {

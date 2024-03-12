@@ -2,15 +2,16 @@
 // Merge VCFs from multiple callers
 //
 
-include { TABIX_TABIX                                   } from '../../../modules/nf-core/tabix/tabix/main'
-include { JASMINESV                                     } from '../../../modules/nf-core/jasminesv/main'
-include { BCFTOOLS_SORT                                 } from '../../../modules/nf-core/bcftools/sort/main'
+include { TABIX_TABIX               } from '../../../modules/nf-core/tabix/tabix/main'
+include { JASMINESV                 } from '../../../modules/nf-core/jasminesv/main'
+include { BCFTOOLS_SORT             } from '../../../modules/nf-core/bcftools/sort/main'
 
-include { BCFTOOLS_REHEADER                          } from '../../../modules/nf-core/bcftools/reheader/main'
+include { BCFTOOLS_CONSENSUS_REHEADER } from '../../../modules/local/bcftools/consensus_reheader/main'
+include { FIX_CALLERS                 } from '../../../modules/local/fix_callers/main'
 
 workflow VCF_MERGE_FAMILY_JASMINE {
     take:
-        ch_vcfs     // channel: [mandatory] [ meta, vcf ] => The bgzipped called VCFs
+        ch_vcfs     // channel: [mandatory] [ meta, vcf, tbi ] => The bgzipped called VCFs
         ch_fasta    // channel: [mandatory] [ meta, fasta ] => The fasta reference file
         ch_fai      // channel: [mandatory] [ meta, fai ] => The index of the fasta reference file
 
@@ -20,16 +21,13 @@ workflow VCF_MERGE_FAMILY_JASMINE {
 
     ch_vcfs
         .filter { it[0].family_count > 1 }
-        .map { meta, vcf ->
+        .map { meta, vcf, tbi ->
             def new_meta = meta - meta.subMap("sample", "sex") + ["id":meta.variant_type ? "${meta.family}.${meta.variant_type}" : meta.family]
-            [ groupKey(new_meta, meta.family_count), vcf, meta.sample ]
+            [ groupKey(new_meta, meta.family_count), vcf, tbi ]
         }
         .groupTuple()
-        .map { meta, vcfs, samples ->
-            def new_meta = meta + ["samples":samples]
-            [ new_meta, vcfs ]
-        }
-        .map { meta, vcfs -> 
+        .tap { ch_consensus_reheader_input }
+        .map { meta, vcfs, tbis -> 
             [ meta.id, meta, vcfs ]
         }
         .tap { ch_meta_file_list }
@@ -55,50 +53,25 @@ workflow VCF_MERGE_FAMILY_JASMINE {
     )
     ch_versions = ch_versions.mix(JASMINESV.out.versions.first())
 
-    JASMINESV.out.vcf
-        .map { meta, vcf ->
-            [ meta.id, meta ]
-        }
-        .tap { ch_meta }
-        .map { id, meta ->
-            [ "${meta.id}.samples.txt", meta.samples.join("\n") ]
-        }
-        .collectFile()
-        .map { 
-            def id = it.name.replaceAll(".samples.txt\$", "")
-            [ id, it ]
-        }
-        .join(ch_meta, by:0, failOnMismatch:true, failOnDuplicate:true)
-        .map { id, samples, meta ->
-            [ meta, samples ]
-        }
-        .set { ch_samples }
+    FIX_CALLERS(
+        JASMINESV.out.vcf
+    )
+    ch_versions = ch_versions.mix(FIX_CALLERS.out.versions.first())
 
-    Channel.fromPath("${projectDir}/assets/header.txt")
-        .collect()
-        .set { ch_new_header }
-
-    JASMINESV.out.vcf
-        .combine(ch_new_header)
-        .join(ch_samples, failOnDuplicate:true, failOnMismatch:true)
+    FIX_CALLERS.out.vcf
+        .join(ch_consensus_reheader_input, failOnDuplicate:true, failOnMismatch:true)
+        .dump(tag:"family_reheader_input", pretty: true)
         .set { ch_reheader_input }
 
-    BCFTOOLS_REHEADER(
+    BCFTOOLS_CONSENSUS_REHEADER(
         ch_reheader_input,
-        ch_fai
+        ch_fai,
+        []
     )
-    ch_versions = ch_versions.mix(BCFTOOLS_REHEADER.out.versions.first())
-
-    // samples need to be removed so the joining later happens correctly
-    BCFTOOLS_REHEADER.out.vcf
-        .map { meta, vcf ->
-            def new_meta = meta - meta.subMap("samples")
-            [ new_meta, vcf ]
-        }
-        .set { ch_sort_input }
+    ch_versions = ch_versions.mix(BCFTOOLS_CONSENSUS_REHEADER.out.versions.first())
 
     BCFTOOLS_SORT(
-        ch_sort_input
+        BCFTOOLS_CONSENSUS_REHEADER.out.vcf
     )
     ch_versions = ch_versions.mix(BCFTOOLS_SORT.out.versions.first())
 

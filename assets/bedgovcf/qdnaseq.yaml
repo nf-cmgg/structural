@@ -33,6 +33,11 @@ info:
     type: integer
     number: 1
     description: "The total length of the structural variant"
+  - name: CALLERS
+    value: qdnaseq
+    type: string
+    number: .
+    description: "The callers used to determine this variant"
 format:
   - name: GT
     value: "."

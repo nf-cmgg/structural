@@ -1,4 +1,4 @@
-name: bcftools_reheader
+name: bcftools_annotate
 channels:
   - conda-forge
   - bioconda

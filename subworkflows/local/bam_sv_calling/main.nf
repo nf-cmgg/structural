@@ -8,7 +8,7 @@ include { BAM_VARIANT_CALLING_DELLY                     } from '../bam_variant_c
 include { BAM_VARIANT_CALLING_WHAMG                     } from '../bam_variant_calling_whamg/main'
 include { BAM_VARIANT_CALLING_SMOOVE                    } from '../bam_variant_calling_smoove/main'
 include { BAM_VARIANT_CALLING_SCRAMBLE                  } from '../bam_variant_calling_scramble/main'
-include { BAM_VARIANT_CALLING_GRIDSS                    } from '../bam_variant_calling_gridss/main'
+// include { BAM_VARIANT_CALLING_GRIDSS                    } from '../bam_variant_calling_gridss/main'
 include { VCF_MERGE_CALLERS_JASMINE                             } from '../vcf_merge_callers_jasmine/main'
 
 // Import modules
@@ -98,17 +98,18 @@ workflow BAM_SV_CALLING {
     // Calling variants using Gridss
     //
 
-    if("gridss" in val_callers){
-        BAM_VARIANT_CALLING_GRIDSS(
-            ch_crams,
-            ch_fasta,
-            ch_fai,
-            ch_bwa_index
-        )
+    // TODO reactivate gridss once breakend to breakpoint conversion has been added to svync
+    // if("gridss" in val_callers){
+    //     BAM_VARIANT_CALLING_GRIDSS(
+    //         ch_crams,
+    //         ch_fasta,
+    //         ch_fai,
+    //         ch_bwa_index
+    //     )
 
-        ch_called_vcfs  = ch_called_vcfs.mix(BAM_VARIANT_CALLING_GRIDSS.out.gridss_vcfs)
-        ch_versions     = ch_versions.mix(BAM_VARIANT_CALLING_GRIDSS.out.versions)
-    }
+    //     ch_called_vcfs  = ch_called_vcfs.mix(BAM_VARIANT_CALLING_GRIDSS.out.gridss_vcfs)
+    //     ch_versions     = ch_versions.mix(BAM_VARIANT_CALLING_GRIDSS.out.versions)
+    // }
 
     //
     // Calling variants using Scramble (I don't know if calling variants is the correct term here)
@@ -130,23 +131,28 @@ workflow BAM_SV_CALLING {
     // Standardize and merge VCFs per sample for all callers
     //
 
-    ch_called_vcfs
-        .map { meta, vcf, tbi ->
-            [ meta, vcf ]
-        }
-        .set { ch_merge_input }
+    if(val_callers.size() > 1) {
+        VCF_MERGE_CALLERS_JASMINE(
+            ch_called_vcfs,
+            ch_fasta,
+            ch_fai,
+            val_callers,
+            "sv"
+        )
+        ch_versions = ch_versions.mix(VCF_MERGE_CALLERS_JASMINE.out.versions)
+        VCF_MERGE_CALLERS_JASMINE.out.vcfs.set { ch_merged_vcfs }
+    } else {    
+        ch_called_vcfs
+            .map { meta, vcf, tbi ->
+                def new_meta = meta - meta.subMap("caller") + [variant_type:"sv"]
+                [ new_meta, vcf, tbi ]
+            }
+            .set { ch_merged_vcfs }
+    }
 
-    VCF_MERGE_CALLERS_JASMINE(
-        ch_merge_input,
-        ch_fasta,
-        ch_fai,
-        val_callers,
-        "sv"
-    )
-    ch_versions = ch_versions.mix(VCF_MERGE_CALLERS_JASMINE.out.versions)
 
     emit:
-    vcfs                = VCF_MERGE_CALLERS_JASMINE.out.vcfs    // channel: [ val(meta), path(vcf), path(tbi) ]
+    vcfs                = ch_merged_vcfs    // channel: [ val(meta), path(vcf), path(tbi) ]
 
     versions            = ch_versions
     reports             = ch_reports

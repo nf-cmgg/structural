@@ -47,7 +47,7 @@ nextflow_workflow {
                     workflow.out.chr_statistics,
                     workflow.out.chr_plots,
                     workflow.out.genome_plot,
-                    workflow.out.vcf,
+                    workflow.out.vcf[0].collect { it instanceof Map ? it : file(it).name},
                     workflow.trace.succeeded().size(),
                     workflow.trace.failed().size()
                 ).match() }

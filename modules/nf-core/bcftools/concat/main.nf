@@ -19,6 +19,7 @@ process BCFTOOLS_CONCAT {
 
     script:
     def args = task.ext.args   ?: ''
+    def args2 = task.ext.args2   ?: ''
     def prefix   = task.ext.prefix ?: "${meta.id}"
 
     def tbi_names = tbis.collect { it.name }
@@ -33,10 +34,13 @@ process BCFTOOLS_CONCAT {
     """
     ${tabix_vcfs.join("\n")}
     bcftools concat \\
-        --output ${prefix}.vcf.gz \\
         $args \\
         --threads $task.cpus \\
-        ${vcfs}
+        ${vcfs} \\
+    | bcftools sort \\
+        ${args2} \\
+        --output ${prefix}.vcf.gz \\
+        --output-type z
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":

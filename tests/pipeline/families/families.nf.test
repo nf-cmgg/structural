@@ -26,9 +26,14 @@ nextflow_pipeline {
                 { assert workflow.success },
                 { assert snapshot(
                     workflow.stdout,
-                    path("$outputDir").list().findAll{
-                        !it.toString().endsWith("pipeline_info")
-                    },
+                    path("$outputDir")
+                        .list()
+                        .findAll {
+                            !it.toString().endsWith("pipeline_info")
+                        }
+                        .collect {
+                            it.list().collect { it.toString().split("/")[-1] }
+                        },
                     path("$outputDir").list().collect{
                         it.toString().split("/")[-1]
                     }
@@ -57,9 +62,14 @@ nextflow_pipeline {
                 { assert workflow.success },
                 { assert snapshot(
                     workflow.stdout,
-                    path("$outputDir").list().findAll{
-                        !it.toString().endsWith("pipeline_info")
-                    },
+                    path("$outputDir")
+                        .list()
+                        .findAll {
+                            !it.toString().endsWith("pipeline_info")
+                        }
+                        .collect {
+                            it.list().collect { it.toString().split("/")[-1] }
+                        },
                     path("$outputDir").list().collect{
                         it.toString().split("/")[-1]
                     }
@@ -87,9 +97,14 @@ nextflow_pipeline {
                 { assert workflow.success },
                 { assert snapshot(
                     workflow.stdout,
-                    path("$outputDir").list().findAll{
-                        !it.toString().endsWith("pipeline_info")
-                    },
+                    path("$outputDir")
+                        .list()
+                        .findAll {
+                            !it.toString().endsWith("pipeline_info")
+                        }
+                        .collect {
+                            it.list().collect { it.toString().split("/")[-1] }
+                        },
                     path("$outputDir").list().collect{
                         it.toString().split("/")[-1]
                     }
@@ -118,9 +133,14 @@ nextflow_pipeline {
                 { assert workflow.success },
                 { assert snapshot(
                     workflow.stdout,
-                    path("$outputDir").list().findAll{
-                        !it.toString().endsWith("pipeline_info")
-                    },
+                    path("$outputDir")
+                        .list()
+                        .findAll {
+                            !it.toString().endsWith("pipeline_info")
+                        }
+                        .collect {
+                            it.list().collect { it.toString().split("/")[-1] }
+                        },
                     path("$outputDir").list().collect{
                         it.toString().split("/")[-1]
                     }

@@ -3,6 +3,7 @@
 //
 
 include { BCFTOOLS_SPLIT_BY_SVTYPE                  } from '../../../modules/local/bcftools/split_by_svtype'
+include { BCFTOOLS_CONSENSUS_REHEADER               } from '../../../modules/local/bcftools/consensus_reheader'
 
 include { ANNOTSV_ANNOTSV                           } from '../../../modules/nf-core/annotsv/annotsv/main'
 include { ENSEMBLVEP_VEP                            } from '../../../modules/nf-core/ensemblvep/vep/main'
@@ -13,7 +14,6 @@ include { TABIX_TABIX as TABIX_VEP                  } from '../../../modules/nf-
 include { BCFTOOLS_FILTER                           } from '../../../modules/nf-core/bcftools/filter/main'
 include { BCFTOOLS_FILTER as BCFTOOLS_FILTER_COMMON } from '../../../modules/nf-core/bcftools/filter/main'
 include { BCFTOOLS_CONCAT                           } from '../../../modules/nf-core/bcftools/concat/main'
-include { BCFTOOLS_ANNOTATE                         } from '../../../modules/nf-core/bcftools/annotate/main'
 include { BCFTOOLS_SORT                             } from '../../../modules/nf-core/bcftools/sort/main'
 include { TABIX_TABIX as TABIX_FILTER               } from '../../../modules/nf-core/tabix/tabix/main'
 
@@ -80,23 +80,24 @@ workflow VCF_ANNOTATE_VEP_ANNOTSV_VCFANNO {
     ch_versions = ch_versions.mix(ANNOTSV_ANNOTSV.out.versions.first())
 
     ANNOTSV_ANNOTSV.out.vcf
-        .map { meta, vcf ->
-            def new_meta = meta + [id:meta.sample] - meta.subMap("vcf_count")
-            [ new_meta, meta.id, meta.vcf_count, vcf ]
+        .join(ch_annotsv_input, failOnDuplicate:true, failOnMismatch:true)
+        .map { meta, annot_vcf, vcf, tbi, small ->
+            [ meta, annot_vcf, vcf, [] ]
         }
-        .combine(BCFTOOLS_SPLIT_BY_SVTYPE.out.header, by:0)
-        .map { meta, id, count, vcf, header ->
-            def new_meta = meta + [id:id, vcf_count:count]
-            [ new_meta, vcf, [], [], [], header]
-        }
-        .set { ch_bcftools_annotate_input }
+        .set { ch_consensus_reheader_input }
 
-    BCFTOOLS_ANNOTATE(
-        ch_bcftools_annotate_input
+    val_additional_headers = [
+        '##INFO=<ID=BNDrescue,Number=0,Type=Flag,Description="The other BND of this pair can be recovered"'
+    ]
+
+    BCFTOOLS_CONSENSUS_REHEADER(
+        ch_consensus_reheader_input,
+        [[],[]],
+        val_additional_headers
     )
-    ch_versions = ch_versions.mix(BCFTOOLS_ANNOTATE.out.versions.first())
+    ch_versions = ch_versions.mix(BCFTOOLS_CONSENSUS_REHEADER.out.versions.first())
 
-    BCFTOOLS_ANNOTATE.out.vcf
+    BCFTOOLS_CONSENSUS_REHEADER.out.vcf
         .map { meta, vcf ->
             def new_meta = meta + [id:meta.sample] - meta.subMap("vcf_count")
             [ groupKey(new_meta, meta.vcf_count), vcf ]
@@ -141,9 +142,20 @@ workflow VCF_ANNOTATE_VEP_ANNOTSV_VCFANNO {
     )
     ch_versions = ch_versions.mix(TABIX_VEP.out.versions)
 
-    ENSEMBLVEP_VEP.out.vcf
-        .join(TABIX_VEP.out.tbi, failOnDuplicate:true, failOnMismatch:true)
-        .join(ch_annotsv_output, failOnDuplicate:true, failOnMismatch:true)
+    ENSEMBLVEP_VEP.out.vcf.view{"ensemblVEP output: ${it}"}
+        .join(TABIX_VEP.out.tbi.view{"tabix VEP output: ${it}"}, failOnDuplicate:true, failOnMismatch:true)
+        .map { meta, vcf, tbi ->
+            def new_meta = [
+                id: meta.id,
+                sample: meta.sample,
+                sex: meta.sex,
+                variant_type: meta.variant_type
+            ]
+            [ new_meta, vcf, tbi ]
+        }
+        .view{"before annotsv join: ${it}"}
+        .join(ch_annotsv_output.view {"annotSV output: ${it}"}, failOnDuplicate:true, failOnMismatch:true)
+        .view{"after annotsv join: ${it}"}
         .set { ch_vcfanno_input }
 
     Channel.fromList(create_vcfanno_toml(val_vcfanno_resources))

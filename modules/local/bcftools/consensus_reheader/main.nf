@@ -1,4 +1,4 @@
-process BCFTOOLS_REHEADER {
+process BCFTOOLS_CONSENSUS_REHEADER {
     tag "$meta.id"
     label 'process_low'
 
@@ -8,8 +8,9 @@ process BCFTOOLS_REHEADER {
         'biocontainers/bcftools:1.17--haef29d1_0' }"
 
     input:
-    tuple val(meta), path(vcf), path(header), path(samples)
+    tuple val(meta), path(merged_vcf), path(single_vcfs), path(single_tbis)
     tuple val(meta2), path(fai)
+    val(additional_headers)
 
     output:
     tuple val(meta), path("*.${extension}"), emit: vcf
@@ -19,11 +20,15 @@ process BCFTOOLS_REHEADER {
     task.ext.when == null || task.ext.when
 
     script:
-    def args = task.ext.args ?: ''
-    def prefix = task.ext.prefix ?: "${meta.id}"
+    def args    = task.ext.args ?: ''
+    def prefix  = task.ext.prefix ?: "${meta.id}"
     def fai_argument      = fai ? "--fai $fai" : ""
-    def header_argument   = header ? "--header new_header.vcf" : ""
-    def samples_argument  = samples ? "--samples $samples" : ""
+    def add_additional = additional_headers ?
+    """
+    cat <<-EOF >> ${prefix}.temp.txt
+    ${additional_headers.join("\t\n")}
+    EOF
+    """ : ""
 
     def args2 = task.ext.args2 ?: '--output-type z'
     extension = args2.contains("--output-type b") || args2.contains("-Ob") ? "bcf.gz" :
@@ -32,28 +37,44 @@ process BCFTOOLS_REHEADER {
                     args2.contains("--output-type v") || args2.contains("-Ov") ? "vcf" :
                     "vcf"
     """
-    bcftools view -h ${vcf} | grep -E \\#\\#fileformat=VCF\\|\\#\\#fileDate=\\|\\#\\#reference=\\|\\#\\#smoove_counts_stats= \\
-        > new_header.vcf
+    touch ${prefix}.temp.txt
+    for FILE in ${merged_vcf} ${single_vcfs};
+    do
+        bcftools view --threads ${task.cpus} -h \$FILE | grep -vE '^(#CHROM|##fileformat|##filedate|##contig)' >> ${prefix}.temp.txt
+    done
 
-    cat ${header} >> new_header.vcf
+    # Add fileformat and file date from the merged VCF
+    bcftools view --threads ${task.cpus} -h ${merged_vcf} \\
+        | grep -E '(##filedate|##fileformat)' \\
+        > ${prefix}.header.vcf
 
-    bcftools view -h ${vcf} | grep -E \\#CHROM >> new_header.vcf
+    # Add aditional header lines
+    ${add_additional}
+
+    # Remove duplicate header fields, sort and add them to the header
+    awk -F, '!seen[substr(\$0, index(\$0, "##") + 1, index(\$0, ",") - index(\$0, "##") - 1)]++' ${prefix}.temp.txt \\
+        | sort \\
+        >> ${prefix}.header.vcf
+
+    # Add the CHROM and contig lines to the header
+    bcftools view --threads ${task.cpus} -h ${merged_vcf} \\
+        | grep -E '(#CHROM|##contig)' \\
+        >> ${prefix}.header.vcf
 
     bcftools \\
         reheader \\
         $fai_argument \\
-        $header_argument \\
-        $samples_argument \\
+        --header ${prefix}.header.vcf \\
         $args \\
         --threads $task.cpus \\
-        $vcf \\
+        $merged_vcf \\
         | bcftools view \\
         $args2 \\
         --output ${prefix}.${extension}
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
-        bcftools: \$(bcftools --version 2>&1 | head -n1 | sed 's/^.*bcftools //; s/ .*\$//')
+        bcftools: \$( bcftools --version |& sed '1!d; s/^.*bcftools //' )
     END_VERSIONS
     """
 
@@ -67,11 +88,11 @@ process BCFTOOLS_REHEADER {
                     args2.contains("--output-type v") || args2.contains("-Ov") ? "vcf" :
                     "vcf"
     """
-    touch ${prefix}.${extension}
+    echo "" | gzip > ${prefix}.${extension}
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
-        bcftools: \$(bcftools --version 2>&1 | head -n1 | sed 's/^.*bcftools //; s/ .*\$//')
+        bcftools: \$( bcftools --version |& sed '1!d; s/^.*bcftools //' )
     END_VERSIONS
     """
 }

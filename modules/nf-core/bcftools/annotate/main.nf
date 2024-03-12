@@ -20,6 +20,7 @@ process BCFTOOLS_ANNOTATE {
     script:
     def args    = task.ext.args ?: ''
     prefix  = task.ext.prefix ?: "${meta.id}"
+    def tabix   = task.ext.tabix ? true : false
     def header_file = header_lines ? "--header-lines ${header_lines}" : ''
     def annotations_file = annotations ? "--annotations ${annotations}" : ''
     def extension = args.contains("--output-type b") || args.contains("-Ob") ? "bcf.gz" :
@@ -30,7 +31,7 @@ process BCFTOOLS_ANNOTATE {
     if ("$input" == "${prefix}.${extension}") error "Input and output names are the same, set prefix in module configuration to disambiguate!"
     def bgzip_input = input.extension != "gz" ? "bgzip --threads ${task.cpus} ${input.name}" : ""
     def input_vcf = bgzip_input ? "${input.name}.gz" : input.name
-    def tabix_input = index ? "" : "tabix ${input_vcf}"
+    def tabix_input = index || !tabix ? "" : "tabix ${input_vcf}"
     """
     ${bgzip_input}
     ${tabix_input}

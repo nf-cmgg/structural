@@ -10,11 +10,12 @@ Changes in module 'nf-core/bcftools/concat'
  
      output:
      tuple val(meta), path("*.gz"), emit: vcf
-@@ -19,8 +19,19 @@
+@@ -19,13 +19,28 @@
  
      script:
      def args = task.ext.args   ?: ''
 -    prefix   = task.ext.prefix ?: "${meta.id}"
++    def args2 = task.ext.args2   ?: ''
 +    def prefix   = task.ext.prefix ?: "${meta.id}"
 +
 +    def tbi_names = tbis.collect { it.name }
@@ -29,7 +30,17 @@ Changes in module 'nf-core/bcftools/concat'
      """
 +    ${tabix_vcfs.join("\n")}
      bcftools concat \\
-         --output ${prefix}.vcf.gz \\
+-        --output ${prefix}.vcf.gz \\
          $args \\
+         --threads $task.cpus \\
+-        ${vcfs}
++        ${vcfs} \\
++    | bcftools sort \\
++        ${args2} \\
++        --output ${prefix}.vcf.gz \\
++        --output-type z
+ 
+     cat <<-END_VERSIONS > versions.yml
+     "${task.process}":
 
 ************************************************************

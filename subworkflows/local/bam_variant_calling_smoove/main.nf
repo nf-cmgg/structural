@@ -5,6 +5,7 @@
 include { SMOOVE_CALL        } from '../../../modules/nf-core/smoove/call/main'
 include { BCFTOOLS_SORT      } from '../../../modules/nf-core/bcftools/sort/main'
 include { TABIX_TABIX        } from '../../../modules/nf-core/tabix/tabix/main'
+include { SVYNC              } from '../../../modules/nf-core/svync/main'
 
 workflow BAM_VARIANT_CALLING_SMOOVE {
     take:
@@ -29,8 +30,8 @@ workflow BAM_VARIANT_CALLING_SMOOVE {
 
     SMOOVE_CALL(
         ch_smoove_input,
-        ch_fasta.map{it[1]},
-        ch_fai.map{it[1]}
+        ch_fasta,
+        ch_fai
     )
 
     ch_versions = ch_versions.mix(SMOOVE_CALL.out.versions.first())
@@ -40,24 +41,38 @@ workflow BAM_VARIANT_CALLING_SMOOVE {
     )
     ch_versions = ch_versions.mix(BCFTOOLS_SORT.out.versions.first())
 
-    TABIX_TABIX(
-        BCFTOOLS_SORT.out.vcf
-    )
-    ch_versions = ch_versions.mix(TABIX_TABIX.out.versions.first())
-
     BCFTOOLS_SORT.out.vcf
-        .combine(TABIX_TABIX.out.tbi, by:0)
         .map(
-            { meta, vcf, tbi ->
+            { meta, vcf ->
                 new_meta = meta + [caller:'smoove']
-                [ new_meta, vcf, tbi ]
+                [ new_meta, vcf, [] ]
             }
         )
         .dump(tag: 'smoove_vcfs', pretty: true)
         .set { ch_smoove_vcfs }
 
+    Channel.fromPath("${projectDir}/assets/svync/smoove.yaml")
+        .map { [[], it] }
+        .collect()
+        .set { ch_svync_config }
+
+    SVYNC(
+        ch_smoove_vcfs,
+        ch_svync_config
+    )
+    ch_versions = ch_versions.mix(SVYNC.out.versions.first())
+
+    TABIX_TABIX(
+        SVYNC.out.vcf
+    )
+    ch_versions = ch_versions.mix(TABIX_TABIX.out.versions.first())
+
+    SVYNC.out.vcf
+        .join(TABIX_TABIX.out.tbi)
+        .set { ch_out_vcfs }
+
     emit:
-    smoove_vcfs = ch_smoove_vcfs    // channel: [ val(meta), path(vcf), path(tbi) ]
+    smoove_vcfs = ch_out_vcfs    // channel: [ val(meta), path(vcf), path(tbi) ]
 
     versions    = ch_versions
 }

@@ -1,58 +1,116 @@
 {
     "homo_sapiens - one family, no variant type": {
         "content": [
-            "fam.vcf.gz",
-            "fam.vcf.gz.tbi",
-            4,
+            [
+                [
+                    "fam.vcf.gz",
+                    "fam.vcf.gz.tbi"
+                ]
+            ],
+            5,
             0
         ],
-        "timestamp": "2024-01-12T14:06:35.803693267"
+        "meta": {
+            "nf-test": "0.8.4",
+            "nextflow": "24.02.0"
+        },
+        "timestamp": "2024-03-12T11:41:36.518885307"
     },
     "homo_sapiens - two samples, no variant type": {
         "content": [
             [
-                
+                [
+                    "fam.vcf.gz",
+                    "fam.vcf.gz.tbi"
+                ]
             ],
-            0,
+            5,
             0
         ],
-        "timestamp": "2023-11-29T16:36:53.707905031"
+        "meta": {
+            "nf-test": "0.8.4",
+            "nextflow": "24.02.0"
+        },
+        "timestamp": "2024-03-12T11:41:51.906665609"
     },
     "homo_sapiens - two samples, variant types": {
         "content": [
             [
-                
+                [
+                    "fam.cnv.vcf.gz",
+                    "fam.cnv.vcf.gz.tbi"
+                ],
+                [
+                    "fam.sv.vcf.gz",
+                    "fam.sv.vcf.gz.tbi"
+                ]
             ],
-            0,
+            10,
             0
         ],
-        "timestamp": "2023-11-29T16:36:05.916625863"
+        "meta": {
+            "nf-test": "0.8.4",
+            "nextflow": "24.02.0"
+        },
+        "timestamp": "2024-03-12T11:40:56.296762018"
     },
     "homo_sapiens - one family, variant types": {
         "content": [
-            "fam.cnv.vcf.gz",
-            "fam.cnv.vcf.gz.tbi",
-            8,
+            [
+                [
+                    "fam.cnv.vcf.gz",
+                    "fam.cnv.vcf.gz.tbi"
+                ],
+                [
+                    "fam.sv.vcf.gz",
+                    "fam.sv.vcf.gz.tbi"
+                ]
+            ],
+            10,
             0
         ],
-        "timestamp": "2024-01-12T14:05:29.802719932"
+        "meta": {
+            "nf-test": "0.8.4",
+            "nextflow": "24.02.0"
+        },
+        "timestamp": "2024-03-12T11:40:39.237020519"
     },
     "homo_sapiens - one family & one sample, variant types": {
         "content": [
-            "fam1.cnv.vcf.gz",
-            "fam1.cnv.vcf.gz.tbi",
-            8,
+            [
+                [
+                    "fam1.cnv.vcf.gz",
+                    "fam1.cnv.vcf.gz.tbi"
+                ],
+                [
+                    "fam1.sv.vcf.gz",
+                    "fam1.sv.vcf.gz.tbi"
+                ]
+            ],
+            10,
             0
         ],
-        "timestamp": "2024-01-12T14:06:12.197270001"
+        "meta": {
+            "nf-test": "0.8.4",
+            "nextflow": "24.02.0"
+        },
+        "timestamp": "2024-03-12T11:41:20.367538619"
     },
     "homo_sapiens - one family & one sample, no variant types": {
         "content": [
-            "fam1.vcf.gz",
-            "fam1.vcf.gz.tbi",
-            4,
+            [
+                [
+                    "fam1.vcf.gz",
+                    "fam1.vcf.gz.tbi"
+                ]
+            ],
+            5,
             0
         ],
-        "timestamp": "2024-01-12T14:07:09.457160509"
+        "meta": {
+            "nf-test": "0.8.4",
+            "nextflow": "24.02.0"
+        },
+        "timestamp": "2024-03-12T11:42:07.437700938"
     }
 }

@@ -4,7 +4,6 @@
 
 include { EXPANSIONHUNTER   } from '../../../modules/nf-core/expansionhunter/main'
 include { BCFTOOLS_ANNOTATE } from '../../../modules/nf-core/bcftools/annotate/main'
-include { BCFTOOLS_REHEADER } from '../../../modules/nf-core/bcftools/reheader/main'
 include { TABIX_TABIX       } from '../../../modules/nf-core/tabix/tabix/main'
 
 workflow BAM_REPEAT_ESTIMATION_EXPANSIONHUNTER {
@@ -64,29 +63,12 @@ workflow BAM_REPEAT_ESTIMATION_EXPANSIONHUNTER {
     )
     ch_versions = ch_versions.mix(BCFTOOLS_ANNOTATE.out.versions.first())
 
-    Channel.fromPath("${projectDir}/assets/header.txt")
-        .collect()
-        .set { ch_new_header }
-
-    BCFTOOLS_ANNOTATE.out.vcf
-        .combine(ch_new_header)
-        .map { meta, vcf, header ->
-            [ meta, vcf, header, [] ]
-        }
-        .set { ch_reheader_input }
-
-    BCFTOOLS_REHEADER(
-        ch_reheader_input,
-        ch_fai
-    )
-    ch_versions = ch_versions.mix(BCFTOOLS_REHEADER.out.versions.first())
-
     TABIX_TABIX(
-        BCFTOOLS_REHEADER.out.vcf
+        BCFTOOLS_ANNOTATE.out.vcf
     )
     ch_versions = ch_versions.mix(TABIX_TABIX.out.versions.first())
 
-    BCFTOOLS_REHEADER.out.vcf
+    BCFTOOLS_ANNOTATE.out.vcf
         .join(TABIX_TABIX.out.tbi, failOnDuplicate:true, failOnMismatch:true)
         .set { ch_vcfs }
 

@@ -1,4 +1,4 @@
-name: nf-cmgg-structural
+name: structural
 description: A nextflow pipeline for calling structural variants
 author: nvnieuwk
-prefix: CenterForMedicalGeneticsGhent
+prefix: nf-cmgg

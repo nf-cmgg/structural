@@ -70,7 +70,7 @@ nextflow_workflow {
 
         when {
             params {
-                annotations_filter = null
+                annotations_filter = "-i FILTER='PASS'"
                 genome = "GRCh38"
                 species = "homo_sapiens"
                 vep_cache_version = 110

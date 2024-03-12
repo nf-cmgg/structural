@@ -39,8 +39,8 @@
     "homo_sapiens - cnv, filter": {
         "content": [
             [
-                "test.cnv.vcf",
-                "test.cnv.vcf.tbi"
+                "test.cnv.vcf.gz",
+                "test.cnv.vcf.gz.tbi"
             ],
             [
                 "test.vep.summary.html:md5,d41d8cd98f00b204e9800998ecf8427e"
@@ -52,6 +52,6 @@
             "nf-test": "0.8.4",
             "nextflow": "24.02.0"
         },
-        "timestamp": "2024-03-12T10:16:31.314375489"
+        "timestamp": "2024-03-12T11:04:12.980338516"
     }
 }

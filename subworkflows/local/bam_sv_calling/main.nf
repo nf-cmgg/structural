@@ -6,7 +6,6 @@
 include { BAM_VARIANT_CALLING_MANTA                     } from '../bam_variant_calling_manta/main'
 include { BAM_VARIANT_CALLING_DELLY                     } from '../bam_variant_calling_delly/main'
 include { BAM_VARIANT_CALLING_SMOOVE                    } from '../bam_variant_calling_smoove/main'
-include { BAM_VARIANT_CALLING_SCRAMBLE                  } from '../bam_variant_calling_scramble/main'
 // include { BAM_VARIANT_CALLING_GRIDSS                    } from '../bam_variant_calling_gridss/main'
 include { VCF_MERGE_CALLERS_JASMINE                             } from '../vcf_merge_callers_jasmine/main'
 

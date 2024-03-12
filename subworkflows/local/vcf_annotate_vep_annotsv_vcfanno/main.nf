@@ -60,7 +60,7 @@ workflow VCF_ANNOTATE_VEP_ANNOTSV_VCFANNO {
     BCFTOOLS_SPLIT_BY_SVTYPE.out.split_vcfs
         .join(ch_small_variants_types, failOnDuplicate:true, failOnMismatch:true)
         .map { meta, vcfs, small_variants ->
-            def new_meta = meta + [vcf_count:vcfs instanceof ArrayList ? vcfs.size() : 1]
+            def new_meta = meta + [vcf_count:vcfs instanceof ArrayList ? vcfs.size() : 1, old_meta:meta]
             [ new_meta, vcfs instanceof ArrayList ? vcfs : [vcfs], small_variants ]
         }
         .transpose(by:1)
@@ -99,8 +99,7 @@ workflow VCF_ANNOTATE_VEP_ANNOTSV_VCFANNO {
 
     BCFTOOLS_CONSENSUS_REHEADER.out.vcf
         .map { meta, vcf ->
-            def new_meta = meta + [id:meta.sample] - meta.subMap("vcf_count")
-            [ groupKey(new_meta, meta.vcf_count), vcf ]
+            [ groupKey(meta.old_meta, meta.vcf_count), vcf ]
         }
         .groupTuple()
         .map { meta, vcfs ->

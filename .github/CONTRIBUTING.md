@@ -52,7 +52,7 @@ These tests are run both with the latest available version of `Nextflow` and als
 
 ## Getting help
 
-For further information/help, please consult the [nf-core/nf-cmgg-structural documentation](https://nf-co.re/nf-cmgg-structural/usage) and don't hesitate to get in touch on the nf-core Slack [#nf-cmgg-structural](https://nfcore.slack.com/channels/nf-cmgg-structural) channel ([join our Slack here](https://nf-co.re/join/slack)).
+For further information/help, please consult the [nf-core/structural documentation](https://nf-co.re/structural/usage) and don't hesitate to get in touch on the nf-core Slack [#structural](https://nfcore.slack.com/channels/structural) channel ([join our Slack here](https://nf-co.re/join/slack)).
 
 ## Pipeline contribution conventions
 

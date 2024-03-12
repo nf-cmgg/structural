@@ -1,7 +1,7 @@
 {
     "$schema": "http://json-schema.org/draft-07/schema",
-    "$id": "https://raw.githubusercontent.com/CenterForMedicalGeneticsGhent/nf-cmgg-structural/master/nextflow_schema.json",
-    "title": "CenterForMedicalGeneticsGhent/nf-cmgg-structural pipeline parameters",
+    "$id": "https://raw.githubusercontent.com/nf-cmgg/structural/master/nextflow_schema.json",
+    "title": "nf-cmgg/structural pipeline parameters",
     "description": "A nextflow pipeline for calling structural variants",
     "type": "object",
     "definitions": {

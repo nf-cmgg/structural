@@ -4,11 +4,11 @@
 [![run with conda](http://img.shields.io/badge/run%20with-conda-3EB049?labelColor=000000&logo=anaconda)](https://docs.conda.io/en/latest/)
 [![run with docker](https://img.shields.io/badge/run%20with-docker-0db7ed?labelColor=000000&logo=docker)](https://www.docker.com/)
 [![run with singularity](https://img.shields.io/badge/run%20with-singularity-1d355c.svg?labelColor=000000)](https://sylabs.io/docs/)
-[![Launch on Nextflow Tower](https://img.shields.io/badge/Launch%20%F0%9F%9A%80-Nextflow%20Tower-%234256e7)](https://tower.nf/launch?pipeline=https://github.com/CenterForMedicalGeneticsGhent/nf-cmgg-structural)
+[![Launch on Nextflow Tower](https://img.shields.io/badge/Launch%20%F0%9F%9A%80-Nextflow%20Tower-%234256e7)](https://tower.nf/launch?pipeline=https://github.com/nf-cmgg/structural)
 
 ## Introduction
 
-**CenterForMedicalGeneticsGhent/nf-cmgg-structural** is a bioinformatics best-practice analysis pipeline for calling structural variants from short reads.
+**nf-cmgg/structural** is a bioinformatics best-practice analysis pipeline for calling structural variants from short reads.
 
 The pipeline is built using [Nextflow](https://www.nextflow.io), a workflow tool to run tasks across multiple compute infrastructures in a very portable manner. It uses Docker/Singularity containers making installation trivial and results highly reproducible. The [Nextflow DSL2](https://www.nextflow.io/docs/latest/dsl2.html) implementation of this pipeline uses one container per process which makes it much easier to maintain and update software dependencies. Where possible, these processes have been submitted to and installed from [nf-core/modules](https://github.com/nf-core/modules) in order to make them available to all nf-core pipelines, and to everyone within the Nextflow community!
 
@@ -24,7 +24,7 @@ The pipeline is built using [Nextflow](https://www.nextflow.io), a workflow tool
 Now, you can run the pipeline using:
 
 ```bash
-nextflow run CenterForMedicalGeneticsGhent/nf-cmgg-structural \
+nextflow run nf-cmgg/structural \
    -profile <docker/singularity/.../institute> \
    --input samplesheet.csv \
    --outdir <OUTDIR>
@@ -37,11 +37,11 @@ nextflow run CenterForMedicalGeneticsGhent/nf-cmgg-structural \
 
 ## Documentation
 
-The CenterForMedicalGenetics/nf-cmgg-structural pipeline comes with documentation about the pipeline [usage](https://github.com/CenterForMedicalGeneticsGhent/nf-cmgg-structural/tree/master/docs/usage.md) and [output](https://github.com/CenterForMedicalGeneticsGhent/nf-cmgg-structural/tree/master/docs/output.md).
+The CenterForMedicalGenetics/structural pipeline comes with documentation about the pipeline [usage](https://github.com/nf-cmgg/structural/tree/master/docs/usage.md) and [output](https://github.com/nf-cmgg/structural/tree/master/docs/output.md).
 
 ## Credits
 
-CenterForMedicalGeneticsGhent/nf-cmgg-structural was originally written by Nicolas Vannieuwkerke and Mattias Van Heetvelde.
+nf-cmgg/structural was originally written by Nicolas Vannieuwkerke and Mattias Van Heetvelde.
 
 ## Contributions and Support
 
@@ -50,7 +50,7 @@ If you would like to contribute to this pipeline, please see the [contributing g
 ## Citations
 
 <!-- TODO nf-core: Add citation for pipeline after first release. Uncomment lines below and update Zenodo doi and badge at the top of this file. -->
-<!-- If you use  CenterForMedicalGeneticsGhent/nf-cmgg-structural for your analysis, please cite it using the following doi: [10.5281/zenodo.XXXXXX](https://doi.org/10.5281/zenodo.XXXXXX) -->
+<!-- If you use  nf-cmgg/structural for your analysis, please cite it using the following doi: [10.5281/zenodo.XXXXXX](https://doi.org/10.5281/zenodo.XXXXXX) -->
 
 <!-- TODO nf-core: Add bibliography of tools and data used in your pipeline -->
 

@@ -7,9 +7,9 @@ keywords:
 tools:
   - "wisecondorx":
       description: "WIthin-SamplE COpy Number aberration DetectOR, including sex chromosomes"
-      homepage: "https://github.com/CenterForMedicalGeneticsGhent/WisecondorX"
-      documentation: "https://github.com/CenterForMedicalGeneticsGhent/WisecondorX"
-      tool_dev_url: "https://github.com/CenterForMedicalGeneticsGhent/WisecondorX"
+      homepage: "https://github.com/nf-cmgg/WisecondorX"
+      documentation: "https://github.com/nf-cmgg/WisecondorX"
+      tool_dev_url: "https://github.com/nf-cmgg/WisecondorX"
       doi: "10.1093/nar/gky1263"
       licence: "['Attribution-NonCommercial-ShareAlike CC BY-NC-SA']"
 

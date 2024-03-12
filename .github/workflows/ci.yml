@@ -21,7 +21,7 @@ jobs:
   test_all:
     name: Run nf-test with ${{ matrix.test }}-${{ matrix.NXF_VER }}
     # Only run on push if this is the nf-core dev branch (merged PRs)
-    if: "${{ github.event_name != 'push' || (github.event_name == 'push' && github.repository == 'CenterForMedicalGeneticsGhent/nf-cmgg-structural') }}"
+    if: "${{ github.event_name != 'push' || (github.event_name == 'push' && github.repository == 'nf-cmgg/structural') }}"
     runs-on: ubuntu-latest
     strategy:
       matrix:

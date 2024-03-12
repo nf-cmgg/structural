@@ -1,5 +1,5 @@
 //
-// This file holds several functions specific to the main.nf workflow in the CenterForMedicalGeneticsGhent/nf-cmgg-structural pipeline
+// This file holds several functions specific to the main.nf workflow in the nf-cmgg/structural pipeline
 //
 
 import nextflow.Nextflow

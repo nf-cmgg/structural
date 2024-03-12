@@ -1,9 +1,9 @@
 #!/usr/bin/env nextflow
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    CenterForMedicalGeneticsGhent/nf-cmgg-structural
+    nf-cmgg/structural
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    Github : https://github.com/CenterForMedicalGeneticsGhent/nf-cmgg-structural
+    Github : https://github.com/nf-cmgg/structural
 ----------------------------------------------------------------------------------------
 */
 
@@ -37,7 +37,7 @@ params.wisecondorx_reference    = WorkflowMain.getGenomeAttribute(params, 'wisec
 
 // Print help message
 if (params.help) {
-    def String command = "nextflow run CenterForMedicalGeneticsGhent/nf-cmgg-structural --input <input csv/tsv/yaml> --outdir <output folder>"
+    def String command = "nextflow run nf-cmgg/structural --input <input csv/tsv/yaml> --outdir <output folder>"
     log.info paramsHelp(command)
     exit 0
 }
@@ -57,7 +57,7 @@ validateParameters()
 include { CMGGSTRUCTURAL } from './workflows/cmgg-structural'
 
 //
-// WORKFLOW: Run main CenterForMedicalGeneticsGhent/nf-cmgg-structural analysis pipeline
+// WORKFLOW: Run main nf-cmgg/structural analysis pipeline
 //
 workflow CMGG_CMGGSTRUCTURAL {
     CMGGSTRUCTURAL ()

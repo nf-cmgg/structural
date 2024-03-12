@@ -170,7 +170,6 @@ workflow VCF_ANNOTATE_VEP_ANNOTSV_VCFANNO {
     )
     ch_versions = ch_versions.mix(VCFANNO.out.versions)
 
-    
     if(!params.annotations_filter) {
         TABIX_ANNOTATED(
             VCFANNO.out.vcf

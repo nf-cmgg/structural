@@ -88,7 +88,7 @@ workflow BAM_VARIANT_CALLING_QDNASEQ {
         BEDGOVCF.out.vcf
     )
     ch_versions = ch_versions.mix(TABIX_TABIX.out.versions.first())
-    
+
     emit:
     qdnaseq_beds    = ch_qdnaseq_beds  // channel: [ val(meta), path(bed) ]
     vcf             = ch_vcf           // channel: [ val(meta), path(vcf) ]

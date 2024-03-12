@@ -111,11 +111,11 @@ workflow STRUCTURAL {
     ch_annotsv_candidate_genes  = params.annotsv_candidate_genes ?  Channel.fromPath(params.annotsv_candidate_genes).map{[[], it]}.collect() : [[],[]]
     ch_annotsv_gene_transcripts = params.annotsv_gene_transcripts ? Channel.fromPath(params.annotsv_gene_transcripts).map{[[], it]}.collect() : [[],[]]
     ch_vcfanno_lua              = params.vcfanno_lua ?              Channel.fromPath(params.vcfanno_lua).collect() : []
-    ch_catalog                  = params.expansionhunter_catalog ?  Channel.fromPath(params.expansionhunter_catalog).map{[[id:'catalog'], it]}.collect() : [[id:'catalog'],[file("https://github.com/Illumina/ExpansionHunter/raw/master/variant_catalog/grch38/variant_catalog.json", checkIfExists:true)]]    
-    ch_qdnaseq_male             = params.qdnaseq_male ?             Channel.fromPath(params.qdnaseq_male).map{[[id:'qdnaseq'], it]}.collect() : [[],[]]    
-    ch_qdnaseq_female           = params.qdnaseq_female ?           Channel.fromPath(params.qdnaseq_female).map{[[id:'qdnaseq'], it]}.collect() : [[],[]]    
-    ch_wisecondorx_reference    = params.wisecondorx_reference ?    Channel.fromPath(params.wisecondorx_reference).map{[[id:'wisecondorx'], it]}.collect() : [[],[]]    
-    ch_blacklist                = params.blacklist ?                Channel.fromPath(params.blacklist).map{[[id:'blacklist'], it]}.collect() : [[],[]]    
+    ch_catalog                  = params.expansionhunter_catalog ?  Channel.fromPath(params.expansionhunter_catalog).map{[[id:'catalog'], it]}.collect() : [[id:'catalog'],[file("https://github.com/Illumina/ExpansionHunter/raw/master/variant_catalog/grch38/variant_catalog.json", checkIfExists:true)]]
+    ch_qdnaseq_male             = params.qdnaseq_male ?             Channel.fromPath(params.qdnaseq_male).map{[[id:'qdnaseq'], it]}.collect() : [[],[]]
+    ch_qdnaseq_female           = params.qdnaseq_female ?           Channel.fromPath(params.qdnaseq_female).map{[[id:'qdnaseq'], it]}.collect() : [[],[]]
+    ch_wisecondorx_reference    = params.wisecondorx_reference ?    Channel.fromPath(params.wisecondorx_reference).map{[[id:'wisecondorx'], it]}.collect() : [[],[]]
+    ch_blacklist                = params.blacklist ?                Channel.fromPath(params.blacklist).map{[[id:'blacklist'], it]}.collect() : [[],[]]
     ch_manta_config             = Channel.fromPath(params.manta_config ?: "${projectDir}/assets/manta_config.ini").collect()
 
     val_vcfanno_resources       = params.vcfanno_resources ?        params.vcfanno_resources.split(",").collect{file(it, checkIfExists:true)}.flatten() : []
@@ -181,7 +181,7 @@ workflow STRUCTURAL {
             .map { [[id:"annotsv"], it] }
             .collect()
             .set { ch_annotsv_annotations }
-    } 
+    }
     else if(params.annotate && callers.intersect(GlobalVariables.annotationCallers)) {
         ch_annotsv_annotations_input = Channel.fromPath(params.annotsv_annotations).map{[[id:"annotsv_annotations"], it]}.collect()
         if(params.annotsv_annotations.endsWith(".tar.gz")){
@@ -195,7 +195,7 @@ workflow STRUCTURAL {
                 .set { ch_annotsv_annotations }
         } else {
             ch_annotsv_annotations = Channel.fromPath(params.annotsv_annotations).map{[[id:"annotsv_annotations"], it]}.collect()
-        }        
+        }
     }
     else {
         ch_annotsv_annotations = Channel.empty()
@@ -261,7 +261,7 @@ workflow STRUCTURAL {
 
         NGSBITS_SAMPLEGENDER.out.tsv
             .join(ch_samplegender_input.no_sex, failOnDuplicate:true, failOnMismatch:true)
-            .map { 
+            .map {
                 new_meta = it[0] + [sex:get_sex(it[1], it[0].sample)]
                 return [ new_meta ] + it.subList(2, it.size())
             }

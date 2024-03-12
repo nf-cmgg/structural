@@ -51,8 +51,8 @@ nextflow_workflow {
                     workflow.out.vcfs.collect { entry ->
                         entry
                             .findAll { !(it instanceof Map) }
-                            .collect { 
-                               file(it).name
+                            .collect {
+                                file(it).name
                             }
                     },
                     workflow.trace.succeeded().size(),
@@ -104,8 +104,8 @@ nextflow_workflow {
                     workflow.out.vcfs.collect { entry ->
                         entry
                             .findAll { !(it instanceof Map) }
-                            .collect { 
-                               file(it).name
+                            .collect {
+                                file(it).name
                             }
                     },
                     workflow.trace.succeeded().size(),
@@ -165,8 +165,8 @@ nextflow_workflow {
                     workflow.out.vcfs.collect { entry ->
                         entry
                             .findAll { !(it instanceof Map) }
-                            .collect { 
-                               file(it).name
+                            .collect {
+                                file(it).name
                             }
                     },
                     workflow.trace.succeeded().size(),
@@ -210,8 +210,8 @@ nextflow_workflow {
                     workflow.out.vcfs.collect { entry ->
                         entry
                             .findAll { !(it instanceof Map) }
-                            .collect { 
-                               file(it).name
+                            .collect {
+                                file(it).name
                             }
                     },
                     workflow.trace.succeeded().size(),
@@ -255,8 +255,8 @@ nextflow_workflow {
                     workflow.out.vcfs.collect { entry ->
                         entry
                             .findAll { !(it instanceof Map) }
-                            .collect { 
-                               file(it).name
+                            .collect {
+                                file(it).name
                             }
                     },
                     workflow.trace.succeeded().size(),
@@ -304,8 +304,8 @@ nextflow_workflow {
                     workflow.out.vcfs.collect { entry ->
                         entry
                             .findAll { !(it instanceof Map) }
-                            .collect { 
-                               file(it).name
+                            .collect {
+                                file(it).name
                             }
                     },
                     workflow.trace.succeeded().size(),

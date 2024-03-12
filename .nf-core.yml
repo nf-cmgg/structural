@@ -26,3 +26,8 @@ lint:
     - .prettierignore
   actions_ci: false
   pipeline_name_conventions: false
+template:
+  author: nvnieuwk
+  description: A nextflow pipeline for calling and annotating variants
+  name: structural
+  prefix: nf-cmgg

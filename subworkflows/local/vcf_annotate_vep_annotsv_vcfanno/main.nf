@@ -144,6 +144,15 @@ workflow VCF_ANNOTATE_VEP_ANNOTSV_VCFANNO {
 
     ENSEMBLVEP_VEP.out.vcf.view{"ensemblVEP output: ${it}"}
         .join(TABIX_VEP.out.tbi.view{"tabix VEP output: ${it}"}, failOnDuplicate:true, failOnMismatch:true)
+        .map { meta, vcf, tbi ->
+            def new_meta = [
+                id: meta.id,
+                sample: meta.sample,
+                sex: meta.sex,
+                variant_type: meta.variant_type
+            ]
+            [ new_meta, vcf, tbi ]
+        }
         .view{"before annotsv join: ${it}"}
         .join(ch_annotsv_output.view {"annotSV output: ${it}"}, failOnDuplicate:true, failOnMismatch:true)
         .view{"after annotsv join: ${it}"}

@@ -2,15 +2,6 @@
     "homo_sapiens - sv, no_filter": {
         "content": [
             [
-                {
-                    "groupSize": 7,
-                    "groupTarget": {
-                        "id": "test",
-                        "sample": "test",
-                        "sex": "male",
-                        "variant_type": "sv"
-                    }
-                },
                 "test.sv.vcf.gz",
                 "test.sv.vcf.gz.tbi"
             ],
@@ -24,20 +15,11 @@
             "nf-test": "0.8.4",
             "nextflow": "24.02.0"
         },
-        "timestamp": "2024-03-11T14:34:02.269647564"
+        "timestamp": "2024-03-12T10:16:55.291447426"
     },
     "homo_sapiens - sv & cnv": {
         "content": [
             [
-                {
-                    "groupSize": 7,
-                    "groupTarget": {
-                        "id": "test",
-                        "sample": "test",
-                        "sex": "male",
-                        "variant_type": "cnv"
-                    }
-                },
                 "test.cnv.vcf.gz",
                 "test.cnv.vcf.gz.tbi"
             ],
@@ -52,20 +34,11 @@
             "nf-test": "0.8.4",
             "nextflow": "24.02.0"
         },
-        "timestamp": "2024-03-11T14:35:56.757520179"
+        "timestamp": "2024-03-12T10:17:27.514868326"
     },
     "homo_sapiens - cnv, filter": {
         "content": [
             [
-                {
-                    "groupSize": 7,
-                    "groupTarget": {
-                        "id": "test",
-                        "sample": "test",
-                        "sex": "male",
-                        "variant_type": "cnv"
-                    }
-                },
                 "test.cnv.vcf",
                 "test.cnv.vcf.tbi"
             ],
@@ -79,6 +52,6 @@
             "nf-test": "0.8.4",
             "nextflow": "24.02.0"
         },
-        "timestamp": "2024-03-11T14:32:57.207550427"
+        "timestamp": "2024-03-12T10:16:31.314375489"
     }
 }

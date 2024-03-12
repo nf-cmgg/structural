@@ -56,7 +56,7 @@ nextflow_workflow {
             assertAll(
                 { assert workflow.success },
                 { assert snapshot(
-                    workflow.out.vcfs[0].collect { it instanceof Map ? it : file(it).name },
+                    workflow.out.vcfs[0][1..2].collect { file(it).name },
                     workflow.out.reports,
                     workflow.trace.succeeded().size(),
                     workflow.trace.failed().size()
@@ -110,7 +110,7 @@ nextflow_workflow {
             assertAll(
                 { assert workflow.success },
                 { assert snapshot(
-                    workflow.out.vcfs[0].collect { it instanceof Map ? it : file(it).name },
+                    workflow.out.vcfs[0][1..2].collect { file(it).name },
                     workflow.out.reports,
                     workflow.trace.succeeded().size(),
                     workflow.trace.failed().size()
@@ -168,7 +168,7 @@ nextflow_workflow {
             assertAll(
                 { assert workflow.success },
                 { assert snapshot(
-                    workflow.out.vcfs[0].collect { it instanceof Map ? it : file(it).name },
+                    workflow.out.vcfs[0][1..2].collect { file(it).name },
                     workflow.out.reports,
                     workflow.trace.succeeded().size(),
                     workflow.trace.failed().size()

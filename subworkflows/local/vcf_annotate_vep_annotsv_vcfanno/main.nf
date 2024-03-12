@@ -99,7 +99,8 @@ workflow VCF_ANNOTATE_VEP_ANNOTSV_VCFANNO {
 
     BCFTOOLS_CONSENSUS_REHEADER.out.vcf
         .map { meta, vcf ->
-            [ groupKey(meta.old_meta, meta.vcf_count), vcf ]
+            def new_meta = meta.old_meta
+            [ groupKey(new_meta, meta.vcf_count), vcf ]
         }
         .groupTuple()
         .map { meta, vcfs ->

@@ -5,7 +5,6 @@
 // Import subworkflows
 include { BAM_VARIANT_CALLING_MANTA                     } from '../bam_variant_calling_manta/main'
 include { BAM_VARIANT_CALLING_DELLY                     } from '../bam_variant_calling_delly/main'
-include { BAM_VARIANT_CALLING_WHAMG                     } from '../bam_variant_calling_whamg/main'
 include { BAM_VARIANT_CALLING_SMOOVE                    } from '../bam_variant_calling_smoove/main'
 include { BAM_VARIANT_CALLING_SCRAMBLE                  } from '../bam_variant_calling_scramble/main'
 // include { BAM_VARIANT_CALLING_GRIDSS                    } from '../bam_variant_calling_gridss/main'
@@ -60,23 +59,6 @@ workflow BAM_SV_CALLING {
     }
 
     //
-    // Calling variants using Whamg (Currently disabled)
-    //
-
-    // TODO Whamg needs some reheadering (like done in https://github.com/broadinstitute/gatk-sv/blob/90e3e9a221bdfe7ab2cfedeffb704bc6f0e99aa9/wdl/Whamg.wdl#L209)
-    // TODO Add insertions sequence in the info key - Whamg will not work for now
-    // if("whamg" in val_callers){
-    //     BAM_VARIANT_CALLING_WHAMG(
-    //         ch_crams,
-    //         ch_fasta,
-    //         ch_fai
-    //     )
-
-    //     ch_called_vcfs  = ch_called_vcfs.mix(BAM_VARIANT_CALLING_WHAMG.out.whamg_vcfs)
-    //     ch_versions     = ch_versions.mix(BAM_VARIANT_CALLING_WHAMG.out.versions)
-    // }
-
-    //
     // Calling variants using Smoove
     //
 
@@ -113,20 +95,6 @@ workflow BAM_SV_CALLING {
     //
 
     // Scramble is unfinished. It needs a lot of improvements if we were to add it
-
-    // if("scramble" in val_callers){
-    //     BAM_VARIANT_CALLING_SCRAMBLE(
-    //         ch_crams,
-    //         ch_fasta
-    //     )
-
-    //    ch_called_vcfs  = ch_called_vcfs.mix(BAM_VARIANT_CALLING_SCRAMBLE.out.scramble_vcfs)
-    //    ch_versions     = ch_versions.mix(BAM_VARIANT_CALLING_SCRAMBLE.out.versions)
-    // }
-
-    //
-    // Standardize and merge VCFs per sample for all callers
-    //
 
     if(val_callers.size() > 1) {
         VCF_MERGE_CALLERS_JASMINE(

@@ -16,6 +16,6 @@ lint:
 repository_type: pipeline
 template:
   author: nvnieuwk
-  description: A bioinformatics best-practice analysis pipeline for calling structural variants from short reads
+  description: A nextflow pipeline for calling structural variants
   name: structural
   prefix: nf-cmgg

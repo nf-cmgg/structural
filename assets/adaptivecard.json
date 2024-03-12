@@ -17,7 +17,7 @@
                         "size": "Large",
                         "weight": "Bolder",
                         "color": "<% if (success) { %>Good<% } else { %>Attention<%} %>",
-                        "text": "CenterForMedicalGeneticsGhent/nf-cmgg-structural v${version} - ${runName}",
+                        "text": "nf-cmgg/structural v${version} - ${runName}",
                         "wrap": true
                     },
                     {

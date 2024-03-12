@@ -11,9 +11,6 @@ include { BAM_VARIANT_CALLING_SCRAMBLE                  } from '../bam_variant_c
 // include { BAM_VARIANT_CALLING_GRIDSS                    } from '../bam_variant_calling_gridss/main'
 include { VCF_MERGE_CALLERS_JASMINE                             } from '../vcf_merge_callers_jasmine/main'
 
-// Import modules
-include { BCFTOOLS_SORT                                 } from '../../../modules/nf-core/bcftools/sort/main'
-include { TABIX_TABIX                                   } from '../../../modules/nf-core/tabix/tabix/main'
 
 workflow BAM_SV_CALLING {
     take:

@@ -35,7 +35,8 @@ workflow BAM_VARIANT_CALLING_QDNASEQ {
     )
     ch_versions = ch_versions.mix(SAMTOOLS_CONVERT.out.versions.first())
 
-    SAMTOOLS_CONVERT.out.alignment_index
+    SAMTOOLS_CONVERT.out.bam
+        .join(SAMTOOLS_CONVERT.out.bai, failOnDuplicate:true, failOnMismatch:true)
         .branch { meta, bam, bai ->
             male: meta.sex == "male"
             female: meta.sex == "female"

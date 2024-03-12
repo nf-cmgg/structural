@@ -34,7 +34,7 @@ workflow BAM_PREPARE_SAMTOOLS {
     ch_versions = ch_versions.mix(SAMTOOLS_MERGE.out.versions.first())
 
     ch_merge_input.single
-        .mix(SAMTOOLS_MERGE.out.bam)
+        .mix(SAMTOOLS_MERGE.out.cram)
         .branch { meta, cram, crai=[] ->
             index: crai
             no_index: !crai
@@ -48,9 +48,9 @@ workflow BAM_PREPARE_SAMTOOLS {
     ch_versions = ch_versions.mix(SAMTOOLS_INDEX.out.versions.first())
 
     ch_index_input.no_index
-        .join(SAMTOOLS_INDEX.out.index, failOnMismatch:true, failOnDuplicate:true)
+        .join(SAMTOOLS_INDEX.out.crai, failOnMismatch:true, failOnDuplicate:true)
         .mix(ch_index_input.index)
-        .set { ch_crams_ready}
+        .set { ch_crams_ready }
 
     emit:
     crams    = ch_crams_ready // channel: [ val(meta), path(cram), path(crai) ]

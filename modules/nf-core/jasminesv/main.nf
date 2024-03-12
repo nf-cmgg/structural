@@ -2,7 +2,7 @@ process JASMINESV {
     tag "$meta.id"
     label 'process_single'
 
-    conda "bioconda::jasminesv=1.1.5"
+    conda "${moduleDir}/environment.yml"
     container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
         'https://depot.galaxyproject.org/singularity/jasminesv:1.1.5--hdfd78af_0':
         'biocontainers/jasminesv:1.1.5--hdfd78af_0' }"
@@ -31,7 +31,7 @@ process JASMINESV {
     iris_argument = args2 != '' ? "iris_args=${args2}" : ""
     sample_dists_argument = sample_dists ? "sample_dists=${sample_dists}" : ""
     chr_norm_argument = chr_norm ? "chr_norm_file=${chr_norm}" : ""
-    make_list = vcf_list ? "" : "ls *.vcf > vcfs.txt"
+    make_list = vcf_list ? "ls *.vcf > vcfs.txt" : ""
     file_list = vcf_list ?: "vcfs.txt"
 
     unzip_inputs = vcfs.collect { it.extension == "gz" ? "    bgzip -d --threads ${task.cpus} ${args2} ${it}" : "" }.join("\n")

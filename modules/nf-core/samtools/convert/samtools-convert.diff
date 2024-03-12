@@ -1,7 +1,7 @@
 Changes in module 'nf-core/samtools/convert'
 --- modules/nf-core/samtools/convert/main.nf
 +++ modules/nf-core/samtools/convert/main.nf
-@@ -39,4 +39,19 @@
+@@ -42,4 +42,19 @@
          samtools: \$(echo \$(samtools --version 2>&1) | sed 's/^.*samtools //; s/Using.*\$//')
      END_VERSIONS
      """

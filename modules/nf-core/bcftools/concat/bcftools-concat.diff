@@ -1,8 +1,17 @@
 Changes in module 'nf-core/bcftools/concat'
 --- modules/nf-core/bcftools/concat/main.nf
 +++ modules/nf-core/bcftools/concat/main.nf
-@@ -8,7 +8,7 @@
-         'biocontainers/bcftools:1.17--haef29d1_0' }"
+@@ -2,13 +2,13 @@
+     tag "$meta.id"
+     label 'process_medium'
+ 
+-    conda "bioconda::bcftools=1.17"
++    conda "${moduleDir}/environment.yml"
+     container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
+-        'https://depot.galaxyproject.org/singularity/bcftools:1.17--haef29d1_0':
+-        'biocontainers/bcftools:1.17--haef29d1_0' }"
++        'https://depot.galaxyproject.org/singularity/bcftools:1.18--h8b25389_0':                                                                                                                                                            
++        'biocontainers/bcftools:1.18--h8b25389_0' }" 
  
      input:
 -    tuple val(meta), path(vcfs), path(tbi)
@@ -42,5 +51,16 @@ Changes in module 'nf-core/bcftools/concat'
  
      cat <<-END_VERSIONS > versions.yml
      "${task.process}":
+
+--- /dev/null
++++ modules/nf-core/bcftools/concat/environment.yml
+@@ -0,0 +1,7 @@
++name: bcftools_concat
++channels:
++  - conda-forge
++  - bioconda
++  - defaults
++dependencies:
++  - bioconda::bcftools=1.18
 
 ************************************************************

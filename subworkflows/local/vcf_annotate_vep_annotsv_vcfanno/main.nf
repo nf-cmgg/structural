@@ -14,7 +14,6 @@ include { TABIX_TABIX as TABIX_VEP                  } from '../../../modules/nf-
 include { BCFTOOLS_FILTER                           } from '../../../modules/nf-core/bcftools/filter/main'
 include { BCFTOOLS_FILTER as BCFTOOLS_FILTER_COMMON } from '../../../modules/nf-core/bcftools/filter/main'
 include { BCFTOOLS_CONCAT                           } from '../../../modules/nf-core/bcftools/concat/main'
-include { BCFTOOLS_SORT                             } from '../../../modules/nf-core/bcftools/sort/main'
 include { TABIX_TABIX as TABIX_FILTER               } from '../../../modules/nf-core/tabix/tabix/main'
 
 workflow VCF_ANNOTATE_VEP_ANNOTSV_VCFANNO {

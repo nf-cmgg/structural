@@ -1,33 +1,21 @@
-repository_type: pipeline
 lint:
   files_exist:
     - CODE_OF_CONDUCT.md
-    - assets/nf-core-structural_logo_light.png
-    - docs/images/nf-core-structural_logo_light.png
-    - docs/images/nf-core-structural_logo_dark.png
-    - assets/nf-core-structural_logo_light.png
-    - docs/images/nf-core-structural_logo_light.png
-    - docs/images/nf-core-structural_logo_dark.png
     - .github/ISSUE_TEMPLATE/config.yml
     - .github/workflows/awstest.yml
     - .github/workflows/awsfulltest.yml
-    - lib/Workflowstructural.groovy
+    - assets/nf-core-germline_logo_light.png
+    - docs/images/nf-core-structural_logo_light.png
+    - docs/images/nf-core-structural_logo_dark.png
   nextflow_config:
     - manifest.name
     - manifest.homePage
-  multiqc_config:
-    - report_comment
   files_unchanged:
-    - .github/CONTRIBUTING.md
-    - .github/ISSUE_TEMPLATE/bug_report.yml
-    - .github/workflows/linting.yml
-    - assets/email_template.txt
-    - docs/README.md
-    - .prettierignore
+    - LICENSE
   actions_ci: false
-  pipeline_name_conventions: false
+repository_type: pipeline
 template:
   author: nvnieuwk
-  description: A nextflow pipeline for calling and annotating variants
+  description: A bioinformatics best-practice analysis pipeline for calling structural variants from short reads
   name: structural
   prefix: nf-cmgg

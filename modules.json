@@ -1,6 +1,8 @@
 {
     "name": "nf-cmgg/structural",
     "homePage": "https://github.com/nf-cmgg/structural",
+    "name": "nf-cmgg/structural",
+    "homePage": "https://github.com/nf-cmgg/structural",
     "repos": {
         "https://github.com/nf-core/modules.git": {
             "modules": {

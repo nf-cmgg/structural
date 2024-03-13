@@ -46,7 +46,7 @@ process SAMTOOLS_CONVERT {
     stub:
     def prefix = task.ext.prefix ?: "${meta.id}"
     def output_extension = input.getExtension() == "bam" ? "cram" : "bam"
-    def index_extension = input.getExtension() == "bam" ? "bai" : "crai"
+    def index_extension = input.getExtension() == "bam" ? "crai" : "bai"
 
     """
     touch ${prefix}.${output_extension}

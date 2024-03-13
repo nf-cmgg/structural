@@ -37,7 +37,6 @@ workflow BAM_VARIANT_CALLING_QDNASEQ {
 
     SAMTOOLS_CONVERT.out.bam
         .join(SAMTOOLS_CONVERT.out.bai, failOnDuplicate:true, failOnMismatch:true)
-        .view()
         .branch { meta, bam, bai ->
             male: meta.sex == "male"
             female: meta.sex == "female"

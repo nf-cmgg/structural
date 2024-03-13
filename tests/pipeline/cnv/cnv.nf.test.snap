@@ -68,6 +68,11 @@
                     "chr22.png",
                     "genome_wide.png",
                     "statistics.out"
+                ],
+                [
+                    "multiqc_data",
+                    "multiqc_plots",
+                    "multiqc_report.html"
                 ]
             ],
             [
@@ -75,6 +80,7 @@
                 "PosCon2",
                 "PosCon3",
                 "PosCon4",
+                "multiqc",
                 "pipeline_info"
             ]
         ],
@@ -82,7 +88,7 @@
             "nf-test": "0.8.4",
             "nextflow": "24.02.0"
         },
-        "timestamp": "2024-03-11T17:06:43.133185621"
+        "timestamp": "2024-03-13T11:31:18.794715638"
     },
     "qdnaseq": {
         "content": [
@@ -125,6 +131,11 @@
                     "PosCon4.qdnaseq.cna",
                     "PosCon4.qdnaseq_segments.txt",
                     "statistics.out"
+                ],
+                [
+                    "multiqc_data",
+                    "multiqc_plots",
+                    "multiqc_report.html"
                 ]
             ],
             [
@@ -132,6 +143,7 @@
                 "PosCon2",
                 "PosCon3",
                 "PosCon4",
+                "multiqc",
                 "pipeline_info"
             ]
         ],
@@ -139,6 +151,6 @@
             "nf-test": "0.8.4",
             "nextflow": "24.02.0"
         },
-        "timestamp": "2024-03-11T17:03:18.926724757"
+        "timestamp": "2024-03-13T11:28:36.085432115"
     }
 }

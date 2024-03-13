@@ -117,12 +117,11 @@ workflow VCF_ANNOTATE_VEP_ANNOTSV_VCFANNO {
     )
     ch_versions = ch_versions.mix(TABIX_ANNOTSV.out.versions.first())
 
-    BCFTOOLS_CONCAT.out.vcf
+    ch_annotsv_output = BCFTOOLS_CONCAT.out.vcf
         .join(TABIX_ANNOTSV.out.tbi, failOnDuplicate:true, failOnMismatch:true)
         .map { meta, vcf, tbi ->
             [ meta, [vcf, tbi]]
         }
-        .set { ch_annotsv_output }
 
     ENSEMBLVEP_VEP(
         ch_vcfs,

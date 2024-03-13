@@ -141,8 +141,8 @@ workflow VCF_ANNOTATE_VEP_ANNOTSV_VCFANNO {
     )
     ch_versions = ch_versions.mix(TABIX_VEP.out.versions)
 
-    ENSEMBLVEP_VEP.out.vcf.view{"ensemblVEP output: ${it}"}
-        .join(TABIX_VEP.out.tbi.view{"tabix VEP output: ${it}"}, failOnDuplicate:true, failOnMismatch:true)
+    ENSEMBLVEP_VEP.out.vcf
+        .join(TABIX_VEP.out.tbi, failOnDuplicate:true, failOnMismatch:true)
         .map { meta, vcf, tbi ->
             def new_meta = [
                 id: meta.id,
@@ -152,9 +152,7 @@ workflow VCF_ANNOTATE_VEP_ANNOTSV_VCFANNO {
             ]
             [ new_meta, vcf, tbi ]
         }
-        .view{"before annotsv join: ${it}"}
-        .join(ch_annotsv_output.view {"annotSV output: ${it}"}, failOnDuplicate:true, failOnMismatch:true)
-        .view{"after annotsv join: ${it}"}
+        .join(ch_annotsv_output, failOnDuplicate:true, failOnMismatch:true)
         .set { ch_vcfanno_input }
 
     Channel.fromList(create_vcfanno_toml(val_vcfanno_resources))

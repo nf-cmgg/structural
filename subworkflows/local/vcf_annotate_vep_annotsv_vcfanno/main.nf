@@ -141,18 +141,12 @@ workflow VCF_ANNOTATE_VEP_ANNOTSV_VCFANNO {
     )
     ch_versions = ch_versions.mix(TABIX_VEP.out.versions)
 
-    ENSEMBLVEP_VEP.out.vcf
+    ch_annotsv_output
+        .join(ENSEMBLVEP_VEP.out.vcf, failOnDuplicate:true, failOnMismatch:true)
         .join(TABIX_VEP.out.tbi, failOnDuplicate:true, failOnMismatch:true)
-        .map { meta, vcf, tbi ->
-            def new_meta = [
-                id: meta.id,
-                sample: meta.sample,
-                sex: meta.sex,
-                variant_type: meta.variant_type
-            ]
-            [ new_meta, vcf, tbi ]
+        .map { meta, annotsv, vcf, tbi ->
+            [ meta, vcf, tbi, annotsv ]
         }
-        .join(ch_annotsv_output, failOnDuplicate:true, failOnMismatch:true)
         .set { ch_vcfanno_input }
 
     Channel.fromList(create_vcfanno_toml(val_vcfanno_resources))

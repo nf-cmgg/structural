@@ -19,7 +19,7 @@ Changes in module 'nf-core/bcftools/concat'
  
      output:
      tuple val(meta), path("*.gz"), emit: vcf
-@@ -19,13 +19,28 @@
+@@ -19,17 +19,32 @@
  
      script:
      def args = task.ext.args   ?: ''
@@ -51,6 +51,20 @@ Changes in module 'nf-core/bcftools/concat'
  
      cat <<-END_VERSIONS > versions.yml
      "${task.process}":
+-        bcftools: \$(bcftools --version 2>&1 | head -n1 | sed 's/^.*bcftools //; s/ .*\$//')
++        bcftools: \$( bcftools --version |& sed '1!d; s/^.*bcftools //' )
+     END_VERSIONS
+     """
+ 
+@@ -40,7 +55,7 @@
+ 
+     cat <<-END_VERSIONS > versions.yml
+     "${task.process}":
+-        bcftools: \$(bcftools --version 2>&1 | head -n1 | sed 's/^.*bcftools //; s/ .*\$//')
++        bcftools: \$( bcftools --version |& sed '1!d; s/^.*bcftools //' )
+     END_VERSIONS
+     """
+ }
 
 --- /dev/null
 +++ modules/nf-core/bcftools/concat/environment.yml

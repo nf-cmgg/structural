@@ -117,8 +117,6 @@ workflow VCF_ANNOTATE_VEP_ANNOTSV_VCFANNO {
     )
     ch_versions = ch_versions.mix(TABIX_ANNOTSV.out.versions.first())
 
-    ch_annotsv_output = Channel.empty()
-
     BCFTOOLS_CONCAT.out.vcf
         .join(TABIX_ANNOTSV.out.tbi, failOnDuplicate:true, failOnMismatch:true)
         .map { meta, vcf, tbi ->
@@ -145,7 +143,7 @@ workflow VCF_ANNOTATE_VEP_ANNOTSV_VCFANNO {
 
     ENSEMBLVEP_VEP.out.vcf
         .join(TABIX_VEP.out.tbi, failOnDuplicate:true, failOnMismatch:true)
-        .join(ch_annotsv_output, failOnDuplicate:true, failOnMismatch:true)
+        .join(ch_annotsv_output, failOnDuplicate:true, failOnMismatch:true, by:0)
         .set { ch_vcfanno_input }
 
     Channel.fromList(create_vcfanno_toml(val_vcfanno_resources))

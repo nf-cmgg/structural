@@ -44,7 +44,7 @@ process BCFTOOLS_CONCAT {
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
-        bcftools: \$(bcftools --version 2>&1 | head -n1 | sed 's/^.*bcftools //; s/ .*\$//')
+        bcftools: \$( bcftools --version |& sed '1!d; s/^.*bcftools //' )
     END_VERSIONS
     """
 
@@ -55,7 +55,7 @@ process BCFTOOLS_CONCAT {
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
-        bcftools: \$(bcftools --version 2>&1 | head -n1 | sed 's/^.*bcftools //; s/ .*\$//')
+        bcftools: \$( bcftools --version |& sed '1!d; s/^.*bcftools //' )
     END_VERSIONS
     """
 }

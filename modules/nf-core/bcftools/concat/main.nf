@@ -28,7 +28,7 @@ process BCFTOOLS_CONCAT {
         if(tbi_names.contains("${it.name}.tbi" as String)) {
             return ""
         }
-        return "tabix ${it.name}"
+        return "    tabix ${it.name}"
     }
 
     """

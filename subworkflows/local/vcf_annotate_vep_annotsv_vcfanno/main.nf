@@ -143,8 +143,14 @@ workflow VCF_ANNOTATE_VEP_ANNOTSV_VCFANNO {
 
     ENSEMBLVEP_VEP.out.vcf
         .join(TABIX_VEP.out.tbi, failOnDuplicate:true, failOnMismatch:true)
-        .join(ch_annotsv_output, failOnDuplicate:true, failOnMismatch:true, by:0)
-        .set { ch_vcfanno_input }
+        .set { ch_vep_output }
+
+    CustomChannelOperators.joinOnKeys(
+        ch_vep_output,
+        ch_annotsv_output,
+        ['id', 'sample', 'sex', 'family', 'family_count', 'variant_type']
+    )
+    .set { ch_vcfanno_input }
 
     Channel.fromList(create_vcfanno_toml(val_vcfanno_resources))
         .collectFile(name:"vcfanno.toml", newLine:true)

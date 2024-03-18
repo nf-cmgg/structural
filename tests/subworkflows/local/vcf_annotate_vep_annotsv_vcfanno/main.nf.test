@@ -24,12 +24,12 @@ nextflow_workflow {
             workflow {
                 """
                 input[0] = Channel.of([
-                    [id:"test", sample:"test", sex:"male", variant_type:"sv"],
+                    [id:"test", sample:"test", sex:"male", variant_type:"sv", family: "test1", family_count:1],
                     file(params.sv_vcf1, checkIfExists:true),
                     file(params.sv_tbi1, checkIfExists:true)
                 ])
                 input[1] = Channel.of([
-                    [id:"test", sample:"test", sex:"male"],
+                    [id:"test", sample:"test", sex:"male", family: "test1", family_count:1],
                     []
                 ])
                 input[2] = Channel.value([
@@ -79,12 +79,12 @@ nextflow_workflow {
             workflow {
                 """
                 input[0] = Channel.of([
-                    [id:"test", sample:"test", sex:"male", variant_type:"cnv"],
-                    file(params.cnv_vcf1, checkIfExists:true),
-                    file(params.cnv_tbi1, checkIfExists:true)
+                    [id:"test", sample:"test", sex:"male", variant_type:"cnv", family: "test1", family_count:1],
+                    file(params.sv_vcf1, checkIfExists:true),
+                    file(params.sv_tbi1, checkIfExists:true)
                 ])
                 input[1] = Channel.of([
-                    [id:"test", sample:"test", sex:"male"],
+                    [id:"test", sample:"test", sex:"male", family: "test1", family_count:1],
                     []
                 ])
                 input[2] = Channel.value([
@@ -134,16 +134,16 @@ nextflow_workflow {
             workflow {
                 """
                 input[0] = Channel.of([
-                    [id:"test", sample:"test", sex:"male", variant_type:"sv"],
+                    [id:"test", sample:"test", sex:"male", variant_type:"sv", family: "test1", family_count:1],
                     file(params.sv_vcf1, checkIfExists:true),
                     file(params.sv_tbi1, checkIfExists:true)
                 ], [
-                    [id:"test", sample:"test", sex:"male", variant_type:"cnv"],
+                    [id:"test", sample:"test", sex:"male", variant_type:"cnv", family: "test1", family_count:1],
                     file(params.cnv_vcf1, checkIfExists:true),
                     file(params.cnv_tbi1, checkIfExists:true)
                 ])
                 input[1] = Channel.of([
-                    [id:"test", sample:"test", sex:"male"],
+                    [id:"test", sample:"test", sex:"male", family: "test1", family_count:1],
                     []
                 ])
                 input[2] = Channel.value([

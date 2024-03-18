@@ -34,11 +34,17 @@
                     "chr1.png",
                     "chr22.png",
                     "genome_wide.png"
+                ],
+                [
+                    "multiqc_data",
+                    "multiqc_plots",
+                    "multiqc_report.html"
                 ]
             ],
             [
                 "PosCon1",
                 "PosCon3",
+                "multiqc",
                 "pipeline_info"
             ]
         ],
@@ -46,6 +52,6 @@
             "nf-test": "0.8.4",
             "nextflow": "24.02.0"
         },
-        "timestamp": "2024-03-11T17:09:56.582078073"
+        "timestamp": "2024-03-13T10:25:11.463070353"
     }
 }

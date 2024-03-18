@@ -20,6 +20,11 @@
                 [
                     "PosCon4.sv.vcf.gz",
                     "PosCon4.sv.vcf.gz.tbi"
+                ],
+                [
+                    "multiqc_data",
+                    "multiqc_plots",
+                    "multiqc_report.html"
                 ]
             ],
             [
@@ -27,6 +32,7 @@
                 "PosCon2",
                 "PosCon3",
                 "PosCon4",
+                "multiqc",
                 "pipeline_info"
             ]
         ],
@@ -34,7 +40,7 @@
             "nf-test": "0.8.4",
             "nextflow": "24.02.0"
         },
-        "timestamp": "2024-03-12T09:48:27.874158752"
+        "timestamp": "2024-03-13T13:07:19.225114007"
     },
     "delly": {
         "content": [
@@ -57,6 +63,11 @@
                 [
                     "PosCon4.sv.vcf.gz",
                     "PosCon4.sv.vcf.gz.tbi"
+                ],
+                [
+                    "multiqc_data",
+                    "multiqc_plots",
+                    "multiqc_report.html"
                 ]
             ],
             [
@@ -64,6 +75,7 @@
                 "PosCon2",
                 "PosCon3",
                 "PosCon4",
+                "multiqc",
                 "pipeline_info"
             ]
         ],
@@ -71,6 +83,6 @@
             "nf-test": "0.8.4",
             "nextflow": "24.02.0"
         },
-        "timestamp": "2024-03-12T09:47:28.452109987"
+        "timestamp": "2024-03-13T13:04:12.383695256"
     }
 }

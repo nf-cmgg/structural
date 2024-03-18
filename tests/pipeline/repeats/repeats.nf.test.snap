@@ -20,6 +20,11 @@
                 [
                     "PosCon4.repeats.vcf.gz",
                     "PosCon4.repeats.vcf.gz.tbi"
+                ],
+                [
+                    "multiqc_data",
+                    "multiqc_plots",
+                    "multiqc_report.html"
                 ]
             ],
             [
@@ -27,6 +32,7 @@
                 "PosCon2",
                 "PosCon3",
                 "PosCon4",
+                "multiqc",
                 "pipeline_info"
             ]
         ],
@@ -34,6 +40,6 @@
             "nf-test": "0.8.4",
             "nextflow": "24.02.0"
         },
-        "timestamp": "2024-03-12T09:42:12.027033483"
+        "timestamp": "2024-03-13T10:41:13.805383052"
     }
 }

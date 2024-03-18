@@ -65,7 +65,7 @@ workflow BAM_VARIANT_CALLING_MANTA {
 
     MANTA_CONVERTINVERSION(
         MANTA_GERMLINE.out.diploid_sv_vcf,
-        ch_fasta.map{it[1]}
+        ch_fasta
     )
 
     ch_versions = ch_versions.mix(MANTA_CONVERTINVERSION.out.versions.first())
@@ -74,19 +74,13 @@ workflow BAM_VARIANT_CALLING_MANTA {
         .join(MANTA_CONVERTINVERSION.out.tbi, failOnDuplicate:true, failOnMismatch:true)
         .map{ meta, vcf, tbi ->
             new_meta = meta + [caller:"manta"]
-            [ new_meta, vcf, tbi ]
+            [ new_meta, vcf, tbi, file("${projectDir}/assets/svync/manta.yaml") ]
         }
         .dump(tag: 'manta_vcfs', pretty: true)
         .set { ch_manta_vcfs }
 
-    Channel.fromPath("${projectDir}/assets/svync/manta.yaml")
-        .map { [[], it] }
-        .collect()
-        .set { ch_svync_config }
-
     SVYNC(
-        ch_manta_vcfs,
-        ch_svync_config
+        ch_manta_vcfs
     )
     ch_versions = ch_versions.mix(SVYNC.out.versions.first())
 

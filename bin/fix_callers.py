@@ -17,7 +17,7 @@ def main() -> None:
     else:
         with open(input, 'r') as file:
             process_file(file, args.output)
-                
+
 def process_file(file, output) -> None:
     with open(output, 'w') as out_file:
         for line in file:
@@ -33,7 +33,7 @@ def process_file(file, output) -> None:
                     key, value = (split_field[0], split_field[1]) if len(split_field) == 2 else (split_field[0], "")
                     print(key, value)
                     info_dict[key] = value
-                
+
                 info_dict["CALLERS"] = ",".join(set([it.split("_")[0] for it in info_dict["IDLIST_EXT"].replace(".", ",").split(",")]))
                 if len(info_dict["CALLERS"]) == 0:
                     del info_dict["CALLERS"]

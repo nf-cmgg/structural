@@ -54,6 +54,11 @@
                     "statistics.out"
                 ],
                 [
+                    "multiqc_data",
+                    "multiqc_plots",
+                    "multiqc_report.html"
+                ],
+                [
                     "test_family.vcf.gz",
                     "test_family.vcf.gz.tbi"
                 ]
@@ -62,6 +67,7 @@
                 "PosCon1",
                 "PosCon2",
                 "PosCon3",
+                "multiqc",
                 "pipeline_info",
                 "test_family"
             ]
@@ -70,7 +76,7 @@
             "nf-test": "0.8.4",
             "nextflow": "24.02.0"
         },
-        "timestamp": "2024-03-12T09:28:04.063623447"
+        "timestamp": "2024-03-13T12:12:35.02840081"
     },
     "family with 2 samples + 1 sample - no concat": {
         "content": [
@@ -139,6 +145,11 @@
                     "statistics.out"
                 ],
                 [
+                    "multiqc_data",
+                    "multiqc_plots",
+                    "multiqc_report.html"
+                ],
+                [
                     "test_family.cnv.vcf.gz",
                     "test_family.cnv.vcf.gz.tbi",
                     "test_family.repeats.vcf.gz",
@@ -151,6 +162,7 @@
                 "PosCon1",
                 "PosCon2",
                 "PosCon3",
+                "multiqc",
                 "pipeline_info",
                 "test_family"
             ]
@@ -159,7 +171,7 @@
             "nf-test": "0.8.4",
             "nextflow": "24.02.0"
         },
-        "timestamp": "2024-03-12T09:26:46.937365861"
+        "timestamp": "2024-03-13T12:07:25.553644759"
     },
     "family with 3 samples - no concat": {
         "content": [
@@ -228,6 +240,11 @@
                     "statistics.out"
                 ],
                 [
+                    "multiqc_data",
+                    "multiqc_plots",
+                    "multiqc_report.html"
+                ],
+                [
                     "test_family.cnv.vcf.gz",
                     "test_family.cnv.vcf.gz.tbi",
                     "test_family.repeats.vcf.gz",
@@ -240,6 +257,7 @@
                 "PosCon1",
                 "PosCon2",
                 "PosCon3",
+                "multiqc",
                 "pipeline_info",
                 "test_family"
             ]
@@ -248,7 +266,7 @@
             "nf-test": "0.8.4",
             "nextflow": "24.02.0"
         },
-        "timestamp": "2024-03-12T09:24:07.647281949"
+        "timestamp": "2024-03-13T11:56:55.519910154"
     },
     "family with 3 samples - concat": {
         "content": [
@@ -305,6 +323,11 @@
                     "statistics.out"
                 ],
                 [
+                    "multiqc_data",
+                    "multiqc_plots",
+                    "multiqc_report.html"
+                ],
+                [
                     "test_family.vcf.gz",
                     "test_family.vcf.gz.tbi"
                 ]
@@ -313,6 +336,7 @@
                 "PosCon1",
                 "PosCon2",
                 "PosCon3",
+                "multiqc",
                 "pipeline_info",
                 "test_family"
             ]
@@ -321,6 +345,6 @@
             "nf-test": "0.8.4",
             "nextflow": "24.02.0"
         },
-        "timestamp": "2024-03-12T09:25:27.352028199"
+        "timestamp": "2024-03-13T12:02:09.935078056"
     }
 }

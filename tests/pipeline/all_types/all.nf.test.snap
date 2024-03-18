@@ -84,6 +84,11 @@
                     "chr22.png",
                     "genome_wide.png",
                     "statistics.out"
+                ],
+                [
+                    "multiqc_data",
+                    "multiqc_plots",
+                    "multiqc_report.html"
                 ]
             ],
             [
@@ -91,6 +96,7 @@
                 "PosCon2",
                 "PosCon3",
                 "PosCon4",
+                "multiqc",
                 "pipeline_info"
             ]
         ],
@@ -98,7 +104,7 @@
             "nf-test": "0.8.4",
             "nextflow": "24.02.0"
         },
-        "timestamp": "2024-03-11T16:40:27.631243595"
+        "timestamp": "2024-03-13T11:06:54.123683703"
     },
     "concat": {
         "content": [
@@ -169,6 +175,11 @@
                     "chr22.png",
                     "genome_wide.png",
                     "statistics.out"
+                ],
+                [
+                    "multiqc_data",
+                    "multiqc_plots",
+                    "multiqc_report.html"
                 ]
             ],
             [
@@ -176,6 +187,7 @@
                 "PosCon2",
                 "PosCon3",
                 "PosCon4",
+                "multiqc",
                 "pipeline_info"
             ]
         ],
@@ -183,6 +195,6 @@
             "nf-test": "0.8.4",
             "nextflow": "24.02.0"
         },
-        "timestamp": "2024-03-11T17:00:33.579559279"
+        "timestamp": "2024-03-13T11:26:44.29004361"
     }
 }

@@ -1,11 +1,43 @@
 Changes in module 'nf-core/annotsv/annotsv'
 --- modules/nf-core/annotsv/annotsv/main.nf
 +++ modules/nf-core/annotsv/annotsv/main.nf
-@@ -44,6 +44,7 @@
+@@ -17,7 +17,7 @@
+     output:
+     tuple val(meta), path("*.tsv")              , emit: tsv
+     tuple val(meta), path("*.unannotated.tsv")  , emit: unannotated_tsv, optional: true
+-    tuple val(meta), path("*.vcf")              , emit: vcf, optional: true
++    tuple val(meta), path("*.vcf")              , emit: vcf
+     path "versions.yml"                         , emit: versions
+ 
+     when:
+@@ -39,11 +39,15 @@
+         ${small_variants} \\
+         ${fp_snv} \\
+         ${transcripts} \\
+-        -outputFile ${prefix}.tsv \\
++        -outputFile ${prefix}.raw.tsv \\
+         -SVinputFile ${sv_vcf} \\
          ${args}
  
      mv *_AnnotSV/* .
++    awk 'BEGIN { FS=OFS="\t" } { if (NR > 1 && NF >= 8) \$1 = \$1 "_" NR; print }' ${prefix}.raw.tsv > ${prefix}.tsv
++
++    variantconvert convert -i ${prefix}.tsv -o ${prefix}.vcf -fi annotsv -fo vcf -c /usr/local/share/python3/variantconvert/configs/GRCh38/annotsv3_from_vcf.json
 +    sed -i 's/contig=<ID=MT/contig=<ID=M/' ${prefix}.vcf
+ 
+     cat <<-END_VERSIONS > versions.yml
+     "${task.process}":
+@@ -55,12 +59,10 @@
+     def args = task.ext.args ?: ''
+     def prefix = task.ext.prefix ?: "${meta.id}"
+ 
+-    def create_vcf = args.contains("-vcf 1") ? "touch ${prefix}.vcf" : ""
+-
+     """
+     touch ${prefix}.tsv
+     touch ${prefix}.unannotated.tsv
+-    ${create_vcf}
++    touch ${prefix}.vcf
  
      cat <<-END_VERSIONS > versions.yml
      "${task.process}":

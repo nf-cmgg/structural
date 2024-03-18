@@ -4,15 +4,15 @@
   |\\ | |__  __ /  ` /  \\ |__) |__         }  {
   | \\| |       \\__, \\__/ |  \\ |___     \\`-._,-`-,
                                         `._,._,'
-  nf-core/centerformedicalgeneticsghent-nf-cmgg-structural v${version}
+  nf-core/structural v${version}
 ----------------------------------------------------
 Run Name: $runName
 
 <% if (success){
-    out << "## CenterForMedicalGeneticsGhent/nf-cmgg-structural execution completed successfully! ##"
+    out << "## nf-cmgg/structural execution completed successfully! ##"
 } else {
     out << """####################################################
-## CenterForMedicalGeneticsGhent/nf-cmgg-structural execution completed unsuccessfully! ##
+## nf-cmgg/structural execution completed unsuccessfully! ##
 ####################################################
 The exit status of the task that caused the workflow execution to fail was: $exitStatus.
 The full error message was:
@@ -35,5 +35,5 @@ Pipeline Configuration:
 <% out << summary.collect{ k,v -> " - $k: $v" }.join("\n") %>
 
 --
-CenterForMedicalGeneticsGhent/nf-cmgg-structural
-https://github.com/CenterForMedicalGeneticsGhent/nf-cmgg-structural
+nf-cmgg/structural
+https://github.com/nf-cmgg/structural

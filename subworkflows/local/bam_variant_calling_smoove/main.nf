@@ -45,20 +45,14 @@ workflow BAM_VARIANT_CALLING_SMOOVE {
         .map(
             { meta, vcf ->
                 new_meta = meta + [caller:'smoove']
-                [ new_meta, vcf, [] ]
+                [ new_meta, vcf, [], file("${projectDir}/assets/svync/smoove.yaml") ]
             }
         )
         .dump(tag: 'smoove_vcfs', pretty: true)
         .set { ch_smoove_vcfs }
 
-    Channel.fromPath("${projectDir}/assets/svync/smoove.yaml")
-        .map { [[], it] }
-        .collect()
-        .set { ch_svync_config }
-
     SVYNC(
-        ch_smoove_vcfs,
-        ch_svync_config
+        ch_smoove_vcfs
     )
     ch_versions = ch_versions.mix(SVYNC.out.versions.first())
 

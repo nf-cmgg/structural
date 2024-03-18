@@ -27,7 +27,7 @@ workflow VCF_MERGE_FAMILY_JASMINE {
         }
         .groupTuple()
         .tap { ch_consensus_reheader_input }
-        .map { meta, vcfs, tbis -> 
+        .map { meta, vcfs, tbis ->
             [ meta.id, meta, vcfs ]
         }
         .tap { ch_meta_file_list }
@@ -35,7 +35,7 @@ workflow VCF_MERGE_FAMILY_JASMINE {
             [ "${id}_list.txt", vcfs.collect { it.baseName }.join("\n") ]
         }
         .collectFile()
-        .map { 
+        .map {
             def id = it.name.replaceAll("_list.txt\$", "")
             [ id, it ]
         }

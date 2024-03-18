@@ -2,10 +2,10 @@ process BCFTOOLS_CONCAT {
     tag "$meta.id"
     label 'process_medium'
 
-    conda "bioconda::bcftools=1.17"
+    conda "${moduleDir}/environment.yml"
     container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
-        'https://depot.galaxyproject.org/singularity/bcftools:1.17--haef29d1_0':
-        'biocontainers/bcftools:1.17--haef29d1_0' }"
+        'https://depot.galaxyproject.org/singularity/bcftools:1.18--h8b25389_0':                                                                                                                                                            
+        'biocontainers/bcftools:1.18--h8b25389_0' }" 
 
     input:
     tuple val(meta), path(vcfs), path(tbis)
@@ -28,7 +28,7 @@ process BCFTOOLS_CONCAT {
         if(tbi_names.contains("${it.name}.tbi" as String)) {
             return ""
         }
-        return "tabix ${it.name}"
+        return "    tabix ${it.name}"
     }
 
     """
@@ -44,7 +44,7 @@ process BCFTOOLS_CONCAT {
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
-        bcftools: \$(bcftools --version 2>&1 | head -n1 | sed 's/^.*bcftools //; s/ .*\$//')
+        bcftools: \$( bcftools --version |& sed '1!d; s/^.*bcftools //' )
     END_VERSIONS
     """
 
@@ -55,7 +55,7 @@ process BCFTOOLS_CONCAT {
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
-        bcftools: \$(bcftools --version 2>&1 | head -n1 | sed 's/^.*bcftools //; s/ .*\$//')
+        bcftools: \$( bcftools --version |& sed '1!d; s/^.*bcftools //' )
     END_VERSIONS
     """
 }

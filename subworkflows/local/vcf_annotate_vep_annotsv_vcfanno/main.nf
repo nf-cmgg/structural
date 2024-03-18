@@ -14,7 +14,6 @@ include { TABIX_TABIX as TABIX_VEP                  } from '../../../modules/nf-
 include { BCFTOOLS_FILTER                           } from '../../../modules/nf-core/bcftools/filter/main'
 include { BCFTOOLS_FILTER as BCFTOOLS_FILTER_COMMON } from '../../../modules/nf-core/bcftools/filter/main'
 include { BCFTOOLS_CONCAT                           } from '../../../modules/nf-core/bcftools/concat/main'
-include { BCFTOOLS_SORT                             } from '../../../modules/nf-core/bcftools/sort/main'
 include { TABIX_TABIX as TABIX_FILTER               } from '../../../modules/nf-core/tabix/tabix/main'
 
 workflow VCF_ANNOTATE_VEP_ANNOTSV_VCFANNO {
@@ -121,7 +120,7 @@ workflow VCF_ANNOTATE_VEP_ANNOTSV_VCFANNO {
     BCFTOOLS_CONCAT.out.vcf
         .join(TABIX_ANNOTSV.out.tbi, failOnDuplicate:true, failOnMismatch:true)
         .map { meta, vcf, tbi ->
-            [ meta, [vcf, tbi]]
+            [ meta, [vcf, tbi] ]
         }
         .set { ch_annotsv_output }
 
@@ -142,21 +141,16 @@ workflow VCF_ANNOTATE_VEP_ANNOTSV_VCFANNO {
     )
     ch_versions = ch_versions.mix(TABIX_VEP.out.versions)
 
-    ENSEMBLVEP_VEP.out.vcf.view{"ensemblVEP output: ${it}"}
-        .join(TABIX_VEP.out.tbi.view{"tabix VEP output: ${it}"}, failOnDuplicate:true, failOnMismatch:true)
-        .map { meta, vcf, tbi ->
-            def new_meta = [
-                id: meta.id,
-                sample: meta.sample,
-                sex: meta.sex,
-                variant_type: meta.variant_type
-            ]
-            [ new_meta, vcf, tbi ]
-        }
-        .view{"before annotsv join: ${it}"}
-        .join(ch_annotsv_output.view {"annotSV output: ${it}"}, failOnDuplicate:true, failOnMismatch:true)
-        .view{"after annotsv join: ${it}"}
-        .set { ch_vcfanno_input }
+    ENSEMBLVEP_VEP.out.vcf
+        .join(TABIX_VEP.out.tbi, failOnDuplicate:true, failOnMismatch:true)
+        .set { ch_vep_output }
+
+    CustomChannelOperators.joinOnKeys(
+        ch_vep_output,
+        ch_annotsv_output,
+        ['id', 'sample', 'sex', 'family', 'family_count', 'variant_type']
+    )
+    .set { ch_vcfanno_input }
 
     Channel.fromList(create_vcfanno_toml(val_vcfanno_resources))
         .collectFile(name:"vcfanno.toml", newLine:true)
@@ -171,7 +165,6 @@ workflow VCF_ANNOTATE_VEP_ANNOTSV_VCFANNO {
     )
     ch_versions = ch_versions.mix(VCFANNO.out.versions)
 
-    
     if(!params.annotations_filter) {
         TABIX_ANNOTATED(
             VCFANNO.out.vcf

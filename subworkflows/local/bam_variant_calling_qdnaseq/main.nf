@@ -30,12 +30,13 @@ workflow BAM_VARIANT_CALLING_QDNASEQ {
 
     SAMTOOLS_CONVERT(
         ch_caller_crams,
-        ch_fasta.map { it[1] },
-        ch_fai.map { it[1] }
+        ch_fasta,
+        ch_fai
     )
     ch_versions = ch_versions.mix(SAMTOOLS_CONVERT.out.versions.first())
 
-    SAMTOOLS_CONVERT.out.alignment_index
+    SAMTOOLS_CONVERT.out.bam
+        .join(SAMTOOLS_CONVERT.out.bai, failOnDuplicate:true, failOnMismatch:true)
         .branch { meta, bam, bai ->
             male: meta.sex == "male"
             female: meta.sex == "female"
@@ -87,7 +88,7 @@ workflow BAM_VARIANT_CALLING_QDNASEQ {
         BEDGOVCF.out.vcf
     )
     ch_versions = ch_versions.mix(TABIX_TABIX.out.versions.first())
-    
+
     emit:
     qdnaseq_beds    = ch_qdnaseq_beds  // channel: [ val(meta), path(bed) ]
     vcf             = ch_vcf           // channel: [ val(meta), path(vcf) ]

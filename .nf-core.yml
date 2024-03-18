@@ -1,23 +1,17 @@
-repository_type: pipeline
 lint:
   files_exist:
     - CODE_OF_CONDUCT.md
-    - assets/nf-core-nf-cmgg-structural_logo_light.png
-    - docs/images/nf-core-nf-cmgg-structural_logo_light.png
-    - docs/images/nf-core-nf-cmgg-structural_logo_dark.png
-    - assets/nf-core-nf-cmgg-structural_logo_light.png
-    - docs/images/nf-core-nf-cmgg-structural_logo_light.png
-    - docs/images/nf-core-nf-cmgg-structural_logo_dark.png
     - .github/ISSUE_TEMPLATE/config.yml
     - .github/workflows/awstest.yml
     - .github/workflows/awsfulltest.yml
-    - lib/WorkflowNf-cmgg-structural.groovy
+    - assets/nf-core-structural_logo_light.png
+    - docs/images/nf-core-structural_logo_light.png
+    - docs/images/nf-core-structural_logo_dark.png
   nextflow_config:
     - manifest.name
     - manifest.homePage
-  multiqc_config:
-    - report_comment
   files_unchanged:
+    - LICENSE
     - .github/CONTRIBUTING.md
     - .github/ISSUE_TEMPLATE/bug_report.yml
     - .github/workflows/linting.yml
@@ -25,4 +19,9 @@ lint:
     - docs/README.md
     - .prettierignore
   actions_ci: false
-  pipeline_name_conventions: false
+repository_type: pipeline
+template:
+  author: nvnieuwk
+  description: A nextflow pipeline for calling structural variants
+  name: structural
+  prefix: nf-cmgg

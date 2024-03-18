@@ -8,7 +8,7 @@ body:
         Before you post this issue, please check the documentation:
 
         - [nf-core website: troubleshooting](https://nf-co.re/usage/troubleshooting)
-        - [nf-core/centerformedicalgeneticsghent-nf-cmgg-structural pipeline documentation](https://nf-co.re/centerformedicalgeneticsghent-nf-cmgg-structural/usage)
+        - [nf-core/structural pipeline documentation](https://nf-co.re/structural/usage)
 
   - type: textarea
     id: description
@@ -41,7 +41,7 @@ body:
     id: system
     attributes:
       label: System information
-      description: "* Nextflow version _(eg. 22.10.1)_
+      description: "* Nextflow version _(eg. 23.10.0)_
 
         * Hardware _(eg. HPC, Desktop, Cloud)_
         * Executor _(eg. slurm, local, awsbatch)_
@@ -51,7 +51,6 @@ body:
 
         * OS _(eg. CentOS Linux, macOS, Linux Mint)_
 
-        * Version of CenterForMedicalGeneticsGhent/nf-cmgg-structural _(eg. 1.1, 1.5,
-        1.8.2)_
+        * Version of nf-cmgg/structural _(eg. 1.1, 1.5, 1.8.2)_
 
         "

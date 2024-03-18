@@ -43,6 +43,11 @@ info:
     number: 1
     type: integer
     description: End position of the structural variant
+  POS2:
+    value:
+    number: 1
+    type: integer
+    description: Start position of the second chromosome
     alts:
       TRA: $INFO/POS2
   IMPRECISE:

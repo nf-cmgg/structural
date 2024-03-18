@@ -38,19 +38,13 @@ workflow BAM_VARIANT_CALLING_DELLY {
         .join(DELLY_CALL.out.csi, failOnDuplicate:true, failOnMismatch:true)
         .map { meta, vcf, tbi ->
             new_meta = meta + [caller:"delly"]
-            [ new_meta, vcf, tbi ]
+            [ new_meta, vcf, tbi, file("${projectDir}/assets/svync/delly.yaml") ]
         }
         .dump(tag: 'delly_vcfs', pretty: true)
         .set { ch_delly_vcfs }
 
-    Channel.fromPath("${projectDir}/assets/svync/delly.yaml")
-        .map { [[], it] }
-        .collect()
-        .set { ch_svync_config }
-
     SVYNC(
-        ch_delly_vcfs,
-        ch_svync_config
+        ch_delly_vcfs
     )
     ch_versions = ch_versions.mix(SVYNC.out.versions.first())
 

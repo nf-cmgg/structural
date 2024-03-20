@@ -1,0 +1,58 @@
+site_name: nf-cmgg/structural
+repo_name: nf-cmgg/structural
+repo_url: https://github.com/nf-cmgg/structural
+site_url: https://nf-cmgg.github.io/structural
+
+nav:
+  - Home: index.md
+  - Usage: usage.md
+  - Output: output.md
+  - Parameters: parameters.md
+
+theme:
+  name: material
+  icon:
+    logo: octicons/checklist-16
+    repo: fontawesome/brands/github
+  palette:
+    # Palette toggle for dark mode
+    - media: "(prefers-color-scheme: dark)"
+      scheme: slate
+      primary: custom
+      accent: custom
+      toggle:
+        icon: material/weather-sunny
+        name: Switch to light mode
+    # Palette toggle for light mode
+    - media: "(prefers-color-scheme: light)"
+      scheme: default
+      primary: custom
+      accent: custom
+      toggle:
+        icon: material/weather-night
+        name: Switch to dark mode
+  font:
+    text: Inter
+  features:
+    - content.code.annotate
+    - content.code.copy
+    - navigation.instant
+    - navigation.top
+    - navigation.tracking
+    - navigation.sections
+    - navigation.footer
+    - search.share
+    - toc.follow
+
+markdown_extensions:
+  - pymdownx.highlight:
+      anchor_linenums: true
+      line_spans: __span
+      pygments_lang_class: true
+  - pymdownx.inlinehilite
+  - pymdownx.snippets
+  - pymdownx.superfences
+
+extra:
+  version:
+    provider: mike

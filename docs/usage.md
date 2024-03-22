@@ -1,54 +1,77 @@
 # nf-cmgg/structural: Usage
 
-> _Documentation of pipeline parameters is generated automatically from the pipeline schema and can no longer be found in markdown files._
+> _Documentation of pipeline parameters can be found in the [Parameters](parameters.md) section_
 
 ## Introduction
 
-<!-- TODO nf-core: Add documentation about anything specific to running your pipeline. For general topics, please point to (and add to) the main nf-core website. -->
+Try out the pipeline right now with following command (make sure you have [Docker](https://docs.docker.com/get-docker/) and [Nextflow](https://www.nextflow.io/) installed):
+
+```bash
+nextflow run nf-cmgg/structural -profile test,docker --outdir results
+```
 
 ## Samplesheet input
 
-You will need to create a samplesheet with information about the samples you would like to analyse before running the pipeline. Use this parameter to specify its location. It has to be a comma-separated file with 3 columns, and a header row as shown in the examples below.
+You will need to create a samplesheet with information about the samples you would like to analyse before running the pipeline. Use this parameter to specify its location. It can be a [CSV](https://en.wikipedia.org/wiki/Comma-separated_values) (comma separated values), [TSV](https://en.wikipedia.org/wiki/Tab-separated_values) (tab separated values), [JSON](https://www.json.org/json-en.html) (javascript object notation) or [YAML](https://en.wikipedia.org/wiki/YAML) file.
 
 ```bash
 --input '[path to samplesheet file]'
 ```
 
-### Multiple runs of the same sample
+### Minimum required samplesheet
 
-The `sample` identifiers have to be the same when you have re-sequenced the same sample more than once e.g. to increase sequencing depth. The pipeline will concatenate the raw reads before performing any downstream analysis. Below is an example for the same sample sequenced across 3 lanes:
-
-```csv title="samplesheet.csv"
-sample,fastq_1,fastq_2
-CONTROL_REP1,AEG588A1_S1_L002_R1_001.fastq.gz,AEG588A1_S1_L002_R2_001.fastq.gz
-CONTROL_REP1,AEG588A1_S1_L003_R1_001.fastq.gz,AEG588A1_S1_L003_R2_001.fastq.gz
-CONTROL_REP1,AEG588A1_S1_L004_R1_001.fastq.gz,AEG588A1_S1_L004_R2_001.fastq.gz
-```
-
-### Full samplesheet
-
-The pipeline will auto-detect whether a sample is single- or paired-end using the information provided in the samplesheet. The samplesheet can have as many columns as you desire, however, there is a strict requirement for the first 3 columns to match those defined in the table below.
-
-A final samplesheet file consisting of both single- and paired-end data may look something like the one below. This is for 6 samples, where `TREATMENT_REP3` has been sequenced twice.
+Following samplesheets contain all required columns needed to run the pipeline for two samples.
 
 ```csv title="samplesheet.csv"
-sample,fastq_1,fastq_2
-CONTROL_REP1,AEG588A1_S1_L002_R1_001.fastq.gz,AEG588A1_S1_L002_R2_001.fastq.gz
-CONTROL_REP2,AEG588A2_S2_L002_R1_001.fastq.gz,AEG588A2_S2_L002_R2_001.fastq.gz
-CONTROL_REP3,AEG588A3_S3_L002_R1_001.fastq.gz,AEG588A3_S3_L002_R2_001.fastq.gz
-TREATMENT_REP1,AEG588A4_S4_L003_R1_001.fastq.gz,
-TREATMENT_REP2,AEG588A5_S5_L003_R1_001.fastq.gz,
-TREATMENT_REP3,AEG588A6_S6_L003_R1_001.fastq.gz,
-TREATMENT_REP3,AEG588A6_S6_L004_R1_001.fastq.gz,
+sample,cram
+ID01234,/path/to/ID01234.cram
+ID56789,/path/to/ID56789.cram
 ```
 
-| Column    | Description                                                                                                                                                                            |
-| --------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `sample`  | Custom sample name. This entry will be identical for multiple sequencing libraries/runs from the same sample. Spaces in sample names are automatically converted to underscores (`_`). |
-| `fastq_1` | Full path to FastQ file for Illumina short reads 1. File has to be gzipped and have the extension ".fastq.gz" or ".fq.gz".                                                             |
-| `fastq_2` | Full path to FastQ file for Illumina short reads 2. File has to be gzipped and have the extension ".fastq.gz" or ".fq.gz".                                                             |
+```tsv title="samplesheet.tsv"
+sample	cram
+ID01234	/path/to/ID01234.cram
+ID56789	/path/to/ID56789.cram
+```
 
-An [example samplesheet](../assets/samplesheet.csv) has been provided with the pipeline.
+```yaml title="samplesheet.yaml"
+- sample: ID01234
+  cram: /path/to/ID01234.cram
+- sample: ID56789
+  cram: /path/to/ID56789.cram
+```
+
+```json title="samplesheet.json"
+[
+  {
+    "sample": "ID01234",
+    "cram": "/path/to/ID01234.cram"
+  },
+  {
+    "sample": "ID56789",
+    "cram": "/path/to/ID56789.cram"
+  }
+]
+```
+
+### All samplesheet options
+
+Following table contains all possible values for the samplesheet.
+
+| Column           | Description                                                                                                                                                  | Type   | Required           |
+| ---------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------ | ------ | ------------------ |
+| `sample`         | The custom sample name. Cannot contain spaces and doesn't have to unique. When the same sample has been given multiple times, the CRAM files will be merged. | string | :heavy_check_mark: |
+| `family`         | The family name of the current sample. All samples in the same family will be merged together at the end of the pipeline. Cannot contain spaces              | string | :x:                |
+| `cram`           | Path to the CRAM file to be used by the pipeline for the current sample.                                                                                     | string | :heavy_check_mark: |
+| `crai`           | Path to the CRAM index file                                                                                                                                  | string | :x:                |
+| `small_variants` | A VCF containing the SNV (small nucleotide variants) for the current sample to be used by AnnotSV                                                            | string | :x:                |
+| `sex`            | The sex of the sample to be used by QDNAseq. Sex will be imputed when missing (Options: `male` or `female`)                                                  | string | :x:                |
+
+See following samplesheet for a working example of a samplesheet (used by the `test` profile of the pipeline):
+
+```csv title="example_samplesheet.csv"
+--8<-- "assets/samplesheet.csv"
+```
 
 ## Running the pipeline
 
@@ -63,19 +86,27 @@ This will launch the pipeline with the `docker` configuration profile. See below
 Note that the pipeline will create the following files in your working directory:
 
 ```bash
-work                # Directory containing the nextflow working files
-<OUTDIR>            # Finished results in specified location (defined with --outdir)
-.nextflow_log       # Log file from Nextflow
-# Other nextflow hidden files, eg. history of pipeline runs and old logs.
+work          #(1)!
+results       #(2)!
+.nextflow_log #(3)!
+...           #(4)!
 ```
+
+1. Directory containing the nextflow working files
+
+2. Finished results in specified location (defined with --outdir)
+
+3. Log file from Nextflow
+
+4. Other nextflow hidden files, eg. history of pipeline runs and old logs.
 
 If you wish to repeatedly use the same parameters for multiple runs, rather than specifying each flag in the command, you can specify these in a params file.
 
 Pipeline settings can be provided in a `yaml` or `json` file via `-params-file <file>`.
 
-:::warning
-Do not use `-c <file>` to specify parameters as this will result in errors. Custom config files specified with `-c` must only be used for [tuning process resource specifications](https://nf-co.re/docs/usage/configuration#tuning-workflow-resources), other infrastructural tweaks (such as output directories), or module arguments (args).
-:::
+!!!warning
+	 Do not use `-c <file>` to specify parameters as this will result in errors. Custom config files specified with `-c` must only be used for [tuning process resource specifications](https://nf-co.re/docs/usage/configuration#tuning-workflow-resources), other infrastructural tweaks (such as output directories), or module arguments (args).
+
 
 The above pipeline run specified with a params file in yaml format:
 
@@ -91,8 +122,6 @@ outdir: './results/'
 genome: 'GRCh37'
 <...>
 ```
-
-You can also generate such `YAML`/`JSON` files via [nf-core/launch](https://nf-co.re/launch).
 
 ### Updating the pipeline
 
@@ -112,15 +141,14 @@ This version number will be logged in reports when you run the pipeline, so that
 
 To further assist in reproducbility, you can use share and re-use [parameter files](#running-the-pipeline) to repeat pipeline runs with the same settings without having to write out a command with every single parameter.
 
-:::tip
-If you wish to share such profile (such as upload as supplementary material for academic publications), make sure to NOT include cluster specific paths to files, nor institutional specific profiles.
-:::
+!!!tip
+	 If you wish to share such profile (such as upload as supplementary material for academic publications), make sure to NOT include cluster specific paths to files, nor institutional specific profiles.
 
 ## Core Nextflow arguments
 
-:::note
-These options are part of Nextflow and use a _single_ hyphen (pipeline parameters use a double-hyphen).
-:::
+!!!note
+	 These options are part of Nextflow and use a _single_ hyphen (pipeline parameters use a double-hyphen).
+
 
 ### `-profile`
 
@@ -128,9 +156,8 @@ Use this parameter to choose a configuration profile. Profiles can give configur
 
 Several generic profiles are bundled with the pipeline which instruct the pipeline to use software packaged using different methods (Docker, Singularity, Podman, Shifter, Charliecloud, Apptainer, Conda) - see below.
 
-:::info
-We highly recommend the use of Docker or Singularity containers for full pipeline reproducibility, however when this is not possible, Conda is also supported.
-:::
+!!!info
+	 We highly recommend the use of Docker or Singularity containers for full pipeline reproducibility, however when this is not possible, Conda is also supported.
 
 The pipeline also dynamically loads configurations from [https://github.com/nf-core/configs](https://github.com/nf-core/configs) when it runs, making multiple config profiles for various institutional clusters available at run time. For more information and to see if your system is available in these configs please see the [nf-core/configs documentation](https://github.com/nf-core/configs#documentation).
 
@@ -140,22 +167,22 @@ They are loaded in sequence, so later profiles can overwrite earlier profiles.
 If `-profile` is not specified, the pipeline will run locally and expect all software to be installed and available on the `PATH`. This is _not_ recommended, since it can lead to different results on different machines dependent on the computer enviroment.
 
 - `test`
-  - A profile with a complete configuration for automated testing
-  - Includes links to test data so needs no other parameters
+> A profile with a complete configuration for automated testing
+> Includes links to test data so needs no other parameters
 - `docker`
-  - A generic configuration profile to be used with [Docker](https://docker.com/)
+> A generic configuration profile to be used with [Docker](https://docker.com/)
 - `singularity`
-  - A generic configuration profile to be used with [Singularity](https://sylabs.io/docs/)
+> A generic configuration profile to be used with [Singularity](https://sylabs.io/docs/)
 - `podman`
-  - A generic configuration profile to be used with [Podman](https://podman.io/)
+> A generic configuration profile to be used with [Podman](https://podman.io/)
 - `shifter`
-  - A generic configuration profile to be used with [Shifter](https://nersc.gitlab.io/development/shifter/how-to-use/)
+> A generic configuration profile to be used with [Shifter](https://nersc.gitlab.io/development/shifter/how-to-use/)
 - `charliecloud`
-  - A generic configuration profile to be used with [Charliecloud](https://hpc.github.io/charliecloud/)
+> A generic configuration profile to be used with [Charliecloud](https://hpc.github.io/charliecloud/)
 - `apptainer`
-  - A generic configuration profile to be used with [Apptainer](https://apptainer.org/)
+> A generic configuration profile to be used with [Apptainer](https://apptainer.org/)
 - `conda`
-  - A generic configuration profile to be used with [Conda](https://conda.io/docs/). Please only use Conda as a last resort i.e. when it's not possible to run the pipeline with Docker, Singularity, Podman, Shifter, Charliecloud, or Apptainer.
+> A generic configuration profile to be used with [Conda](https://conda.io/docs/). Please only use Conda as a last resort i.e. when it's not possible to run the pipeline with Docker, Singularity, Podman, Shifter, Charliecloud, or Apptainer.
 
 ### `-resume`
 
@@ -177,13 +204,13 @@ To change the resource requests, please see the [max resources](https://nf-co.re
 
 ### Custom Containers
 
-In some cases you may wish to change which container or conda environment a step of the pipeline uses for a particular tool. By default nf-core pipelines use containers and software from the [biocontainers](https://biocontainers.pro/) or [bioconda](https://bioconda.github.io/) projects. However in some cases the pipeline specified version maybe out of date.
+In some cases you may wish to change which container or conda environment a step of the pipeline uses for a particular tool. By default this pipeline uses containers and software from the [biocontainers](https://biocontainers.pro/) or [bioconda](https://bioconda.github.io/) projects. However in some cases the pipeline specified version maybe out of date.
 
 To use a different container from the default container or conda environment specified in a pipeline, please see the [updating tool versions](https://nf-co.re/docs/usage/configuration#updating-tool-versions) section of the nf-core website.
 
 ### Custom Tool Arguments
 
-A pipeline might not always support every possible argument or option of a particular tool used in pipeline. Fortunately, nf-core pipelines provide some freedom to users to insert additional parameters that the pipeline does not include by default.
+A pipeline might not always support every possible argument or option of a particular tool used in pipeline. Fortunately, this pipeline provides some freedom to users to insert additional parameters that the pipeline does not include by default.
 
 To learn how to provide additional arguments to a particular tool of the pipeline, please see the [customising tool arguments](https://nf-co.re/docs/usage/configuration#customising-tool-arguments) section of the nf-core website.
 

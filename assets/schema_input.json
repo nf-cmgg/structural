@@ -9,11 +9,15 @@
         "properties": {
             "sample": {
                 "type": "string",
-                "meta": ["id", "sample"]
+                "meta": ["id", "sample"],
+                "pattern": "^\\S+$",
+                "errorMessage": "The sample name must be a string and cannot contain spaces."
             },
             "family": {
                 "type": "string",
-                "meta": ["family"]
+                "meta": ["family"],
+                "pattern": "^\\S+$",
+                "errorMessage": "The family name must be a string and cannot contain spaces."
             },
             "cram": {
                 "type": "string",

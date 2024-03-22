@@ -1,5 +1,7 @@
 lint:
   files_exist:
+    - CITATIONS.md
+    - docs/README.md
     - CODE_OF_CONDUCT.md
     - .github/ISSUE_TEMPLATE/config.yml
     - .github/workflows/awstest.yml
@@ -12,6 +14,7 @@ lint:
     - manifest.homePage
   files_unchanged:
     - LICENSE
+    - .github/PULL_REQUEST_TEMPLATE.md
     - .github/CONTRIBUTING.md
     - .github/ISSUE_TEMPLATE/bug_report.yml
     - .github/workflows/linting.yml

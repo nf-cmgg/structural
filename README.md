@@ -10,6 +10,6 @@
 
 ## Introduction
 
-**nf-cmgg/structural** is a bioinformatics best-practice analysis pipeline for calling SVs (structural variants), CNVs (copy number variants) and repeat region expansions from short DNA reads. The pipeline handles the calling of the variants and postprocessing (filtering, annotating...)
+**nf-cmgg/structural** is a bioinformatics best-practice analysis pipeline for calling structural variants (SVs), copy number variants (CNVs) and repeat region expansions (RREs) from short DNA reads. The pipeline handles the calling of the variants and postprocessing (filtering, annotating...)
 
 Please have a look at the [documentation](https://nf-cmgg.github.io/structural/latest/) on how to run the pipeline

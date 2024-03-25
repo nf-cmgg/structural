@@ -1,4 +1,4 @@
-# nf-cmgg/structural: Usage
+# Usage
 
 > _Documentation of pipeline parameters can be found in the [Parameters](parameters.md) section_
 

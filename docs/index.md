@@ -1,11 +1,11 @@
 ---
 title: nf-cmgg/structural
-description: A bioinformatics best-practice analysis pipeline for calling SVs (structural variants), CNVs (copy number variants) and repeat region expansions from short DNA reads
+description: A bioinformatics best-practice analysis pipeline for calling structural variants (SVs), copy number variants (CNVs) and repeat region expansions (RREs) from short DNA reads
 ---
 
 ## Introduction
 
-**nf-cmgg/structural** is a bioinformatics best-practice analysis pipeline for calling SVs (structural variants), CNVs (copy number variants) and repeat region expansions from short DNA reads. The pipeline handles the calling of the variants and postprocessing (filtering, annotating...)
+**nf-cmgg/structural** is a bioinformatics best-practice analysis pipeline for calling structural variants (SVs), copy number variants (CNVs) and repeat region expansions (RREs) from short DNA reads. The pipeline handles the calling of the variants and postprocessing (filtering, annotating...)
 
 The pipeline is built using [Nextflow](https://www.nextflow.io), a workflow tool to run tasks across multiple compute infrastructures in a very portable manner. It uses Docker/Singularity containers making installation trivial and results highly reproducible. The [Nextflow DSL2](https://www.nextflow.io/docs/latest/dsl2.html) implementation of this pipeline uses one container per process which makes it much easier to maintain and update software dependencies. Where possible, these processes have been submitted to and installed from [nf-core/modules](https://github.com/nf-core/modules) in order to make them available to all Nextflow pipelines!
 

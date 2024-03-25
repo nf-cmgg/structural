@@ -8,6 +8,7 @@ nav:
   - Usage: usage.md
   - Output: output.md
   - Parameters: parameters.md
+  - Citations: CITATIONS.md
 
 theme:
   name: material
@@ -45,6 +46,12 @@ theme:
     - toc.follow
 
 markdown_extensions:
+  - attr_list
+  - md_in_html
+  - admonition
+  - pymdownx.emoji:
+      emoji_index: !!python/name:material.extensions.emoji.twemoji
+      emoji_generator: !!python/name:material.extensions.emoji.to_svg
   - pymdownx.highlight:
       anchor_linenums: true
       line_spans: __span

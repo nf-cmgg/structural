@@ -1,4 +1,4 @@
-# nf-cmgg/structural: Output
+# Output
 
 ## Introduction
 

@@ -1,4 +1,4 @@
-# nf-cmgg/structural pipeline parameters
+# Parameters
 
 A nextflow pipeline for calling structural variants
 

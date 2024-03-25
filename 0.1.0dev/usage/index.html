@@ -18,7 +18,7 @@
       
       
       <link rel="icon" href="../assets/images/favicon.png">
-      <meta name="generator" content="mkdocs-1.5.3, mkdocs-material-9.5.14">
+      <meta name="generator" content="mkdocs-1.5.3, mkdocs-material-9.5.15">
     
     
       
@@ -26,7 +26,7 @@
       
     
     
-      <link rel="stylesheet" href="../assets/stylesheets/main.10ba22f1.min.css">
+      <link rel="stylesheet" href="../assets/stylesheets/main.7e359304.min.css">
       
         
         <link rel="stylesheet" href="../assets/stylesheets/palette.06af60db.min.css">
@@ -74,7 +74,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#nf-cmggstructural-usage" class="md-skip">
+        <a href="#usage" class="md-skip">
           Skip to content
         </a>
       
@@ -347,18 +347,18 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#multiple-runs-of-the-same-sample" class="md-nav__link">
+  <a href="#minimum-required-samplesheet" class="md-nav__link">
     <span class="md-ellipsis">
-      Multiple runs of the same sample
+      Minimum required samplesheet
     </span>
   </a>
   
 </li>
         
           <li class="md-nav__item">
-  <a href="#full-samplesheet" class="md-nav__link">
+  <a href="#all-samplesheet-options" class="md-nav__link">
     <span class="md-ellipsis">
-      Full samplesheet
+      All samplesheet options
     </span>
   </a>
   
@@ -570,6 +570,26 @@
   
 
     
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../CITATIONS/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Citations
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
   </ul>
 </nav>
                   </div>
@@ -616,18 +636,18 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#multiple-runs-of-the-same-sample" class="md-nav__link">
+  <a href="#minimum-required-samplesheet" class="md-nav__link">
     <span class="md-ellipsis">
-      Multiple runs of the same sample
+      Minimum required samplesheet
     </span>
   </a>
   
 </li>
         
           <li class="md-nav__item">
-  <a href="#full-samplesheet" class="md-nav__link">
+  <a href="#all-samplesheet-options" class="md-nav__link">
     <span class="md-ellipsis">
-      Full samplesheet
+      All samplesheet options
     </span>
   </a>
   
@@ -809,129 +829,204 @@
   
 
 
-<h1 id="nf-cmggstructural-usage">nf-cmgg/structural: Usage</h1>
+<h1 id="usage">Usage</h1>
 <blockquote>
-<p><em>Documentation of pipeline parameters is generated automatically from the pipeline schema and can no longer be found in markdown files.</em></p>
+<p><em>Documentation of pipeline parameters can be found in the <a href="../parameters/">Parameters</a> section</em></p>
 </blockquote>
 <h2 id="introduction">Introduction</h2>
-<!-- TODO nf-core: Add documentation about anything specific to running your pipeline. For general topics, please point to (and add to) the main nf-core website. -->
-
+<p>Try out the pipeline right now with following command (make sure you have <a href="https://docs.docker.com/get-docker/">Docker</a> and <a href="https://www.nextflow.io/">Nextflow</a> installed):</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>nextflow<span class="w"> </span>run<span class="w"> </span>nf-cmgg/structural<span class="w"> </span>-profile<span class="w"> </span>test,docker<span class="w"> </span>--outdir<span class="w"> </span>results
+</span></code></pre></div>
 <h2 id="samplesheet-input">Samplesheet input</h2>
-<p>You will need to create a samplesheet with information about the samples you would like to analyse before running the pipeline. Use this parameter to specify its location. It has to be a comma-separated file with 3 columns, and a header row as shown in the examples below.</p>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>--input<span class="w"> </span><span class="s1">&#39;[path to samplesheet file]&#39;</span>
+<p>You will need to create a samplesheet with information about the samples you would like to analyse before running the pipeline. Use this parameter to specify its location. It can be a <a href="https://en.wikipedia.org/wiki/Comma-separated_values">CSV</a> (comma separated values), <a href="https://en.wikipedia.org/wiki/Tab-separated_values">TSV</a> (tab separated values), <a href="https://www.json.org/json-en.html">JSON</a> (javascript object notation) or <a href="https://en.wikipedia.org/wiki/YAML">YAML</a> file.</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>--input<span class="w"> </span><span class="s1">&#39;[path to samplesheet file]&#39;</span>
 </span></code></pre></div>
-<h3 id="multiple-runs-of-the-same-sample">Multiple runs of the same sample</h3>
-<p>The <code>sample</code> identifiers have to be the same when you have re-sequenced the same sample more than once e.g. to increase sequencing depth. The pipeline will concatenate the raw reads before performing any downstream analysis. Below is an example for the same sample sequenced across 3 lanes:</p>
-<div class="language-text highlight"><span class="filename">samplesheet.csv</span><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>sample,fastq_1,fastq_2
-</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>CONTROL_REP1,AEG588A1_S1_L002_R1_001.fastq.gz,AEG588A1_S1_L002_R2_001.fastq.gz
-</span><span id="__span-1-3"><a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a>CONTROL_REP1,AEG588A1_S1_L003_R1_001.fastq.gz,AEG588A1_S1_L003_R2_001.fastq.gz
-</span><span id="__span-1-4"><a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a>CONTROL_REP1,AEG588A1_S1_L004_R1_001.fastq.gz,AEG588A1_S1_L004_R2_001.fastq.gz
+<h3 id="minimum-required-samplesheet">Minimum required samplesheet</h3>
+<p>Following samplesheets contain all required columns needed to run the pipeline for two samples.</p>
+<div class="language-text highlight"><span class="filename">samplesheet.csv</span><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>sample,cram
+</span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a>ID01234,/path/to/ID01234.cram
+</span><span id="__span-2-3"><a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a>ID56789,/path/to/ID56789.cram
 </span></code></pre></div>
-<h3 id="full-samplesheet">Full samplesheet</h3>
-<p>The pipeline will auto-detect whether a sample is single- or paired-end using the information provided in the samplesheet. The samplesheet can have as many columns as you desire, however, there is a strict requirement for the first 3 columns to match those defined in the table below.</p>
-<p>A final samplesheet file consisting of both single- and paired-end data may look something like the one below. This is for 6 samples, where <code>TREATMENT_REP3</code> has been sequenced twice.</p>
-<div class="language-text highlight"><span class="filename">samplesheet.csv</span><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>sample,fastq_1,fastq_2
-</span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a>CONTROL_REP1,AEG588A1_S1_L002_R1_001.fastq.gz,AEG588A1_S1_L002_R2_001.fastq.gz
-</span><span id="__span-2-3"><a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a>CONTROL_REP2,AEG588A2_S2_L002_R1_001.fastq.gz,AEG588A2_S2_L002_R2_001.fastq.gz
-</span><span id="__span-2-4"><a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a>CONTROL_REP3,AEG588A3_S3_L002_R1_001.fastq.gz,AEG588A3_S3_L002_R2_001.fastq.gz
-</span><span id="__span-2-5"><a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a>TREATMENT_REP1,AEG588A4_S4_L003_R1_001.fastq.gz,
-</span><span id="__span-2-6"><a id="__codelineno-2-6" name="__codelineno-2-6" href="#__codelineno-2-6"></a>TREATMENT_REP2,AEG588A5_S5_L003_R1_001.fastq.gz,
-</span><span id="__span-2-7"><a id="__codelineno-2-7" name="__codelineno-2-7" href="#__codelineno-2-7"></a>TREATMENT_REP3,AEG588A6_S6_L003_R1_001.fastq.gz,
-</span><span id="__span-2-8"><a id="__codelineno-2-8" name="__codelineno-2-8" href="#__codelineno-2-8"></a>TREATMENT_REP3,AEG588A6_S6_L004_R1_001.fastq.gz,
+<div class="language-text highlight"><span class="filename">samplesheet.tsv</span><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a>sample  cram
+</span><span id="__span-3-2"><a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a>ID01234 /path/to/ID01234.cram
+</span><span id="__span-3-3"><a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a>ID56789 /path/to/ID56789.cram
 </span></code></pre></div>
+<div class="language-yaml highlight"><span class="filename">samplesheet.yaml</span><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">sample</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">ID01234</span>
+</span><span id="__span-4-2"><a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a><span class="w">  </span><span class="nt">cram</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">/path/to/ID01234.cram</span>
+</span><span id="__span-4-3"><a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">sample</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">ID56789</span>
+</span><span id="__span-4-4"><a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a><span class="w">  </span><span class="nt">cram</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">/path/to/ID56789.cram</span>
+</span></code></pre></div>
+<div class="language-json highlight"><span class="filename">samplesheet.json</span><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="p">[</span>
+</span><span id="__span-5-2"><a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a><span class="w">  </span><span class="p">{</span>
+</span><span id="__span-5-3"><a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a><span class="w">    </span><span class="nt">&quot;sample&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;ID01234&quot;</span><span class="p">,</span>
+</span><span id="__span-5-4"><a id="__codelineno-5-4" name="__codelineno-5-4" href="#__codelineno-5-4"></a><span class="w">    </span><span class="nt">&quot;cram&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;/path/to/ID01234.cram&quot;</span>
+</span><span id="__span-5-5"><a id="__codelineno-5-5" name="__codelineno-5-5" href="#__codelineno-5-5"></a><span class="w">  </span><span class="p">},</span>
+</span><span id="__span-5-6"><a id="__codelineno-5-6" name="__codelineno-5-6" href="#__codelineno-5-6"></a><span class="w">  </span><span class="p">{</span>
+</span><span id="__span-5-7"><a id="__codelineno-5-7" name="__codelineno-5-7" href="#__codelineno-5-7"></a><span class="w">    </span><span class="nt">&quot;sample&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;ID56789&quot;</span><span class="p">,</span>
+</span><span id="__span-5-8"><a id="__codelineno-5-8" name="__codelineno-5-8" href="#__codelineno-5-8"></a><span class="w">    </span><span class="nt">&quot;cram&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;/path/to/ID56789.cram&quot;</span>
+</span><span id="__span-5-9"><a id="__codelineno-5-9" name="__codelineno-5-9" href="#__codelineno-5-9"></a><span class="w">  </span><span class="p">}</span>
+</span><span id="__span-5-10"><a id="__codelineno-5-10" name="__codelineno-5-10" href="#__codelineno-5-10"></a><span class="p">]</span>
+</span></code></pre></div>
+<h3 id="all-samplesheet-options">All samplesheet options</h3>
+<p>Following table contains all possible values for the samplesheet.</p>
 <table>
 <thead>
 <tr>
 <th>Column</th>
 <th>Description</th>
+<th>Type</th>
+<th>Required</th>
 </tr>
 </thead>
 <tbody>
 <tr>
 <td><code>sample</code></td>
-<td>Custom sample name. This entry will be identical for multiple sequencing libraries/runs from the same sample. Spaces in sample names are automatically converted to underscores (<code>_</code>).</td>
+<td>The custom sample name. Cannot contain spaces and doesn't have to unique. When the same sample has been given multiple times, the CRAM files will be merged.</td>
+<td>string</td>
+<td><img alt="✔" class="twemoji" src="https://cdn.jsdelivr.net/gh/jdecked/twemoji@15.0.3/assets/svg/2714.svg" title=":heavy_check_mark:" /></td>
 </tr>
 <tr>
-<td><code>fastq_1</code></td>
-<td>Full path to FastQ file for Illumina short reads 1. File has to be gzipped and have the extension ".fastq.gz" or ".fq.gz".</td>
+<td><code>family</code></td>
+<td>The family name of the current sample. All samples in the same family will be merged together at the end of the pipeline. Cannot contain spaces</td>
+<td>string</td>
+<td><img alt="❌" class="twemoji" src="https://cdn.jsdelivr.net/gh/jdecked/twemoji@15.0.3/assets/svg/274c.svg" title=":x:" /></td>
 </tr>
 <tr>
-<td><code>fastq_2</code></td>
-<td>Full path to FastQ file for Illumina short reads 2. File has to be gzipped and have the extension ".fastq.gz" or ".fq.gz".</td>
+<td><code>cram</code></td>
+<td>Path to the CRAM file to be used by the pipeline for the current sample.</td>
+<td>string</td>
+<td><img alt="✔" class="twemoji" src="https://cdn.jsdelivr.net/gh/jdecked/twemoji@15.0.3/assets/svg/2714.svg" title=":heavy_check_mark:" /></td>
+</tr>
+<tr>
+<td><code>crai</code></td>
+<td>Path to the CRAM index file</td>
+<td>string</td>
+<td><img alt="❌" class="twemoji" src="https://cdn.jsdelivr.net/gh/jdecked/twemoji@15.0.3/assets/svg/274c.svg" title=":x:" /></td>
+</tr>
+<tr>
+<td><code>small_variants</code></td>
+<td>A VCF containing the SNV (small nucleotide variants) for the current sample to be used by AnnotSV</td>
+<td>string</td>
+<td><img alt="❌" class="twemoji" src="https://cdn.jsdelivr.net/gh/jdecked/twemoji@15.0.3/assets/svg/274c.svg" title=":x:" /></td>
+</tr>
+<tr>
+<td><code>sex</code></td>
+<td>The sex of the sample to be used by QDNAseq. Sex will be imputed when missing (Options: <code>male</code> or <code>female</code>)</td>
+<td>string</td>
+<td><img alt="❌" class="twemoji" src="https://cdn.jsdelivr.net/gh/jdecked/twemoji@15.0.3/assets/svg/274c.svg" title=":x:" /></td>
 </tr>
 </tbody>
 </table>
-<p>An <a href="../assets/samplesheet.csv">example samplesheet</a> has been provided with the pipeline.</p>
+<p>See following samplesheet for a working example of a samplesheet (used by the <code>test</code> profile of the pipeline):</p>
+<div class="language-text highlight"><span class="filename">example_samplesheet.csv</span><pre><span></span><code><span id="__span-6-1"><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a>sample,family,cram,crai,sex
+</span><span id="__span-6-2"><a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a>PosCon1,family_1,https://github.com/nf-cmgg/test-datasets/raw/main/data/genomics/homo_sapiens/illumina/cram/SVcontrol/PosCon1.cram,https://github.com/nf-cmgg/test-datasets/raw/main/data/genomics/homo_sapiens/illumina/cram/SVcontrol/PosCon1.cram.crai,male
+</span><span id="__span-6-3"><a id="__codelineno-6-3" name="__codelineno-6-3" href="#__codelineno-6-3"></a>PosCon2,family_1,https://github.com/nf-cmgg/test-datasets/raw/main/data/genomics/homo_sapiens/illumina/cram/SVcontrol/PosCon2.cram,https://github.com/nf-cmgg/test-datasets/raw/main/data/genomics/homo_sapiens/illumina/cram/SVcontrol/PosCon2.cram.crai,female
+</span><span id="__span-6-4"><a id="__codelineno-6-4" name="__codelineno-6-4" href="#__codelineno-6-4"></a>PosCon3,,https://github.com/nf-cmgg/test-datasets/raw/main/data/genomics/homo_sapiens/illumina/cram/SVcontrol/PosCon3.cram,https://github.com/nf-cmgg/test-datasets/raw/main/data/genomics/homo_sapiens/illumina/cram/SVcontrol/PosCon3.cram.crai,female
+</span><span id="__span-6-5"><a id="__codelineno-6-5" name="__codelineno-6-5" href="#__codelineno-6-5"></a>PosCon4,,https://github.com/nf-cmgg/test-datasets/raw/main/data/genomics/homo_sapiens/illumina/cram/SVcontrol/PosCon4.cram,https://github.com/nf-cmgg/test-datasets/raw/main/data/genomics/homo_sapiens/illumina/cram/SVcontrol/PosCon4.cram.crai,male
+</span></code></pre></div>
 <h2 id="running-the-pipeline">Running the pipeline</h2>
 <p>The typical command for running the pipeline is as follows:</p>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a>nextflow<span class="w"> </span>run<span class="w"> </span>nf-cmgg/structural<span class="w"> </span>--input<span class="w"> </span>./samplesheet.csv<span class="w"> </span>--outdir<span class="w"> </span>./results<span class="w"> </span>--genome<span class="w"> </span>GRCh38<span class="w"> </span>-profile<span class="w"> </span>docker
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-7-1"><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a>nextflow<span class="w"> </span>run<span class="w"> </span>nf-cmgg/structural<span class="w"> </span>--input<span class="w"> </span>./samplesheet.csv<span class="w"> </span>--outdir<span class="w"> </span>./results<span class="w"> </span>--genome<span class="w"> </span>GRCh38<span class="w"> </span>-profile<span class="w"> </span>docker
 </span></code></pre></div>
 <p>This will launch the pipeline with the <code>docker</code> configuration profile. See below for more information about profiles.</p>
 <p>Note that the pipeline will create the following files in your working directory:</p>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a>work<span class="w">                </span><span class="c1"># Directory containing the nextflow working files</span>
-</span><span id="__span-4-2"><a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a>&lt;OUTDIR&gt;<span class="w">            </span><span class="c1"># Finished results in specified location (defined with --outdir)</span>
-</span><span id="__span-4-3"><a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a>.nextflow_log<span class="w">       </span><span class="c1"># Log file from Nextflow</span>
-</span><span id="__span-4-4"><a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a><span class="c1"># Other nextflow hidden files, eg. history of pipeline runs and old logs.</span>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-8-1"><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a>work<span class="w">          </span><span class="c1">#(1)!</span>
+</span><span id="__span-8-2"><a id="__codelineno-8-2" name="__codelineno-8-2" href="#__codelineno-8-2"></a>results<span class="w">       </span><span class="c1">#(2)!</span>
+</span><span id="__span-8-3"><a id="__codelineno-8-3" name="__codelineno-8-3" href="#__codelineno-8-3"></a>.nextflow_log<span class="w"> </span><span class="c1">#(3)!</span>
+</span><span id="__span-8-4"><a id="__codelineno-8-4" name="__codelineno-8-4" href="#__codelineno-8-4"></a>...<span class="w">           </span><span class="c1">#(4)!</span>
 </span></code></pre></div>
+<ol>
+<li>
+<p>Directory containing the nextflow working files</p>
+</li>
+<li>
+<p>Finished results in specified location (defined with --outdir)</p>
+</li>
+<li>
+<p>Log file from Nextflow</p>
+</li>
+<li>
+<p>Other nextflow hidden files, eg. history of pipeline runs and old logs.</p>
+</li>
+</ol>
 <p>If you wish to repeatedly use the same parameters for multiple runs, rather than specifying each flag in the command, you can specify these in a params file.</p>
 <p>Pipeline settings can be provided in a <code>yaml</code> or <code>json</code> file via <code>-params-file &lt;file&gt;</code>.</p>
-<p>:::warning
-Do not use <code>-c &lt;file&gt;</code> to specify parameters as this will result in errors. Custom config files specified with <code>-c</code> must only be used for <a href="https://nf-co.re/docs/usage/configuration#tuning-workflow-resources">tuning process resource specifications</a>, other infrastructural tweaks (such as output directories), or module arguments (args).
-:::</p>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+</div>
+<p>Do not use <code>-c &lt;file&gt;</code> to specify parameters as this will result in errors. Custom config files specified with <code>-c</code> must only be used for <a href="https://nf-co.re/docs/usage/configuration#tuning-workflow-resources">tuning process resource specifications</a>, other infrastructural tweaks (such as output directories), or module arguments (args).</p>
 <p>The above pipeline run specified with a params file in yaml format:</p>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a>nextflow<span class="w"> </span>run<span class="w"> </span>nf-cmgg/structural<span class="w"> </span>-profile<span class="w"> </span>docker<span class="w"> </span>-params-file<span class="w"> </span>params.yaml
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-9-1"><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a>nextflow<span class="w"> </span>run<span class="w"> </span>nf-cmgg/structural<span class="w"> </span>-profile<span class="w"> </span>docker<span class="w"> </span>-params-file<span class="w"> </span>params.yaml
 </span></code></pre></div>
 <p>with <code>params.yaml</code> containing:</p>
-<div class="language-yaml highlight"><pre><span></span><code><span id="__span-6-1"><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a><span class="nt">input</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;./samplesheet.csv&#39;</span>
-</span><span id="__span-6-2"><a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a><span class="nt">outdir</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;./results/&#39;</span>
-</span><span id="__span-6-3"><a id="__codelineno-6-3" name="__codelineno-6-3" href="#__codelineno-6-3"></a><span class="nt">genome</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;GRCh37&#39;</span>
-</span><span id="__span-6-4"><a id="__codelineno-6-4" name="__codelineno-6-4" href="#__codelineno-6-4"></a><span class="l l-Scalar l-Scalar-Plain">&lt;...&gt;</span>
+<div class="language-yaml highlight"><pre><span></span><code><span id="__span-10-1"><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a><span class="nt">input</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;./samplesheet.csv&#39;</span>
+</span><span id="__span-10-2"><a id="__codelineno-10-2" name="__codelineno-10-2" href="#__codelineno-10-2"></a><span class="nt">outdir</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;./results/&#39;</span>
+</span><span id="__span-10-3"><a id="__codelineno-10-3" name="__codelineno-10-3" href="#__codelineno-10-3"></a><span class="nt">genome</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;GRCh37&#39;</span>
+</span><span id="__span-10-4"><a id="__codelineno-10-4" name="__codelineno-10-4" href="#__codelineno-10-4"></a><span class="l l-Scalar l-Scalar-Plain">&lt;...&gt;</span>
 </span></code></pre></div>
-<p>You can also generate such <code>YAML</code>/<code>JSON</code> files via <a href="https://nf-co.re/launch">nf-core/launch</a>.</p>
 <h3 id="updating-the-pipeline">Updating the pipeline</h3>
 <p>When you run the above command, Nextflow automatically pulls the pipeline code from GitHub and stores it as a cached version. When running the pipeline after this, it will always use the cached version if available - even if the pipeline has been updated since. To make sure that you're running the latest version of the pipeline, make sure that you regularly update the cached version of the pipeline:</p>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-7-1"><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a>nextflow<span class="w"> </span>pull<span class="w"> </span>nf-cmgg/structural
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-11-1"><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a>nextflow<span class="w"> </span>pull<span class="w"> </span>nf-cmgg/structural
 </span></code></pre></div>
 <h3 id="reproducibility">Reproducibility</h3>
 <p>It is a good idea to specify a pipeline version when running the pipeline on your data. This ensures that a specific version of the pipeline code and software are used when you run your pipeline. If you keep using the same tag, you'll be running the same version of the pipeline, even if there have been changes to the code since.</p>
 <p>First, go to the <a href="https://github.com/nf-cmgg/structural/releases">nf-cmgg/structural releases page</a> and find the latest pipeline version - numeric only (eg. <code>1.3.1</code>). Then specify this when running the pipeline with <code>-r</code> (one hyphen) - eg. <code>-r 1.3.1</code>. Of course, you can switch to another version by changing the number after the <code>-r</code> flag.</p>
 <p>This version number will be logged in reports when you run the pipeline, so that you'll know what you used when you look back in the future. For example, at the bottom of the MultiQC reports.</p>
 <p>To further assist in reproducbility, you can use share and re-use <a href="#running-the-pipeline">parameter files</a> to repeat pipeline runs with the same settings without having to write out a command with every single parameter.</p>
-<p>:::tip
-If you wish to share such profile (such as upload as supplementary material for academic publications), make sure to NOT include cluster specific paths to files, nor institutional specific profiles.
-:::</p>
+<div class="admonition tip">
+<p class="admonition-title">Tip</p>
+</div>
+<p>If you wish to share such profile (such as upload as supplementary material for academic publications), make sure to NOT include cluster specific paths to files, nor institutional specific profiles.</p>
 <h2 id="core-nextflow-arguments">Core Nextflow arguments</h2>
-<p>:::note
-These options are part of Nextflow and use a <em>single</em> hyphen (pipeline parameters use a double-hyphen).
-:::</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+</div>
+<p>These options are part of Nextflow and use a <em>single</em> hyphen (pipeline parameters use a double-hyphen).</p>
 <h3 id="-profile"><code>-profile</code></h3>
 <p>Use this parameter to choose a configuration profile. Profiles can give configuration presets for different compute environments.</p>
 <p>Several generic profiles are bundled with the pipeline which instruct the pipeline to use software packaged using different methods (Docker, Singularity, Podman, Shifter, Charliecloud, Apptainer, Conda) - see below.</p>
-<p>:::info
-We highly recommend the use of Docker or Singularity containers for full pipeline reproducibility, however when this is not possible, Conda is also supported.
-:::</p>
+<div class="admonition info">
+<p class="admonition-title">Info</p>
+</div>
+<p>We highly recommend the use of Docker or Singularity containers for full pipeline reproducibility, however when this is not possible, Conda is also supported.</p>
 <p>The pipeline also dynamically loads configurations from <a href="https://github.com/nf-core/configs">https://github.com/nf-core/configs</a> when it runs, making multiple config profiles for various institutional clusters available at run time. For more information and to see if your system is available in these configs please see the <a href="https://github.com/nf-core/configs#documentation">nf-core/configs documentation</a>.</p>
 <p>Note that multiple profiles can be loaded, for example: <code>-profile test,docker</code> - the order of arguments is important!
 They are loaded in sequence, so later profiles can overwrite earlier profiles.</p>
 <p>If <code>-profile</code> is not specified, the pipeline will run locally and expect all software to be installed and available on the <code>PATH</code>. This is <em>not</em> recommended, since it can lead to different results on different machines dependent on the computer enviroment.</p>
 <ul>
-<li><code>test</code></li>
-<li>A profile with a complete configuration for automated testing</li>
-<li>Includes links to test data so needs no other parameters</li>
-<li><code>docker</code></li>
-<li>A generic configuration profile to be used with <a href="https://docker.com/">Docker</a></li>
-<li><code>singularity</code></li>
-<li>A generic configuration profile to be used with <a href="https://sylabs.io/docs/">Singularity</a></li>
-<li><code>podman</code></li>
-<li>A generic configuration profile to be used with <a href="https://podman.io/">Podman</a></li>
-<li><code>shifter</code></li>
-<li>A generic configuration profile to be used with <a href="https://nersc.gitlab.io/development/shifter/how-to-use/">Shifter</a></li>
-<li><code>charliecloud</code></li>
-<li>A generic configuration profile to be used with <a href="https://hpc.github.io/charliecloud/">Charliecloud</a></li>
-<li><code>apptainer</code></li>
-<li>A generic configuration profile to be used with <a href="https://apptainer.org/">Apptainer</a></li>
-<li><code>conda</code></li>
-<li>A generic configuration profile to be used with <a href="https://conda.io/docs/">Conda</a>. Please only use Conda as a last resort i.e. when it's not possible to run the pipeline with Docker, Singularity, Podman, Shifter, Charliecloud, or Apptainer.</li>
+<li><code>test</code><blockquote>
+<p>A profile with a complete configuration for automated testing
+Includes links to test data so needs no other parameters</p>
+</blockquote>
+</li>
+<li><code>docker</code><blockquote>
+<p>A generic configuration profile to be used with <a href="https://docker.com/">Docker</a></p>
+</blockquote>
+</li>
+<li><code>singularity</code><blockquote>
+<p>A generic configuration profile to be used with <a href="https://sylabs.io/docs/">Singularity</a></p>
+</blockquote>
+</li>
+<li><code>podman</code><blockquote>
+<p>A generic configuration profile to be used with <a href="https://podman.io/">Podman</a></p>
+</blockquote>
+</li>
+<li><code>shifter</code><blockquote>
+<p>A generic configuration profile to be used with <a href="https://nersc.gitlab.io/development/shifter/how-to-use/">Shifter</a></p>
+</blockquote>
+</li>
+<li><code>charliecloud</code><blockquote>
+<p>A generic configuration profile to be used with <a href="https://hpc.github.io/charliecloud/">Charliecloud</a></p>
+</blockquote>
+</li>
+<li><code>apptainer</code><blockquote>
+<p>A generic configuration profile to be used with <a href="https://apptainer.org/">Apptainer</a></p>
+</blockquote>
+</li>
+<li><code>conda</code><blockquote>
+<p>A generic configuration profile to be used with <a href="https://conda.io/docs/">Conda</a>. Please only use Conda as a last resort i.e. when it's not possible to run the pipeline with Docker, Singularity, Podman, Shifter, Charliecloud, or Apptainer.</p>
+</blockquote>
+</li>
 </ul>
 <h3 id="-resume"><code>-resume</code></h3>
 <p>Specify this when restarting a pipeline. Nextflow will use cached results from any pipeline steps where the inputs are the same, continuing from where it got to previously. For input to be considered the same, not only the names must be identical but the files' contents as well. For more info about this parameter, see <a href="https://www.nextflow.io/blog/2019/demystifying-nextflow-resume.html">this blog post</a>.</p>
@@ -943,10 +1038,10 @@ They are loaded in sequence, so later profiles can overwrite earlier profiles.</
 <p>Whilst the default requirements set within the pipeline will hopefully work for most people and with most input data, you may find that you want to customise the compute resources that the pipeline requests. Each step in the pipeline has a default set of requirements for number of CPUs, memory and time. For most of the steps in the pipeline, if the job exits with any of the error codes specified <a href="https://github.com/nf-core/rnaseq/blob/4c27ef5610c87db00c3c5a3eed10b1d161abf575/conf/base.config#L18">here</a> it will automatically be resubmitted with higher requests (2 x original, then 3 x original). If it still fails after the third attempt then the pipeline execution is stopped.</p>
 <p>To change the resource requests, please see the <a href="https://nf-co.re/docs/usage/configuration#max-resources">max resources</a> and <a href="https://nf-co.re/docs/usage/configuration#tuning-workflow-resources">tuning workflow resources</a> section of the nf-core website.</p>
 <h3 id="custom-containers">Custom Containers</h3>
-<p>In some cases you may wish to change which container or conda environment a step of the pipeline uses for a particular tool. By default nf-core pipelines use containers and software from the <a href="https://biocontainers.pro/">biocontainers</a> or <a href="https://bioconda.github.io/">bioconda</a> projects. However in some cases the pipeline specified version maybe out of date.</p>
+<p>In some cases you may wish to change which container or conda environment a step of the pipeline uses for a particular tool. By default this pipeline uses containers and software from the <a href="https://biocontainers.pro/">biocontainers</a> or <a href="https://bioconda.github.io/">bioconda</a> projects. However in some cases the pipeline specified version maybe out of date.</p>
 <p>To use a different container from the default container or conda environment specified in a pipeline, please see the <a href="https://nf-co.re/docs/usage/configuration#updating-tool-versions">updating tool versions</a> section of the nf-core website.</p>
 <h3 id="custom-tool-arguments">Custom Tool Arguments</h3>
-<p>A pipeline might not always support every possible argument or option of a particular tool used in pipeline. Fortunately, nf-core pipelines provide some freedom to users to insert additional parameters that the pipeline does not include by default.</p>
+<p>A pipeline might not always support every possible argument or option of a particular tool used in pipeline. Fortunately, this pipeline provides some freedom to users to insert additional parameters that the pipeline does not include by default.</p>
 <p>To learn how to provide additional arguments to a particular tool of the pipeline, please see the <a href="https://nf-co.re/docs/usage/configuration#customising-tool-arguments">customising tool arguments</a> section of the nf-core website.</p>
 <h3 id="nf-coreconfigs">nf-core/configs</h3>
 <p>In most cases, you will only need to create a custom config as a one-off but if you and others within your organisation are likely to be running nf-core pipelines regularly and need to use the same settings regularly it may be a good idea to request that your custom config file is uploaded to the <code>nf-core/configs</code> git repository. Before you do this please can you test that the config file works with your pipeline of choice using the <code>-c</code> parameter. You can then create a pull request to the <code>nf-core/configs</code> repository with the addition of your config file, associated documentation file (see examples in <a href="https://github.com/nf-core/configs/tree/master/docs"><code>nf-core/configs/docs</code></a>), and amending <a href="https://github.com/nf-core/configs/blob/master/nfcore_custom.config"><code>nfcore_custom.config</code></a> to include your custom profile.</p>
@@ -965,7 +1060,7 @@ Some HPC setups also allow you to run nextflow within a cluster job submitted yo
 <h2 id="nextflow-memory-requirements">Nextflow memory requirements</h2>
 <p>In some cases, the Nextflow Java virtual machines can start to request a large amount of memory.
 We recommend adding the following line to your environment to limit this (typically in <code>~/.bashrc</code> or <code>~./bash_profile</code>):</p>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-8-1"><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a><span class="nv">NXF_OPTS</span><span class="o">=</span><span class="s1">&#39;-Xms1g -Xmx4g&#39;</span>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-12-1"><a id="__codelineno-12-1" name="__codelineno-12-1" href="#__codelineno-12-1"></a><span class="nv">NXF_OPTS</span><span class="o">=</span><span class="s1">&#39;-Xms1g -Xmx4g&#39;</span>
 </span></code></pre></div>
 
 

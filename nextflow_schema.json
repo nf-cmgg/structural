@@ -534,7 +534,7 @@
             "properties": {
                 "vcfanno_toml": {
                     "type": "string",
-                    "description": "The full path to the AnnotSV config TOML file. This file will be used to dynamically overwrite default configs for this pipeline run",
+                    "description": "The full path to the VCFanno config TOML file. This file will be used to dynamically overwrite default configs for this pipeline run",
                     "exists": true,
                     "pattern": "^\\S+\\.toml$",
                     "format": "file-path",

@@ -10,10 +10,10 @@ The files and directories listed below will be created in the results directory 
 
 The pipeline is built using [Nextflow](https://www.nextflow.io/) and processes data using the following steps:
 
-- [SV calling](https://github.com/nf-cmgg/structural/blob/dev/subworkflows/local/bam_sv_calling/main.nf) - Merged set of structural variant (SV) calls for the selected SV callers
-- [CNV calling](https://github.com/nf-cmgg/structural/blob/dev/subworkflows/local/bam_cnv_calling/main.nf) - Merged set of copy number variant (CNV) calls for the selected CNV callers
-- [RRE calling](https://github.com/Illumina/ExpansionHunter) - Merged set of repeat region expansions (RRE) calls for the selected RRE callers
-- [SV annotation](https://github.com/nf-cmgg/structural/blob/dev/subworkflows/local/bam_sv_calling/main.nf) - Annotated set of structural variant (SV) calls for the selected SV callers
+- [SV calling](#sv-calling) - Merged set of structural variant (SV) calls for the selected SV callers
+- [CNV calling](#cnv-calling) - Merged set of copy number variant (CNV) calls for the selected CNV callers
+- [RRE calling](#rre-calling) - Merged set of repeat region expansions (RRE) calls for the selected RRE callers
+- [SV annotation](#sv-annotation) - Annotated set of structural variant (SV) calls for the selected SV callers
 - [MultiQC](#multiqc) - Aggregate report describing results and QC from the whole pipeline
 - [Pipeline information](#pipeline-information) - Report metrics generated during the workflow execution
 

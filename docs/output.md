@@ -23,7 +23,7 @@ The pipeline is built using [Nextflow](https://www.nextflow.io/) and processes d
 <summary>Output files</summary>
 
 - `sampleID/sampleID.sv.vcf.gz`: vcf format file with merged SV calls for all selected callers.
-- `sampleID/sampleID.sv.vcf.gz`: tabix index for the vcf format file with merged SV calls for all selected callers.
+- `sampleID/sampleID.sv.vcf.gz.tbi`: tabix index for the vcf format file with merged SV calls for all selected callers.
 
 </details>
 
@@ -36,8 +36,8 @@ SV calling runs all selected callers individually and merges the calls after. Op
 
 - `sampleID/delly/`
   - `sampleID.delly.vcf.gz`: vcf format file with SV calls for Delly.
- - `sampleID.delly.vcf.gz.tbi`: tabix index for the vcf format file with SV calls for Delly.
-  
+- `sampleID.delly.vcf.gz.tbi`: tabix index for the vcf format file with SV calls for Delly.
+
 </details>
 
 [Delly](https://github.com/dellytools/delly) is an integrated structural variant (SV) prediction method that can discover, genotype and visualize deletions, tandem duplications, inversions and translocations at single-nucleotide resolution in short-read and long-read massively parallel sequencing data. It uses paired-ends, split-reads and read-depth to sensitively and accurately delineate genomic rearrangements throughout the genome.
@@ -49,12 +49,12 @@ SV calling runs all selected callers individually and merges the calls after. Op
 
 - `sampleID/manta/`
   - `sampleID.manta.vcf.gz`: vcf format file with SV calls for Manta.
- - `sampleID.manta.vcf.gz.tbi`: tabix index for the vcf format file with SV calls for Manta.
+- `sampleID.manta.vcf.gz.tbi`: tabix index for the vcf format file with SV calls for Manta.
 
  </details>
 
- [Manta](https://github.com/Illumina/manta) calls structural variants (SVs) and indels from mapped paired-end sequencing reads. It is optimized for analysis of germline variation in small sets of individuals and somatic variation in tumor/normal sample pairs. Manta discovers, assembles and scores large-scale SVs, medium-sized indels and large insertions within a single efficient workflow. The method is designed for rapid analysis on standard compute hardware: NA12878 at 50x genomic coverage is analyzed in less than 20 minutes on a 20 core server, and most WGS tumor/normal analyses can be completed within 2 hours. Manta combines paired and split-read evidence during SV discovery and scoring to improve accuracy, but does not require split-reads or successful breakpoint assemblies to report a variant in cases where there is strong evidence otherwise. It provides scoring models for germline variants in small sets of diploid samples and somatic variants in matched tumor/normal sample pairs. There is experimental support for analysis of unmatched tumor samples as well. Manta accepts input read mappings from BAM or CRAM files and reports all SV and indel inferences in VCF 4.1 format. See the user guide for a full description of capabilities and limitations.
-  
+[Manta](https://github.com/Illumina/manta) calls structural variants (SVs) and indels from mapped paired-end sequencing reads. It is optimized for analysis of germline variation in small sets of individuals and somatic variation in tumor/normal sample pairs. Manta discovers, assembles and scores large-scale SVs, medium-sized indels and large insertions within a single efficient workflow. The method is designed for rapid analysis on standard compute hardware: NA12878 at 50x genomic coverage is analyzed in less than 20 minutes on a 20 core server, and most WGS tumor/normal analyses can be completed within 2 hours. Manta combines paired and split-read evidence during SV discovery and scoring to improve accuracy, but does not require split-reads or successful breakpoint assemblies to report a variant in cases where there is strong evidence otherwise. It provides scoring models for germline variants in small sets of diploid samples and somatic variants in matched tumor/normal sample pairs. There is experimental support for analysis of unmatched tumor samples as well. Manta accepts input read mappings from BAM or CRAM files and reports all SV and indel inferences in VCF 4.1 format. See the user guide for a full description of capabilities and limitations.
+
 - [Smoove](https://github.com/brentp/smoove)
 
 <details markdown="1">
@@ -62,11 +62,11 @@ SV calling runs all selected callers individually and merges the calls after. Op
 
 - `sampleID/smoove/`
   - `sampleID.smoove.vcf.gz`: vcf format file with SV calls for Smoove.
- - `sampleID.smoove.vcf.gz.tbi`: tabix index for the vcf format file with SV calls for Smoove.
+- `sampleID.smoove.vcf.gz.tbi`: tabix index for the vcf format file with SV calls for Smoove.
 
  </details>
 
- [Smoove](https://github.com/brentp/smoove) simplifies and speeds calling and genotyping SVs for short reads. It also improves specificity by removing many spurious alignment signals that are indicative of low-level noise and often contribute to spurious calls. It wraps existing software and adds some internal read-filtering to simplify calling and genotyping structural variants. It parallelizes each step as it can, for example, it streams lumpy output directly to multiple svtyper processes for genotyping. 
+[Smoove](https://github.com/brentp/smoove) simplifies and speeds calling and genotyping SVs for short reads. It also improves specificity by removing many spurious alignment signals that are indicative of low-level noise and often contribute to spurious calls. It wraps existing software and adds some internal read-filtering to simplify calling and genotyping structural variants. It parallelizes each step as it can, for example, it streams lumpy output directly to multiple svtyper processes for genotyping.
 
 ### CNV calling
 
@@ -74,7 +74,7 @@ SV calling runs all selected callers individually and merges the calls after. Op
 <summary>Output files</summary>
 
 - `sampleID/sampleID.cnv.vcf.gz`: vcf format file with merged CNV calls for all selected callers.
-- `sampleID/sampleID.cnv.vcf.gz`: tabix index for the vcf format file with merged CNV calls for all selected callers.
+- `sampleID/sampleID.cnv.vcf.gz.tbi`: tabix index for the vcf format file with merged CNV calls for all selected callers.
 
 </details>
 
@@ -86,13 +86,13 @@ CNV calling runs all selected callers individually and merges the calls after. O
 <summary>Output files</summary>
 
 - `sampleID/wisecondorx/`
- - `sampleID.wisecondorx.vcf.gz`: vcf format file with CNV calls for WisecondorX.
- - `sampleID.wisecondorx.vcf.gz.tbi`: tabix index for the vcf format file with CNV calls for WisecondorX.
- - `sampleID.wisecondorx_aberrations.bed`: bed format file with aberrant segments.
- - `sampleID.wisecondorx_bins.bed`: bed format file with bin-wise information.
- - `sampleID.wisecondorx_segments.bed`: bed format file with segment-wise information.
- - `sampleID/chr1-X.png`: copy number profiles for every chromosome.
- - `sampleID/genome_wide.png`: genome-wide copy number profiles.
+- `sampleID.wisecondorx.vcf.gz`: vcf format file with CNV calls for WisecondorX.
+- `sampleID.wisecondorx.vcf.gz.tbi`: tabix index for the vcf format file with CNV calls for WisecondorX.
+- `sampleID.wisecondorx_aberrations.bed`: bed format file with aberrant segments.
+- `sampleID.wisecondorx_bins.bed`: bed format file with bin-wise information.
+- `sampleID.wisecondorx_segments.bed`: bed format file with segment-wise information.
+- `sampleID/chr1-X.png`: copy number profiles for every chromosome.
+- `sampleID/genome_wide.png`: genome-wide copy number profiles.
 
 </details>
 
@@ -104,17 +104,17 @@ After extensively comparing different (shallow) whole-genome sequencing-based co
 <summary>Output files</summary>
 
 - `sampleID/qdnaseq/`
- - `sampleID.qdnaseq.abberations.bed`: bed format file with aberrant copy numbers.
- - `sampleID.qdnaseq.bed`: bed format file with copy numbers.
- - `sampleID.qdnaseq.cna`: file with bin-wise information.
- - `sampleID.qdnaseq.vcf.gz`: vcf format file with CNV calls for QDNAseq.
- - `sampleID.qdnaseq.vcf.gz.tbi`: tabix index for the vcf format file with CNV calls for QDNAseq.
- - `sampleID.qdnaseq_segments.txt`: file with segment-wise information.
- - `statistics.out`: statistics report. 
-  
+- `sampleID.qdnaseq.abberations.bed`: bed format file with aberrant copy numbers.
+- `sampleID.qdnaseq.bed`: bed format file with copy numbers.
+- `sampleID.qdnaseq.cna`: file with bin-wise information.
+- `sampleID.qdnaseq.vcf.gz`: vcf format file with CNV calls for QDNAseq.
+- `sampleID.qdnaseq.vcf.gz.tbi`: tabix index for the vcf format file with CNV calls for QDNAseq.
+- `sampleID.qdnaseq_segments.txt`: file with segment-wise information.
+- `statistics.out`: statistics report.
+
 </details>
 
-Quantitative DNA sequencing for chromosomal aberrations. The genome is divided into non-overlapping fixed-sized bins, number of sequence reads in each counted, adjusted with a simultaneous two-dimensional loess correction for sequence mappability and GC content, and filtered to remove spurious regions in the genome. Downstream steps of segmentation and calling are also implemented via packages DNAcopy and CGHcall, respectively. 
+Quantitative DNA sequencing for chromosomal aberrations. The genome is divided into non-overlapping fixed-sized bins, number of sequence reads in each counted, adjusted with a simultaneous two-dimensional loess correction for sequence mappability and GC content, and filtered to remove spurious regions in the genome. Downstream steps of segmentation and calling are also implemented via packages DNAcopy and CGHcall, respectively.
 
 ### RRE calling
 
@@ -122,7 +122,7 @@ Quantitative DNA sequencing for chromosomal aberrations. The genome is divided i
 <summary>Output files</summary>
 
 - `sampleID/sampleID.repeats.vcf.gz`: vcf format file with merged RRE calls for all selected callers.
-- `sampleID/sampleID.repeats.vcf.gz`: tabix index for the vcf format file with merged RRE calls for all selected callers.
+- `sampleID/sampleID.repeats.vcf.gz.tbi`: tabix index for the vcf format file with merged RRE calls for all selected callers.
 
 </details>
 
@@ -136,7 +136,7 @@ RRE calling runs all selected callers individually and merges the calls after. O
 <summary>Output files</summary>
 
 - `sampleID/sampleID.expansionhunter.vcf.gz`: vcf format file with RRE calls for ExpansionHunter.
-- `sampleID/sampleID.expansionhunter.vcf.gz`: tabix index for the vcf format file with RRE calls for ExpansionHunter.
+- `sampleID/sampleID.expansionhunter.vcf.gz.tbi`: tabix index for the vcf format file with RRE calls for ExpansionHunter.
 
 </details>
 
@@ -147,8 +147,8 @@ There are a number of regions in the human genome consisting of repetitions of s
 <details markdown="1">
 <summary>Output files</summary>
 
-- `sampleID/sampleID.sv.vcf.gz`: vcf format file with merged and annotated SV calls for all selected callers.
-- `sampleID/sampleID.sv.vcf.gz`: tabix index for the vcf format file with merged and annotated SV calls for all selected callers.
+- `sampleID/sampleID.sv.annotated.vcf.gz`: vcf format file with merged and annotated SV calls for all selected callers.
+- `sampleID/sampleID.sv.annotated.vcf.gz.tbi`: tabix index for the vcf format file with merged and annotated SV calls for all selected callers.
 
 </details>
 
@@ -158,14 +158,14 @@ SV annotation runs each annotation method individually and merges their output a
 
 </details>
 
-[AnnotSV](https://github.com/lgmgeo/AnnotSV)  is a program designed for annotating and ranking Structural Variations (SV). This tool compiles functionally, regulatory and clinically relevant information and aims at providing annotations useful to i. interpret SV potential pathogenicity and ii. filter out SV potential false positives. Different types of SV exist including deletions, duplications, insertions, inversions, translocations or more complex rearrangements. They can be either balanced or unbalanced. When unbalanced and resulting in a gain or loss of material, they are called Copy Number Variations (CNV). CNV can be described by coordinates on one chromosome, with the start and end positions of the SV (deletions, insertions, duplications).Complex rearrangements with several breakends can arbitrary be summarized as a set of novel adjacencies, as described
+[AnnotSV](https://github.com/lgmgeo/AnnotSV) is a program designed for annotating and ranking Structural Variations (SV). This tool compiles functionally, regulatory and clinically relevant information and aims at providing annotations useful to i. interpret SV potential pathogenicity and ii. filter out SV potential false positives. Different types of SV exist including deletions, duplications, insertions, inversions, translocations or more complex rearrangements. They can be either balanced or unbalanced. When unbalanced and resulting in a gain or loss of material, they are called Copy Number Variations (CNV). CNV can be described by coordinates on one chromosome, with the start and end positions of the SV (deletions, insertions, duplications).Complex rearrangements with several breakends can arbitrary be summarized as a set of novel adjacencies, as described
 in the Variant Call Format specification VCFv4.3.
 
 - [ensembl VEP](https://www.ensembl.org/info/docs/tools/vep/index.html)
 
 </details>
 
-[ensembl VEP](https://www.ensembl.org/info/docs/tools/vep/index.html) determines the effect of your variants (SNPs, insertions, deletions, CNVs or structural variants) on genes, transcripts, and protein sequence, as well as regulatory regions. 
+[ensembl VEP](https://www.ensembl.org/info/docs/tools/vep/index.html) determines the effect of your variants (SNPs, insertions, deletions, CNVs or structural variants) on genes, transcripts, and protein sequence, as well as regulatory regions.
 
 ### MultiQC
 

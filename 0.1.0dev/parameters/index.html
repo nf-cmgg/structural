@@ -74,7 +74,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#parameters" class="md-skip">
+        <a href="#nf-cmggstructural-pipeline-parameters" class="md-skip">
           Skip to content
         </a>
       
@@ -655,7 +655,7 @@
   
 
 
-<h1 id="parameters">Parameters</h1>
+<h1 id="nf-cmggstructural-pipeline-parameters">nf-cmgg/structural pipeline parameters</h1>
 <p>A nextflow pipeline for calling structural variants</p>
 <h2 id="inputoutput-options">Input/output options</h2>
 <p>Define where the pipeline should find input data and save output data.</p>
@@ -1067,15 +1067,76 @@
 </table>
 <h2 id="pipeline-specific-options">Pipeline specific options</h2>
 <p>Options specific to the execution of this pipeline</p>
-<p>| Parameter             | Description                                                                                                                                                                                     | Type      | Default | Required | Hidden                                                                                                                              |
-| --------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------- | ------- | -------- | ----------------------------------------------------------------------------------------------------------------------------------- | -------- | ---------------------------------------------- | ---- | --- |
-| <code>callers</code>             | A comma-seperated list of callers to use. Can be one or more these: smoove                                                                                                                      | delly     | manta   | gridss   | expansionhunter. At the moment Gridss runs very slowly compared to all other tools so it's only advised to use it when it's needed. | <code>string</code> | manta,smoove,delly,expansionhunter,wisecondorx | True |     |
-| <code>output_callers</code>      | Output the VCF files from different callers. Warning: This produces a lot of additional output and should only be used for testing purposes                                                     | <code>boolean</code> |         |          |                                                                                                                                     |
-| <code>sv_callers_support</code>  | The minimum amount of SV callers that should detect a variant. All variants that have a lower amount of callers supporting it, will be removed. (Only used when more than one caller is given)  | <code>integer</code> | 1       |          |                                                                                                                                     |
-| <code>cnv_callers_support</code> | The minimum amount of CNV callers that should detect a variant. All variants that have a lower amount of callers supporting it, will be removed. (Only used when more than one caller is given) | <code>integer</code> | 1       |          |                                                                                                                                     |
-| <code>annotate</code>            | Runs the annotation with Ensembl VEP when true                                                                                                                                                  | <code>boolean</code> |         |          |                                                                                                                                     |
-| <code>concat_output</code>       | Also output a concatenated VCF with all types analysed included (with the exception of CNVs)                                                                                                    | <code>boolean</code> |         |          |                                                                                                                                     |
-| <code>annotations_filter</code>  | The filter arguments to use after annotating. e.g. to filter out common variants.                                                                                                               | <code>string</code>  |         |          |                                                                                                                                     |</p>
+<table>
+<thead>
+<tr>
+<th>Parameter</th>
+<th>Description</th>
+<th>Type</th>
+<th>Default</th>
+<th>Required</th>
+<th>Hidden</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>callers</code></td>
+<td>A comma-seperated list of callers to use. Can be one or more these: smoove</td>
+<td>delly</td>
+<td>manta</td>
+<td>gridss</td>
+<td>expansionhunter. At the moment Gridss runs very slowly compared to all other tools so it's only advised to use it when it's needed.</td>
+</tr>
+<tr>
+<td><code>output_callers</code></td>
+<td>Output the VCF files from different callers. Warning: This produces a lot of additional output and should only be used for testing purposes</td>
+<td><code>boolean</code></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td><code>sv_callers_support</code></td>
+<td>The minimum amount of SV callers that should detect a variant. All variants that have a lower amount of callers supporting it, will be removed. (Only used when more than one caller is given)</td>
+<td><code>integer</code></td>
+<td>1</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td><code>cnv_callers_support</code></td>
+<td>The minimum amount of CNV callers that should detect a variant. All variants that have a lower amount of callers supporting it, will be removed. (Only used when more than one caller is given)</td>
+<td><code>integer</code></td>
+<td>1</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td><code>annotate</code></td>
+<td>Runs the annotation with Ensembl VEP when true</td>
+<td><code>boolean</code></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td><code>concat_output</code></td>
+<td>Also output a concatenated VCF with all types analysed included (with the exception of CNVs)</td>
+<td><code>boolean</code></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td><code>annotations_filter</code></td>
+<td>The filter arguments to use after annotating. e.g. to filter out common variants.</td>
+<td><code>string</code></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+</tbody>
+</table>
 <h2 id="delly-parameters">Delly parameters</h2>
 <p>Options specific for the Delly execution</p>
 <table>
@@ -1316,7 +1377,7 @@
 <tbody>
 <tr>
 <td><code>vcfanno_toml</code></td>
-<td>The full path to the AnnotSV config TOML file. This file will be used to dynamically overwrite default configs for this pipeline run</td>
+<td>The full path to the VCFanno config TOML file. This file will be used to dynamically overwrite default configs for this pipeline run</td>
 <td><code>string</code></td>
 <td></td>
 <td></td>

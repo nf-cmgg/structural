@@ -8,8 +8,8 @@
                 [
                     "PosCon1.cnv.vcf.gz",
                     "PosCon1.cnv.vcf.gz.tbi",
-                    "PosCon1.repeats.vcf.gz",
-                    "PosCon1.repeats.vcf.gz.tbi",
+                    "PosCon1.expansionhunter.vcf.gz",
+                    "PosCon1.expansionhunter.vcf.gz.tbi",
                     "PosCon1.sv.vcf.gz",
                     "PosCon1.sv.vcf.gz.tbi",
                     "PosCon1.wisecondorx_aberrations.bed",
@@ -23,8 +23,8 @@
                 [
                     "PosCon3.cnv.vcf.gz",
                     "PosCon3.cnv.vcf.gz.tbi",
-                    "PosCon3.repeats.vcf.gz",
-                    "PosCon3.repeats.vcf.gz.tbi",
+                    "PosCon3.expansionhunter.vcf.gz",
+                    "PosCon3.expansionhunter.vcf.gz.tbi",
                     "PosCon3.sv.vcf.gz",
                     "PosCon3.sv.vcf.gz.tbi",
                     "PosCon3.wisecondorx_aberrations.bed",
@@ -52,6 +52,6 @@
             "nf-test": "0.8.4",
             "nextflow": "24.02.0"
         },
-        "timestamp": "2024-03-13T10:25:11.463070353"
+        "timestamp": "2024-03-29T10:27:33.692986213"
     }
 }

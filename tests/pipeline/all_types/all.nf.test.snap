@@ -8,12 +8,12 @@
                 [
                     "PosCon1.cnv.vcf.gz",
                     "PosCon1.cnv.vcf.gz.tbi",
+                    "PosCon1.expansionhunter.vcf.gz",
+                    "PosCon1.expansionhunter.vcf.gz.tbi",
                     "PosCon1.qdnaseq.abberations.bed",
                     "PosCon1.qdnaseq.bed",
                     "PosCon1.qdnaseq.cna",
                     "PosCon1.qdnaseq_segments.txt",
-                    "PosCon1.repeats.vcf.gz",
-                    "PosCon1.repeats.vcf.gz.tbi",
                     "PosCon1.sv.vcf.gz",
                     "PosCon1.sv.vcf.gz.tbi",
                     "PosCon1.wisecondorx_aberrations.bed",
@@ -28,12 +28,12 @@
                 [
                     "PosCon2.cnv.vcf.gz",
                     "PosCon2.cnv.vcf.gz.tbi",
+                    "PosCon2.expansionhunter.vcf.gz",
+                    "PosCon2.expansionhunter.vcf.gz.tbi",
                     "PosCon2.qdnaseq.abberations.bed",
                     "PosCon2.qdnaseq.bed",
                     "PosCon2.qdnaseq.cna",
                     "PosCon2.qdnaseq_segments.txt",
-                    "PosCon2.repeats.vcf.gz",
-                    "PosCon2.repeats.vcf.gz.tbi",
                     "PosCon2.sv.vcf.gz",
                     "PosCon2.sv.vcf.gz.tbi",
                     "PosCon2.wisecondorx_aberrations.bed",
@@ -48,12 +48,12 @@
                 [
                     "PosCon3.cnv.vcf.gz",
                     "PosCon3.cnv.vcf.gz.tbi",
+                    "PosCon3.expansionhunter.vcf.gz",
+                    "PosCon3.expansionhunter.vcf.gz.tbi",
                     "PosCon3.qdnaseq.abberations.bed",
                     "PosCon3.qdnaseq.bed",
                     "PosCon3.qdnaseq.cna",
                     "PosCon3.qdnaseq_segments.txt",
-                    "PosCon3.repeats.vcf.gz",
-                    "PosCon3.repeats.vcf.gz.tbi",
                     "PosCon3.sv.vcf.gz",
                     "PosCon3.sv.vcf.gz.tbi",
                     "PosCon3.wisecondorx_aberrations.bed",
@@ -68,12 +68,12 @@
                 [
                     "PosCon4.cnv.vcf.gz",
                     "PosCon4.cnv.vcf.gz.tbi",
+                    "PosCon4.expansionhunter.vcf.gz",
+                    "PosCon4.expansionhunter.vcf.gz.tbi",
                     "PosCon4.qdnaseq.abberations.bed",
                     "PosCon4.qdnaseq.bed",
                     "PosCon4.qdnaseq.cna",
                     "PosCon4.qdnaseq_segments.txt",
-                    "PosCon4.repeats.vcf.gz",
-                    "PosCon4.repeats.vcf.gz.tbi",
                     "PosCon4.sv.vcf.gz",
                     "PosCon4.sv.vcf.gz.tbi",
                     "PosCon4.wisecondorx_aberrations.bed",
@@ -104,7 +104,7 @@
             "nf-test": "0.8.4",
             "nextflow": "24.02.0"
         },
-        "timestamp": "2024-03-13T11:06:54.123683703"
+        "timestamp": "2024-03-29T09:29:12.284680489"
     },
     "concat": {
         "content": [

@@ -1,3 +1,5 @@
+![pipeline_logo](docs/images/pipeline_logo_full.png)
+
 [![GitHub Actions CI Status](https://github.com/nf-cmgg/structural/actions/workflows/ci.yml/badge.svg)](https://github.com/nf-cmgg/structural/actions/workflows/ci.yml)
 [![GitHub Actions Linting Status](https://github.com/nf-cmgg/structural/actions/workflows/linting.yml/badge.svg)](https://github.com/nf-cmgg/structural/actions/workflows/linting.yml)
 [![nf-test](https://img.shields.io/badge/unit_tests-nf--test-337ab7.svg)](https://www.nf-test.com)

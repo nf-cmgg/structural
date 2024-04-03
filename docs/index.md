@@ -3,6 +3,8 @@ title: nf-cmgg/structural
 description: A bioinformatics best-practice analysis pipeline for calling structural variants (SVs), copy number variants (CNVs) and repeat region expansions (RREs) from short DNA reads
 ---
 
+![pipeline_logo](images/pipeline_logo_full.png)
+
 ## Introduction
 
 **nf-cmgg/structural** is a bioinformatics best-practice analysis pipeline for calling structural variants (SVs), copy number variants (CNVs) and repeat region expansions (RREs) from short DNA reads. The pipeline handles the calling of the variants and postprocessing (filtering, annotating...)
@@ -29,17 +31,14 @@ nextflow run nf-cmgg/structural \
 ```
 
 !!! warning
-Please provide pipeline parameters via the CLI or Nextflow `-params-file` option. Custom config files including those
-provided by the `-c` Nextflow option can be used to provide any configuration _**except for parameters**_;
-see [docs](https://nf-co.re/usage/configuration#custom-configuration-files).
+
+    Please provide pipeline parameters via the CLI or Nextflow `-params-file` option. Custom config files including those
+    provided by the `-c` Nextflow option can be used to provide any configuration _**except for parameters**_;
+    see [docs](https://nf-co.re/usage/configuration#custom-configuration-files).
 
 ## Documentation
 
 The nf-cmgg/structural pipeline comes with documentation about the pipeline [usage](usage.md) and [output](output.md).
-
-!!! warning
-Please provide pipeline parameters via the CLI or Nextflow `-params-file` option. Custom config files including those provided by the `-c` Nextflow option can be used to provide any configuration _**except for parameters**_;
-see [docs](https://nf-co.re/usage/configuration#custom-configuration-files).
 
 ## Credits
 

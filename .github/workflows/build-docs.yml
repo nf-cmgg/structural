@@ -37,9 +37,6 @@ jobs:
         run: pip install mkdocs-material pymdown-extensions pillow cairosvg mike
       - name: Build docs
         run: |
-          if [[ ${{ env.pipeline_version }} == "dev" ]]; then
-            mike deploy --push ${{ env.pipeline_version }}
-          else
-            mike deploy --push --update-aliases ${{ env.pipeline_version }} latest
+          [[ ${{ env.pipeline_version }} == "dev" ]] && mike deploy --push ${{ env.pipeline_version }} || mike deploy --push --update-aliases ${{ env.pipeline_version }} latest
       - name: Set default docs
         run: mike set-default --push latest

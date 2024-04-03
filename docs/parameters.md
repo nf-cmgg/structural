@@ -153,4 +153,4 @@ Options for the execution of AnnotSV
 |-----------|-----------|-----------|-----------|-----------|-----------|
 | `vcfanno_toml` | The full path to the VCFanno config TOML file. This file will be used to dynamically overwrite default configs for this pipeline run | `string` |  |  |  |
 | `vcfanno_lua` | The full path to a lua script for VCFanno | `string` |  |  |  |
-| `vcfanno_resources` | A comma-delimited list of files referenced in the VCFanno config. This can contain glob patterns as well. Place all filenames together between double qoutes to not cause any irregularities | `string` |  |  |  |
+| `vcfanno_resources` | A comma-delimited list of files referenced in the VCFanno config, as well as their indices. This can contain glob patterns as well. Place all filenames together between double qoutes to not cause any irregularities | `string` |  |  |  |

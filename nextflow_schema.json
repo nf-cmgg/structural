@@ -114,7 +114,7 @@
                 "blacklist": {
                     "type": "string",
                     "pattern": "^\\S+\\.bed$",
-                    "description": "Path to the blacklist file",
+                    "description": "Path to the blacklist BED file",
                     "exists": true,
                     "format": "file-path",
                     "mimetype": "text/plain"
@@ -367,18 +367,18 @@
                 },
                 "annotate": {
                     "type": "boolean",
-                    "description": "Runs the annotation with Ensembl VEP when true"
+                    "description": "Run the annotation with Ensembl VEP and AnnotSV (and optionally VCFanno)."
                 },
                 "concat_output": {
                     "type": "boolean",
-                    "description": "Also output a concatenated VCF with all types analysed included (with the exception of CNVs)"
+                    "description": "Also output a concatenated VCF with all variant types analysed included."
                 },
                 "annotations_filter": {
                     "type": "string",
-                    "description": "The filter arguments to use after annotating. e.g. to filter out common variants."
+                    "description": "The filter arguments to use after annotating.",
+                    "help_text": "A common use case for this is to filter out common variants. You can supply a VCF file with common variants to VCFanno and filter out the matching variants using this parameter"
                 }
-            },
-            "required": ["callers"]
+            }
         },
         "delly_parameters": {
             "title": "Delly parameters",
@@ -426,13 +426,13 @@
                 "qdnaseq_bin_size": {
                     "type": "integer",
                     "default": 100000,
-                    "description": "The bin size to use for qdnaseq",
+                    "description": "The bin size to use for qdnaseq.",
                     "enum": [5000, 50000, 100000, 500000]
                 },
                 "qdnaseq_cnv_ratio": {
                     "type": "number",
                     "default": 0.5,
-                    "description": "The minimum value of the absolute cnv ratio for a variant to be considered a CNV"
+                    "description": "The minimum value of the absolute cnv ratio for a variant to be considered a CNV."
                 }
             }
         },
@@ -500,7 +500,8 @@
             "properties": {
                 "annotsv_annotations": {
                     "type": "string",
-                    "description": "The full path to the AnnotSV annotations folder. This can be a tarzipped folder. When --annotate is set to true and this isn't given, the annotations will be downloaded automatically (this is not recommended though)",
+                    "description": "The full path to the AnnotSV annotations folder. This can be a tarzipped folder.",
+                    "help_text": "When --annotate is set to true and this isn't given, the annotations will be downloaded automatically (this is not recommended though).",
                     "exists": true,
                     "format": "path"
                 },
@@ -522,7 +523,7 @@
                     "type": "string",
                     "default": "annotsv_annotated",
                     "hidden": true,
-                    "description": "The default name of the AnnotSV VCFs"
+                    "description": "The default name of the AnnotSV VCFs. This should not be changed unless absolutely necessary."
                 }
             }
         },
@@ -550,7 +551,8 @@
                 },
                 "vcfanno_resources": {
                     "type": "string",
-                    "description": "A comma-delimited list of files referenced in the VCFanno config. This can contain glob patterns as well. Place all filenames together between double qoutes to not cause any irregularities"
+                    "description": "A comma-delimited list of files referenced in the VCFanno config and their indices.",
+                    "help_text": "This can contain glob patterns as well. Place all filenames together between double qoutes to not cause any irregularities"
                 }
             }
         }

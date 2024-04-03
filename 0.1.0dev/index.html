@@ -18,7 +18,7 @@
       
       
       <link rel="icon" href="assets/images/favicon.png">
-      <meta name="generator" content="mkdocs-1.5.3, mkdocs-material-9.5.15">
+      <meta name="generator" content="mkdocs-1.5.3, mkdocs-material-9.5.17">
     
     
       
@@ -26,7 +26,7 @@
       
     
     
-      <link rel="stylesheet" href="assets/stylesheets/main.7e359304.min.css">
+      <link rel="stylesheet" href="assets/stylesheets/main.bcfcd587.min.css">
       
         
         <link rel="stylesheet" href="assets/stylesheets/palette.06af60db.min.css">
@@ -543,6 +543,7 @@
 
   <h1>Home</h1>
 
+<p><img alt="pipeline_logo" src="images/pipeline_logo_full.png" /></p>
 <h2 id="introduction">Introduction</h2>
 <p><strong>nf-cmgg/structural</strong> is a bioinformatics best-practice analysis pipeline for calling structural variants (SVs), copy number variants (CNVs) and repeat region expansions (RREs) from short DNA reads. The pipeline handles the calling of the variants and postprocessing (filtering, annotating...)</p>
 <p>The pipeline is built using <a href="https://www.nextflow.io">Nextflow</a>, a workflow tool to run tasks across multiple compute infrastructures in a very portable manner. It uses Docker/Singularity containers making installation trivial and results highly reproducible. The <a href="https://www.nextflow.io/docs/latest/dsl2.html">Nextflow DSL2</a> implementation of this pipeline uses one container per process which makes it much easier to maintain and update software dependencies. Where possible, these processes have been submitted to and installed from <a href="https://github.com/nf-core/modules">nf-core/modules</a> in order to make them available to all Nextflow pipelines!</p>
@@ -562,17 +563,12 @@ with <code>-profile test</code> before running the workflow on actual data.</p>
 </span></code></pre></div>
 <div class="admonition warning">
 <p class="admonition-title">Warning</p>
-</div>
 <p>Please provide pipeline parameters via the CLI or Nextflow <code>-params-file</code> option. Custom config files including those
 provided by the <code>-c</code> Nextflow option can be used to provide any configuration <em><strong>except for parameters</strong></em>;
 see <a href="https://nf-co.re/usage/configuration#custom-configuration-files">docs</a>.</p>
+</div>
 <h2 id="documentation">Documentation</h2>
 <p>The nf-cmgg/structural pipeline comes with documentation about the pipeline <a href="usage/">usage</a> and <a href="output/">output</a>.</p>
-<div class="admonition warning">
-<p class="admonition-title">Warning</p>
-</div>
-<p>Please provide pipeline parameters via the CLI or Nextflow <code>-params-file</code> option. Custom config files including those provided by the <code>-c</code> Nextflow option can be used to provide any configuration <em><strong>except for parameters</strong></em>;
-see <a href="https://nf-co.re/usage/configuration#custom-configuration-files">docs</a>.</p>
 <h2 id="credits">Credits</h2>
 <p>nf-cmgg/structural was originally written by Nicolas Vannieuwkerke and Mattias Van Heetvelde.</p>
 <h2 id="contributions-and-support">Contributions and Support</h2>
@@ -663,7 +659,7 @@ see <a href="https://nf-co.re/usage/configuration#custom-configuration-files">do
     <script id="__config" type="application/json">{"base": ".", "features": ["content.code.annotate", "content.code.copy", "navigation.instant", "navigation.top", "navigation.tracking", "navigation.sections", "navigation.footer", "search.share", "toc.follow"], "search": "assets/javascripts/workers/search.b8dbb3d2.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": {"provider": "mike"}}</script>
     
     
-      <script src="assets/javascripts/bundle.bd41221c.min.js"></script>
+      <script src="assets/javascripts/bundle.1e8ae164.min.js"></script>
       
     
   </body>

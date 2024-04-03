@@ -18,7 +18,7 @@
       
       
       <link rel="icon" href="../assets/images/favicon.png">
-      <meta name="generator" content="mkdocs-1.5.3, mkdocs-material-9.5.15">
+      <meta name="generator" content="mkdocs-1.5.3, mkdocs-material-9.5.17">
     
     
       
@@ -26,7 +26,7 @@
       
     
     
-      <link rel="stylesheet" href="../assets/stylesheets/main.7e359304.min.css">
+      <link rel="stylesheet" href="../assets/stylesheets/main.bcfcd587.min.css">
       
         
         <link rel="stylesheet" href="../assets/stylesheets/palette.06af60db.min.css">
@@ -953,8 +953,8 @@
 <p>Pipeline settings can be provided in a <code>yaml</code> or <code>json</code> file via <code>-params-file &lt;file&gt;</code>.</p>
 <div class="admonition warning">
 <p class="admonition-title">Warning</p>
-</div>
 <p>Do not use <code>-c &lt;file&gt;</code> to specify parameters as this will result in errors. Custom config files specified with <code>-c</code> must only be used for <a href="https://nf-co.re/docs/usage/configuration#tuning-workflow-resources">tuning process resource specifications</a>, other infrastructural tweaks (such as output directories), or module arguments (args).</p>
+</div>
 <p>The above pipeline run specified with a params file in yaml format:</p>
 <div class="language-bash highlight"><pre><span></span><code><span id="__span-9-1"><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a>nextflow<span class="w"> </span>run<span class="w"> </span>nf-cmgg/structural<span class="w"> </span>-profile<span class="w"> </span>docker<span class="w"> </span>-params-file<span class="w"> </span>params.yaml
 </span></code></pre></div>
@@ -975,20 +975,20 @@
 <p>To further assist in reproducbility, you can use share and re-use <a href="#running-the-pipeline">parameter files</a> to repeat pipeline runs with the same settings without having to write out a command with every single parameter.</p>
 <div class="admonition tip">
 <p class="admonition-title">Tip</p>
-</div>
 <p>If you wish to share such profile (such as upload as supplementary material for academic publications), make sure to NOT include cluster specific paths to files, nor institutional specific profiles.</p>
+</div>
 <h2 id="core-nextflow-arguments">Core Nextflow arguments</h2>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
-</div>
 <p>These options are part of Nextflow and use a <em>single</em> hyphen (pipeline parameters use a double-hyphen).</p>
+</div>
 <h3 id="-profile"><code>-profile</code></h3>
 <p>Use this parameter to choose a configuration profile. Profiles can give configuration presets for different compute environments.</p>
 <p>Several generic profiles are bundled with the pipeline which instruct the pipeline to use software packaged using different methods (Docker, Singularity, Podman, Shifter, Charliecloud, Apptainer, Conda) - see below.</p>
 <div class="admonition info">
 <p class="admonition-title">Info</p>
-</div>
 <p>We highly recommend the use of Docker or Singularity containers for full pipeline reproducibility, however when this is not possible, Conda is also supported.</p>
+</div>
 <p>The pipeline also dynamically loads configurations from <a href="https://github.com/nf-core/configs">https://github.com/nf-core/configs</a> when it runs, making multiple config profiles for various institutional clusters available at run time. For more information and to see if your system is available in these configs please see the <a href="https://github.com/nf-core/configs#documentation">nf-core/configs documentation</a>.</p>
 <p>Note that multiple profiles can be loaded, for example: <code>-profile test,docker</code> - the order of arguments is important!
 They are loaded in sequence, so later profiles can overwrite earlier profiles.</p>
@@ -1157,7 +1157,7 @@ We recommend adding the following line to your environment to limit this (typica
     <script id="__config" type="application/json">{"base": "..", "features": ["content.code.annotate", "content.code.copy", "navigation.instant", "navigation.top", "navigation.tracking", "navigation.sections", "navigation.footer", "search.share", "toc.follow"], "search": "../assets/javascripts/workers/search.b8dbb3d2.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": {"provider": "mike"}}</script>
     
     
-      <script src="../assets/javascripts/bundle.bd41221c.min.js"></script>
+      <script src="../assets/javascripts/bundle.1e8ae164.min.js"></script>
       
     
   </body>

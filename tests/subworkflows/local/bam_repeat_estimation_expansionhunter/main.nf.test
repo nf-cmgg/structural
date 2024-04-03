@@ -1,0 +1,52 @@
+nextflow_workflow {
+
+    name "Test Workflow BAM_REPEAT_ESTIMATION_EXPANSIONHUNTER"
+    script "subworkflows/local/bam_repeat_estimation_expansionhunter/main.nf"
+    workflow "BAM_REPEAT_ESTIMATION_EXPANSIONHUNTER"
+    config "./nextflow.config"
+
+    tag "subworkflows"
+    tag "subworkflows_local"
+    tag "bam_repeat_estimation_expansionhunter"
+
+    test("homo_sapiens") {
+
+        when {
+            workflow {
+                """
+                input[0] = Channel.of([
+                    [id:"test", sample:"test", sex:"male"],
+                    file(params.cram1, checkIfExists: true),
+                    file(params.crai1, checkIfExists: true)
+                ])
+                input[1] = Channel.value([
+                    [id:"fasta"],
+                    file(params.fasta, checkIfExists: true)
+                ])
+                input[2] = Channel.value([
+                    [id:"fai"],
+                    file(params.fai, checkIfExists: true)
+                ])
+                input[3] = Channel.value([
+                    [id:"catalog"],
+                    file(params.expansionhunter_catalog, checkIfExists:true)
+                ])
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert workflow.success },
+                { assert snapshot(
+                    path(workflow.out.vcfs[0][1]).linesGzip[-4..-1],
+                    file(workflow.out.vcfs[0][2]).name,
+                    workflow.trace.succeeded().size(),
+                    workflow.trace.failed().size()
+                ).match() }
+            )
+        }
+
+    }
+
+}

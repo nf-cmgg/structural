@@ -1,0 +1,143 @@
+nextflow_workflow {
+
+    name "Test Workflow BAM_CNV_CALLING"
+    script "subworkflows/local/bam_cnv_calling/main.nf"
+    workflow "BAM_CNV_CALLING"
+
+    tag "subworkflows"
+    tag "subworkflows_local"
+    tag "bam_cnv_calling"
+
+    options "-stub"
+    config "./nextflow.config"
+
+    test("homo_sapiens - qdnaseq") {
+
+        when {
+            params {
+                callers = "qdnaseq"
+            }
+            workflow {
+                """
+                input[0] = Channel.of([
+                    [id:"test", sample:"test", sex:"male"],
+                    file(params.test_data['homo_sapiens']['illumina']['test_paired_end_sorted_cram'], checkIfExists: true),
+                    file(params.test_data['homo_sapiens']['illumina']['test_paired_end_sorted_cram_crai'], checkIfExists: true)
+                ])
+                input[1] = Channel.value([
+                    [id:"fasta"],
+                    file(params.test_data['homo_sapiens']['genome']['genome_fasta'], checkIfExists: true)
+                ])
+                input[2] = Channel.value([
+                    [id:"fai"],
+                    file(params.test_data['homo_sapiens']['genome']['genome_fasta_fai'], checkIfExists: true)
+                ])
+                input[3] = [[],[]]
+                input[4] = [[],[]]
+                input[5] = [[],[]]
+                input[6] = [[],[]]
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert workflow.success },
+                { assert snapshot(
+                    workflow.out.reports,
+                    workflow.out.vcfs[0].collect { it instanceof Map ? it : file(it).name },
+                    workflow.trace.succeeded().size(),
+                    workflow.trace.failed().size()
+                ).match() }
+            )
+        }
+
+    }
+
+    test("homo_sapiens - wisecondorx") {
+
+        when {
+            params {
+                callers = "wisecondorx"
+            }
+            workflow {
+                """
+                input[0] = Channel.of([
+                    [id:"test", sample:"test", sex:"male"],
+                    file(params.test_data['homo_sapiens']['illumina']['test_paired_end_sorted_cram'], checkIfExists: true),
+                    file(params.test_data['homo_sapiens']['illumina']['test_paired_end_sorted_cram_crai'], checkIfExists: true)
+                ])
+                input[1] = Channel.value([
+                    [id:"fasta"],
+                    file(params.test_data['homo_sapiens']['genome']['genome_fasta'], checkIfExists: true)
+                ])
+                input[2] = Channel.value([
+                    [id:"fai"],
+                    file(params.test_data['homo_sapiens']['genome']['genome_fasta_fai'], checkIfExists: true)
+                ])
+                input[3] = [[],[]]
+                input[4] = [[],[]]
+                input[5] = [[],[]]
+                input[6] = [[],[]]
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert workflow.success },
+                { assert snapshot(
+                    workflow.out.reports,
+                    workflow.out.vcfs[0].collect { it instanceof Map ? it : file(it).name },
+                    workflow.trace.succeeded().size(),
+                    workflow.trace.failed().size()
+                ).match() }
+            )
+        }
+
+    }
+
+    test("homo_sapiens - all cnv callers") {
+
+        when {
+            params {
+                callers = "qdnaseq,wisecondorx"
+            }
+            workflow {
+                """
+                input[0] = Channel.of([
+                    [id:"test", sample:"test", sex:"male"],
+                    file(params.test_data['homo_sapiens']['illumina']['test_paired_end_sorted_cram'], checkIfExists: true),
+                    file(params.test_data['homo_sapiens']['illumina']['test_paired_end_sorted_cram_crai'], checkIfExists: true)
+                ])
+                input[1] = Channel.value([
+                    [id:"fasta"],
+                    file(params.test_data['homo_sapiens']['genome']['genome_fasta'], checkIfExists: true)
+                ])
+                input[2] = Channel.value([
+                    [id:"fai"],
+                    file(params.test_data['homo_sapiens']['genome']['genome_fasta_fai'], checkIfExists: true)
+                ])
+                input[3] = [[],[]]
+                input[4] = [[],[]]
+                input[5] = [[],[]]
+                input[6] = [[],[]]
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert workflow.success },
+                { assert snapshot(
+                    workflow.out.reports,
+                    workflow.out.vcfs[0].collect { it instanceof Map ? it : file(it).name },
+                    workflow.trace.succeeded().size(),
+                    workflow.trace.failed().size()
+                ).match() }
+            )
+        }
+
+    }
+
+}

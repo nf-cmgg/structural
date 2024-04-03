@@ -1,0 +1,5 @@
+[[annotation]]
+file="GoNL_AF_genotyped_SVs.v6.1.20161013.vcf.gz"
+fields=["AF"]
+ops=["self"]
+names=["AF_goNL"]

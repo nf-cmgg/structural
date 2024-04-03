@@ -1,0 +1,3 @@
+#family_id	sample_id	father	mother	sex	phenotype
+test_family	NA12878K12_NVQ_034	NA24385D2_NVQ_034	0	1	1
+test_family	NA24385D2_NVQ_034	0	0	0	2

@@ -1,0 +1,74 @@
+{
+    "homo_sapiens - wisecondorx": {
+        "content": [
+            [
+                
+            ],
+            [
+                {
+                    "id": "test",
+                    "sample": "test",
+                    "sex": "male",
+                    "variant_type": "cnv"
+                },
+                "test.wisecondorx.vcf.gz",
+                "test.wisecondorx.vcf.gz.tbi"
+            ],
+            5,
+            0
+        ],
+        "meta": {
+            "nf-test": "0.8.4",
+            "nextflow": "24.02.0"
+        },
+        "timestamp": "2024-03-11T13:42:50.111774064"
+    },
+    "homo_sapiens - qdnaseq": {
+        "content": [
+            [
+                
+            ],
+            [
+                {
+                    "id": "test",
+                    "sample": "test",
+                    "sex": "male",
+                    "variant_type": "cnv"
+                },
+                "test.qdnaseq.vcf.gz",
+                "test.qdnaseq.vcf.gz.tbi"
+            ],
+            6,
+            0
+        ],
+        "meta": {
+            "nf-test": "0.8.4",
+            "nextflow": "24.02.0"
+        },
+        "timestamp": "2024-03-11T13:42:28.521257286"
+    },
+    "homo_sapiens - all cnv callers": {
+        "content": [
+            [
+                
+            ],
+            [
+                {
+                    "id": "test",
+                    "sample": "test",
+                    "sex": "male",
+                    "variant_type": "cnv"
+                },
+                "test.cnv.vcf.gz",
+                "test.cnv.vcf.gz.tbi"
+            ],
+            14,
+            0
+        ],
+        "meta": {
+            "nf-test": "0.8.4",
+            "nextflow": "24.02.0"
+        },
+        "timestamp": "2024-03-11T13:43:33.765890721"
+    }
+}

@@ -1,0 +1,46 @@
+nextflow_pipeline {
+
+    name "Test Workflow main.nf"
+    script "main.nf"
+
+    tag "pipeline"
+    tag "pipeline_repeats"
+
+    options "-stub"
+
+    test("one caller") {
+
+        when {
+            params {
+                outdir = "${outputDir}"
+                callers = "expansionhunter"
+                max_cpus   = 2
+                max_memory = '6.GB'
+                max_time   = '6.h'
+            }
+        }
+
+        then {
+            assertAll(
+                { assert workflow.success },
+                { assert snapshot(
+                    workflow.stdout,
+
+                    path("$outputDir")
+                        .list()
+                        .findAll {
+                            !it.toString().endsWith("pipeline_info")
+                        }
+                        .collect {
+                            it.list().collect { it.toString().split("/")[-1] }
+                        },
+                    path("$outputDir").list().collect{
+                        it.toString().split("/")[-1]
+                    }
+                ).match("expansionhunter")}
+            )
+        }
+
+    }
+
+}

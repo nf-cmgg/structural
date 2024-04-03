@@ -1,0 +1,45 @@
+{
+    "expansionhunter": {
+        "content": [
+            [
+                
+            ],
+            [
+                [
+                    "PosCon1.expansionhunter.vcf.gz",
+                    "PosCon1.expansionhunter.vcf.gz.tbi"
+                ],
+                [
+                    "PosCon2.expansionhunter.vcf.gz",
+                    "PosCon2.expansionhunter.vcf.gz.tbi"
+                ],
+                [
+                    "PosCon3.expansionhunter.vcf.gz",
+                    "PosCon3.expansionhunter.vcf.gz.tbi"
+                ],
+                [
+                    "PosCon4.expansionhunter.vcf.gz",
+                    "PosCon4.expansionhunter.vcf.gz.tbi"
+                ],
+                [
+                    "multiqc_data",
+                    "multiqc_plots",
+                    "multiqc_report.html"
+                ]
+            ],
+            [
+                "PosCon1",
+                "PosCon2",
+                "PosCon3",
+                "PosCon4",
+                "multiqc",
+                "pipeline_info"
+            ]
+        ],
+        "meta": {
+            "nf-test": "0.8.4",
+            "nextflow": "24.02.0"
+        },
+        "timestamp": "2024-03-29T09:22:45.491176272"
+    }
+}

@@ -1,17 +1,31 @@
-repository_type: pipeline
 lint:
   files_exist:
+    - CITATIONS.md
+    - docs/README.md
     - CODE_OF_CONDUCT.md
-    - assets/nf-core-nfcmggstructural_logo_light.png
-    - docs/images/nf-core-nfcmggstructural_logo_light.png
-    - docs/images/nf-core-nfcmggstructural_logo_dark.png
     - .github/ISSUE_TEMPLATE/config.yml
     - .github/workflows/awstest.yml
     - .github/workflows/awsfulltest.yml
+    - assets/nf-core-structural_logo_light.png
+    - docs/images/nf-core-structural_logo_light.png
+    - docs/images/nf-core-structural_logo_dark.png
   nextflow_config:
     - manifest.name
     - manifest.homePage
-  multiqc_config:
-    - report_comment
-  readme:
-    - nextflow_badge
+  files_unchanged:
+    - LICENSE
+    - .github/PULL_REQUEST_TEMPLATE.md
+    - .github/CONTRIBUTING.md
+    - .github/ISSUE_TEMPLATE/bug_report.yml
+    - .github/workflows/linting.yml
+    - assets/email_template.txt
+    - assets/email_template.html
+    - docs/README.md
+    - .prettierignore
+  actions_ci: false
+repository_type: pipeline
+template:
+  author: nvnieuwk
+  description: A bioinformatics best-practice analysis pipeline for calling structural variants (SVs), copy number variants (CNVs) and repeat region expansions (RREs) from short DNA reads.
+  name: structural
+  prefix: nf-cmgg

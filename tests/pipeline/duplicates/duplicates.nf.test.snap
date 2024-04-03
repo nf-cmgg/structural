@@ -1,0 +1,57 @@
+{
+    "duplicate of 2 lines + 1 sample": {
+        "content": [
+            [
+                
+            ],
+            [
+                [
+                    "PosCon1.cnv.vcf.gz",
+                    "PosCon1.cnv.vcf.gz.tbi",
+                    "PosCon1.expansionhunter.vcf.gz",
+                    "PosCon1.expansionhunter.vcf.gz.tbi",
+                    "PosCon1.sv.vcf.gz",
+                    "PosCon1.sv.vcf.gz.tbi",
+                    "PosCon1.wisecondorx_aberrations.bed",
+                    "PosCon1.wisecondorx_bins.bed",
+                    "PosCon1.wisecondorx_chr_statistics.txt",
+                    "PosCon1.wisecondorx_segments.bed",
+                    "chr1.png",
+                    "chr22.png",
+                    "genome_wide.png"
+                ],
+                [
+                    "PosCon3.cnv.vcf.gz",
+                    "PosCon3.cnv.vcf.gz.tbi",
+                    "PosCon3.expansionhunter.vcf.gz",
+                    "PosCon3.expansionhunter.vcf.gz.tbi",
+                    "PosCon3.sv.vcf.gz",
+                    "PosCon3.sv.vcf.gz.tbi",
+                    "PosCon3.wisecondorx_aberrations.bed",
+                    "PosCon3.wisecondorx_bins.bed",
+                    "PosCon3.wisecondorx_chr_statistics.txt",
+                    "PosCon3.wisecondorx_segments.bed",
+                    "chr1.png",
+                    "chr22.png",
+                    "genome_wide.png"
+                ],
+                [
+                    "multiqc_data",
+                    "multiqc_plots",
+                    "multiqc_report.html"
+                ]
+            ],
+            [
+                "PosCon1",
+                "PosCon3",
+                "multiqc",
+                "pipeline_info"
+            ]
+        ],
+        "meta": {
+            "nf-test": "0.8.4",
+            "nextflow": "24.02.0"
+        },
+        "timestamp": "2024-03-29T10:27:33.692986213"
+    }
+}

@@ -1,0 +1,49 @@
+nextflow_workflow {
+
+    name "Test Workflow BAM_VARIANT_CALLING_DELLY"
+    script "subworkflows/local/bam_variant_calling_delly/main.nf"
+    workflow "BAM_VARIANT_CALLING_DELLY"
+
+    tag "subworkflows"
+    tag "subworkflows_local"
+    tag "bam_variant_calling_delly"
+
+    config "./nextflow.config"
+
+    test("homo_sapiens") {
+
+        when {
+            workflow {
+                """
+                input[0] = Channel.of([
+                    [id:"test", sample:"test", sex:"male"],
+                    file(params.cram1, checkIfExists: true),
+                    file(params.crai1, checkIfExists: true)
+                ])
+                input[1] = Channel.value([
+                    [id:"fasta"],
+                    file(params.fasta, checkIfExists: true)
+                ])
+                input[2] = Channel.value([
+                    [id:"fai"],
+                    file(params.fai, checkIfExists: true)
+                ])
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert workflow.success },
+                { assert snapshot(
+                    path(workflow.out.delly_vcfs[0][1]).linesGzip[-4..-1],
+                    file(workflow.out.delly_vcfs[0][2]).name,
+                    workflow.trace.succeeded().size(),
+                    workflow.trace.failed().size()
+                ).match() }
+            )
+        }
+
+    }
+
+}

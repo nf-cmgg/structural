@@ -1,0 +1,153 @@
+nextflow_pipeline {
+
+    name "Test Workflow main.nf"
+    script "main.nf"
+
+    tag "pipeline"
+    tag "pipeline_families"
+
+    options "-stub"
+
+    test("one family of 3 samples - no concat") {
+
+        when {
+            params {
+                outdir = "${outputDir}"
+                input = "${baseDir}/tests/pipeline/families/samplesheet_family3.csv"
+                callers = "delly,smoove,manta,expansionhunter,qdnaseq,wisecondorx"
+                max_cpus   = 2
+                max_memory = '6.GB'
+                max_time   = '6.h'
+            }
+        }
+
+        then {
+            assertAll(
+                { assert workflow.success },
+                { assert snapshot(
+                    workflow.stdout,
+                    path("$outputDir")
+                        .list()
+                        .findAll {
+                            !it.toString().endsWith("pipeline_info")
+                        }
+                        .collect {
+                            it.list().collect { it.toString().split("/")[-1] }
+                        },
+                    path("$outputDir").list().collect{
+                        it.toString().split("/")[-1]
+                    }
+                ).match("family with 3 samples - no concat")}
+            )
+        }
+
+    }
+
+    test("one family of 3 samples - concat") {
+
+        when {
+            params {
+                outdir = "${outputDir}"
+                input = "${baseDir}/tests/pipeline/families/samplesheet_family3.csv"
+                callers = "delly,smoove,manta,expansionhunter,qdnaseq,wisecondorx"
+                max_cpus   = 2
+                max_memory = '6.GB'
+                max_time   = '6.h'
+                concat_output = true
+            }
+        }
+
+        then {
+            assertAll(
+                { assert workflow.success },
+                { assert snapshot(
+                    workflow.stdout,
+                    path("$outputDir")
+                        .list()
+                        .findAll {
+                            !it.toString().endsWith("pipeline_info")
+                        }
+                        .collect {
+                            it.list().collect { it.toString().split("/")[-1] }
+                        },
+                    path("$outputDir").list().collect{
+                        it.toString().split("/")[-1]
+                    }
+                ).match("family with 3 samples - concat")}
+            )
+        }
+
+    }
+
+    test("one family of 2 samples + 1 sample - no concat") {
+
+        when {
+            params {
+                outdir = "${outputDir}"
+                input = "${baseDir}/tests/pipeline/families/samplesheet_family2_sample1.csv"
+                callers = "delly,smoove,manta,expansionhunter,qdnaseq,wisecondorx"
+                max_cpus   = 2
+                max_memory = '6.GB'
+                max_time   = '6.h'
+            }
+        }
+
+        then {
+            assertAll(
+                { assert workflow.success },
+                { assert snapshot(
+                    workflow.stdout,
+                    path("$outputDir")
+                        .list()
+                        .findAll {
+                            !it.toString().endsWith("pipeline_info")
+                        }
+                        .collect {
+                            it.list().collect { it.toString().split("/")[-1] }
+                        },
+                    path("$outputDir").list().collect{
+                        it.toString().split("/")[-1]
+                    }
+                ).match("family with 2 samples + 1 sample - no concat")}
+            )
+        }
+
+    }
+
+    test("one family of 2 samples + 1 sample - concat") {
+
+        when {
+            params {
+                outdir = "${outputDir}"
+                input = "${baseDir}/tests/pipeline/families/samplesheet_family2_sample1.csv"
+                callers = "delly,smoove,manta,expansionhunter,qdnaseq,wisecondorx"
+                max_cpus   = 2
+                max_memory = '6.GB'
+                max_time   = '6.h'
+                concat_output = true
+            }
+        }
+
+        then {
+            assertAll(
+                { assert workflow.success },
+                { assert snapshot(
+                    workflow.stdout,
+                    path("$outputDir")
+                        .list()
+                        .findAll {
+                            !it.toString().endsWith("pipeline_info")
+                        }
+                        .collect {
+                            it.list().collect { it.toString().split("/")[-1] }
+                        },
+                    path("$outputDir").list().collect{
+                        it.toString().split("/")[-1]
+                    }
+                ).match("family with 2 samples + 1 sample - concat")}
+            )
+        }
+
+    }
+
+}

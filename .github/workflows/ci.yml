@@ -10,30 +10,81 @@ on:
 
 env:
   NXF_ANSI_LOG: false
+  AWS_ACCESS_KEY_ID: ${{ secrets.UGENT_S3_ACCESS_KEY }}
+  AWS_SECRET_ACCESS_KEY: ${{ secrets.UGENT_S3_SECRET_KEY }}
+
+concurrency:
+  group: "${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}"
+  cancel-in-progress: true
 
 jobs:
-  test:
-    name: Run pipeline with test data
+  test_all:
+    name: Run nf-test with ${{ matrix.test }}-${{ matrix.NXF_VER }}
     # Only run on push if this is the nf-core dev branch (merged PRs)
-    if: "${{ github.event_name != 'push' || (github.event_name == 'push' && github.repository == 'y/nfcmggstructural') }}"
+    if: "${{ github.event_name != 'push' || (github.event_name == 'push' && github.repository == 'nf-cmgg/structural') }}"
     runs-on: ubuntu-latest
     strategy:
       matrix:
         NXF_VER:
-          - "21.10.3"
+          - "23.10.0"
           - "latest-everything"
+        test:
+          - "pipeline_sv"
+          - "pipeline_cnv"
+          - "pipeline_repeats"
+          - "pipeline_duplicates"
+          - "pipeline_families"
+          - "bam_cnv_calling"
+          - "bam_prepare_samtools"
+          - "bam_repeat_estimation_expansionhunter"
+          - "bam_sv_calling"
+          - "bam_variant_calling_delly"
+          # - "bam_variant_calling_gridss"
+          - "bam_variant_calling_manta"
+          - "bam_variant_calling_qdnaseq"
+          - "bam_variant_calling_smoove"
+          - "bam_variant_calling_wisecondorx"
+          - "vcf_annotate_vep_annotsv_vcfanno"
+          - "vcf_concat_bcftools"
+          - "vcf_merge_callers_jasmine"
+          - "vcf_merge_family_jasmine"
+
     steps:
+      - name: Free some space
+        run: |
+          sudo rm -rf "/usr/local/share/boost"
+          sudo rm -rf "$AGENT_TOOLSDIRECTORY"
+          sudo rm -rf /usr/share/dotnet
+          sudo rm -rf /opt/ghc
+
       - name: Check out pipeline code
-        uses: actions/checkout@v2
+        uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4
 
       - name: Install Nextflow
         uses: nf-core/setup-nextflow@v1
         with:
           version: "${{ matrix.NXF_VER }}"
 
-      - name: Run pipeline with test data
-        # TODO nf-core: You can customise CI pipeline run tests as required
-        # For example: adding multiple test runs with different parameters
-        # Remember that you can parallelise this by using strategy.matrix
+      - name: Disk space cleanup
+        uses: jlumbroso/free-disk-space@54081f138730dfa15788a46383842cd2f914a1be # v1.3.1
+
+      - name: Install nf-test
         run: |
-          nextflow run ${GITHUB_WORKSPACE} -profile test,docker --outdir ./results
+          conda install -c bioconda nf-test
+
+      - name: Run pipeline with test data
+        run: |
+          $CONDA/bin/nf-test test --tag ${{ matrix.test }} --junitxml=default.xml
+
+      - name: Publish Test Report
+        uses: mikepenz/action-junit-report@v3
+        if: always() # always run even if the previous step fails
+        with:
+          report_paths: "default.xml"
+
+      - name: Upload log file artifact
+        if: failure()
+        uses: actions/upload-artifact@v3
+        with:
+          name: nf-test-workdir
+          path: .nf-test/

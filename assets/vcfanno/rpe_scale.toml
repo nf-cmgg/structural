@@ -1,0 +1,5 @@
+[[annotation]]
+file="rpe_scale_res25000_win250000.TADboundaries.bed.gz"
+columns=[4]
+names=["RPE_Scale_Gene_name"]
+ops=["self"]

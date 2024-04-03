@@ -1,0 +1,51 @@
+# Use --skip 1 with this config
+chrom:
+  prefix: chr
+id:
+  prefix: qdnaseq_
+alt:
+  value: ~if $4 < 0 <DEL> <DUP>
+  options:
+    - name: DEL
+      description: "Deletion"
+    - name: DUP
+      description: "Duplication"
+    - name: CNV
+      description: "Copy number variation"
+info:
+  - name: CNV_RATIO
+    value: $4
+    type: float
+    number: 1
+    description: "Copy number ratio"
+  - name: SVTYPE
+    value: CNV
+    type: string
+    number: 1
+    description: "The type of structural variant"
+  - name: END
+    value: $2
+    type: integer
+    number: 1
+    description: "End position of the variant"
+  - name: SVLEN
+    value: ~min $2 $1
+    type: integer
+    number: 1
+    description: "The total length of the structural variant"
+  - name: CALLERS
+    value: qdnaseq
+    type: string
+    number: .
+    description: "The callers used to determine this variant"
+format:
+  - name: GT
+    value: "."
+    type: string
+    number: 1
+    description: "Genotype"
+  - name: CN
+    value: ~if $4 == +Inf . ~if $4 == Inf . ~round $4
+    type: integer
+    number: 1
+    description: "Copy number"

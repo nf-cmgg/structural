@@ -1,0 +1,125 @@
+nextflow_workflow {
+
+    name "Test Workflow BAM_PREPARE_SAMTOOLS"
+    script "subworkflows/local/bam_prepare_samtools/main.nf"
+    workflow "BAM_PREPARE_SAMTOOLS"
+
+    tag "subworkflows"
+    tag "subworkflows_local"
+    tag "bam_prepare_samtools"
+
+    test("homo sapiens - [cram, []], fasta, fai") {
+
+        when {
+            workflow {
+                """
+                input[0] = Channel.of([
+                    [id:"test", sample:"test", sex:"male"],
+                    file(params.test_data['homo_sapiens']['illumina']['test_paired_end_sorted_cram'], checkIfExists: true),
+                    []
+                ])
+                input[1] = Channel.value([
+                    [id:"fasta"],
+                    file(params.test_data['homo_sapiens']['genome']['genome_fasta'], checkIfExists: true)
+                ])
+                input[2] = Channel.value([
+                    [id:"fai"],
+                    file(params.test_data['homo_sapiens']['genome']['genome_fasta_fai'], checkIfExists: true)
+                ])
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert workflow.success },
+                { assert snapshot(
+                    workflow.out.crams,
+                    workflow.trace.succeeded().size(),
+                    workflow.trace.failed().size()
+                ).match()}
+            )
+        }
+
+    }
+
+    test("homo sapiens - [[cram, crai], [cram, []]], fasta, fai - One sample") {
+
+        when {
+            workflow {
+                """
+                input[0] = Channel.of([
+                    [id:"test", sample:"test", sex:"male"],
+                    file(params.test_data['homo_sapiens']['illumina']['test_paired_end_sorted_cram'], checkIfExists: true),
+                    file(params.test_data['homo_sapiens']['illumina']['test_paired_end_sorted_cram_crai'], checkIfExists: true)
+                ], [
+                    [id:"test", sample:"test", sex:"male"],
+                    file(params.test_data['homo_sapiens']['illumina']['test2_paired_end_sorted_cram'], checkIfExists: true),
+                    []
+                ])
+                input[1] = Channel.value([
+                    [id:"fasta"],
+                    file(params.test_data['homo_sapiens']['genome']['genome_fasta'], checkIfExists: true)
+                ])
+                input[2] = Channel.value([
+                    [id:"fai"],
+                    file(params.test_data['homo_sapiens']['genome']['genome_fasta_fai'], checkIfExists: true)
+                ])
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert workflow.success },
+                { assert snapshot(
+                    file(workflow.out.crams[0][1]).name,
+                    file(workflow.out.crams[0][2]).name,
+                    workflow.trace.succeeded().size(),
+                    workflow.trace.failed().size()
+                ).match()}
+            )
+        }
+
+    }
+
+    test("homo sapiens - [[cram, crai], [cram, []]], fasta, fai - Two samples") {
+
+        when {
+            workflow {
+                """
+                input[0] = Channel.of([
+                    [id:"test", sample:"test", sex:"male"],
+                    file(params.test_data['homo_sapiens']['illumina']['test_paired_end_sorted_cram'], checkIfExists: true),
+                    file(params.test_data['homo_sapiens']['illumina']['test_paired_end_sorted_cram_crai'], checkIfExists: true)
+                ], [
+                    [id:"test2", sample:"test2", sex:"male"],
+                    file(params.test_data['homo_sapiens']['illumina']['test2_paired_end_sorted_cram'], checkIfExists: true),
+                    []
+                ])
+                input[1] = Channel.value([
+                    [id:"fasta"],
+                    file(params.test_data['homo_sapiens']['genome']['genome_fasta'], checkIfExists: true)
+                ])
+                input[2] = Channel.value([
+                    [id:"fai"],
+                    file(params.test_data['homo_sapiens']['genome']['genome_fasta_fai'], checkIfExists: true)
+                ])
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert workflow.success },
+                { assert snapshot(
+                    workflow.out.crams,
+                    workflow.trace.succeeded().size(),
+                    workflow.trace.failed().size()
+                ).match()}
+            )
+        }
+
+    }
+
+}

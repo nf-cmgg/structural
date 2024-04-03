@@ -1,7 +1,7 @@
 {
     "$schema": "http://json-schema.org/draft-07/schema",
-    "$id": "https://raw.githubusercontent.com/y/nfcmggstructural/master/assets/schema_input.json",
-    "title": "y/nfcmggstructural pipeline - params.input schema",
+    "$id": "https://raw.githubusercontent.com/nf-cmgg/structural/master/assets/schema_input.json",
+    "title": "nf-cmgg/structural pipeline - params.input schema",
     "description": "Schema for the file provided with params.input",
     "type": "array",
     "items": {
@@ -9,28 +9,40 @@
         "properties": {
             "sample": {
                 "type": "string",
+                "meta": ["id", "sample"],
                 "pattern": "^\\S+$",
-                "errorMessage": "Sample name must be provided and cannot contain spaces"
+                "errorMessage": "The sample name must be a string and cannot contain spaces."
             },
-            "fastq_1": {
+            "family": {
                 "type": "string",
-                "pattern": "^\\S+\\.f(ast)?q\\.gz$",
-                "errorMessage": "FastQ file for reads 1 must be provided, cannot contain spaces and must have extension '.fq.gz' or '.fastq.gz'"
+                "meta": ["family"],
+                "pattern": "^\\S+$",
+                "errorMessage": "The family name must be a string and cannot contain spaces."
             },
-            "fastq_2": {
-                "errorMessage": "FastQ file for reads 2 cannot contain spaces and must have extension '.fq.gz' or '.fastq.gz'",
-                "anyOf": [
-                    {
-                        "type": "string",
-                        "pattern": "^\\S+\\.f(ast)?q\\.gz$"
-                    },
-                    {
-                        "type": "string",
-                        "maxLength": 0
-                    }
-                ]
+            "cram": {
+                "type": "string",
+                "pattern": "^\\S+\\.(cr|b)am$",
+                "format": "file-path",
+                "exists": true
+            },
+            "crai": {
+                "type": "string",
+                "pattern": "^\\S+\\.(crai|bai|csi)$",
+                "format": "file-path",
+                "exists": true
+            },
+            "small_variants": {
+                "type": "string",
+                "pattern": "^\\S+\\.vcf(\\.gz)?$",
+                "format": "file-path",
+                "exists": true
+            },
+            "sex": {
+                "type": "string",
+                "meta": ["sex"],
+                "enum": ["male", "female"]
             }
         },
-        "required": ["sample", "fastq_1"]
+        "required": ["sample", "cram"]
     }
 }

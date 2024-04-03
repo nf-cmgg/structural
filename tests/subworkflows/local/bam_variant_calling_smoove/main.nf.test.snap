@@ -1,0 +1,20 @@
+{
+    "homo_sapiens": {
+        "content": [
+            [
+                "##contig=<ID=chr14,length=2000001>",
+                "##contig=<ID=chr16,length=2000001>",
+                "##contig=<ID=chrX,length=2000001>",
+                "#CHROM\tPOS\tID\tREF\tALT\tQUAL\tFILTER\tINFO\tFORMAT\tPosCon1"
+            ],
+            "test.svync.smoove.vcf.gz.tbi",
+            4,
+            0
+        ],
+        "meta": {
+            "nf-test": "0.8.4",
+            "nextflow": "24.02.0"
+        },
+        "timestamp": "2024-03-11T14:24:00.029162632"
+    }
+}

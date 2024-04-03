@@ -1,0 +1,61 @@
+nextflow_workflow {
+
+    name "Test Workflow BAM_VARIANT_CALLING_QDNASEQ"
+    script "subworkflows/local/bam_variant_calling_qdnaseq/main.nf"
+    workflow "BAM_VARIANT_CALLING_QDNASEQ"
+
+    tag "subworkflows"
+    tag "subworkflows_local"
+    tag "bam_variant_calling_qdnaseq"
+
+    config "./nextflow.config"
+
+    test("homo_sapiens") {
+
+        when {
+            workflow {
+                """
+                input[0] = Channel.of([
+                    [id:"test", sample:"test", sex:"male"],
+                    file(params.cram1, checkIfExists: true),
+                    file(params.crai1, checkIfExists: true)
+                ], [
+                    [id:"test2", sample:"test2", sex:"female"],
+                    file(params.cram2, checkIfExists: true),
+                    file(params.crai2, checkIfExists: true)
+                ])
+                input[1] = Channel.value([
+                    [id:"fasta"],
+                    file(params.fasta, checkIfExists: true)
+                ])
+                input[2] = Channel.value([
+                    [id:"fai"],
+                    file(params.fai, checkIfExists: true)
+                ])
+                input[3] = Channel.value([
+                    [id:"male_ref"],
+                    file(params.qdnaseq_male, checkIfExists: true)
+                ])
+                input[4] = Channel.value([
+                    [id:"female_ref"],
+                    file(params.qdnaseq_female, checkIfExists: true)
+                ])
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert workflow.success },
+                { assert snapshot(
+                    workflow.out.vcf,
+                    workflow.out.qdnaseq_beds,
+                    workflow.trace.succeeded().size(),
+                    workflow.trace.failed().size()
+                ).match() }
+            )
+        }
+
+    }
+
+}

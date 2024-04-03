@@ -1,0 +1,88 @@
+{
+    "all": {
+        "content": [
+            [
+                
+            ],
+            [
+                [
+                    "PosCon1.sv.vcf.gz",
+                    "PosCon1.sv.vcf.gz.tbi"
+                ],
+                [
+                    "PosCon2.sv.vcf.gz",
+                    "PosCon2.sv.vcf.gz.tbi"
+                ],
+                [
+                    "PosCon3.sv.vcf.gz",
+                    "PosCon3.sv.vcf.gz.tbi"
+                ],
+                [
+                    "PosCon4.sv.vcf.gz",
+                    "PosCon4.sv.vcf.gz.tbi"
+                ],
+                [
+                    "multiqc_data",
+                    "multiqc_plots",
+                    "multiqc_report.html"
+                ]
+            ],
+            [
+                "PosCon1",
+                "PosCon2",
+                "PosCon3",
+                "PosCon4",
+                "multiqc",
+                "pipeline_info"
+            ]
+        ],
+        "meta": {
+            "nf-test": "0.8.4",
+            "nextflow": "24.02.0"
+        },
+        "timestamp": "2024-03-13T13:07:19.225114007"
+    },
+    "delly": {
+        "content": [
+            [
+                
+            ],
+            [
+                [
+                    "PosCon1.sv.vcf.gz",
+                    "PosCon1.sv.vcf.gz.tbi"
+                ],
+                [
+                    "PosCon2.sv.vcf.gz",
+                    "PosCon2.sv.vcf.gz.tbi"
+                ],
+                [
+                    "PosCon3.sv.vcf.gz",
+                    "PosCon3.sv.vcf.gz.tbi"
+                ],
+                [
+                    "PosCon4.sv.vcf.gz",
+                    "PosCon4.sv.vcf.gz.tbi"
+                ],
+                [
+                    "multiqc_data",
+                    "multiqc_plots",
+                    "multiqc_report.html"
+                ]
+            ],
+            [
+                "PosCon1",
+                "PosCon2",
+                "PosCon3",
+                "PosCon4",
+                "multiqc",
+                "pipeline_info"
+            ]
+        ],
+        "meta": {
+            "nf-test": "0.8.4",
+            "nextflow": "24.02.0"
+        },
+        "timestamp": "2024-03-13T13:04:12.383695256"
+    }
+}

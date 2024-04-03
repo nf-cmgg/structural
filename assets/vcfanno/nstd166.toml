@@ -1,0 +1,5 @@
+[[annotation]]
+file="nstd166.GRCh38.variant_call.vcf.gz"
+fields=["AF","DBVARID","REGIONID","CLNSIG","CLNACC"]
+ops=["self","self","self","self","self"]
+names=["AF_gnomAD","DBVARID","REGIONID","CLNSIG","CLNACC"]

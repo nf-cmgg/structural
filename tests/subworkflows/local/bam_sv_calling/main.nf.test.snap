@@ -1,0 +1,98 @@
+{
+    "homo_sapiens - smoove": {
+        "content": [
+            [
+                
+            ],
+            [
+                {
+                    "id": "test",
+                    "sample": "test",
+                    "sex": "male",
+                    "variant_type": "sv"
+                },
+                "test.svync.smoove.vcf.gz",
+                "test.svync.smoove.vcf.gz.tbi"
+            ],
+            4,
+            0
+        ],
+        "meta": {
+            "nf-test": "0.8.4",
+            "nextflow": "24.02.0"
+        },
+        "timestamp": "2024-03-11T14:05:02.394564785"
+    },
+    "homo_sapiens - manta": {
+        "content": [
+            [
+                
+            ],
+            [
+                {
+                    "id": "test",
+                    "sample": "test",
+                    "sex": "male",
+                    "variant_type": "sv"
+                },
+                "test.svync.manta.vcf.gz",
+                "test.svync.manta.vcf.gz.tbi"
+            ],
+            6,
+            0
+        ],
+        "meta": {
+            "nf-test": "0.8.4",
+            "nextflow": "24.02.0"
+        },
+        "timestamp": "2024-03-11T14:04:24.17658191"
+    },
+    "homo_sapiens - delly": {
+        "content": [
+            [
+                
+            ],
+            [
+                {
+                    "id": "test",
+                    "sample": "test",
+                    "sex": "male",
+                    "variant_type": "sv"
+                },
+                "test.svync.delly.vcf.gz",
+                "test.svync.delly.vcf.gz.tbi"
+            ],
+            3,
+            0
+        ],
+        "meta": {
+            "nf-test": "0.8.4",
+            "nextflow": "24.02.0"
+        },
+        "timestamp": "2024-03-11T14:04:41.148774402"
+    },
+    "homo_sapiens - all sv callers": {
+        "content": [
+            [
+                
+            ],
+            [
+                {
+                    "id": "test",
+                    "sample": "test",
+                    "sex": "male",
+                    "variant_type": "sv"
+                },
+                "test.sv.vcf.gz",
+                "test.sv.vcf.gz.tbi"
+            ],
+            18,
+            0
+        ],
+        "meta": {
+            "nf-test": "0.8.4",
+            "nextflow": "24.02.0"
+        },
+        "timestamp": "2024-03-11T14:05:53.52450825"
+    }
+}

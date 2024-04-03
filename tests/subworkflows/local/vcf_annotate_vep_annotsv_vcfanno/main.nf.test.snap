@@ -1,0 +1,57 @@
+{
+    "homo_sapiens - sv, no_filter": {
+        "content": [
+            [
+                "test.sv.vcf.gz",
+                "test.sv.vcf.gz.tbi"
+            ],
+            [
+                "test.vep.summary.html:md5,d41d8cd98f00b204e9800998ecf8427e"
+            ],
+            22,
+            0
+        ],
+        "meta": {
+            "nf-test": "0.8.4",
+            "nextflow": "24.02.0"
+        },
+        "timestamp": "2024-03-12T10:16:55.291447426"
+    },
+    "homo_sapiens - sv & cnv": {
+        "content": [
+            [
+                "test.cnv.vcf.gz",
+                "test.cnv.vcf.gz.tbi"
+            ],
+            [
+                "test.vep.summary.html:md5,d41d8cd98f00b204e9800998ecf8427e",
+                "test.vep.summary.html:md5,d41d8cd98f00b204e9800998ecf8427e"
+            ],
+            44,
+            0
+        ],
+        "meta": {
+            "nf-test": "0.8.4",
+            "nextflow": "24.02.0"
+        },
+        "timestamp": "2024-03-12T10:17:27.514868326"
+    },
+    "homo_sapiens - cnv, filter": {
+        "content": [
+            [
+                "test.cnv.vcf.gz",
+                "test.cnv.vcf.gz.tbi"
+            ],
+            [
+                "test.vep.summary.html:md5,d41d8cd98f00b204e9800998ecf8427e"
+            ],
+            23,
+            0
+        ],
+        "meta": {
+            "nf-test": "0.8.4",
+            "nextflow": "24.02.0"
+        },
+        "timestamp": "2024-03-12T11:04:12.980338516"
+    }
+}

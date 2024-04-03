@@ -1,8 +1,8 @@
 {
     "$schema": "http://json-schema.org/draft-07/schema",
-    "$id": "https://raw.githubusercontent.com/y/nfcmggstructural/master/nextflow_schema.json",
-    "title": "y/nfcmggstructural pipeline parameters",
-    "description": "A pipeline to call structural variants",
+    "$id": "https://raw.githubusercontent.com/nf-cmgg/structural/master/nextflow_schema.json",
+    "title": "nf-cmgg/structural pipeline parameters",
+    "description": "A nextflow pipeline for calling structural variants",
     "type": "object",
     "definitions": {
         "input_output_options": {
@@ -15,9 +15,10 @@
                 "input": {
                     "type": "string",
                     "format": "file-path",
-                    "mimetype": "text/csv",
-                    "pattern": "^\\S+\\.csv$",
+                    "exists": true,
                     "schema": "assets/schema_input.json",
+                    "mimetype": "text/csv",
+                    "pattern": "^\\S+\\.(csv|tsv|yaml|yml)$",
                     "description": "Path to comma-separated file containing information about the samples in the experiment.",
                     "help_text": "You will need to create a design file with information about the samples in your experiment before running the pipeline. Use this parameter to specify its location. It has to be a comma-separated file with 3 columns, and a header row.",
                     "fa_icon": "fas fa-file-csv"
@@ -47,7 +48,101 @@
             "type": "object",
             "fa_icon": "fas fa-dna",
             "description": "Reference genome related files and options required for the workflow.",
-            "properties": {}
+            "properties": {
+                "genome": {
+                    "type": "string",
+                    "description": "Name of iGenomes reference.",
+                    "fa_icon": "fas fa-book",
+                    "help_text": "If using a reference genome configured in the pipeline using iGenomes, use this parameter to give the ID for the reference. This is then used to build the full paths for all required reference genome files e.g. `--genome GRCh38`. \n\nSee the [nf-core website docs](https://nf-co.re/usage/reference_genomes) for more details."
+                },
+                "fasta": {
+                    "type": "string",
+                    "format": "file-path",
+                    "mimetype": "text/plain",
+                    "pattern": "^\\S+\\.fn?a(sta)?(\\.gz)?$",
+                    "description": "Path to FASTA genome file.",
+                    "help_text": "This parameter is *mandatory* if `--genome` is not specified. ",
+                    "fa_icon": "far fa-file-code",
+                    "exists": true
+                },
+                "fai": {
+                    "type": "string",
+                    "description": "The index of the FASTA reference file",
+                    "exists": true,
+                    "format": "file-path",
+                    "pattern": "^\\S+\\.fai$",
+                    "mimetype": "text/plain"
+                },
+                "bwa": {
+                    "type": "string",
+                    "description": "Path to the BWA index folder",
+                    "exists": true,
+                    "format": "path"
+                },
+                "expansionhunter_catalog": {
+                    "type": "string",
+                    "description": "Path to the expansionhunter catalog",
+                    "exists": true,
+                    "pattern": "^\\S+\\.json$",
+                    "format": "file-path",
+                    "mimetype": "application/json"
+                },
+                "qdnaseq_male": {
+                    "type": "string",
+                    "pattern": "^\\S+\\.rda$",
+                    "description": "Path to the male qdnaseq reference file",
+                    "exists": true,
+                    "format": "file-path",
+                    "mimetype": "application/octet-stream"
+                },
+                "qdnaseq_female": {
+                    "type": "string",
+                    "pattern": "^\\S+\\.rda$",
+                    "description": "Path to the female qdnaseq reference file",
+                    "exists": true,
+                    "format": "file-path",
+                    "mimetype": "application/octet-stream"
+                },
+                "wisecondorx_reference": {
+                    "type": "string",
+                    "pattern": "^\\S+\\.npz$",
+                    "description": "Path to the wisecondorx reference file",
+                    "exists": true,
+                    "format": "file-path",
+                    "mimetype": "application/octet-stream"
+                },
+                "blacklist": {
+                    "type": "string",
+                    "pattern": "^\\S+\\.bed$",
+                    "description": "Path to the blacklist BED file",
+                    "exists": true,
+                    "format": "file-path",
+                    "mimetype": "text/plain"
+                },
+                "igenomes_ignore": {
+                    "type": "boolean",
+                    "description": "Do not load the iGenomes reference config.",
+                    "fa_icon": "fas fa-ban",
+                    "hidden": true,
+                    "help_text": "Do not load `igenomes.config` when running the pipeline. You may choose this option if you observe clashes between custom parameters and those supplied in `igenomes.config`."
+                },
+                "genomes_base": {
+                    "type": "string",
+                    "description": "The base path where the references can be found",
+                    "exists": true,
+                    "format": "directory-path"
+                },
+                "genomes_ignore": {
+                    "type": "boolean",
+                    "description": "Whether or not to use the references found in the `--genomes_base` folder"
+                },
+                "cmgg_config_base": {
+                    "type": "string",
+                    "default": "/conf/",
+                    "description": "The config base path for the cmgg configs",
+                    "format": "directory-path"
+                }
+            }
         },
         "institutional_config_options": {
             "title": "Institutional config options",
@@ -126,7 +221,7 @@
                     "description": "Maximum amount of time that can be requested for any single job.",
                     "default": "240.h",
                     "fa_icon": "far fa-clock",
-                    "pattern": "^(\\d+\\.?\\s*(s|m|h|day)\\s*)+$",
+                    "pattern": "^(\\d+\\.?\\s*(s|m|h|d|day)\\s*)+$",
                     "hidden": true,
                     "help_text": "Use to set an upper-limit for the time requirement for each process. Should be a string in the format integer-unit e.g. `--max_time '2.h'`"
                 }
@@ -142,6 +237,12 @@
                 "help": {
                     "type": "boolean",
                     "description": "Display help text.",
+                    "fa_icon": "fas fa-question-circle",
+                    "hidden": true
+                },
+                "version": {
+                    "type": "boolean",
+                    "description": "Display version and exit.",
                     "fa_icon": "fas fa-question-circle",
                     "hidden": true
                 },
@@ -176,24 +277,38 @@
                     "fa_icon": "fas fa-file-upload",
                     "hidden": true
                 },
-                "monochrome_logs": {
+                "monochromeLogs": {
                     "type": "boolean",
                     "description": "Do not use coloured log outputs.",
                     "fa_icon": "fas fa-palette",
                     "hidden": true
                 },
-                "multiqc_config": {
+                "hook_url": {
                     "type": "string",
-                    "description": "Custom config file to supply to MultiQC.",
-                    "fa_icon": "fas fa-cog",
+                    "description": "Incoming hook URL for messaging service",
+                    "fa_icon": "fas fa-people-group",
+                    "help_text": "Incoming hook URL for messaging service. Currently, MS Teams and Slack are supported.",
                     "hidden": true
                 },
-                "tracedir": {
+                "multiqc_config": {
                     "type": "string",
-                    "description": "Directory to keep pipeline Nextflow logs and reports.",
-                    "default": "${params.outdir}/pipeline_info",
-                    "fa_icon": "fas fa-cogs",
-                    "hidden": true
+                    "format": "file-path",
+                    "description": "Custom config file to supply to MultiQC.",
+                    "fa_icon": "fas fa-cog",
+                    "hidden": true,
+                    "exists": true
+                },
+                "multiqc_logo": {
+                    "type": "string",
+                    "description": "Custom logo file to supply to MultiQC. File name must also be set in the MultiQC config file",
+                    "fa_icon": "fas fa-image",
+                    "hidden": true,
+                    "exists": true
+                },
+                "multiqc_methods_description": {
+                    "type": "string",
+                    "description": "Custom MultiQC yaml file containing HTML including a methods description.",
+                    "fa_icon": "fas fa-cog"
                 },
                 "validate_params": {
                     "type": "boolean",
@@ -202,18 +317,242 @@
                     "fa_icon": "fas fa-check-square",
                     "hidden": true
                 },
-                "show_hidden_params": {
+                "validationShowHiddenParams": {
                     "type": "boolean",
                     "fa_icon": "far fa-eye-slash",
                     "description": "Show all params when using `--help`",
                     "hidden": true,
                     "help_text": "By default, parameters set as _hidden_ in the schema are not shown on the command line when a user runs with `--help`. Specifying this option will tell the pipeline to show all parameters."
                 },
-                "enable_conda": {
+                "validationFailUnrecognisedParams": {
                     "type": "boolean",
-                    "description": "Run this workflow with Conda. You can also use '-profile conda' instead of providing this parameter.",
+                    "fa_icon": "far fa-check-circle",
+                    "description": "Validation of parameters fails when an unrecognised parameter is found.",
                     "hidden": true,
-                    "fa_icon": "fas fa-bacon"
+                    "help_text": "By default, when an unrecognised parameter is found, it returns a warinig."
+                },
+                "validationLenientMode": {
+                    "type": "boolean",
+                    "fa_icon": "far fa-check-circle",
+                    "description": "Validation of parameters in lenient more.",
+                    "hidden": true,
+                    "help_text": "Allows string values that are parseable as numbers or booleans. For further information see [JSONSchema docs](https://github.com/everit-org/json-schema#lenient-mode)."
+                }
+            }
+        },
+        "pipeline_specific_options": {
+            "title": "Pipeline specific options",
+            "type": "object",
+            "description": "Options specific to the execution of this pipeline",
+            "default": "",
+            "properties": {
+                "callers": {
+                    "type": "string",
+                    "default": "manta,smoove,delly,expansionhunter,wisecondorx",
+                    "description": "A comma-seperated list of callers to use. Can be one or more these: smoove|delly|manta|gridss|expansionhunter. At the moment Gridss runs very slowly compared to all other tools so it's only advised to use it when it's needed."
+                },
+                "output_callers": {
+                    "type": "boolean",
+                    "description": "Output the VCF files from different callers. Warning: This produces a lot of additional output and should only be used for testing purposes"
+                },
+                "sv_callers_support": {
+                    "type": "integer",
+                    "default": 1,
+                    "description": "The minimum amount of SV callers that should detect a variant. All variants that have a lower amount of callers supporting it, will be removed. (Only used when more than one caller is given)"
+                },
+                "cnv_callers_support": {
+                    "type": "integer",
+                    "default": 1,
+                    "description": "The minimum amount of CNV callers that should detect a variant. All variants that have a lower amount of callers supporting it, will be removed. (Only used when more than one caller is given)"
+                },
+                "annotate": {
+                    "type": "boolean",
+                    "description": "Run the annotation with Ensembl VEP and AnnotSV (and optionally VCFanno)."
+                },
+                "concat_output": {
+                    "type": "boolean",
+                    "description": "Also output a concatenated VCF with all variant types analysed included."
+                },
+                "annotations_filter": {
+                    "type": "string",
+                    "description": "The filter arguments to use after annotating.",
+                    "help_text": "A common use case for this is to filter out common variants. You can supply a VCF file with common variants to VCFanno and filter out the matching variants using this parameter"
+                }
+            }
+        },
+        "delly_parameters": {
+            "title": "Delly parameters",
+            "type": "object",
+            "description": "Options specific for the Delly execution",
+            "default": "",
+            "properties": {
+                "delly_sv_types": {
+                    "type": "string",
+                    "default": "ALL",
+                    "description": "Which SV types delly should search for in the variant calling"
+                },
+                "delly_map_qual": {
+                    "type": "integer",
+                    "default": 1,
+                    "description": "The mapping quality to use for delly"
+                },
+                "delly_min_clique_size": {
+                    "type": "integer",
+                    "default": 2,
+                    "description": "The minimum clique size to use for delly"
+                }
+            }
+        },
+        "manta_parameters": {
+            "title": "Manta parameters",
+            "type": "object",
+            "description": "Options specific for the Manta execution",
+            "default": "",
+            "properties": {
+                "manta_config": {
+                    "type": "string",
+                    "description": "A config file to supply to manta",
+                    "format": "file-path",
+                    "exists": true
+                }
+            }
+        },
+        "qdnaseq_parameters": {
+            "title": "qDNAseq parameters",
+            "type": "object",
+            "description": "Options specific for the qDNAseq execution",
+            "default": "",
+            "properties": {
+                "qdnaseq_bin_size": {
+                    "type": "integer",
+                    "default": 100000,
+                    "description": "The bin size to use for qdnaseq.",
+                    "enum": [5000, 50000, 100000, 500000]
+                },
+                "qdnaseq_cnv_ratio": {
+                    "type": "number",
+                    "default": 0.5,
+                    "description": "The minimum value of the absolute cnv ratio for a variant to be considered a CNV."
+                }
+            }
+        },
+        "vep_options": {
+            "title": "VEP options",
+            "type": "object",
+            "description": "Options for the annotation with VEP",
+            "default": "",
+            "properties": {
+                "vep_assembly": {
+                    "type": "string",
+                    "default": "GRCh38",
+                    "description": "The genome assembly to download the cache of.",
+                    "help_text": "This only needs to be supplied when no vep_cache is given"
+                },
+                "vep_cache_version": {
+                    "type": "integer",
+                    "default": 108,
+                    "description": "The version of the VEP cache to use.",
+                    "help_text": "This version should be present in the folder supplied by `--vep_cache`. This version should be the same as `--vep_version` when no VEP cache was given with `--vep_cache`"
+                },
+                "vep_cache": {
+                    "type": "string",
+                    "description": "The path to the VEP cache folder",
+                    "exists": true,
+                    "format": "directory-path"
+                },
+                "vep_version": {
+                    "type": "number",
+                    "default": 109.3,
+                    "description": "The version of VEP to use"
+                },
+                "species": {
+                    "type": "string",
+                    "default": "homo_sapiens",
+                    "description": "The species used for the analysis. Should be all lowercase and spaces should be underscorses."
+                },
+                "vep_phenotypes": {
+                    "type": "boolean",
+                    "description": "Use the Phenotypes VEP plugin",
+                    "help_text": "This requires `--phenotypes` and `--phenotypes_tbi`. "
+                },
+                "phenotypes": {
+                    "type": "string",
+                    "description": "Path to the phenotypes GFF file",
+                    "exists": true,
+                    "format": "file-path",
+                    "pattern": "^\\S+\\.gff$",
+                    "mimetype": "text/plain"
+                },
+                "phenotypes_tbi": {
+                    "type": "string",
+                    "description": "Path to the phenotypes GFF index file",
+                    "exists": true,
+                    "format": "file-path",
+                    "mimetype": "application/octet-stream"
+                }
+            }
+        },
+        "annotsv_options": {
+            "title": "AnnotSV options",
+            "type": "object",
+            "description": "Options specific to the execution of AnnotSV",
+            "default": "",
+            "properties": {
+                "annotsv_annotations": {
+                    "type": "string",
+                    "description": "The full path to the AnnotSV annotations folder. This can be a tarzipped folder.",
+                    "help_text": "When --annotate is set to true and this isn't given, the annotations will be downloaded automatically (this is not recommended though).",
+                    "exists": true,
+                    "format": "path"
+                },
+                "annotsv_candidate_genes": {
+                    "type": "string",
+                    "description": "The full path the candidate genes file for AnnotSV",
+                    "exists": true,
+                    "format": "file-path",
+                    "mimetype": "text/plain"
+                },
+                "annotsv_gene_transcripts": {
+                    "type": "string",
+                    "description": "The full path to the gene transcripts file for AnnotSV",
+                    "exists": true,
+                    "format": "file-path",
+                    "mimetype": "text/plain"
+                },
+                "annotsv_file_name": {
+                    "type": "string",
+                    "default": "annotsv_annotated",
+                    "hidden": true,
+                    "description": "The default name of the AnnotSV VCFs. This should not be changed unless absolutely necessary."
+                }
+            }
+        },
+        "vcfanno_options": {
+            "title": "VCFanno options",
+            "type": "object",
+            "description": "Options for the execution of AnnotSV",
+            "default": "",
+            "properties": {
+                "vcfanno_toml": {
+                    "type": "string",
+                    "description": "The full path to the VCFanno config TOML file. This file will be used to dynamically overwrite default configs for this pipeline run",
+                    "exists": true,
+                    "pattern": "^\\S+\\.toml$",
+                    "format": "file-path",
+                    "mimetype": "text/plain"
+                },
+                "vcfanno_lua": {
+                    "type": "string",
+                    "description": "The full path to a lua script for VCFanno",
+                    "exists": true,
+                    "pattern": "^\\S+\\.lua$",
+                    "format": "file-path",
+                    "mimetype": "text/plain"
+                },
+                "vcfanno_resources": {
+                    "type": "string",
+                    "description": "A comma-delimited list of files referenced in the VCFanno config and their indices.",
+                    "help_text": "This can contain glob patterns as well. Place all filenames together between double qoutes to not cause any irregularities"
                 }
             }
         }
@@ -233,6 +572,27 @@
         },
         {
             "$ref": "#/definitions/generic_options"
+        },
+        {
+            "$ref": "#/definitions/pipeline_specific_options"
+        },
+        {
+            "$ref": "#/definitions/delly_parameters"
+        },
+        {
+            "$ref": "#/definitions/manta_parameters"
+        },
+        {
+            "$ref": "#/definitions/qdnaseq_parameters"
+        },
+        {
+            "$ref": "#/definitions/vep_options"
+        },
+        {
+            "$ref": "#/definitions/annotsv_options"
+        },
+        {
+            "$ref": "#/definitions/vcfanno_options"
         }
     ]
 }

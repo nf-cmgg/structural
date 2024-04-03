@@ -1,0 +1,5 @@
+[[annotation]]
+file="dbVar.GRCh38.variant_call.all.vcf.gz"
+fields=["AF"]
+ops=["self"]
+names=["AF_dbVar"]

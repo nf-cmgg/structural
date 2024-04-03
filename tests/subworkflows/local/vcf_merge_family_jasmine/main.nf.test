@@ -1,0 +1,319 @@
+nextflow_workflow {
+
+    name "Test Workflow VCF_MERGE_FAMILY_JASMINE"
+    script "subworkflows/local/vcf_merge_family_jasmine/main.nf"
+    workflow "VCF_MERGE_FAMILY_JASMINE"
+
+    tag "subworkflows"
+    tag "subworkflows_local"
+    tag "vcf_merge_family_jasmine"
+
+    config "./nextflow.config"
+
+    test("homo_sapiens - one family, variant types") {
+
+        when {
+            workflow {
+                """
+                input[0] = Channel.of([
+                    [id:"PosCon1", sample:"PosCon1", family:"fam", family_count:2, variant_type:"sv"],
+                    file(params.sv_vcf1, checkIfExists:true),
+                    file(params.sv_tbi1, checkIfExists:true)
+                ],[
+                    [id:"PosCon2", sample:"PosCon2", family:"fam", family_count:2, variant_type:"sv"],
+                    file(params.sv_vcf2, checkIfExists:true),
+                    file(params.sv_tbi2, checkIfExists:true)
+                ],[
+                    [id:"PosCon1", sample:"PosCon1", family:"fam", family_count:2, variant_type:"cnv"],
+                    file(params.cnv_vcf1, checkIfExists:true),
+                    file(params.cnv_tbi1, checkIfExists:true)
+                ],[
+                    [id:"PosCon2", sample:"PosCon2", family:"fam", family_count:2, variant_type:"cnv"],
+                    file(params.cnv_vcf2, checkIfExists:true),
+                    file(params.cnv_tbi2, checkIfExists:true)
+                ])
+                input[1] = Channel.value([
+                    [id:"fasta"],
+                    file(params.fasta, checkIfExists: true)
+                ])
+                input[2] = Channel.value([
+                    [id:"fai"],
+                    file(params.fai, checkIfExists: true)
+                ])
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert workflow.success },
+                { assert snapshot(
+                    workflow.out.vcfs.collect { entry ->
+                        entry
+                            .findAll { !(it instanceof Map) }
+                            .collect {
+                                file(it).name
+                            }
+                    },
+                    workflow.trace.succeeded().size(),
+                    workflow.trace.failed().size()
+                ).match() }
+            )
+        }
+
+    }
+
+    test("homo_sapiens - two samples, variant types") {
+
+        when {
+            workflow {
+                """
+                input[0] = Channel.of([
+                    [id:"PosCon1", sample:"PosCon1", family:"fam", family_count:2, variant_type:"sv"],
+                    file(params.sv_vcf1, checkIfExists:true),
+                    file(params.sv_tbi1, checkIfExists:true)
+                ],[
+                    [id:"PosCon2", sample:"PosCon2", family:"fam", family_count:2, variant_type:"sv"],
+                    file(params.sv_vcf2, checkIfExists:true),
+                    file(params.sv_tbi2, checkIfExists:true)
+                ],[
+                    [id:"PosCon1", sample:"PosCon1", family:"fam", family_count:2, variant_type:"cnv"],
+                    file(params.cnv_vcf1, checkIfExists:true),
+                    file(params.cnv_tbi1, checkIfExists:true)
+                ],[
+                    [id:"PosCon2", sample:"PosCon2", family:"fam", family_count:2, variant_type:"cnv"],
+                    file(params.cnv_vcf2, checkIfExists:true),
+                    file(params.cnv_tbi2, checkIfExists:true)
+                ])
+                input[1] = Channel.value([
+                    [id:"fasta"],
+                    file(params.fasta, checkIfExists: true)
+                ])
+                input[2] = Channel.value([
+                    [id:"fai"],
+                    file(params.fai, checkIfExists: true)
+                ])
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert workflow.success },
+                { assert snapshot(
+                    workflow.out.vcfs.collect { entry ->
+                        entry
+                            .findAll { !(it instanceof Map) }
+                            .collect {
+                                file(it).name
+                            }
+                    },
+                    workflow.trace.succeeded().size(),
+                    workflow.trace.failed().size()
+                ).match() }
+            )
+        }
+
+    }
+
+    test("homo_sapiens - one family & one sample, variant types") {
+
+        when {
+            workflow {
+                """
+                input[0] = Channel.of([
+                    [id:"PosCon1", sample:"PosCon1", family:"fam1", family_count:2, variant_type:"sv"],
+                    file(params.sv_vcf1, checkIfExists:true),
+                    file(params.sv_tbi1, checkIfExists:true)
+                ],[
+                    [id:"PosCon2", sample:"PosCon2", family:"fam1", family_count:2, variant_type:"sv"],
+                    file(params.sv_vcf2, checkIfExists:true),
+                    file(params.sv_tbi2, checkIfExists:true)
+                ],[
+                    [id:"PosCon3", sample:"PosCon3", family:"fam2", family_count:1, variant_type:"sv"],
+                    file(params.sv_vcf3, checkIfExists:true),
+                    file(params.sv_tbi3, checkIfExists:true)
+                ],[
+                    [id:"PosCon1", sample:"PosCon1", family:"fam1", family_count:2, variant_type:"cnv"],
+                    file(params.cnv_vcf1, checkIfExists:true),
+                    file(params.cnv_tbi1, checkIfExists:true)
+                ],[
+                    [id:"PosCon2", sample:"PosCon2", family:"fam1", family_count:2, variant_type:"cnv"],
+                    file(params.cnv_vcf2, checkIfExists:true),
+                    file(params.cnv_tbi2, checkIfExists:true)
+                ],[
+                    [id:"PosCon3", sample:"PosCon3", family:"fam2", family_count:1, variant_type:"cnv"],
+                    file(params.cnv_vcf3, checkIfExists:true),
+                    file(params.cnv_tbi3, checkIfExists:true)
+                ])
+                input[1] = Channel.value([
+                    [id:"fasta"],
+                    file(params.fasta, checkIfExists: true)
+                ])
+                input[2] = Channel.value([
+                    [id:"fai"],
+                    file(params.fai, checkIfExists: true)
+                ])
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert workflow.success },
+                { assert snapshot(
+                    workflow.out.vcfs.collect { entry ->
+                        entry
+                            .findAll { !(it instanceof Map) }
+                            .collect {
+                                file(it).name
+                            }
+                    },
+                    workflow.trace.succeeded().size(),
+                    workflow.trace.failed().size()
+                ).match() }
+            )
+        }
+
+    }
+
+    test("homo_sapiens - one family, no variant type") {
+
+        when {
+            workflow {
+                """
+                input[0] = Channel.of([
+                    [id:"PosCon1", sample:"PosCon1", family:"fam", family_count:2],
+                    file(params.sv_vcf1, checkIfExists:true),
+                    file(params.sv_tbi1, checkIfExists:true)
+                ],[
+                    [id:"PosCon2", sample:"PosCon2", family:"fam", family_count:2],
+                    file(params.sv_vcf2, checkIfExists:true),
+                    file(params.sv_tbi2, checkIfExists:true)
+                ])
+                input[1] = Channel.value([
+                    [id:"fasta"],
+                    file(params.fasta, checkIfExists: true)
+                ])
+                input[2] = Channel.value([
+                    [id:"fai"],
+                    file(params.fai, checkIfExists: true)
+                ])
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert workflow.success },
+                { assert snapshot(
+                    workflow.out.vcfs.collect { entry ->
+                        entry
+                            .findAll { !(it instanceof Map) }
+                            .collect {
+                                file(it).name
+                            }
+                    },
+                    workflow.trace.succeeded().size(),
+                    workflow.trace.failed().size()
+                ).match() }
+            )
+        }
+
+    }
+
+    test("homo_sapiens - two samples, no variant type") {
+
+        when {
+            workflow {
+                """
+                input[0] = Channel.of([
+                    [id:"PosCon1", sample:"PosCon1", family:"fam", family_count:2],
+                    file(params.sv_vcf1, checkIfExists:true),
+                    file(params.sv_tbi1, checkIfExists:true)
+                ],[
+                    [id:"PosCon2", sample:"PosCon2", family:"fam", family_count:2],
+                    file(params.sv_vcf2, checkIfExists:true),
+                    file(params.sv_tbi2, checkIfExists:true)
+                ])
+                input[1] = Channel.value([
+                    [id:"fasta"],
+                    file(params.fasta, checkIfExists: true)
+                ])
+                input[2] = Channel.value([
+                    [id:"fai"],
+                    file(params.fai, checkIfExists: true)
+                ])
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert workflow.success },
+                { assert snapshot(
+                    workflow.out.vcfs.collect { entry ->
+                        entry
+                            .findAll { !(it instanceof Map) }
+                            .collect {
+                                file(it).name
+                            }
+                    },
+                    workflow.trace.succeeded().size(),
+                    workflow.trace.failed().size()
+                ).match() }
+            )
+        }
+
+    }
+
+    test("homo_sapiens - one family & one sample, no variant types") {
+
+        when {
+            workflow {
+                """
+                input[0] = Channel.of([
+                    [id:"PosCon1", sample:"PosCon1", family:"fam1", family_count:2],
+                    file(params.sv_vcf1, checkIfExists:true),
+                    file(params.sv_tbi1, checkIfExists:true)
+                ],[
+                    [id:"PosCon2", sample:"PosCon2", family:"fam1", family_count:2],
+                    file(params.sv_vcf2, checkIfExists:true),
+                    file(params.sv_tbi2, checkIfExists:true)
+                ],[
+                    [id:"PosCon3", sample:"PosCon3", family:"PosCon3", family_count:1],
+                    file(params.sv_vcf3, checkIfExists:true),
+                    file(params.sv_tbi3, checkIfExists:true)
+                ])
+                input[1] = Channel.value([
+                    [id:"fasta"],
+                    file(params.fasta, checkIfExists: true)
+                ])
+                input[2] = Channel.value([
+                    [id:"fai"],
+                    file(params.fai, checkIfExists: true)
+                ])
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert workflow.success },
+                { assert snapshot(
+                    workflow.out.vcfs.collect { entry ->
+                        entry
+                            .findAll { !(it instanceof Map) }
+                            .collect {
+                                file(it).name
+                            }
+                    },
+                    workflow.trace.succeeded().size(),
+                    workflow.trace.failed().size()
+                ).match() }
+            )
+        }
+
+    }
+
+}

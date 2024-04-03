@@ -1,0 +1,5 @@
+[[annotation]]
+file="ALL.wgs.mergedSV.v8.20130502.svs.genotypes.GRCh38.vcf.gz"
+fields=["AF"]
+ops=["self"]
+names=["AF_ALLv8"]

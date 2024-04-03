@@ -1,0 +1,5 @@
+[[annotation]]
+file="retina_scale_res25000_win250000.TADboundaries.bed.gz"
+columns=[4]
+names=["Retina_Scale_Gene_name"]
+ops=["self"]

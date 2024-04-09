@@ -13,7 +13,7 @@ nextflow_pipeline {
         when {
             params {
                 outdir = "${outputDir}"
-                callers = "manta,smoove,delly,expansionhunter,qdnaseq,wisecondorx" //,gridss
+                callers = "all"
                 max_cpus   = 2
                 max_memory = '6.GB'
                 max_time   = '6.h'
@@ -48,7 +48,7 @@ nextflow_pipeline {
         when {
             params {
                 outdir = "${outputDir}"
-                callers = "manta,smoove,delly,expansionhunter,qdnaseq,wisecondorx" //,gridss
+                callers = "all"
                 max_cpus   = 2
                 max_memory = '6.GB'
                 max_time   = '6.h'

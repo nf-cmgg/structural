@@ -349,7 +349,8 @@
                 "callers": {
                     "type": "string",
                     "default": "manta,smoove,delly,expansionhunter,wisecondorx",
-                    "description": "A comma-seperated list of callers to use. Can be one or more these: smoove|delly|manta|gridss|expansionhunter. At the moment Gridss runs very slowly compared to all other tools so it's only advised to use it when it's needed."
+                    "description": "A comma-seperated list of callers to use. Can be one or more these: smoove/delly/manta/expansionhunter/qdnaseq/wisecondorx.",
+                    "help_text": "Following keywords can also be used as shortcuts to certain callers: \n- all: Use all callers\n- sv: Use all SV callers\n- cnv: Use all CNV callers\n- rre: Use all RRE callers"
                 },
                 "output_callers": {
                     "type": "boolean",

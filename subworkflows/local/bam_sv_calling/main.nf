@@ -17,10 +17,9 @@ workflow BAM_SV_CALLING {
         ch_fai          // channel: [mandatory] [ meta, fai ] => The index of the fasta reference file
         ch_bwa_index    // channel: [optional]  [ meta, index ] => The BWA MEM index
         ch_manta_config // channel: [optional]  [ config ] => The config to pass to Manta
+        val_callers     // value:   [mandatory] => List of all SV callers to use
 
     main:
-
-    val_callers     = params.callers.tokenize(",").intersect(GlobalVariables.svCallers)
 
     ch_versions     = Channel.empty()
     ch_reports      = Channel.empty()

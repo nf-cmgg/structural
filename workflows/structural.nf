@@ -10,7 +10,14 @@ include { softwareVersionsToYAML } from '../subworkflows/nf-core/utils_nfcore_pi
 include { methodsDescriptionText } from '../subworkflows/local/utils_nfcore_structural_pipeline'
 
 // Check callers (see lib/GlobalVariables.groovy for the list of supported callers)
-def callers = params.callers.tokenize(",")
+def lower_cased_callers = params.callers.toLowerCase()
+def callers = lower_cased_callers.tokenize(",").collect {
+    if(it == "all") {return GlobalVariables.allCallers}
+    if(it == "sv")  {return GlobalVariables.svCallers}
+    if(it == "cnv") {return GlobalVariables.cnvCallers}
+    if(it == "rre") {return GlobalVariables.repeatsCallers}
+    return it
+}.flatten()
 
 for (caller in callers) {
     if(!(caller in GlobalVariables.allCallers)) { error("The caller '${caller}' is not supported please specify a comma delimited list with on or more of the following callers: ${GlobalVariables.allCallers}".toString()) }
@@ -292,7 +299,8 @@ workflow STRUCTURAL {
             ch_fasta,
             ch_fai,
             ch_bwa_index,
-            ch_manta_config
+            ch_manta_config,
+            sv_callers_to_use
         )
 
         ch_versions = ch_versions.mix(BAM_SV_CALLING.out.versions)
@@ -317,7 +325,8 @@ workflow STRUCTURAL {
             ch_qdnaseq_male,
             ch_qdnaseq_female,
             ch_wisecondorx_reference,
-            ch_blacklist
+            ch_blacklist,
+            cnv_callers_to_use
         )
         ch_versions         = ch_versions.mix(BAM_CNV_CALLING.out.versions)
         ch_annotation_input = ch_annotation_input.mix(BAM_CNV_CALLING.out.vcfs)

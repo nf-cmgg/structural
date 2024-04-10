@@ -14,7 +14,7 @@ nextflow_pipeline {
             params {
                 outdir = "${outputDir}"
                 input = "${baseDir}/tests/pipeline/families/samplesheet_family3.csv"
-                callers = "delly,smoove,manta,expansionhunter,qdnaseq,wisecondorx"
+                callers = "all"
                 max_cpus   = 2
                 max_memory = '6.GB'
                 max_time   = '6.h'
@@ -49,7 +49,7 @@ nextflow_pipeline {
             params {
                 outdir = "${outputDir}"
                 input = "${baseDir}/tests/pipeline/families/samplesheet_family3.csv"
-                callers = "delly,smoove,manta,expansionhunter,qdnaseq,wisecondorx"
+                callers = "all"
                 max_cpus   = 2
                 max_memory = '6.GB'
                 max_time   = '6.h'
@@ -85,7 +85,7 @@ nextflow_pipeline {
             params {
                 outdir = "${outputDir}"
                 input = "${baseDir}/tests/pipeline/families/samplesheet_family2_sample1.csv"
-                callers = "delly,smoove,manta,expansionhunter,qdnaseq,wisecondorx"
+                callers = "all"
                 max_cpus   = 2
                 max_memory = '6.GB'
                 max_time   = '6.h'
@@ -120,7 +120,7 @@ nextflow_pipeline {
             params {
                 outdir = "${outputDir}"
                 input = "${baseDir}/tests/pipeline/families/samplesheet_family2_sample1.csv"
-                callers = "delly,smoove,manta,expansionhunter,qdnaseq,wisecondorx"
+                callers = "all"
                 max_cpus   = 2
                 max_memory = '6.GB'
                 max_time   = '6.h'

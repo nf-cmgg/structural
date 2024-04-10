@@ -19,10 +19,9 @@ workflow BAM_CNV_CALLING {
         ch_qdnaseq_female           // channel: [mandatory] [ meta, qdnaseq_reference ] => The female reference for qDNAseq
         ch_wisecondorx_reference    // channel: [mandatory] [ meta, wisecondorx_reference ] => The reference for WisecondorX
         ch_blacklist                // channel: [optional]  [ meta, bed ] => The blacklist regions to be excluded from the Wisecondorx analysis
+        val_callers                 // value:   [mandatory] => List of all CNV callers to use
 
     main:
-
-    val_callers     = params.callers.tokenize(",").intersect(GlobalVariables.cnvCallers)
 
     ch_versions     = Channel.empty()
     ch_reports      = Channel.empty()

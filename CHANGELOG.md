@@ -8,10 +8,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### `Added`
 
 1. Added keyword shortcuts to the `--callers` parameter (these can also be used as comma-separated entries to the parameter):
-    - `all`: Use all callers available in the pipeline
-    - `sv`: Use all SV callers available in the pipeline
-    - `cnv`: Use all CNV callers available in the pipeline
-    - `rre`: Use all repeat region expansion callers available in the pipeline
+   - `all`: Use all callers available in the pipeline
+   - `sv`: Use all SV callers available in the pipeline
+   - `cnv`: Use all CNV callers available in the pipeline
+   - `rre`: Use all repeat region expansion callers available in the pipeline
 
 ### `Changes`
 

@@ -15,6 +15,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### `Changes`
 
+1. Updated all WisecondorX modules to version 1.2.6 and added the `--seed` argument to `WisecondorX predict`
+
 ### `Fixed`
 
 ## v0.1.0 - [3 April 2024] - Amazing Atomium

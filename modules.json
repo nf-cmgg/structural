@@ -160,12 +160,12 @@
                     },
                     "wisecondorx/convert": {
                         "branch": "master",
-                        "git_sha": "3f5420aa22e00bd030a2556dfdffc9e164ec0ec5",
+                        "git_sha": "da7894da652a6c4ce3fd93f16a6bf3393209864d",
                         "installed_by": ["modules"]
                     },
                     "wisecondorx/predict": {
                         "branch": "master",
-                        "git_sha": "3f5420aa22e00bd030a2556dfdffc9e164ec0ec5",
+                        "git_sha": "da7894da652a6c4ce3fd93f16a6bf3393209864d",
                         "installed_by": ["modules"]
                     }
                 }

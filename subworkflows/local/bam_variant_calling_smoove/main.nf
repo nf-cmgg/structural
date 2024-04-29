@@ -1,5 +1,5 @@
 //
-// Run Delly
+// Run Smoove
 //
 
 include { SMOOVE_CALL                   } from '../../../modules/nf-core/smoove/call/main'

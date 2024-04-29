@@ -19,6 +19,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### `Fixed`
 
+1. The smoove outputs are now correct when using `--output_callers`
+
 ## v0.1.0 - [3 April 2024] - Amazing Atomium
 
 Initial release of nf-cmgg/structural, created with the [nf-core](https://nf-co.re/) template.

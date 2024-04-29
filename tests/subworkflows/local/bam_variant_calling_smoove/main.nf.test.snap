@@ -8,13 +8,13 @@
                 "#CHROM\tPOS\tID\tREF\tALT\tQUAL\tFILTER\tINFO\tFORMAT\tPosCon1"
             ],
             "test.svync.smoove.vcf.gz.tbi",
-            4,
+            5,
             0
         ],
         "meta": {
             "nf-test": "0.8.4",
             "nextflow": "24.02.0"
         },
-        "timestamp": "2024-03-11T14:24:00.029162632"
+        "timestamp": "2024-04-29T13:12:49.911438614"
     }
 }

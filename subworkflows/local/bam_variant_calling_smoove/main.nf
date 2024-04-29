@@ -1,11 +1,12 @@
 //
-// Run Delly
+// Run Smoove
 //
 
-include { SMOOVE_CALL        } from '../../../modules/nf-core/smoove/call/main'
-include { BCFTOOLS_SORT      } from '../../../modules/nf-core/bcftools/sort/main'
-include { TABIX_TABIX        } from '../../../modules/nf-core/tabix/tabix/main'
-include { SVYNC              } from '../../../modules/nf-core/svync/main'
+include { SMOOVE_CALL                   } from '../../../modules/nf-core/smoove/call/main'
+include { BCFTOOLS_SORT                 } from '../../../modules/nf-core/bcftools/sort/main'
+include { TABIX_TABIX                   } from '../../../modules/nf-core/tabix/tabix/main'
+include { TABIX_TABIX as TABIX_CALLER   } from '../../../modules/nf-core/tabix/tabix/main'
+include { SVYNC                         } from '../../../modules/nf-core/svync/main'
 
 workflow BAM_VARIANT_CALLING_SMOOVE {
     take:
@@ -40,6 +41,11 @@ workflow BAM_VARIANT_CALLING_SMOOVE {
         SMOOVE_CALL.out.vcf
     )
     ch_versions = ch_versions.mix(BCFTOOLS_SORT.out.versions.first())
+
+    TABIX_CALLER(
+        BCFTOOLS_SORT.out.vcf
+    )
+    ch_versions = ch_versions.mix(TABIX_CALLER.out.versions.first())
 
     BCFTOOLS_SORT.out.vcf
         .map(

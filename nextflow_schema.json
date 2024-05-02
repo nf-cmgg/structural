@@ -73,12 +73,6 @@
                     "pattern": "^\\S+\\.fai$",
                     "mimetype": "text/plain"
                 },
-                "bwa": {
-                    "type": "string",
-                    "description": "Path to the BWA index folder",
-                    "exists": true,
-                    "format": "path"
-                },
                 "expansionhunter_catalog": {
                     "type": "string",
                     "description": "Path to the expansionhunter catalog",
@@ -470,26 +464,6 @@
                     "type": "string",
                     "default": "homo_sapiens",
                     "description": "The species used for the analysis. Should be all lowercase and spaces should be underscorses."
-                },
-                "vep_phenotypes": {
-                    "type": "boolean",
-                    "description": "Use the Phenotypes VEP plugin",
-                    "help_text": "This requires `--phenotypes` and `--phenotypes_tbi`. "
-                },
-                "phenotypes": {
-                    "type": "string",
-                    "description": "Path to the phenotypes GFF file",
-                    "exists": true,
-                    "format": "file-path",
-                    "pattern": "^\\S+\\.gff$",
-                    "mimetype": "text/plain"
-                },
-                "phenotypes_tbi": {
-                    "type": "string",
-                    "description": "Path to the phenotypes GFF index file",
-                    "exists": true,
-                    "format": "file-path",
-                    "mimetype": "application/octet-stream"
                 }
             }
         },

@@ -15,7 +15,6 @@ workflow BAM_SV_CALLING {
         ch_crams        // channel: [mandatory] [ meta, cram, crai, bed ] => The aligned CRAMs per sample with the regions they should be called on
         ch_fasta        // channel: [mandatory] [ meta, fasta ] => The fasta reference file
         ch_fai          // channel: [mandatory] [ meta, fai ] => The index of the fasta reference file
-        ch_bwa_index    // channel: [optional]  [ meta, index ] => The BWA MEM index
         ch_manta_config // channel: [optional]  [ config ] => The config to pass to Manta
         val_callers     // value:   [mandatory] => List of all SV callers to use
 

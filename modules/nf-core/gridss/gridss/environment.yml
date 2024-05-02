@@ -1,7 +1,7 @@
-name: ensemblvep_download
+name: gridss_gridss
 channels:
   - conda-forge
   - bioconda
   - defaults
 dependencies:
-  - bioconda::ensembl-vep=111.0
+  - bioconda::gridss=2.13.2

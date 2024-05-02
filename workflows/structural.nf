@@ -75,6 +75,7 @@ workflow STRUCTURAL {
     vcfanno_resources           // A comma delimited list of paths to vcfanno resource files
     blacklist                   // A BED file of blacklisted regions
     manta_config                // A configuration file to be used in Manta
+    svync_dir                   // A directory containing svync configs (they must end in '.yaml' and contain the full name of the caller)
 
     // boolean inputs
     annotate                    // Run annotation on SV and CNV data
@@ -162,6 +163,7 @@ workflow STRUCTURAL {
     ch_wisecondorx_reference    = wisecondorx_reference ?    Channel.fromPath(wisecondorx_reference).map{[[id:'wisecondorx'], it]}.collect() : [[],[]]
     ch_blacklist                = blacklist ?                Channel.fromPath(blacklist).map{[[id:'blacklist'], it]}.collect() : [[],[]]
     ch_manta_config             = manta_config ?             Channel.fromPath(manta_config).collect() : [[]]
+    ch_svync_configs            = svync_dir ?                Channel.fromPath("${svync_dir}/*.yaml").collect() : []
 
     val_vcfanno_resources       = vcfanno_resources ?        vcfanno_resources.split(",").collect{file(it, checkIfExists:true)}.flatten() : []
 
@@ -329,6 +331,7 @@ workflow STRUCTURAL {
             ch_fasta,
             ch_fai,
             ch_manta_config,
+            ch_svync_configs,
             sv_callers_to_use
         )
 
@@ -355,6 +358,7 @@ workflow STRUCTURAL {
             ch_qdnaseq_female,
             ch_wisecondorx_reference,
             ch_blacklist,
+            ch_svync_configs,
             cnv_callers_to_use
         )
         ch_versions         = ch_versions.mix(BAM_CNV_CALLING.out.versions)

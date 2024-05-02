@@ -92,6 +92,7 @@ workflow NFCMGG_STRUCTURAL {
         params.vcfanno_resources,
         params.blacklist,
         params.manta_config ?: "${projectDir}/assets/manta_config.ini",
+        "${projectDir}/assets/svync",
 
         // boolean inputs
         params.annotate,

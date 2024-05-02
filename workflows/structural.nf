@@ -73,10 +73,12 @@ workflow STRUCTURAL {
     annotsv_gene_transcripts    // A file containing the AnnotSV gene transcripts
     vcfanno_lua                 // A Lua script to use with vcfanno
     vcfanno_resources           // A comma delimited list of paths to vcfanno resource files
+    vcfanno_toml                // The vcfanno config to
     blacklist                   // A BED file of blacklisted regions
     manta_config                // A configuration file to be used in Manta
     svync_dir                   // A directory containing svync configs (they must end in '.yaml' and contain the full name of the caller)
     bedgovcf_dir                // A directory containing bedgovcf configs (they must end in '.yaml' and contain the full name of the caller)
+    vcfanno_default_dir         // A directory containing the default vcfanno configs (they must end in '.toml')
 
     // boolean inputs
     annotate                    // Run annotation on SV and CNV data
@@ -86,9 +88,11 @@ workflow STRUCTURAL {
     callers                     // All callers to be used
     sv_callers_support          // How many SV callers are needed to support the variant
     cnv_callers_support         // How many CNV callers are needed to support the variant
+    genome                      // The genome to use
     species                     // The species to be used by VEP
     vep_assembly                // The genome assembly to be downloaded for VEP
     vep_cache_version           // The version of the VEP cache to use
+    annotations_filter          // The filter pattern to use after annotation
     outdir                      // The output directory of the pipeline
 
     main:
@@ -164,10 +168,12 @@ workflow STRUCTURAL {
     ch_wisecondorx_reference    = wisecondorx_reference ?    Channel.fromPath(wisecondorx_reference).map{[[id:'wisecondorx'], it]}.collect() : [[],[]]
     ch_blacklist                = blacklist ?                Channel.fromPath(blacklist).map{[[id:'blacklist'], it]}.collect() : [[],[]]
     ch_manta_config             = manta_config ?             Channel.fromPath(manta_config).collect() : [[]]
-    ch_svync_configs            = svync_dir ?                Channel.fromPath("${svync_dir}/*.yaml").collect() : []
-    ch_bedgovcf_configs         = bedgovcf_dir ?             Channel.fromPath("${bedgovcf_dir}/*.yaml").collect() : []
+    ch_svync_configs            = svync_dir ?                Channel.fromPath("${svync_dir}/*.yaml", checkIfExists:true).collect() : []
+    ch_bedgovcf_configs         = bedgovcf_dir ?             Channel.fromPath("${bedgovcf_dir}/*.yaml", checkIfExists:true).collect() : []
 
     val_vcfanno_resources       = vcfanno_resources ?        vcfanno_resources.split(",").collect{file(it, checkIfExists:true)}.flatten() : []
+    val_default_vcfanno_tomls   = vcfanno_default_dir ?      files("${vcfanno_default_dir}/*.toml", checkIfExists:true) : []
+    val_vcfanno_toml            = vcfanno_toml ?             file(vcfanno_toml, checkIfExists:true) : []
 
     ch_vep_extra_files = []
 
@@ -384,7 +390,13 @@ workflow STRUCTURAL {
             ch_vep_extra_files,
             ch_vcfanno_lua,
             val_vcfanno_resources,
-            variant_types
+            variant_types,
+            genome,
+            species,
+            vep_cache_version,
+            annotations_filter,
+            val_vcfanno_toml,
+            val_default_vcfanno_tomls
         )
 
         ch_reports  = ch_reports.mix(VCF_ANNOTATE_VEP_ANNOTSV_VCFANNO.out.reports)

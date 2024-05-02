@@ -90,10 +90,12 @@ workflow NFCMGG_STRUCTURAL {
         params.annotsv_gene_transcripts,
         params.vcfanno_lua,
         params.vcfanno_resources,
+        params.vcfanno_toml,
         params.blacklist,
         params.manta_config ?: "${projectDir}/assets/manta_config.ini",
         "${projectDir}/assets/svync",
         "${projectDir}/assets/bedgovcf",
+        "${projectDir}/assets/vcfanno",
 
         // boolean inputs
         params.annotate,
@@ -103,9 +105,11 @@ workflow NFCMGG_STRUCTURAL {
         params.callers,
         params.sv_callers_support,
         params.cnv_callers_support,
+        params.genome,
         params.species,
         params.vep_assembly,
         params.vep_cache_version,
+        params.annotations_filter,
         params.outdir
     )
 

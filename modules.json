@@ -50,7 +50,7 @@
                     },
                     "delly/call": {
                         "branch": "master",
-                        "git_sha": "3f5420aa22e00bd030a2556dfdffc9e164ec0ec5",
+                        "git_sha": "92bf2a8afa318a64f9d333cf87b510c662fd4274",
                         "installed_by": ["modules"],
                         "patch": "modules/nf-core/delly/call/delly-call.diff"
                     },
@@ -82,13 +82,13 @@
                     },
                     "jasminesv": {
                         "branch": "master",
-                        "git_sha": "3f5420aa22e00bd030a2556dfdffc9e164ec0ec5",
+                        "git_sha": "92bf2a8afa318a64f9d333cf87b510c662fd4274",
                         "installed_by": ["modules"],
                         "patch": "modules/nf-core/jasminesv/jasminesv.diff"
                     },
                     "manta/convertinversion": {
                         "branch": "master",
-                        "git_sha": "1e2b7fb7106852388610c0360d234b0829eb980e",
+                        "git_sha": "92bf2a8afa318a64f9d333cf87b510c662fd4274",
                         "installed_by": ["modules"]
                     },
                     "manta/germline": {

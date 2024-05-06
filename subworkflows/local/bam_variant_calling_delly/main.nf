@@ -30,8 +30,8 @@ workflow BAM_VARIANT_CALLING_DELLY {
 
     DELLY_CALL(
         ch_delly_input,
-        ch_fasta.map{it[1]},
-        ch_fai.map{it[1]}
+        ch_fasta,
+        ch_fai
     )
     ch_versions = ch_versions.mix(DELLY_CALL.out.versions.first())
 

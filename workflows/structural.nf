@@ -63,7 +63,7 @@ workflow STRUCTURAL {
     // file inputs
     fasta                       // The fasta file to use
     fai                         // The index of the fasta file
-    expansionhunter_catalog     // The expansionhunter catalog                     
+    expansionhunter_catalog     // The expansionhunter catalog
     qdnaseq_female              // The QDNAseq annotations for female samples
     qdnaseq_male                // The QDNAseq annotations for male samples
     wisecondorx_reference       // The WisecondorX annotations file

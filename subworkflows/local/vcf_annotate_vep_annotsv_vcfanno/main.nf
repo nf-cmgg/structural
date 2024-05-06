@@ -36,7 +36,7 @@ workflow VCF_ANNOTATE_VEP_ANNOTSV_VCFANNO {
         filter                                  // string:  [optional]  => A filter pattern to use after annotating
         vcfanno_toml                            // file:    [optional]  => A vcfanno TOML config
         default_vcfanno_tomls                   // list:    [mandatory] => A list of default vcfanno configs to be concatenated with the input TOML
- 
+
     main:
 
     ch_versions = Channel.empty()

@@ -19,7 +19,6 @@ process BCFTOOLS_CONCAT {
 
     script:
     def args = task.ext.args   ?: ''
-    prefix   = task.ext.prefix ?: "${meta.id}"
     def args2 = task.ext.args2   ?: ''                                                                                                                                            
     def prefix   = task.ext.prefix ?: "${meta.id}"                                                                                                                                
                                                                                                                                                                                   
@@ -51,7 +50,7 @@ process BCFTOOLS_CONCAT {
     """
 
     stub:
-    prefix   = task.ext.prefix ?: "${meta.id}"
+    def prefix = task.ext.prefix ?: "${meta.id}"
     """
     echo "" | gzip > ${prefix}.vcf.gz
 

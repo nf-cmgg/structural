@@ -46,6 +46,21 @@ process SAMTOOLS_CONVERT {
     stub:
     def prefix = task.ext.prefix ?: "${meta.id}"
     def output_extension = input.getExtension() == "bam" ? "cram" : "bam"
+    def index_extension = output_extension == "bam" ? "bai" : "crai"
+
+    """
+    touch ${prefix}.${output_extension}
+    touch ${prefix}.${index_extension}
+
+    cat <<-END_VERSIONS > versions.yml
+    "${task.process}":
+        samtools: \$(echo \$(samtools --version 2>&1) | sed 's/^.*samtools //; s/Using.*\$//')
+    END_VERSIONS
+    """
+
+    stub:
+    def prefix = task.ext.prefix ?: "${meta.id}"
+    def output_extension = input.getExtension() == "bam" ? "cram" : "bam"
     def index_extension = input.getExtension() == "bam" ? "crai" : "bai"
 
     """

@@ -22,19 +22,19 @@ nextflow_workflow {
                 """
                 input[0] = Channel.of([
                     [id:"test", sample:"test", sex:"male"],
-                    file(params.test_data['homo_sapiens']['illumina']['test_paired_end_sorted_cram'], checkIfExists: true),
-                    file(params.test_data['homo_sapiens']['illumina']['test_paired_end_sorted_cram_crai'], checkIfExists: true)
+                    file(params.cram1, checkIfExists: true),
+                    file(params.crai1, checkIfExists: true)
                 ])
                 input[1] = Channel.value([
                     [id:"fasta"],
-                    file(params.test_data['homo_sapiens']['genome']['genome_fasta'], checkIfExists: true)
+                    file(params.fasta, checkIfExists: true)
                 ])
                 input[2] = Channel.value([
                     [id:"fai"],
-                    file(params.test_data['homo_sapiens']['genome']['genome_fasta_fai'], checkIfExists: true)
+                    file(params.fai, checkIfExists: true)
                 ])
-                input[3] = [[],[]]
-                input[4] = []
+                input[3] = []
+                input[4] = Channel.fromPath("\${params.svync_configs}/*.yaml", checkIfExists:true).collect()
                 input[5] = params.callers.tokenize(",")
                 """
             }
@@ -64,19 +64,19 @@ nextflow_workflow {
                 """
                 input[0] = Channel.of([
                     [id:"test", sample:"test", sex:"male"],
-                    file(params.test_data['homo_sapiens']['illumina']['test_paired_end_sorted_cram'], checkIfExists: true),
-                    file(params.test_data['homo_sapiens']['illumina']['test_paired_end_sorted_cram_crai'], checkIfExists: true)
+                    file(params.cram1, checkIfExists: true),
+                    file(params.crai1, checkIfExists: true)
                 ])
                 input[1] = Channel.value([
                     [id:"fasta"],
-                    file(params.test_data['homo_sapiens']['genome']['genome_fasta'], checkIfExists: true)
+                    file(params.fasta, checkIfExists: true)
                 ])
                 input[2] = Channel.value([
                     [id:"fai"],
-                    file(params.test_data['homo_sapiens']['genome']['genome_fasta_fai'], checkIfExists: true)
+                    file(params.fai, checkIfExists: true)
                 ])
-                input[3] = [[],[]]
-                input[4] = []
+                input[3] = []
+                input[4] = Channel.fromPath("\${params.svync_configs}/*.yaml", checkIfExists:true).collect()
                 input[5] = params.callers.tokenize(",")
                 """
             }
@@ -106,19 +106,19 @@ nextflow_workflow {
                 """
                 input[0] = Channel.of([
                     [id:"test", sample:"test", sex:"male"],
-                    file(params.test_data['homo_sapiens']['illumina']['test_paired_end_sorted_cram'], checkIfExists: true),
-                    file(params.test_data['homo_sapiens']['illumina']['test_paired_end_sorted_cram_crai'], checkIfExists: true)
+                    file(params.cram1, checkIfExists: true),
+                    file(params.crai1, checkIfExists: true)
                 ])
                 input[1] = Channel.value([
                     [id:"fasta"],
-                    file(params.test_data['homo_sapiens']['genome']['genome_fasta'], checkIfExists: true)
+                    file(params.fasta, checkIfExists: true)
                 ])
                 input[2] = Channel.value([
                     [id:"fai"],
-                    file(params.test_data['homo_sapiens']['genome']['genome_fasta_fai'], checkIfExists: true)
+                    file(params.fai, checkIfExists: true)
                 ])
-                input[3] = [[],[]]
-                input[4] = []
+                input[3] = []
+                input[4] = Channel.fromPath("\${params.svync_configs}/*.yaml", checkIfExists:true).collect()
                 input[5] = params.callers.tokenize(",")
                 """
             }
@@ -148,18 +148,18 @@ nextflow_workflow {
     //             """
     //             input[0] = Channel.of([
     //                 [id:"test", sample:"test", sex:"male"],
-    //                 file(params.test_data['homo_sapiens']['illumina']['test_paired_end_sorted_cram'], checkIfExists: true),
-    //                 file(params.test_data['homo_sapiens']['illumina']['test_paired_end_sorted_cram_crai'], checkIfExists: true)
+    //                 file(params.cram1, checkIfExists: true),
+    //                 file(params.crai1, checkIfExists: true)
     //             ])
     //             input[1] = Channel.value([
     //                 [id:"fasta"],
-    //                 file(params.test_data['homo_sapiens']['genome']['genome_fasta'], checkIfExists: true)
+    //                 file(params.fasta, checkIfExists: true)
     //             ])
     //             input[2] = Channel.value([
     //                 [id:"fai"],
-    //                 file(params.test_data['homo_sapiens']['genome']['genome_fasta_fai'], checkIfExists: true)
+    //                 file(params.fai, checkIfExists: true)
     //             ])
-    //             input[3] = [[],[]]
+    //             input[3] = []
     //             input[4] = []
     //             input[5] = params.callers.tokenize(",")
     //             """
@@ -190,19 +190,19 @@ nextflow_workflow {
                 """
                 input[0] = Channel.of([
                     [id:"test", sample:"test", sex:"male"],
-                    file(params.test_data['homo_sapiens']['illumina']['test_paired_end_sorted_cram'], checkIfExists: true),
-                    file(params.test_data['homo_sapiens']['illumina']['test_paired_end_sorted_cram_crai'], checkIfExists: true)
+                    file(params.cram1, checkIfExists: true),
+                    file(params.crai1, checkIfExists: true)
                 ])
                 input[1] = Channel.value([
                     [id:"fasta"],
-                    file(params.test_data['homo_sapiens']['genome']['genome_fasta'], checkIfExists: true)
+                    file(params.fasta, checkIfExists: true)
                 ])
                 input[2] = Channel.value([
                     [id:"fai"],
-                    file(params.test_data['homo_sapiens']['genome']['genome_fasta_fai'], checkIfExists: true)
+                    file(params.fai, checkIfExists: true)
                 ])
-                input[3] = [[],[]]
-                input[4] = []
+                input[3] = []
+                input[4] = Channel.fromPath("\${params.svync_configs}/*.yaml", checkIfExists:true).collect()
                 input[5] = params.callers.tokenize(",")
                 """
             }

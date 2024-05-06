@@ -33,6 +33,7 @@ nextflow_workflow {
                     file(params.wisecondorx_reference, checkIfExists:true)
                 ]
                 input[4] = [[],[]]
+                input[5] = Channel.fromPath("\${params.bedgovcf_configs}/*.yaml", checkIfExists:true).collect()
                 """
             }
         }

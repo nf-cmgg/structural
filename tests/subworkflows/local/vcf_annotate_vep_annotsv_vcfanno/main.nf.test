@@ -48,6 +48,12 @@ nextflow_workflow {
                 input[9] = []
                 input[10] = []
                 input[11] = ["sv"]
+                input[12] = params.genome
+                input[13] = params.species
+                input[14] = params.vep_cache_version
+                input[15] = null
+                input[16] = []
+                input[17] = files("\${params.vcfanno_tomls}/*.toml", checkIfExists:true)
                 """
             }
         }
@@ -103,6 +109,12 @@ nextflow_workflow {
                 input[9] = []
                 input[10] = []
                 input[11] = ["cnv"]
+                input[12] = params.genome
+                input[13] = params.species
+                input[14] = params.vep_cache_version
+                input[15] = params.annotations_filter
+                input[16] = []
+                input[17] = files("\${params.vcfanno_tomls}/*.toml", checkIfExists:true)
                 """
             }
         }
@@ -162,6 +174,12 @@ nextflow_workflow {
                 input[9] = []
                 input[10] = []
                 input[11] = ["sv", "cnv"]
+                input[12] = params.genome
+                input[13] = params.species
+                input[14] = params.vep_cache_version
+                input[15] = null
+                input[16] = []
+                input[17] = files("\${params.vcfanno_tomls}/*.toml", checkIfExists:true)
                 """
             }
         }

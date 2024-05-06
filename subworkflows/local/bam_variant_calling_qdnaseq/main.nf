@@ -16,7 +16,7 @@ workflow BAM_VARIANT_CALLING_QDNASEQ {
         ch_fai                  // channel: [mandatory] [ meta, fai ] => The index of the fasta reference file
         ch_qdnaseq_male         // channel: [mandatory] [ meta, qdnaseq_reference ] => The male reference to be used for qDNAseq
         ch_qdnaseq_female       // channel: [mandatory] [ meta, qdnaseq_reference ] => The female reference to be used for qDNAseq
-        ch_bedgovcf_configs         // channel: [mandatory] [ configs ] => A list of bedgovcf configs
+        ch_bedgovcf_configs     // channel: [mandatory] [ configs ] => A list of bedgovcf configs
 
     main:
 

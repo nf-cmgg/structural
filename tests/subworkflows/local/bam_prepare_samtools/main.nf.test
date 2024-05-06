@@ -54,7 +54,7 @@ nextflow_workflow {
                     file(params.crai1, checkIfExists: true)
                 ], [
                     [id:"test", sample:"test", sex:"male"],
-                    file(params.crai2, checkIfExists: true),
+                    file(params.cram2, checkIfExists: true),
                     []
                 ])
                 input[1] = Channel.value([

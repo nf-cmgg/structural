@@ -1,5 +1,2 @@
-sample,family,cram,crai,sex
-PosCon1,family_1,https://github.com/nf-cmgg/test-datasets/raw/main/data/genomics/homo_sapiens/illumina/cram/SVcontrol/PosCon1.cram,https://github.com/nf-cmgg/test-datasets/raw/main/data/genomics/homo_sapiens/illumina/cram/SVcontrol/PosCon1.cram.crai,male
-PosCon2,family_1,https://github.com/nf-cmgg/test-datasets/raw/main/data/genomics/homo_sapiens/illumina/cram/SVcontrol/PosCon2.cram,https://github.com/nf-cmgg/test-datasets/raw/main/data/genomics/homo_sapiens/illumina/cram/SVcontrol/PosCon2.cram.crai,female
-PosCon3,,https://github.com/nf-cmgg/test-datasets/raw/main/data/genomics/homo_sapiens/illumina/cram/SVcontrol/PosCon3.cram,https://github.com/nf-cmgg/test-datasets/raw/main/data/genomics/homo_sapiens/illumina/cram/SVcontrol/PosCon3.cram.crai,female
-PosCon4,,https://github.com/nf-cmgg/test-datasets/raw/main/data/genomics/homo_sapiens/illumina/cram/SVcontrol/PosCon4.cram,https://github.com/nf-cmgg/test-datasets/raw/main/data/genomics/homo_sapiens/illumina/cram/SVcontrol/PosCon4.cram.crai,male
+sample,family,cram,crai,sex,hpo
+PosCon1,family_1,https://github.com/nf-cmgg/test-datasets/raw/main/data/genomics/homo_sapiens/illumina/cram/SVcontrol/PosCon1.cram,https://github.com/nf-cmgg/test-datasets/raw/main/data/genomics/homo_sapiens/illumina/cram/SVcontrol/PosCon1.cram.crai,male,HPO:0001156 HPO:0001363

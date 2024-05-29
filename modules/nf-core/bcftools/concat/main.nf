@@ -4,8 +4,8 @@ process BCFTOOLS_CONCAT {
 
     conda "${moduleDir}/environment.yml"
     container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
-        'https://depot.galaxyproject.org/singularity/bcftools:1.18--h8b25389_0':                                                                                                                                                            
-        'biocontainers/bcftools:1.18--h8b25389_0' }" 
+        'https://depot.galaxyproject.org/singularity/bcftools:1.18--h8b25389_0':
+        'biocontainers/bcftools:1.18--h8b25389_0' }"
 
     input:
     tuple val(meta), path(vcfs), path(tbis)
@@ -33,6 +33,7 @@ process BCFTOOLS_CONCAT {
 
     """
     ${tabix_vcfs.join("\n")}
+
     bcftools concat \\
         $args \\
         --threads $task.cpus \\
@@ -40,22 +41,22 @@ process BCFTOOLS_CONCAT {
     | bcftools sort \\
         ${args2} \\
         --output ${prefix}.vcf.gz \\
-        --output-type z
+        --output-type z 
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
-        bcftools: \$( bcftools --version |& sed '1!d; s/^.*bcftools //' )
+        bcftools: \$(bcftools --version 2>&1 | head -n1 | sed 's/^.*bcftools //; s/ .*\$//')
     END_VERSIONS
     """
 
     stub:
-    prefix   = task.ext.prefix ?: "${meta.id}"
+    def prefix = task.ext.prefix ?: "${meta.id}"
     """
-    touch ${prefix}.vcf.gz
+    echo "" | gzip > ${prefix}.vcf.gz
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
-        bcftools: \$( bcftools --version |& sed '1!d; s/^.*bcftools //' )
+        bcftools: \$(bcftools --version 2>&1 | head -n1 | sed 's/^.*bcftools //; s/ .*\$//')
     END_VERSIONS
     """
 }

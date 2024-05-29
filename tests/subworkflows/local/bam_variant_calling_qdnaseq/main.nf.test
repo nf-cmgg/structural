@@ -40,6 +40,7 @@ nextflow_workflow {
                     [id:"female_ref"],
                     file(params.qdnaseq_female, checkIfExists: true)
                 ])
+                input[5] = Channel.fromPath("\${params.bedgovcf_configs}/*.yaml", checkIfExists:true).collect()
                 """
             }
         }

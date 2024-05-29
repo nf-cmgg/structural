@@ -6,11 +6,12 @@ include { TABIX_TABIX         } from '../../../modules/nf-core/tabix/tabix/main'
 workflow BAM_VARIANT_CALLING_WISECONDORX {
 
     take:
-    ch_crams        // channel: [ val(meta),  path(cram), path(crai) ]
-    ch_fasta        // channel: [ val(meta2), path(fasta) ]
-    ch_fai          // channel: [ val(meta3), path(fai) ]
-    ch_ref          // channel: [ val(meta4), path(reference) ]
-    ch_blacklist    // channel: [ val(meta5), path(blacklist) ]
+    ch_crams            // channel: [ val(meta),  path(cram), path(crai) ]
+    ch_fasta            // channel: [ val(meta2), path(fasta) ]
+    ch_fai              // channel: [ val(meta3), path(fai) ]
+    ch_ref              // channel: [ val(meta4), path(reference) ]
+    ch_blacklist        // channel: [ val(meta5), path(blacklist) ]
+    ch_bedgovcf_configs // channel: [mandatory] [ configs ] => A list of bedgovcf configs
 
     main:
 
@@ -37,9 +38,16 @@ workflow BAM_VARIANT_CALLING_WISECONDORX {
     )
     ch_versions = ch_versions.mix(WISECONDORX_PREDICT.out.versions.first())
 
+    ch_bedgovcf_configs
+        .map {
+            it.find { it.toString().contains("wisecondorx") }
+        }
+        .set { ch_wisecondorx_bedgovcf_config }
+
     WISECONDORX_PREDICT.out.aberrations_bed
-        .map { meta, bed ->
-            [ meta, bed, file("${projectDir}/assets/bedgovcf/wisecondorx.yaml", checkIfExists:true)]
+        .combine(ch_wisecondorx_bedgovcf_config)
+        .map { meta, bed, config ->
+            [ meta, bed, config]
         }
         .set { ch_bedgovcf_input }
 

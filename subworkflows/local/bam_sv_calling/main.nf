@@ -12,12 +12,12 @@ include { VCF_MERGE_CALLERS_JASMINE                             } from '../vcf_m
 
 workflow BAM_SV_CALLING {
     take:
-        ch_crams        // channel: [mandatory] [ meta, cram, crai, bed ] => The aligned CRAMs per sample with the regions they should be called on
-        ch_fasta        // channel: [mandatory] [ meta, fasta ] => The fasta reference file
-        ch_fai          // channel: [mandatory] [ meta, fai ] => The index of the fasta reference file
-        ch_bwa_index    // channel: [optional]  [ meta, index ] => The BWA MEM index
-        ch_manta_config // channel: [optional]  [ config ] => The config to pass to Manta
-        val_callers     // value:   [mandatory] => List of all SV callers to use
+        ch_crams            // channel: [mandatory] [ meta, cram, crai, bed ] => The aligned CRAMs per sample with the regions they should be called on
+        ch_fasta            // channel: [mandatory] [ meta, fasta ] => The fasta reference file
+        ch_fai              // channel: [mandatory] [ meta, fai ] => The index of the fasta reference file
+        ch_manta_config     // channel: [optional]  [ config ] => The config to pass to Manta
+        ch_svync_configs    // channel: [mandatory] [ configs ] => A list of svync config files
+        val_callers         // value:   [mandatory] => List of all SV callers to use
 
     main:
 
@@ -35,6 +35,7 @@ workflow BAM_SV_CALLING {
             ch_fasta,
             ch_fai,
             ch_manta_config,
+            ch_svync_configs
         )
 
         ch_called_vcfs  = ch_called_vcfs.mix(BAM_VARIANT_CALLING_MANTA.out.manta_vcfs)
@@ -49,7 +50,8 @@ workflow BAM_SV_CALLING {
         BAM_VARIANT_CALLING_DELLY(
             ch_crams,
             ch_fasta,
-            ch_fai
+            ch_fai,
+            ch_svync_configs
         )
 
         ch_called_vcfs  = ch_called_vcfs.mix(BAM_VARIANT_CALLING_DELLY.out.delly_vcfs)
@@ -64,7 +66,8 @@ workflow BAM_SV_CALLING {
         BAM_VARIANT_CALLING_SMOOVE(
             ch_crams,
             ch_fasta,
-            ch_fai
+            ch_fai,
+            ch_svync_configs
         )
 
         ch_called_vcfs  = ch_called_vcfs.mix(BAM_VARIANT_CALLING_SMOOVE.out.smoove_vcfs)

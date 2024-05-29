@@ -16,6 +16,7 @@ workflow BAM_VARIANT_CALLING_QDNASEQ {
         ch_fai                  // channel: [mandatory] [ meta, fai ] => The index of the fasta reference file
         ch_qdnaseq_male         // channel: [mandatory] [ meta, qdnaseq_reference ] => The male reference to be used for qDNAseq
         ch_qdnaseq_female       // channel: [mandatory] [ meta, qdnaseq_reference ] => The female reference to be used for qDNAseq
+        ch_bedgovcf_configs     // channel: [mandatory] [ configs ] => A list of bedgovcf configs
 
     main:
 
@@ -65,9 +66,16 @@ workflow BAM_VARIANT_CALLING_QDNASEQ {
     )
     ch_versions = ch_versions.mix(GAWK.out.versions.first())
 
+    ch_bedgovcf_configs
+        .map {
+            it.find { it.toString().contains("qdnaseq") }
+        }
+        .set { ch_qdnaseq_bedgovcf_config }
+
     GAWK.out.output
-        .map { meta, bed ->
-            [ meta, bed, file("${projectDir}/assets/bedgovcf/qdnaseq.yaml", checkIfExists:true)]
+        .combine(ch_qdnaseq_bedgovcf_config)
+        .map { meta, bed, config ->
+            [ meta, bed, config ]
         }
         .set { ch_bedgovcf_input }
 

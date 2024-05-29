@@ -47,8 +47,8 @@ workflow VCF_MERGE_FAMILY_JASMINE {
 
     JASMINESV(
         ch_jasmine_input,
-        ch_fasta.map{it[1]},
-        ch_fai.map{it[1]},
+        ch_fasta,
+        ch_fai,
         []
     )
     ch_versions = ch_versions.mix(JASMINESV.out.versions.first())

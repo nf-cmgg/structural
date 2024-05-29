@@ -30,6 +30,12 @@ workflow VCF_ANNOTATE_VEP_ANNOTSV_VCFANNO {
         ch_vcfanno_lua                          // channel: [optional]  [ path(lua) ] => The lua script to influence VCFanno
         val_vcfanno_resources                   // list:    [optional]  [ path(file1, file2, file3...) ] => The extra VCFanno files
         val_variant_types                       // list:    [mandatory] => The variant types
+        genome                                  // string:  [mandatory] => The genome used by the variant callers
+        species                                 // string:  [mandatory] => The species used by VEP
+        vep_cache_version                       // integer: [mandatory] => The VEP cache version to use
+        filter                                  // string:  [optional]  => A filter pattern to use after annotating
+        vcfanno_toml                            // file:    [optional]  => A vcfanno TOML config
+        default_vcfanno_tomls                   // list:    [mandatory] => A list of default vcfanno configs to be concatenated with the input TOML
 
     main:
 
@@ -126,9 +132,9 @@ workflow VCF_ANNOTATE_VEP_ANNOTSV_VCFANNO {
 
     ENSEMBLVEP_VEP(
         ch_vcfs,
-        params.genome,
-        params.species,
-        params.vep_cache_version,
+        genome,
+        species,
+        vep_cache_version,
         ch_vep_cache,
         ch_fasta,
         ch_vep_extra_files
@@ -152,7 +158,7 @@ workflow VCF_ANNOTATE_VEP_ANNOTSV_VCFANNO {
     )
     .set { ch_vcfanno_input }
 
-    Channel.fromList(create_vcfanno_toml(val_vcfanno_resources))
+    Channel.fromList(create_vcfanno_toml(val_vcfanno_resources, vcfanno_toml, default_vcfanno_tomls))
         .collectFile(name:"vcfanno.toml", newLine:true)
         .collect()
         .set { ch_vcfanno_toml }
@@ -165,7 +171,7 @@ workflow VCF_ANNOTATE_VEP_ANNOTSV_VCFANNO {
     )
     ch_versions = ch_versions.mix(VCFANNO.out.versions)
 
-    if(!params.annotations_filter) {
+    if(!filter) {
         TABIX_ANNOTATED(
             VCFANNO.out.vcf
         )
@@ -175,7 +181,7 @@ workflow VCF_ANNOTATE_VEP_ANNOTSV_VCFANNO {
             .set { ch_annotated_vcfs }
     }
 
-    if(params.annotations_filter) {
+    if(filter) {
         BCFTOOLS_FILTER_COMMON(
             VCFANNO.out.vcf
         )
@@ -196,21 +202,21 @@ workflow VCF_ANNOTATE_VEP_ANNOTSV_VCFANNO {
     versions        = ch_versions
 }
 
-def create_vcfanno_toml(vcfanno_resources) {
-    def params_toml_files = params.vcfanno_toml ? parse_toml(params.vcfanno_toml) : [postannotation:[]]
-    def assets_toml_files = parse_toml("${projectDir}/assets/vcfanno/*.toml")
+def create_vcfanno_toml(vcfanno_resources, input_vcfanno_toml, List<Path> vcfanno_defaults) {
+    def vcfanno_toml = input_vcfanno_toml ? parse_toml(input_vcfanno_toml) : [:]
+    def default_tomls = parse_toml(vcfanno_defaults)
     def resources = vcfanno_resources.collect { it.fileName.toString() }
-    resources.add("${params.annotsv_file_name}.vcf.gz" as String)
+    resources.add("annotsv_annotated.vcf.gz" as String)
     def output = []
     for (file_name in resources) {
-        if (params_toml_files.containsKey(file_name)){
-            output.add(params_toml_files[file_name])
+        if (vcfanno_toml.containsKey(file_name)){
+            output.add(vcfanno_toml[file_name])
         }
-        else if (assets_toml_files.containsKey(file_name)){
-            output.add(assets_toml_files[file_name])
+        else if (default_tomls.containsKey(file_name)){
+            output.add(default_tomls[file_name])
         }
     }
-    postannotation = params_toml_files.postannotation != [] ? params_toml_files.postannotation : assets_toml_files.postannotation
+    postannotation = vcfanno_toml.postannotation != [] ? vcfanno_toml.postannotation : default_tomls.postannotation
     if (postannotation != []){
         output.add(postannotation)
     }
@@ -220,8 +226,7 @@ def create_vcfanno_toml(vcfanno_resources) {
 def parse_toml(tomls) {
     def output = [:]
     output.postannotation = []
-    tomls_files = file(tomls, checkIfExists:true)
-    toml_list = tomls_files instanceof LinkedList ? tomls_files : [tomls_files]
+    toml_list = tomls instanceof List ? tomls : [tomls]
     for (toml in toml_list) {
         def info = ""
         def file = ""

@@ -14,6 +14,7 @@ workflow BAM_VARIANT_CALLING_MANTA {
         ch_fasta            // channel: [mandatory] [ meta, fasta ] => The fasta reference file
         ch_fai              // channel: [mandatory] [ meta, fai ] => The index of the fasta reference file
         ch_manta_config     // channel: [optional]  [ config ] => The config to pass to Manta
+        ch_svync_configs    // channel: [mandatory] [ configs ] => A list of svync configs
 
     main:
 
@@ -70,11 +71,18 @@ workflow BAM_VARIANT_CALLING_MANTA {
 
     ch_versions = ch_versions.mix(MANTA_CONVERTINVERSION.out.versions.first())
 
+    ch_svync_configs
+        .map {
+            it.find { it.toString().contains("manta") }
+        }
+        .set { ch_manta_svync_config }
+
     MANTA_CONVERTINVERSION.out.vcf
         .join(MANTA_CONVERTINVERSION.out.tbi, failOnDuplicate:true, failOnMismatch:true)
-        .map{ meta, vcf, tbi ->
+        .combine(ch_manta_svync_config)
+        .map{ meta, vcf, tbi, config ->
             new_meta = meta + [caller:"manta"]
-            [ new_meta, vcf, tbi, file("${projectDir}/assets/svync/manta.yaml") ]
+            [ new_meta, vcf, tbi, config ]
         }
         .dump(tag: 'manta_vcfs', pretty: true)
         .set { ch_manta_vcfs }

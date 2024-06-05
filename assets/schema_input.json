@@ -41,6 +41,11 @@
                 "type": "string",
                 "meta": ["sex"],
                 "enum": ["male", "female"]
+            },
+            "hpo": {
+                "type": "string",
+                "meta": ["hpo"],
+                "description": "HPO terms to be used for annotation with AnnotSV. Should be space or semicolon separated."
             }
         },
         "required": ["sample", "cram"]

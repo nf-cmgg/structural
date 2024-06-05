@@ -4,8 +4,8 @@ process ANNOTSV_ANNOTSV {
 
     conda "${moduleDir}/environment.yml"
     container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
-        'https://depot.galaxyproject.org/singularity/annotsv:3.3.6--py311hdfd78af_0' :
-        'biocontainers/annotsv:3.3.6--py311hdfd78af_0' }"
+        'oras://community.wave.seqera.io/library/annotsv:3.4.2--141a0ee560de1897' :
+        'community.wave.seqera.io/library/annotsv:3.4.2--010fa21247b5b64b' }"
 
     input:
     tuple val(meta), path(sv_vcf), path(sv_vcf_index), path(candidate_small_variants)
@@ -17,7 +17,7 @@ process ANNOTSV_ANNOTSV {
     output:
     tuple val(meta), path("*.tsv")              , emit: tsv
     tuple val(meta), path("*.unannotated.tsv")  , emit: unannotated_tsv, optional: true
-    tuple val(meta), path("*.vcf")              , emit: vcf
+    tuple val(meta), path("*.vcf")              , emit: vcf, optional: true
     path "versions.yml"                         , emit: versions
 
     when:
@@ -39,15 +39,11 @@ process ANNOTSV_ANNOTSV {
         ${small_variants} \\
         ${fp_snv} \\
         ${transcripts} \\
-        -outputFile ${prefix}.raw.tsv \\
+        -outputFile ${prefix}.tsv \\
         -SVinputFile ${sv_vcf} \\
         ${args}
 
     mv *_AnnotSV/* .
-    awk 'BEGIN { FS=OFS="\t" } { if (NR > 1 && NF >= 8) \$1 = \$1 "_" NR; print }' ${prefix}.raw.tsv > ${prefix}.tsv
-
-    variantconvert convert -i ${prefix}.tsv -o ${prefix}.vcf -fi annotsv -fo vcf -c /usr/local/share/python3/variantconvert/configs/GRCh38/annotsv3_from_vcf.json
-    sed -i 's/contig=<ID=MT/contig=<ID=M/' ${prefix}.vcf
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
@@ -59,10 +55,14 @@ process ANNOTSV_ANNOTSV {
     def args = task.ext.args ?: ''
     def prefix = task.ext.prefix ?: "${meta.id}"
 
+    def create_vcf = args.contains("-vcf 1") ? "touch ${prefix}.vcf" : ""
+
     """
+    echo "$args"
+
     touch ${prefix}.tsv
     touch ${prefix}.unannotated.tsv
-    touch ${prefix}.vcf
+    ${create_vcf}
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":

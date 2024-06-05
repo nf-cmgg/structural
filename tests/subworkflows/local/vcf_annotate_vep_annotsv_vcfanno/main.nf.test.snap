@@ -2,8 +2,21 @@
     "homo_sapiens - sv, no_filter": {
         "content": [
             [
-                "test.sv.vcf.gz",
-                "test.sv.vcf.gz.tbi"
+                [
+                    {
+                        "id": "test",
+                        "sample": "test",
+                        "sex": "male",
+                        "family": "test1",
+                        "family_count": 1,
+                        "hpo": [
+                            
+                        ],
+                        "variant_type": "sv"
+                    },
+                    "test.sv.vcf.gz",
+                    "test.sv.vcf.gz.tbi"
+                ]
             ],
             [
                 "test.vep.summary.html:md5,d41d8cd98f00b204e9800998ecf8427e"
@@ -13,15 +26,43 @@
         ],
         "meta": {
             "nf-test": "0.8.4",
-            "nextflow": "24.02.0"
+            "nextflow": "24.04.2"
         },
-        "timestamp": "2024-03-12T10:16:55.291447426"
+        "timestamp": "2024-06-05T16:01:35.19225934"
     },
     "homo_sapiens - sv & cnv": {
         "content": [
             [
-                "test.cnv.vcf.gz",
-                "test.cnv.vcf.gz.tbi"
+                [
+                    {
+                        "id": "test",
+                        "sample": "test",
+                        "sex": "male",
+                        "family": "test1",
+                        "family_count": 1,
+                        "hpo": [
+                            
+                        ],
+                        "variant_type": "cnv"
+                    },
+                    "test.cnv.vcf.gz",
+                    "test.cnv.vcf.gz.tbi"
+                ],
+                [
+                    {
+                        "id": "test",
+                        "sample": "test",
+                        "sex": "male",
+                        "family": "test1",
+                        "family_count": 1,
+                        "hpo": [
+                            
+                        ],
+                        "variant_type": "sv"
+                    },
+                    "test.sv.vcf.gz",
+                    "test.sv.vcf.gz.tbi"
+                ]
             ],
             [
                 "test.vep.summary.html:md5,d41d8cd98f00b204e9800998ecf8427e",
@@ -32,15 +73,28 @@
         ],
         "meta": {
             "nf-test": "0.8.4",
-            "nextflow": "24.02.0"
+            "nextflow": "24.04.2"
         },
-        "timestamp": "2024-03-12T10:17:27.514868326"
+        "timestamp": "2024-06-05T16:04:50.892603799"
     },
     "homo_sapiens - cnv, filter": {
         "content": [
             [
-                "test.cnv.vcf.gz",
-                "test.cnv.vcf.gz.tbi"
+                [
+                    {
+                        "id": "test",
+                        "sample": "test",
+                        "sex": "male",
+                        "family": "test1",
+                        "family_count": 1,
+                        "hpo": [
+                            
+                        ],
+                        "variant_type": "cnv"
+                    },
+                    "test.cnv.vcf.gz",
+                    "test.cnv.vcf.gz.tbi"
+                ]
             ],
             [
                 "test.vep.summary.html:md5,d41d8cd98f00b204e9800998ecf8427e"
@@ -50,8 +104,8 @@
         ],
         "meta": {
             "nf-test": "0.8.4",
-            "nextflow": "24.02.0"
+            "nextflow": "24.04.2"
         },
-        "timestamp": "2024-03-12T11:04:12.980338516"
+        "timestamp": "2024-06-05T16:02:48.492322238"
     }
 }

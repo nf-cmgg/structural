@@ -12,6 +12,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
    - `sv`: Use all SV callers available in the pipeline
    - `cnv`: Use all CNV callers available in the pipeline
    - `rre`: Use all repeat region expansion callers available in the pipeline
+2. Added the possibilty to annotate on HPO terms. Add the right HPO terms to the samplesheet in the `hpo` field
 
 ### `Changes`
 

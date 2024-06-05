@@ -58,6 +58,8 @@ process ANNOTSV_ANNOTSV {
     def create_vcf = args.contains("-vcf 1") ? "touch ${prefix}.vcf" : ""
 
     """
+    echo "$args"
+
     touch ${prefix}.tsv
     touch ${prefix}.unannotated.tsv
     ${create_vcf}

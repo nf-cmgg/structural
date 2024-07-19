@@ -19,10 +19,10 @@ workflow BAM_CNV_CALLING {
         ch_qdnaseq_female           // channel: [mandatory] [ meta, qdnaseq_reference ] => The female reference for qDNAseq
         ch_wisecondorx_reference    // channel: [mandatory] [ meta, wisecondorx_reference ] => The reference for WisecondorX
         ch_blacklist                // channel: [optional]  [ meta, bed ] => The blacklist regions to be excluded from the Wisecondorx analysis
+        ch_bedgovcf_configs         // channel: [mandatory] [ configs ] => A list of bedgovcf configs
+        val_callers                 // value:   [mandatory] => List of all CNV callers to use
 
     main:
-
-    val_callers     = params.callers.tokenize(",").intersect(GlobalVariables.cnvCallers)
 
     ch_versions     = Channel.empty()
     ch_reports      = Channel.empty()
@@ -34,7 +34,8 @@ workflow BAM_CNV_CALLING {
             ch_fasta,
             ch_fai,
             ch_qdnaseq_male,
-            ch_qdnaseq_female
+            ch_qdnaseq_female,
+            ch_bedgovcf_configs
         )
         ch_versions = ch_versions.mix(BAM_VARIANT_CALLING_QDNASEQ.out.versions)
         ch_called_vcfs = ch_called_vcfs.mix(BAM_VARIANT_CALLING_QDNASEQ.out.vcf)
@@ -46,7 +47,8 @@ workflow BAM_CNV_CALLING {
             ch_fasta,
             ch_fai,
             ch_wisecondorx_reference,
-            ch_blacklist
+            ch_blacklist,
+            ch_bedgovcf_configs
         )
         ch_versions = ch_versions.mix(BAM_VARIANT_CALLING_WISECONDORX.out.versions)
         ch_called_vcfs = ch_called_vcfs.mix(BAM_VARIANT_CALLING_WISECONDORX.out.vcf)

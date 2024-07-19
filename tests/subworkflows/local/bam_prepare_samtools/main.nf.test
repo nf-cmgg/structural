@@ -15,16 +15,16 @@ nextflow_workflow {
                 """
                 input[0] = Channel.of([
                     [id:"test", sample:"test", sex:"male"],
-                    file(params.test_data['homo_sapiens']['illumina']['test_paired_end_sorted_cram'], checkIfExists: true),
+                    file(params.cram1, checkIfExists: true),
                     []
                 ])
                 input[1] = Channel.value([
                     [id:"fasta"],
-                    file(params.test_data['homo_sapiens']['genome']['genome_fasta'], checkIfExists: true)
+                    file(params.fasta, checkIfExists: true)
                 ])
                 input[2] = Channel.value([
                     [id:"fai"],
-                    file(params.test_data['homo_sapiens']['genome']['genome_fasta_fai'], checkIfExists: true)
+                    file(params.fai, checkIfExists: true)
                 ])
                 """
             }
@@ -50,20 +50,20 @@ nextflow_workflow {
                 """
                 input[0] = Channel.of([
                     [id:"test", sample:"test", sex:"male"],
-                    file(params.test_data['homo_sapiens']['illumina']['test_paired_end_sorted_cram'], checkIfExists: true),
-                    file(params.test_data['homo_sapiens']['illumina']['test_paired_end_sorted_cram_crai'], checkIfExists: true)
+                    file(params.cram1, checkIfExists: true),
+                    file(params.crai1, checkIfExists: true)
                 ], [
                     [id:"test", sample:"test", sex:"male"],
-                    file(params.test_data['homo_sapiens']['illumina']['test2_paired_end_sorted_cram'], checkIfExists: true),
+                    file(params.cram2, checkIfExists: true),
                     []
                 ])
                 input[1] = Channel.value([
                     [id:"fasta"],
-                    file(params.test_data['homo_sapiens']['genome']['genome_fasta'], checkIfExists: true)
+                    file(params.fasta, checkIfExists: true)
                 ])
                 input[2] = Channel.value([
                     [id:"fai"],
-                    file(params.test_data['homo_sapiens']['genome']['genome_fasta_fai'], checkIfExists: true)
+                    file(params.fai, checkIfExists: true)
                 ])
                 """
             }
@@ -90,20 +90,20 @@ nextflow_workflow {
                 """
                 input[0] = Channel.of([
                     [id:"test", sample:"test", sex:"male"],
-                    file(params.test_data['homo_sapiens']['illumina']['test_paired_end_sorted_cram'], checkIfExists: true),
-                    file(params.test_data['homo_sapiens']['illumina']['test_paired_end_sorted_cram_crai'], checkIfExists: true)
+                    file(params.cram1, checkIfExists: true),
+                    file(params.crai1, checkIfExists: true)
                 ], [
                     [id:"test2", sample:"test2", sex:"male"],
-                    file(params.test_data['homo_sapiens']['illumina']['test2_paired_end_sorted_cram'], checkIfExists: true),
+                    file(params.cram2, checkIfExists: true),
                     []
                 ])
                 input[1] = Channel.value([
                     [id:"fasta"],
-                    file(params.test_data['homo_sapiens']['genome']['genome_fasta'], checkIfExists: true)
+                    file(params.fasta, checkIfExists: true)
                 ])
                 input[2] = Channel.value([
                     [id:"fai"],
-                    file(params.test_data['homo_sapiens']['genome']['genome_fasta_fai'], checkIfExists: true)
+                    file(params.fai, checkIfExists: true)
                 ])
                 """
             }

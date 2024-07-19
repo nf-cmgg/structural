@@ -8,14 +8,18 @@
                         "sample": "test",
                         "sex": "male"
                     },
-                    "/nf-core/test-datasets/modules/data/genomics/homo_sapiens/illumina/cram/test.paired_end.sorted.cram",
-                    "test.paired_end.sorted.cram.crai:md5,31ffc1b11f53210e4ac0d55092de0652"
+                    "/nf-cmgg/test-datasets/raw/main/data/genomics/homo_sapiens/illumina/cram/SVcontrol/PosCon1.cram",
+                    "PosCon1.cram.crai:md5,ad1288bcc69e6e11316b933903cf7bcf"
                 ]
             ],
             1,
             0
         ],
-        "timestamp": "2023-11-29T16:38:29.584284221"
+        "meta": {
+            "nf-test": "0.8.4",
+            "nextflow": "24.03.0"
+        },
+        "timestamp": "2024-05-06T15:02:28.210751679"
     },
     "homo sapiens - [[cram, crai], [cram, []]], fasta, fai - One sample": {
         "content": [
@@ -24,6 +28,10 @@
             2,
             0
         ],
+        "meta": {
+            "nf-test": "0.8.4",
+            "nextflow": "24.03.0"
+        },
         "timestamp": "2023-11-29T16:38:40.713398061"
     },
     "homo sapiens - [[cram, crai], [cram, []]], fasta, fai - Two samples": {
@@ -35,8 +43,8 @@
                         "sample": "test",
                         "sex": "male"
                     },
-                    "/nf-core/test-datasets/modules/data/genomics/homo_sapiens/illumina/cram/test.paired_end.sorted.cram",
-                    "/nf-core/test-datasets/modules/data/genomics/homo_sapiens/illumina/cram/test.paired_end.sorted.cram.crai"
+                    "/nf-cmgg/test-datasets/raw/main/data/genomics/homo_sapiens/illumina/cram/SVcontrol/PosCon1.cram",
+                    "/nf-cmgg/test-datasets/raw/main/data/genomics/homo_sapiens/illumina/cram/SVcontrol/PosCon1.cram.crai"
                 ],
                 [
                     {
@@ -44,13 +52,17 @@
                         "sample": "test2",
                         "sex": "male"
                     },
-                    "/nf-core/test-datasets/modules/data/genomics/homo_sapiens/illumina/cram/test2.paired_end.sorted.cram",
-                    "test2.paired_end.sorted.cram.crai:md5,633a024a94932189bd5fbc84f62ce6ac"
+                    "/nf-cmgg/test-datasets/raw/main/data/genomics/homo_sapiens/illumina/cram/SVcontrol/PosCon2.cram",
+                    "PosCon2.cram.crai:md5,bdb6e116dfeb217be18e3e44eab33cb6"
                 ]
             ],
             1,
             0
         ],
-        "timestamp": "2023-11-29T16:38:49.788373375"
+        "meta": {
+            "nf-test": "0.8.4",
+            "nextflow": "24.03.0"
+        },
+        "timestamp": "2024-05-06T15:02:49.440862334"
     }
 }

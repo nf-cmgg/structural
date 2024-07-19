@@ -9,43 +9,6 @@ include { paramsSummaryMultiqc   } from '../subworkflows/nf-core/utils_nfcore_pi
 include { softwareVersionsToYAML } from '../subworkflows/nf-core/utils_nfcore_pipeline'
 include { methodsDescriptionText } from '../subworkflows/local/utils_nfcore_structural_pipeline'
 
-// Check callers (see lib/GlobalVariables.groovy for the list of supported callers)
-def callers = params.callers.tokenize(",")
-
-for (caller in callers) {
-    if(!(caller in GlobalVariables.allCallers)) { error("The caller '${caller}' is not supported please specify a comma delimited list with on or more of the following callers: ${GlobalVariables.allCallers}".toString()) }
-}
-
-def sv_callers_to_use = callers.intersect(GlobalVariables.svCallers)
-def cnv_callers_to_use = callers.intersect(GlobalVariables.cnvCallers)
-
-if (sv_callers_to_use && params.sv_callers_support > sv_callers_to_use.size()) {
-    error("The --sv_callers_support parameter (${params.sv_callers_support}) is higher than the amount of SV callers in --callers (${sv_callers_to_use.size()}). Please adjust --sv_callers_support to a value lower of equal to the amount of SV callers to use.")
-}
-
-if (cnv_callers_to_use && params.cnv_callers_support > cnv_callers_to_use.size()) {
-    error("The --cnv_callers_support parameter (${params.cnv_callers_support}) is higher than the amount of CNV callers in --callers (${cnv_callers_to_use.size()}). Please adjust --cnv_callers_support to a value lower of equal to the amount of CNV callers to use.")
-}
-
-if ("qdnaseq" in callers && (!params.qdnaseq_male || !params.qdnaseq_female)) {
-    error("Please give the QDNAseq references using --qdnaseq_male and --qdnaseq_female")
-}
-
-if ("wisecondorx" in callers && !params.wisecondorx_reference) {
-    error("Please give the WisecondorX reference using --wisecondorx_reference")
-}
-
-/*
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    CONFIG FILES
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-*/
-
-ch_multiqc_config          = Channel.fromPath("$projectDir/assets/multiqc_config.yml", checkIfExists: true)
-ch_multiqc_custom_config   = params.multiqc_config ? Channel.fromPath( params.multiqc_config, checkIfExists: true ) : Channel.empty()
-ch_multiqc_logo            = params.multiqc_logo   ? Channel.fromPath( params.multiqc_logo, checkIfExists: true ) : Channel.empty()
-ch_multiqc_custom_methods_description = params.multiqc_methods_description ? file(params.multiqc_methods_description, checkIfExists: true) : file("$projectDir/assets/methods_description_template.yml", checkIfExists: true)
-
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     IMPORT LOCAL MODULES/SUBWORKFLOWS
@@ -90,7 +53,47 @@ include { MULTIQC                           } from '../modules/nf-core/multiqc/m
 workflow STRUCTURAL {
 
     take:
-    ch_samplesheet // channel: samplesheet read in from --input
+    // channels
+    ch_samplesheet              // channel: samplesheet read in from --input
+    ch_multiqc_config
+    ch_multiqc_custom_config
+    ch_multiqc_logo
+    ch_multiqc_custom_methods_description
+
+    // file inputs
+    fasta                       // The fasta file to use
+    fai                         // The index of the fasta file
+    expansionhunter_catalog     // The expansionhunter catalog
+    qdnaseq_female              // The QDNAseq annotations for female samples
+    qdnaseq_male                // The QDNAseq annotations for male samples
+    wisecondorx_reference       // The WisecondorX annotations file
+    vep_cache                   // The VEP cache directory
+    annotsv_annotations         // The annotations directory for AnnotSV
+    annotsv_candidate_genes     // A file containing the AnnotSV candidate genes
+    annotsv_gene_transcripts    // A file containing the AnnotSV gene transcripts
+    vcfanno_lua                 // A Lua script to use with vcfanno
+    vcfanno_resources           // A comma delimited list of paths to vcfanno resource files
+    vcfanno_toml                // The vcfanno config to
+    blacklist                   // A BED file of blacklisted regions
+    manta_config                // A configuration file to be used in Manta
+    svync_dir                   // A directory containing svync configs (they must end in '.yaml' and contain the full name of the caller)
+    bedgovcf_dir                // A directory containing bedgovcf configs (they must end in '.yaml' and contain the full name of the caller)
+    vcfanno_default_dir         // A directory containing the default vcfanno configs (they must end in '.toml')
+
+    // boolean inputs
+    annotate                    // Run annotation on SV and CNV data
+    concat_output               // Concatenate all output files
+
+    // value inputs
+    callers                     // All callers to be used
+    sv_callers_support          // How many SV callers are needed to support the variant
+    cnv_callers_support         // How many CNV callers are needed to support the variant
+    genome                      // The genome to use
+    species                     // The species to be used by VEP
+    vep_assembly                // The genome assembly to be downloaded for VEP
+    vep_cache_version           // The version of the VEP cache to use
+    annotations_filter          // The filter pattern to use after annotation
+    outdir                      // The output directory of the pipeline
 
     main:
 
@@ -104,37 +107,81 @@ workflow STRUCTURAL {
     count_types = 0 // The amount of different variant types that can be concatenated
 
     //
+    // Input validation
+    //
+
+    // When making changes here, make sure to also update the following files: conf/modules.config
+    def List<String> svCallers = ["delly", "manta", "smoove"] //, "gridss"
+    def List<String> cnvCallers = ["qdnaseq", "wisecondorx"]
+    def List<String> repeatsCallers = ["expansionhunter"]
+
+    def List<String> allCallers = svCallers + cnvCallers + repeatsCallers
+    def List<String> annotationCallers = svCallers + cnvCallers
+
+    // Callers that need the sex
+    def List<String> sexCallers = ["expansionhunter", "qdnaseq"]
+
+    def lower_cased_callers = callers.toLowerCase()
+    def callers = lower_cased_callers.tokenize(",").collect {
+        if(it == "all") {return allCallers}
+        if(it == "sv")  {return svCallers}
+        if(it == "cnv") {return cnvCallers}
+        if(it == "rre") {return repeatsCallers}
+        return it
+    }.flatten()
+
+    for (caller in callers) {
+        if(!(caller in allCallers)) { error("The caller '${caller}' is not supported please specify a comma delimited list with on or more of the following callers: ${allCallers}".toString()) }
+    }
+
+    def sv_callers_to_use = callers.intersect(svCallers)
+    def cnv_callers_to_use = callers.intersect(cnvCallers)
+    def rre_callers_to_use = callers.intersect(repeatsCallers)
+
+    if (sv_callers_to_use && sv_callers_support > sv_callers_to_use.size()) {
+        error("The 'sv_callers_support' option (${sv_callers_support}) is higher than the amount of SV callers given (${sv_callers_to_use.size()}). Please adjust 'sv_callers_support' to a value lower of equal to the amount of SV callers to use.")
+    }
+
+    if (cnv_callers_to_use && cnv_callers_support > cnv_callers_to_use.size()) {
+        error("The 'cnv_callers_support' option (${cnv_callers_support}) is higher than the amount of CNV callers given (${cnv_callers_to_use.size()}). Please adjust 'cnv_callers_support' to a value lower of equal to the amount of CNV callers to use.")
+    }
+
+    if ("qdnaseq" in callers && (!qdnaseq_male || !qdnaseq_female)) {
+        error("Please give the QDNAseq references using 'qdnaseq_male' and 'qdnaseq_female'")
+    }
+
+    if ("wisecondorx" in callers && !wisecondorx_reference) {
+        error("Please give the WisecondorX reference using 'wisecondorx_reference'")
+    }
+
+    //
     // Create input channels from parameters
     //
 
-    ch_fasta                    = Channel.fromPath(params.fasta).map{[[id:'fasta'], it]}.collect()
-    ch_annotsv_candidate_genes  = params.annotsv_candidate_genes ?  Channel.fromPath(params.annotsv_candidate_genes).map{[[], it]}.collect() : [[],[]]
-    ch_annotsv_gene_transcripts = params.annotsv_gene_transcripts ? Channel.fromPath(params.annotsv_gene_transcripts).map{[[], it]}.collect() : [[],[]]
-    ch_vcfanno_lua              = params.vcfanno_lua ?              Channel.fromPath(params.vcfanno_lua).collect() : []
-    ch_catalog                  = params.expansionhunter_catalog ?  Channel.fromPath(params.expansionhunter_catalog).map{[[id:'catalog'], it]}.collect() : [[id:'catalog'],[file("https://github.com/Illumina/ExpansionHunter/raw/master/variant_catalog/grch38/variant_catalog.json", checkIfExists:true)]]
-    ch_qdnaseq_male             = params.qdnaseq_male ?             Channel.fromPath(params.qdnaseq_male).map{[[id:'qdnaseq'], it]}.collect() : [[],[]]
-    ch_qdnaseq_female           = params.qdnaseq_female ?           Channel.fromPath(params.qdnaseq_female).map{[[id:'qdnaseq'], it]}.collect() : [[],[]]
-    ch_wisecondorx_reference    = params.wisecondorx_reference ?    Channel.fromPath(params.wisecondorx_reference).map{[[id:'wisecondorx'], it]}.collect() : [[],[]]
-    ch_blacklist                = params.blacklist ?                Channel.fromPath(params.blacklist).map{[[id:'blacklist'], it]}.collect() : [[],[]]
-    ch_manta_config             = Channel.fromPath(params.manta_config ?: "${projectDir}/assets/manta_config.ini").collect()
+    ch_fasta                    = Channel.fromPath(fasta).map{[[id:'fasta'], it]}.collect()
+    ch_annotsv_candidate_genes  = annotsv_candidate_genes ?  Channel.fromPath(annotsv_candidate_genes).map{[[], it]}.collect() : [[],[]]
+    ch_annotsv_gene_transcripts = annotsv_gene_transcripts ? Channel.fromPath(annotsv_gene_transcripts).map{[[], it]}.collect() : [[],[]]
+    ch_vcfanno_lua              = vcfanno_lua ?              Channel.fromPath(vcfanno_lua).collect() : []
+    ch_catalog                  = expansionhunter_catalog ?  Channel.fromPath(expansionhunter_catalog).map{[[id:'catalog'], it]}.collect() : [[],[]]
+    ch_qdnaseq_male             = qdnaseq_male ?             Channel.fromPath(qdnaseq_male).map{[[id:'qdnaseq'], it]}.collect() : [[],[]]
+    ch_qdnaseq_female           = qdnaseq_female ?           Channel.fromPath(qdnaseq_female).map{[[id:'qdnaseq'], it]}.collect() : [[],[]]
+    ch_wisecondorx_reference    = wisecondorx_reference ?    Channel.fromPath(wisecondorx_reference).map{[[id:'wisecondorx'], it]}.collect() : [[],[]]
+    ch_blacklist                = blacklist ?                Channel.fromPath(blacklist).map{[[id:'blacklist'], it]}.collect() : [[],[]]
+    ch_manta_config             = manta_config ?             Channel.fromPath(manta_config).collect() : [[]]
+    ch_svync_configs            = svync_dir ?                Channel.fromPath("${svync_dir}/*.yaml", checkIfExists:true).collect() : []
+    ch_bedgovcf_configs         = bedgovcf_dir ?             Channel.fromPath("${bedgovcf_dir}/*.yaml", checkIfExists:true).collect() : []
 
-    val_vcfanno_resources       = params.vcfanno_resources ?        params.vcfanno_resources.split(",").collect{file(it, checkIfExists:true)}.flatten() : []
+    val_vcfanno_resources       = vcfanno_resources ?        vcfanno_resources.split(",").collect{file(it, checkIfExists:true)}.flatten() : []
+    val_default_vcfanno_tomls   = vcfanno_default_dir ?      files("${vcfanno_default_dir}/*.toml", checkIfExists:true) : []
+    val_vcfanno_toml            = vcfanno_toml ?             file(vcfanno_toml, checkIfExists:true) : []
 
     ch_vep_extra_files = []
-
-    if(params.vep_phenotypes && params.phenotypes && params.phenotypes_tbi) {
-        ch_vep_extra_files.add(file(params.phenotypes, checkIfExists:true))
-        ch_vep_extra_files.add(file(params.phenotypes_tbi, checkIfExists:true))
-    }
-    else if(params.vep_phenotypes) {
-        error("Please specify '--phenotypes PATH/TO/PHENOTYPES/FILE' and '--phenotypes_tbi PATH/TO/PHENOTYPES/INDEX/FILE' to use the Phenotypes VEP plugin.")
-    }
 
     //
     // Create optional inputs
     //
 
-    if(!params.fai){
+    if(!fai){
         SAMTOOLS_FAIDX(
             ch_fasta
         )
@@ -143,37 +190,37 @@ workflow STRUCTURAL {
         ch_fai      = SAMTOOLS_FAIDX.out.fai.map{[[id:'fai'], it]}.collect()
     }
     else {
-        ch_fai = Channel.fromPath(params.fai).map{[[id:"fai"],it]}.collect()
+        ch_fai = Channel.fromPath(fai).map{[[id:"fai"],it]}.collect()
     }
 
-    if(!params.bwa && "gridss" in callers){
-        BWA_INDEX(
-            ch_fasta
-        )
+    // if(!bwa && "gridss" in callers){
+    //     BWA_INDEX(
+    //         ch_fasta
+    //     )
 
-        ch_versions  = ch_versions.mix(BWA_INDEX.out.versions)
-        ch_bwa_index = BWA_INDEX.out.index.map{[[id:'bwa'], it[1]]}.collect()
-    }
-    else if(params.bwa && "gridss" in callers) {
-        ch_bwa_index_input = Channel.fromPath(params.bwa).map{[[id:"bwa"],it]}.collect()
-        if(params.bwa.endsWith(".tar.gz")) {
-            UNTAR_BWA(
-                ch_bwa_index_input
-            )
-            ch_versions = ch_versions.mix(UNTAR_BWA.out.versions)
+    //     ch_versions  = ch_versions.mix(BWA_INDEX.out.versions)
+    //     ch_bwa_index = BWA_INDEX.out.index.map{[[id:'bwa'], it[1]]}.collect()
+    // }
+    // else if(bwa && "gridss" in callers) {
+    //     ch_bwa_index_input = Channel.fromPath(bwa).map{[[id:"bwa"],it]}.collect()
+    //     if(bwa.endsWith(".tar.gz")) {
+    //         UNTAR_BWA(
+    //             ch_bwa_index_input
+    //         )
+    //         ch_versions = ch_versions.mix(UNTAR_BWA.out.versions)
 
-            UNTAR_BWA.out.untar
-                .collect()
-                .set { ch_bwa_index }
-        } else {
-            ch_bwa_index = ch_bwa_index_input
-        }
-    }
-    else {
-        ch_bwa_index = Channel.empty()
-    }
+    //         UNTAR_BWA.out.untar
+    //             .collect()
+    //             .set { ch_bwa_index }
+    //     } else {
+    //         ch_bwa_index = ch_bwa_index_input
+    //     }
+    // }
+    // else {
+    //     ch_bwa_index = Channel.empty()
+    // }
 
-    if(params.annotate && !params.annotsv_annotations && callers.intersect(GlobalVariables.annotationCallers)) {
+    if(annotate && !annotsv_annotations && callers.intersect(annotationCallers)) {
         ANNOTSV_INSTALLANNOTATIONS()
         ch_versions = ch_versions.mix(ANNOTSV_INSTALLANNOTATIONS.out.versions)
 
@@ -182,9 +229,9 @@ workflow STRUCTURAL {
             .collect()
             .set { ch_annotsv_annotations }
     }
-    else if(params.annotate && callers.intersect(GlobalVariables.annotationCallers)) {
-        ch_annotsv_annotations_input = Channel.fromPath(params.annotsv_annotations).map{[[id:"annotsv_annotations"], it]}.collect()
-        if(params.annotsv_annotations.endsWith(".tar.gz")){
+    else if(annotate && callers.intersect(annotationCallers)) {
+        ch_annotsv_annotations_input = Channel.fromPath(annotsv_annotations).map{[[id:"annotsv_annotations"], it]}.collect()
+        if(annotsv_annotations.endsWith(".tar.gz")){
             UNTAR_ANNOTSV(
                 ch_annotsv_annotations_input
             )
@@ -194,23 +241,23 @@ workflow STRUCTURAL {
                 .collect()
                 .set { ch_annotsv_annotations }
         } else {
-            ch_annotsv_annotations = Channel.fromPath(params.annotsv_annotations).map{[[id:"annotsv_annotations"], it]}.collect()
+            ch_annotsv_annotations = Channel.fromPath(annotsv_annotations).map{[[id:"annotsv_annotations"], it]}.collect()
         }
     }
     else {
         ch_annotsv_annotations = Channel.empty()
     }
 
-    if(!params.vep_cache && params.annotate && callers.intersect(GlobalVariables.annotationCallers)) {
+    if(!vep_cache && annotate && callers.intersect(annotationCallers)) {
         ENSEMBLVEP_DOWNLOAD(
-            Channel.of([[id:"vep_cache"], params.vep_assembly, params.species, params.vep_cache_version]).collect()
+            Channel.of([[id:"vep_cache"], vep_assembly, species, vep_cache_version]).collect()
         )
         ch_versions = ch_versions.mix(ENSEMBLVEP_DOWNLOAD.out.versions)
 
         ch_vep_cache = ENSEMBLVEP_DOWNLOAD.out.cache.map{it[1]}.collect()
     }
-    else if (params.vep_cache && params.annotate && callers.intersect(GlobalVariables.annotationCallers)) {
-        ch_vep_cache = Channel.fromPath(params.vep_cache).collect()
+    else if (vep_cache && annotate && callers.intersect(annotationCallers)) {
+        ch_vep_cache = Channel.fromPath(vep_cache).collect()
     }
     else {
         ch_vep_cache = Channel.empty()
@@ -243,7 +290,7 @@ workflow STRUCTURAL {
     // Determine the gender if needed
     //
 
-    if(callers.intersect(GlobalVariables.sexCallers)) {
+    if(callers.intersect(sexCallers)) {
         ch_input_no_sex
             .branch {
                 sex: it[0].sex
@@ -291,8 +338,9 @@ workflow STRUCTURAL {
             ch_inputs.crams,
             ch_fasta,
             ch_fai,
-            ch_bwa_index,
-            ch_manta_config
+            ch_manta_config,
+            ch_svync_configs,
+            sv_callers_to_use
         )
 
         ch_versions = ch_versions.mix(BAM_SV_CALLING.out.versions)
@@ -317,7 +365,9 @@ workflow STRUCTURAL {
             ch_qdnaseq_male,
             ch_qdnaseq_female,
             ch_wisecondorx_reference,
-            ch_blacklist
+            ch_blacklist,
+            ch_bedgovcf_configs,
+            cnv_callers_to_use
         )
         ch_versions         = ch_versions.mix(BAM_CNV_CALLING.out.versions)
         ch_annotation_input = ch_annotation_input.mix(BAM_CNV_CALLING.out.vcfs)
@@ -327,7 +377,7 @@ workflow STRUCTURAL {
     // Annotate the variants
     //
 
-    if(params.annotate) {
+    if(annotate) {
         VCF_ANNOTATE_VEP_ANNOTSV_VCFANNO(
             ch_annotation_input,
             ch_inputs.small_variants,
@@ -340,7 +390,13 @@ workflow STRUCTURAL {
             ch_vep_extra_files,
             ch_vcfanno_lua,
             val_vcfanno_resources,
-            variant_types
+            variant_types,
+            genome,
+            species,
+            vep_cache_version,
+            annotations_filter,
+            val_vcfanno_toml,
+            val_default_vcfanno_tomls
         )
 
         ch_reports  = ch_reports.mix(VCF_ANNOTATE_VEP_ANNOTSV_VCFANNO.out.reports)
@@ -354,7 +410,7 @@ workflow STRUCTURAL {
     // Estimate repeat sizes
     //
 
-    if(callers.intersect(GlobalVariables.repeatsCallers)){
+    if(callers.intersect(repeatsCallers)){
 
         count_types++
 
@@ -373,7 +429,7 @@ workflow STRUCTURAL {
     // Concatenate the VCF files from different types of analysis
     //
 
-    if(count_types > 1 && params.concat_output) {
+    if(count_types > 1 && concat_output) {
 
         ch_outputs
             .map { meta, vcf, tbi ->
@@ -410,18 +466,15 @@ workflow STRUCTURAL {
     // Collate and save software versions
     //
     softwareVersionsToYAML(ch_versions)
-        .collectFile(storeDir: "${params.outdir}/pipeline_info", name: 'nf_core_pipeline_software_mqc_versions.yml', sort: true, newLine: true)
+        .collectFile(storeDir: "${outdir}/pipeline_info", name: 'nf_core_pipeline_software_mqc_versions.yml', sort: true, newLine: true)
         .set { ch_collated_versions }
 
     //
     // MODULE: MultiQC
     //
     ch_multiqc_config                     = Channel.fromPath("$projectDir/assets/multiqc_config.yml", checkIfExists: true)
-    ch_multiqc_custom_config              = params.multiqc_config ? Channel.fromPath(params.multiqc_config, checkIfExists: true) : Channel.empty()
-    ch_multiqc_logo                       = params.multiqc_logo ? Channel.fromPath(params.multiqc_logo, checkIfExists: true) : Channel.empty()
     summary_params                        = paramsSummaryMap(workflow, parameters_schema: "nextflow_schema.json")
     ch_workflow_summary                   = Channel.value(paramsSummaryMultiqc(summary_params))
-    ch_multiqc_custom_methods_description = params.multiqc_methods_description ? file(params.multiqc_methods_description, checkIfExists: true) : file("$projectDir/assets/methods_description_template.yml", checkIfExists: true)
     ch_methods_description                = Channel.value(methodsDescriptionText(ch_multiqc_custom_methods_description))
     ch_multiqc_files                      = ch_multiqc_files.mix(ch_workflow_summary.collectFile(name: 'workflow_summary_mqc.yaml'))
     ch_multiqc_files                      = ch_multiqc_files.mix(ch_collated_versions)

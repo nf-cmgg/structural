@@ -31,6 +31,7 @@ nextflow_workflow {
                 input[3] = Channel.value([
                     file(params.manta_config, checkIfExists: true)
                 ])
+                input[4] = Channel.fromPath("\${params.svync_configs}/*.yaml", checkIfExists:true).collect()
                 """
             }
         }

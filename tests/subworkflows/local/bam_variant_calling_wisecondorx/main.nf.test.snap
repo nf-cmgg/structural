@@ -9,7 +9,7 @@
                         "sex": "male",
                         "caller": "wisecondorx"
                     },
-                    "test_aberrations.bed:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    "test.wisecondorx_aberrations.bed:md5,d41d8cd98f00b204e9800998ecf8427e"
                 ]
             ],
             [
@@ -20,7 +20,7 @@
                         "sex": "male",
                         "caller": "wisecondorx"
                     },
-                    "test_bins.bed:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    "test.wisecondorx_bins.bed:md5,d41d8cd98f00b204e9800998ecf8427e"
                 ]
             ],
             [
@@ -31,7 +31,7 @@
                         "sex": "male",
                         "caller": "wisecondorx"
                     },
-                    "test_segments.bed:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    "test.wisecondorx_segments.bed:md5,d41d8cd98f00b204e9800998ecf8427e"
                 ]
             ],
             [
@@ -42,7 +42,7 @@
                         "sex": "male",
                         "caller": "wisecondorx"
                     },
-                    "test_chr_statistics.txt:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    "test.wisecondorx_chr_statistics.txt:md5,d41d8cd98f00b204e9800998ecf8427e"
                 ]
             ],
             [
@@ -83,8 +83,8 @@
         ],
         "meta": {
             "nf-test": "0.8.4",
-            "nextflow": "24.02.0"
+            "nextflow": "24.03.0"
         },
-        "timestamp": "2024-03-11T14:28:06.577335662"
+        "timestamp": "2024-05-06T15:54:06.8767855"
     }
 }

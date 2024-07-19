@@ -23,13 +23,14 @@ nextflow_workflow {
             }
             workflow {
                 """
+                def meta = [id:"test", sample:"test", sex:"male", family: "test1", family_count:1, hpo:[]]
                 input[0] = Channel.of([
-                    [id:"test", sample:"test", sex:"male", variant_type:"sv", family: "test1", family_count:1],
+                    meta + [variant_type:"sv"],
                     file(params.sv_vcf1, checkIfExists:true),
                     file(params.sv_tbi1, checkIfExists:true)
                 ])
                 input[1] = Channel.of([
-                    [id:"test", sample:"test", sex:"male", family: "test1", family_count:1],
+                    meta,
                     []
                 ])
                 input[2] = Channel.value([
@@ -48,6 +49,12 @@ nextflow_workflow {
                 input[9] = []
                 input[10] = []
                 input[11] = ["sv"]
+                input[12] = params.genome
+                input[13] = params.species
+                input[14] = params.vep_cache_version
+                input[15] = null
+                input[16] = []
+                input[17] = files("\${params.vcfanno_tomls}/*.toml", checkIfExists:true)
                 """
             }
         }
@@ -56,7 +63,7 @@ nextflow_workflow {
             assertAll(
                 { assert workflow.success },
                 { assert snapshot(
-                    workflow.out.vcfs[0][1..2].collect { file(it).name },
+                    workflow.out.vcfs.collect { it.collect { it instanceof Map ? it : file(it).name } },
                     workflow.out.reports,
                     workflow.trace.succeeded().size(),
                     workflow.trace.failed().size()
@@ -78,13 +85,14 @@ nextflow_workflow {
             }
             workflow {
                 """
+                def meta = [id:"test", sample:"test", sex:"male", family: "test1", family_count:1, hpo:[]]
                 input[0] = Channel.of([
-                    [id:"test", sample:"test", sex:"male", variant_type:"cnv", family: "test1", family_count:1],
+                    meta + [variant_type:"cnv"],
                     file(params.sv_vcf1, checkIfExists:true),
                     file(params.sv_tbi1, checkIfExists:true)
                 ])
                 input[1] = Channel.of([
-                    [id:"test", sample:"test", sex:"male", family: "test1", family_count:1],
+                    meta,
                     []
                 ])
                 input[2] = Channel.value([
@@ -103,6 +111,12 @@ nextflow_workflow {
                 input[9] = []
                 input[10] = []
                 input[11] = ["cnv"]
+                input[12] = params.genome
+                input[13] = params.species
+                input[14] = params.vep_cache_version
+                input[15] = params.annotations_filter
+                input[16] = []
+                input[17] = files("\${params.vcfanno_tomls}/*.toml", checkIfExists:true)
                 """
             }
         }
@@ -111,7 +125,7 @@ nextflow_workflow {
             assertAll(
                 { assert workflow.success },
                 { assert snapshot(
-                    workflow.out.vcfs[0][1..2].collect { file(it).name },
+                    workflow.out.vcfs.collect { it.collect { it instanceof Map ? it : file(it).name } },
                     workflow.out.reports,
                     workflow.trace.succeeded().size(),
                     workflow.trace.failed().size()
@@ -133,17 +147,18 @@ nextflow_workflow {
             }
             workflow {
                 """
+                def meta = [id:"test", sample:"test", sex:"male", family: "test1", family_count:1, hpo:[]]
                 input[0] = Channel.of([
-                    [id:"test", sample:"test", sex:"male", variant_type:"sv", family: "test1", family_count:1],
+                    meta + [variant_type:"sv"],
                     file(params.sv_vcf1, checkIfExists:true),
                     file(params.sv_tbi1, checkIfExists:true)
                 ], [
-                    [id:"test", sample:"test", sex:"male", variant_type:"cnv", family: "test1", family_count:1],
+                    meta + [variant_type: "cnv"],
                     file(params.cnv_vcf1, checkIfExists:true),
                     file(params.cnv_tbi1, checkIfExists:true)
                 ])
                 input[1] = Channel.of([
-                    [id:"test", sample:"test", sex:"male", family: "test1", family_count:1],
+                    meta,
                     []
                 ])
                 input[2] = Channel.value([
@@ -162,6 +177,12 @@ nextflow_workflow {
                 input[9] = []
                 input[10] = []
                 input[11] = ["sv", "cnv"]
+                input[12] = params.genome
+                input[13] = params.species
+                input[14] = params.vep_cache_version
+                input[15] = null
+                input[16] = []
+                input[17] = files("\${params.vcfanno_tomls}/*.toml", checkIfExists:true)
                 """
             }
         }
@@ -170,7 +191,7 @@ nextflow_workflow {
             assertAll(
                 { assert workflow.success },
                 { assert snapshot(
-                    workflow.out.vcfs[0][1..2].collect { file(it).name },
+                    workflow.out.vcfs.collect { it.collect { it instanceof Map ? it : file(it).name } },
                     workflow.out.reports,
                     workflow.trace.succeeded().size(),
                     workflow.trace.failed().size()

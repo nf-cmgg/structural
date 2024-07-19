@@ -13,7 +13,7 @@ nextflow_pipeline {
         when {
             params {
                 outdir = "${outputDir}"
-                callers = "manta,smoove,delly,expansionhunter,qdnaseq,wisecondorx" //,gridss
+                callers = "all"
                 max_cpus   = 2
                 max_memory = '6.GB'
                 max_time   = '6.h'
@@ -28,15 +28,9 @@ nextflow_pipeline {
 
                     path("$outputDir")
                         .list()
-                        .findAll {
-                            !it.toString().endsWith("pipeline_info")
-                        }
-                        .collect {
-                            it.list().collect { it.toString().split("/")[-1] }
-                        },
-                    path("$outputDir").list().collect{
-                        it.toString().split("/")[-1]
-                    }
+                        .findAll { !it.toString().endsWith("pipeline_info") }
+                        .collect { getRecursiveFileNames(it, "${outputDir}") }
+                        .flatten()
                 ).match("all")}
             )
         }
@@ -48,7 +42,7 @@ nextflow_pipeline {
         when {
             params {
                 outdir = "${outputDir}"
-                callers = "manta,smoove,delly,expansionhunter,qdnaseq,wisecondorx" //,gridss
+                callers = "all"
                 max_cpus   = 2
                 max_memory = '6.GB'
                 max_time   = '6.h'
@@ -64,19 +58,50 @@ nextflow_pipeline {
 
                     path("$outputDir")
                         .list()
-                        .findAll {
-                            !it.toString().endsWith("pipeline_info")
-                        }
-                        .collect {
-                            it.list().collect { it.toString().split("/")[-1] }
-                        },
-                    path("$outputDir").list().collect{
-                        it.toString().split("/")[-1]
-                    }
+                        .findAll { !it.toString().endsWith("pipeline_info") }
+                        .collect { getRecursiveFileNames(it, "${outputDir}") }
+                        .flatten()
                 ).match("concat")}
             )
         }
 
     }
 
+    test("output callers") {
+
+        when {
+            params {
+                outdir = "${outputDir}"
+                callers = "all"
+                max_cpus   = 2
+                max_memory = '6.GB'
+                max_time   = '6.h'
+                output_callers = true
+            }
+        }
+
+        then {
+            assertAll(
+                { assert workflow.success },
+                { assert snapshot(
+                    workflow.stdout,
+
+                    path("$outputDir")
+                        .list()
+                        .findAll { !it.toString().endsWith("pipeline_info") }
+                        .collect { getRecursiveFileNames(it, "${outputDir}") }
+                        .flatten()
+                ).match("output callers")}
+            )
+        }
+
+    }
+
+}
+
+def getRecursiveFileNames(fileOrDir, outputDir) {
+    if(file(fileOrDir.toString()).isDirectory()) {
+        return fileOrDir.list().collect { getRecursiveFileNames(it, outputDir) }
+    }
+    return fileOrDir.toString().replace("${outputDir}/", "")
 }

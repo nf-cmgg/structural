@@ -2,10 +2,10 @@
     "homo_sapiens": {
         "content": [
             [
-                "chr16\t86933\tdelly_DEL_1\tT\t<DEL>\t120\tLowQual\tCALLERS=delly;CIEND=-9,9;CIPOS=-9,9;END=1349692;SVLEN=-1262759;SVTYPE=DEL\tGT:PE:SR\t1/1:0,0:0,7",
-                "chr16\t1077371\tdelly_INV_2\tT\t<INV>\t58\tLowQual\tCALLERS=delly;CIEND=-392,392;CIPOS=-392,392;END=1078502;SVLEN=1131;SVTYPE=INV\tGT:PE:SR\t0/0:19,2:0,0",
-                "chr16\t1123476\tdelly_INV_3\tA\t<INV>\t180\tPASS\tCALLERS=delly;CIEND=-3,3;CIPOS=-3,3;END=1604486;SVLEN=481010;SVTYPE=INV\tGT:PE:SR\t1/1:0,0:0,12",
-                "chr16\t1135261\tdelly_INS_4\tC\t<INS>\t299\tPASS\tCALLERS=delly;CIEND=-2,2;CIPOS=-2,2;END=1135262;SVLEN=27;SVTYPE=INS\tGT:PE:SR\t1/1:0,0:0,25"
+                "chr16\t86933\tdelly_DEL_1\tT\t<DEL>\t120\tLowQual\tCALLERS=delly;CIEND=-9,9;CIPOS=-9,9;END=1349691;SVLEN=-1262758;SVTYPE=DEL\tGT:PE:SR\t1/1:0,0:0,7",
+                "chr16\t1077371\tdelly_INV_2\tT\t<INV>\t58\tLowQual\tCALLERS=delly;CIEND=-392,392;CIPOS=-392,392;END=1078501;SVLEN=1130;SVTYPE=INV\tGT:PE:SR\t0/0:19,2:0,0",
+                "chr16\t1123476\tdelly_INV_3\tA\t<INV>\t180\tPASS\tCALLERS=delly;CIEND=-3,3;CIPOS=-3,3;END=1604485;SVLEN=481009;SVTYPE=INV\tGT:PE:SR\t1/1:0,0:0,12",
+                "chr16\t1135261\tdelly_INS_4\tC\tCAAAAAGTGAATGGATAAACCAACTGTA\t299\tPASS\tCALLERS=delly;CIEND=-2,2;CIPOS=-2,2;END=1135261;SVLEN=27;SVTYPE=INS\tGT:PE:SR\t1/1:0,0:0,25"
             ],
             "test.svync.delly.vcf.gz.tbi",
             3,
@@ -13,8 +13,8 @@
         ],
         "meta": {
             "nf-test": "0.8.4",
-            "nextflow": "24.02.0"
+            "nextflow": "24.03.0"
         },
-        "timestamp": "2024-03-11T14:11:38.043228427"
+        "timestamp": "2024-05-06T15:21:39.34016826"
     }
 }

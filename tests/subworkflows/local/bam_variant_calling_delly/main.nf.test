@@ -28,6 +28,7 @@ nextflow_workflow {
                     [id:"fai"],
                     file(params.fai, checkIfExists: true)
                 ])
+                input[3] = Channel.fromPath("\${params.svync_configs}/*.yaml", checkIfExists:true).collect()
                 """
             }
         }

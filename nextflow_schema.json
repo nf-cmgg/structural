@@ -73,12 +73,6 @@
                     "pattern": "^\\S+\\.fai$",
                     "mimetype": "text/plain"
                 },
-                "bwa": {
-                    "type": "string",
-                    "description": "Path to the BWA index folder",
-                    "exists": true,
-                    "format": "path"
-                },
                 "expansionhunter_catalog": {
                     "type": "string",
                     "description": "Path to the expansionhunter catalog",
@@ -277,12 +271,6 @@
                     "fa_icon": "fas fa-file-upload",
                     "hidden": true
                 },
-                "monochromeLogs": {
-                    "type": "boolean",
-                    "description": "Do not use coloured log outputs.",
-                    "fa_icon": "fas fa-palette",
-                    "hidden": true
-                },
                 "hook_url": {
                     "type": "string",
                     "description": "Incoming hook URL for messaging service",
@@ -316,27 +304,6 @@
                     "default": true,
                     "fa_icon": "fas fa-check-square",
                     "hidden": true
-                },
-                "validationShowHiddenParams": {
-                    "type": "boolean",
-                    "fa_icon": "far fa-eye-slash",
-                    "description": "Show all params when using `--help`",
-                    "hidden": true,
-                    "help_text": "By default, parameters set as _hidden_ in the schema are not shown on the command line when a user runs with `--help`. Specifying this option will tell the pipeline to show all parameters."
-                },
-                "validationFailUnrecognisedParams": {
-                    "type": "boolean",
-                    "fa_icon": "far fa-check-circle",
-                    "description": "Validation of parameters fails when an unrecognised parameter is found.",
-                    "hidden": true,
-                    "help_text": "By default, when an unrecognised parameter is found, it returns a warinig."
-                },
-                "validationLenientMode": {
-                    "type": "boolean",
-                    "fa_icon": "far fa-check-circle",
-                    "description": "Validation of parameters in lenient more.",
-                    "hidden": true,
-                    "help_text": "Allows string values that are parseable as numbers or booleans. For further information see [JSONSchema docs](https://github.com/everit-org/json-schema#lenient-mode)."
                 }
             }
         },
@@ -349,7 +316,8 @@
                 "callers": {
                     "type": "string",
                     "default": "manta,smoove,delly,expansionhunter,wisecondorx",
-                    "description": "A comma-seperated list of callers to use. Can be one or more these: smoove|delly|manta|gridss|expansionhunter. At the moment Gridss runs very slowly compared to all other tools so it's only advised to use it when it's needed."
+                    "description": "A comma-seperated list of callers to use. Can be one or more these: smoove/delly/manta/expansionhunter/qdnaseq/wisecondorx.",
+                    "help_text": "Following keywords can also be used as shortcuts to certain callers: \n- all: Use all callers\n- sv: Use all SV callers\n- cnv: Use all CNV callers\n- rre: Use all RRE callers"
                 },
                 "output_callers": {
                     "type": "boolean",
@@ -469,26 +437,6 @@
                     "type": "string",
                     "default": "homo_sapiens",
                     "description": "The species used for the analysis. Should be all lowercase and spaces should be underscorses."
-                },
-                "vep_phenotypes": {
-                    "type": "boolean",
-                    "description": "Use the Phenotypes VEP plugin",
-                    "help_text": "This requires `--phenotypes` and `--phenotypes_tbi`. "
-                },
-                "phenotypes": {
-                    "type": "string",
-                    "description": "Path to the phenotypes GFF file",
-                    "exists": true,
-                    "format": "file-path",
-                    "pattern": "^\\S+\\.gff$",
-                    "mimetype": "text/plain"
-                },
-                "phenotypes_tbi": {
-                    "type": "string",
-                    "description": "Path to the phenotypes GFF index file",
-                    "exists": true,
-                    "format": "file-path",
-                    "mimetype": "application/octet-stream"
                 }
             }
         },
@@ -518,12 +466,6 @@
                     "exists": true,
                     "format": "file-path",
                     "mimetype": "text/plain"
-                },
-                "annotsv_file_name": {
-                    "type": "string",
-                    "default": "annotsv_annotated",
-                    "hidden": true,
-                    "description": "The default name of the AnnotSV VCFs. This should not be changed unless absolutely necessary."
                 }
             }
         },

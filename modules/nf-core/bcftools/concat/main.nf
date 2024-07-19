@@ -33,7 +33,6 @@ process BCFTOOLS_CONCAT {
 
     """
     ${tabix_vcfs.join("\n")}
-
     bcftools concat \\
         $args \\
         --threads $task.cpus \\

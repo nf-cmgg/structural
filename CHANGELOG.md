@@ -3,7 +3,7 @@
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## v0.2.0dev
+## v0.2.0 - [19 July 2024] - Mighty Manneken Pis
 
 ### `Added`
 
@@ -17,7 +17,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### `Changes`
 
 1. Updated all WisecondorX modules to version 1.2.6 and added the `--seed` argument to `WisecondorX predict`
-2. Removed support for the `phenotypes` VEP plugin. Commen VEP plugin support will be added later
+2. Removed support for the `phenotypes` VEP plugin. Common VEP plugin support will be added later
 3. Made the main workflow pluggable, making it possible to use this pipeline in a meta pipeline
 4. Updated all modules to their latest version
 

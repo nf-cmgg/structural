@@ -70,7 +70,7 @@ jobs:
 
       - name: Install nf-test
         run: |
-          conda install -c bioconda nf-test
+          conda install -c bioconda nf-test==0.8.4
 
       - name: Run pipeline with test data
         run: |

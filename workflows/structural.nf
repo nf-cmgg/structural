@@ -1,3 +1,5 @@
+import java.util.Scanner
+
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     VALIDATE INPUTS
@@ -502,13 +504,12 @@ workflow STRUCTURAL {
 def get_sex(tsv, id) {
     if(workflow.stubRun) {
         return "female"
-        log.warn("Couldn't define the sex of sample ${id}. Defaulting to female. (Specify the sex in the samplesheet to avoid this warning.)")
+        log.warn("STUB: Couldn't define the sex of sample ${id}. Defaulting to female. (Specify the sex in the samplesheet to avoid this warning.)")
     }
     split_tsv = tsv.splitCsv(sep:"\t", header:true, strip:true)
     sex = split_tsv[0].gender
-    if(sex == "others") {
-        sex = "female"
-        log.warn("Couldn't define the sex of sample ${id}. Defaulting to female. (Specify the sex in the samplesheet to avoid this warning.)")
+    if(sex != "male" || sex != "female") {
+        error("Couldn't define the sex of sample ${id}. Specify the sex in the samplesheet to avoid this error and resume the pipeline.")
     }
     return sex
 }

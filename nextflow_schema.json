@@ -274,6 +274,10 @@
                     "default": true,
                     "fa_icon": "fas fa-check-square",
                     "hidden": true
+                },
+                "monochrome_logs": {
+                    "type": "boolean",
+                    "description": "Output monochrome logs"
                 }
             }
         },

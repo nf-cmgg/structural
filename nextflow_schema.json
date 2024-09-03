@@ -1,10 +1,10 @@
 {
-    "$schema": "https://json-schema.org/draft-07/schema",
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
     "$id": "https://raw.githubusercontent.com/nf-cmgg/structural/master/nextflow_schema.json",
     "title": "nf-cmgg/structural pipeline parameters",
     "description": "A bioinformatics best-practice analysis pipeline for calling structural variants (SVs), copy number variants (CNVs) and repeat region expansions (RREs) from short DNA reads",
     "type": "object",
-    "definitions": {
+    "$defs": {
         "input_output_options": {
             "title": "Input/output options",
             "type": "object",
@@ -475,37 +475,37 @@
     },
     "allOf": [
         {
-            "$ref": "#/definitions/input_output_options"
+            "$ref": "#/$defs/input_output_options"
         },
         {
-            "$ref": "#/definitions/reference_genome_options"
+            "$ref": "#/$defs/reference_genome_options"
         },
         {
-            "$ref": "#/definitions/institutional_config_options"
+            "$ref": "#/$defs/institutional_config_options"
         },
         {
-            "$ref": "#/definitions/generic_options"
+            "$ref": "#/$defs/generic_options"
         },
         {
-            "$ref": "#/definitions/pipeline_specific_options"
+            "$ref": "#/$defs/pipeline_specific_options"
         },
         {
-            "$ref": "#/definitions/delly_parameters"
+            "$ref": "#/$defs/delly_parameters"
         },
         {
-            "$ref": "#/definitions/manta_parameters"
+            "$ref": "#/$defs/manta_parameters"
         },
         {
-            "$ref": "#/definitions/qdnaseq_parameters"
+            "$ref": "#/$defs/qdnaseq_parameters"
         },
         {
-            "$ref": "#/definitions/vep_options"
+            "$ref": "#/$defs/vep_options"
         },
         {
-            "$ref": "#/definitions/annotsv_options"
+            "$ref": "#/$defs/annotsv_options"
         },
         {
-            "$ref": "#/definitions/vcfanno_options"
+            "$ref": "#/$defs/vcfanno_options"
         }
     ]
 }

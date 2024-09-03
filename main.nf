@@ -7,7 +7,7 @@
 ----------------------------------------------------------------------------------------
 */
 
-include { validateParameters; paramsHelp; paramsSummaryLog } from 'plugin/nf-validation'
+include { validateParameters; paramsHelp; paramsSummaryLog } from 'plugin/nf-schema'
 
 nextflow.enable.dsl = 2
 

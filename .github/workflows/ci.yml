@@ -26,7 +26,7 @@ jobs:
     strategy:
       matrix:
         NXF_VER:
-          - "23.10.0"
+          - "24.04.0"
           - "latest-everything"
         test:
           - "pipeline_sv"
@@ -70,7 +70,7 @@ jobs:
 
       - name: Install nf-test
         run: |
-          conda install -c bioconda nf-test==0.8.4
+          conda install -c bioconda nf-test
 
       - name: Run pipeline with test data
         run: |

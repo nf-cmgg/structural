@@ -36,8 +36,8 @@ workflow BAM_VARIANT_CALLING_DELLY {
     ch_versions = ch_versions.mix(DELLY_CALL.out.versions.first())
 
     ch_svync_configs
-        .map {
-            it.find { it.toString().contains("delly") }
+        .map { configs ->
+            configs.find { config -> config.toString().contains("delly") }
         }
         .set { ch_delly_svync_config }
 

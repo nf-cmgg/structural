@@ -9,7 +9,6 @@ nextflow_workflow {
     tag "vcf_annotate_vep_annotsv_vcfanno"
 
     options "-stub"
-    config "./nextflow.config"
 
     test("homo_sapiens - sv, no_filter") {
 

@@ -67,8 +67,8 @@ workflow BAM_VARIANT_CALLING_QDNASEQ {
     ch_versions = ch_versions.mix(GAWK.out.versions.first())
 
     ch_bedgovcf_configs
-        .map {
-            it.find { it.toString().contains("qdnaseq") }
+        .map { configs ->
+            configs.find { config -> config.toString().contains("qdnaseq") }
         }
         .set { ch_qdnaseq_bedgovcf_config }
 

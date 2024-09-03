@@ -8,8 +8,6 @@ nextflow_workflow {
     tag "subworkflows_local"
     tag "bam_variant_calling_manta"
 
-    config "./nextflow.config"
-
     test("homo_sapiens") {
 
         when {

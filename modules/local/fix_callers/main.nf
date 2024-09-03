@@ -11,9 +11,6 @@ process FIX_CALLERS {
     tuple val(meta), path("*.vcf.gz")  , emit: vcf
     path "versions.yml"                , emit: versions
 
-    when:
-    task.ext.when == null || task.ext.when
-
     script:
     def prefix = task.ext.prefix ?: "${meta.id}"
 

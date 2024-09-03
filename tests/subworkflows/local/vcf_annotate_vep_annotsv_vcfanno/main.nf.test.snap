@@ -14,8 +14,8 @@
                         ],
                         "variant_type": "sv"
                     },
-                    "test.sv.vcf.gz",
-                    "test.sv.vcf.gz.tbi"
+                    "test.sv.annotated.vcf.gz",
+                    "test.sv.annotated.vcf.gz.tbi"
                 ]
             ],
             [
@@ -45,8 +45,8 @@
                         ],
                         "variant_type": "cnv"
                     },
-                    "test.cnv.vcf.gz",
-                    "test.cnv.vcf.gz.tbi"
+                    "test.cnv.annotated.vcf.gz",
+                    "test.cnv.annotated.vcf.gz.tbi"
                 ],
                 [
                     {
@@ -60,8 +60,8 @@
                         ],
                         "variant_type": "sv"
                     },
-                    "test.sv.vcf.gz",
-                    "test.sv.vcf.gz.tbi"
+                    "test.sv.annotated.vcf.gz",
+                    "test.sv.annotated.vcf.gz.tbi"
                 ]
             ],
             [
@@ -92,8 +92,8 @@
                         ],
                         "variant_type": "cnv"
                     },
-                    "test.cnv.vcf.gz",
-                    "test.cnv.vcf.gz.tbi"
+                    "test.cnv.annotated.vcf.gz",
+                    "test.cnv.annotated.vcf.gz.tbi"
                 ]
             ],
             [

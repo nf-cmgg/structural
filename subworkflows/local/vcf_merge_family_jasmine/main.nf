@@ -20,7 +20,7 @@ workflow VCF_MERGE_FAMILY_JASMINE {
     ch_versions     = Channel.empty()
 
     ch_vcfs
-        .filter { it[0].family_count > 1 }
+        .filter { meta, vcf, tbi -> meta.family_count > 1 }
         .map { meta, vcf, tbi ->
             def new_meta = meta - meta.subMap("sample", "sex") + ["id":meta.variant_type ? "${meta.family}.${meta.variant_type}" : meta.family]
             [ groupKey(new_meta, meta.family_count), vcf, tbi ]
@@ -32,12 +32,12 @@ workflow VCF_MERGE_FAMILY_JASMINE {
         }
         .tap { ch_meta_file_list }
         .map { id, meta, vcfs ->
-            [ "${id}_list.txt", vcfs.collect { it.baseName }.join("\n") ]
+            [ "${id}_list.txt", vcfs.collect { vcf -> vcf.baseName }.join("\n") ]
         }
         .collectFile()
-        .map {
-            def id = it.name.replaceAll("_list.txt\$", "")
-            [ id, it ]
+        .map { meta_file ->
+            def id = meta_file.name.replaceAll("_list.txt\$", "")
+            [ id, meta_file ]
         }
         .join(ch_meta_file_list, failOnMismatch:true, failOnDuplicate:true)
         .map { id, file_list, meta, vcfs ->

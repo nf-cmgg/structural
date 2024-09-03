@@ -205,10 +205,10 @@ workflow VCF_ANNOTATE_VEP_ANNOTSV_VCFANNO {
 def create_vcfanno_toml(vcfanno_resources, input_vcfanno_toml, List<Path> vcfanno_defaults) {
     def vcfanno_toml = input_vcfanno_toml ? parse_toml(input_vcfanno_toml) : [:]
     def default_tomls = parse_toml(vcfanno_defaults)
-    def resources = vcfanno_resources.collect { it.fileName.toString() }
+    def resources = vcfanno_resources.collect { Path resource -> resource.fileName.toString() }
     resources.add("annotsv_annotated.vcf.gz" as String)
     def output = []
-    for (file_name in resources) {
+    resources.each { file_name ->
         if (vcfanno_toml.containsKey(file_name)){
             output.add(vcfanno_toml[file_name])
         }
@@ -216,7 +216,7 @@ def create_vcfanno_toml(vcfanno_resources, input_vcfanno_toml, List<Path> vcfann
             output.add(default_tomls[file_name])
         }
     }
-    postannotation = vcfanno_toml.postannotation != [] ? vcfanno_toml.postannotation : default_tomls.postannotation
+    def postannotation = vcfanno_toml.postannotation != [] ? vcfanno_toml.postannotation : default_tomls.postannotation
     if (postannotation != []){
         output.add(postannotation)
     }
@@ -226,13 +226,13 @@ def create_vcfanno_toml(vcfanno_resources, input_vcfanno_toml, List<Path> vcfann
 def parse_toml(tomls) {
     def output = [:]
     output.postannotation = []
-    toml_list = tomls instanceof List ? tomls : [tomls]
-    for (toml in toml_list) {
+    def toml_list = tomls instanceof List ? tomls : [tomls]
+    toml_list.each { toml ->
         def info = ""
         def file = ""
         def fields = []
-        for (line in toml.readLines()) {
-            if (line.startsWith("#")) { continue }
+        toml.readlines().each { line ->
+            if (line.startsWith("#")) { return }
             if (line == "[[annotation]]" || line == "[[postannotation]]") {
                 if (info.startsWith("[[postannotation]]")) {
                     output.postannotation.add(create_toml_config(fields))
@@ -262,6 +262,6 @@ def parse_toml(tomls) {
 }
 
 def create_toml_config(fields_list) {
-    config = fields_list.findAll { it != "" }.join("\n")
+    def config = fields_list.findAll { field -> field != "" }.join("\n")
     return "${config}\n"
 }

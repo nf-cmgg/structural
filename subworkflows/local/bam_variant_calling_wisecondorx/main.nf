@@ -39,8 +39,8 @@ workflow BAM_VARIANT_CALLING_WISECONDORX {
     ch_versions = ch_versions.mix(WISECONDORX_PREDICT.out.versions.first())
 
     ch_bedgovcf_configs
-        .map {
-            it.find { it.toString().contains("wisecondorx") }
+        .map { configs ->
+            configs.find { config -> config.toString().contains("wisecondorx") }
         }
         .set { ch_wisecondorx_bedgovcf_config }
 

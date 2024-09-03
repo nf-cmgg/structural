@@ -72,8 +72,8 @@ workflow BAM_VARIANT_CALLING_MANTA {
     ch_versions = ch_versions.mix(MANTA_CONVERTINVERSION.out.versions.first())
 
     ch_svync_configs
-        .map {
-            it.find { it.toString().contains("manta") }
+        .map { configs ->
+            configs.find { config -> config.toString().contains("manta") }
         }
         .set { ch_manta_svync_config }
 

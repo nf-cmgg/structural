@@ -1,25 +1,14 @@
 Changes in module 'nf-core/samtools/convert'
 --- modules/nf-core/samtools/convert/main.nf
 +++ modules/nf-core/samtools/convert/main.nf
-@@ -57,4 +57,19 @@
-         samtools: \$(echo \$(samtools --version 2>&1) | sed 's/^.*samtools //; s/Using.*\$//')
-     END_VERSIONS
-     """
-+
-+    stub:
-+    def prefix = task.ext.prefix ?: "${meta.id}"
-+    def output_extension = input.getExtension() == "bam" ? "cram" : "bam"
+@@ -46,7 +46,7 @@
+     stub:
+     def prefix = task.ext.prefix ?: "${meta.id}"
+     def output_extension = input.getExtension() == "bam" ? "cram" : "bam"
+-    def index_extension = output_extension == "bam" ? "bai" : "crai"
 +    def index_extension = input.getExtension() == "bam" ? "crai" : "bai"
-+
-+    """
-+    touch ${prefix}.${output_extension}
-+    touch ${prefix}.${index_extension}
-+
-+    cat <<-END_VERSIONS > versions.yml
-+    "${task.process}":
-+        samtools: \$(echo \$(samtools --version 2>&1) | sed 's/^.*samtools //; s/Using.*\$//')
-+    END_VERSIONS
-+    """
- }
+ 
+     """
+     touch ${prefix}.${output_extension}
 
 ************************************************************

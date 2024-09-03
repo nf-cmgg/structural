@@ -1,4 +1,5 @@
 # nf-cmgg/structural: Changelog
+
 # nf-cmgg/structural: Changelog
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
@@ -15,6 +16,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 3. Replaced `nf-validation` with `nf-schema`
 
 ### `Fixed`
+
+1. Fail the pipeline when the sex determination failed. This will now prompt the user to add the sex to the samplesheet so the pipeline doesn't do any wrong assumptions
 
 ## v0.2.0 - [19 July 2024] - Mighty Manneken Pis
 

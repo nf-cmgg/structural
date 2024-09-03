@@ -392,7 +392,7 @@
                 },
                 "vep_cache_version": {
                     "type": "integer",
-                    "default": 108,
+                    "default": 112,
                     "description": "The version of the VEP cache to use.",
                     "help_text": "This version should be present in the folder supplied by `--vep_cache`. This version should be the same as `--vep_version` when no VEP cache was given with `--vep_cache`"
                 },
@@ -404,7 +404,7 @@
                 },
                 "vep_version": {
                     "type": "number",
-                    "default": 109.3,
+                    "default": 112.0,
                     "description": "The version of VEP to use"
                 },
                 "species": {

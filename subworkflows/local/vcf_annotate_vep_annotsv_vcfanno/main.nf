@@ -231,7 +231,7 @@ def parse_toml(tomls) {
         def info = ""
         def file = ""
         def fields = []
-        toml.readlines().each { line ->
+        toml.readLines().each { line ->
             if (line.startsWith("#")) { return }
             if (line == "[[annotation]]" || line == "[[postannotation]]") {
                 if (info.startsWith("[[postannotation]]")) {

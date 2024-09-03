@@ -10,6 +10,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### `Changes`
 
+1. Updated the pipeline to be compatible with future nextflow updates
+2. Removed the `max_cpus`, `max_memory` and `max_time` parameter in favor of the new built-in `resourceLimits`
+
 ### `Fixed`
 
 ## v0.2.0 - [19 July 2024] - Mighty Manneken Pis

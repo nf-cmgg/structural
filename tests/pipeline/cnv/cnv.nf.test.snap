@@ -14,8 +14,8 @@
                     "PosCon1.qdnaseq_segments.txt",
                     "PosCon1.wisecondorx_aberrations.bed",
                     "PosCon1.wisecondorx_bins.bed",
-                    "PosCon1.wisecondorx_chr_statistics.txt",
                     "PosCon1.wisecondorx_segments.bed",
+                    "PosCon1.wisecondorx_statistics.txt",
                     "chr1.png",
                     "chr22.png",
                     "genome_wide.png",
@@ -30,8 +30,8 @@
                     "PosCon2.qdnaseq_segments.txt",
                     "PosCon2.wisecondorx_aberrations.bed",
                     "PosCon2.wisecondorx_bins.bed",
-                    "PosCon2.wisecondorx_chr_statistics.txt",
                     "PosCon2.wisecondorx_segments.bed",
+                    "PosCon2.wisecondorx_statistics.txt",
                     "chr1.png",
                     "chr22.png",
                     "genome_wide.png",
@@ -46,8 +46,8 @@
                     "PosCon3.qdnaseq_segments.txt",
                     "PosCon3.wisecondorx_aberrations.bed",
                     "PosCon3.wisecondorx_bins.bed",
-                    "PosCon3.wisecondorx_chr_statistics.txt",
                     "PosCon3.wisecondorx_segments.bed",
+                    "PosCon3.wisecondorx_statistics.txt",
                     "chr1.png",
                     "chr22.png",
                     "genome_wide.png",
@@ -62,8 +62,8 @@
                     "PosCon4.qdnaseq_segments.txt",
                     "PosCon4.wisecondorx_aberrations.bed",
                     "PosCon4.wisecondorx_bins.bed",
-                    "PosCon4.wisecondorx_chr_statistics.txt",
                     "PosCon4.wisecondorx_segments.bed",
+                    "PosCon4.wisecondorx_statistics.txt",
                     "chr1.png",
                     "chr22.png",
                     "genome_wide.png",
@@ -85,10 +85,10 @@
             ]
         ],
         "meta": {
-            "nf-test": "0.8.4",
-            "nextflow": "24.02.0"
+            "nf-test": "0.9.0",
+            "nextflow": "24.04.4"
         },
-        "timestamp": "2024-03-13T11:31:18.794715638"
+        "timestamp": "2024-09-24T15:39:21.55695905"
     },
     "qdnaseq": {
         "content": [

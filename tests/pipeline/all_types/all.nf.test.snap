@@ -17,8 +17,8 @@
                 "PosCon1/PosCon1.sv.vcf.gz.tbi",
                 "PosCon1/PosCon1.wisecondorx_aberrations.bed",
                 "PosCon1/PosCon1.wisecondorx_bins.bed",
-                "PosCon1/PosCon1.wisecondorx_chr_statistics.txt",
                 "PosCon1/PosCon1.wisecondorx_segments.bed",
+                "PosCon1/PosCon1.wisecondorx_statistics.txt",
                 "PosCon1/chr1.png",
                 "PosCon1/chr22.png",
                 "PosCon1/genome_wide.png",
@@ -35,8 +35,8 @@
                 "PosCon2/PosCon2.sv.vcf.gz.tbi",
                 "PosCon2/PosCon2.wisecondorx_aberrations.bed",
                 "PosCon2/PosCon2.wisecondorx_bins.bed",
-                "PosCon2/PosCon2.wisecondorx_chr_statistics.txt",
                 "PosCon2/PosCon2.wisecondorx_segments.bed",
+                "PosCon2/PosCon2.wisecondorx_statistics.txt",
                 "PosCon2/chr1.png",
                 "PosCon2/chr22.png",
                 "PosCon2/genome_wide.png",
@@ -53,8 +53,8 @@
                 "PosCon3/PosCon3.sv.vcf.gz.tbi",
                 "PosCon3/PosCon3.wisecondorx_aberrations.bed",
                 "PosCon3/PosCon3.wisecondorx_bins.bed",
-                "PosCon3/PosCon3.wisecondorx_chr_statistics.txt",
                 "PosCon3/PosCon3.wisecondorx_segments.bed",
+                "PosCon3/PosCon3.wisecondorx_statistics.txt",
                 "PosCon3/chr1.png",
                 "PosCon3/chr22.png",
                 "PosCon3/genome_wide.png",
@@ -71,8 +71,8 @@
                 "PosCon4/PosCon4.sv.vcf.gz.tbi",
                 "PosCon4/PosCon4.wisecondorx_aberrations.bed",
                 "PosCon4/PosCon4.wisecondorx_bins.bed",
-                "PosCon4/PosCon4.wisecondorx_chr_statistics.txt",
                 "PosCon4/PosCon4.wisecondorx_segments.bed",
+                "PosCon4/PosCon4.wisecondorx_statistics.txt",
                 "PosCon4/chr1.png",
                 "PosCon4/chr22.png",
                 "PosCon4/genome_wide.png",
@@ -82,10 +82,10 @@
             ]
         ],
         "meta": {
-            "nf-test": "0.8.4",
-            "nextflow": "24.02.0"
+            "nf-test": "0.9.0",
+            "nextflow": "24.04.4"
         },
-        "timestamp": "2024-04-29T11:31:57.107814635"
+        "timestamp": "2024-09-24T16:41:59.329131636"
     },
     "concat": {
         "content": [
@@ -101,8 +101,8 @@
                 "PosCon1/PosCon1.vcf.gz.tbi",
                 "PosCon1/PosCon1.wisecondorx_aberrations.bed",
                 "PosCon1/PosCon1.wisecondorx_bins.bed",
-                "PosCon1/PosCon1.wisecondorx_chr_statistics.txt",
                 "PosCon1/PosCon1.wisecondorx_segments.bed",
+                "PosCon1/PosCon1.wisecondorx_statistics.txt",
                 "PosCon1/chr1.png",
                 "PosCon1/chr22.png",
                 "PosCon1/genome_wide.png",
@@ -115,8 +115,8 @@
                 "PosCon2/PosCon2.vcf.gz.tbi",
                 "PosCon2/PosCon2.wisecondorx_aberrations.bed",
                 "PosCon2/PosCon2.wisecondorx_bins.bed",
-                "PosCon2/PosCon2.wisecondorx_chr_statistics.txt",
                 "PosCon2/PosCon2.wisecondorx_segments.bed",
+                "PosCon2/PosCon2.wisecondorx_statistics.txt",
                 "PosCon2/chr1.png",
                 "PosCon2/chr22.png",
                 "PosCon2/genome_wide.png",
@@ -129,8 +129,8 @@
                 "PosCon3/PosCon3.vcf.gz.tbi",
                 "PosCon3/PosCon3.wisecondorx_aberrations.bed",
                 "PosCon3/PosCon3.wisecondorx_bins.bed",
-                "PosCon3/PosCon3.wisecondorx_chr_statistics.txt",
                 "PosCon3/PosCon3.wisecondorx_segments.bed",
+                "PosCon3/PosCon3.wisecondorx_statistics.txt",
                 "PosCon3/chr1.png",
                 "PosCon3/chr22.png",
                 "PosCon3/genome_wide.png",
@@ -143,8 +143,8 @@
                 "PosCon4/PosCon4.vcf.gz.tbi",
                 "PosCon4/PosCon4.wisecondorx_aberrations.bed",
                 "PosCon4/PosCon4.wisecondorx_bins.bed",
-                "PosCon4/PosCon4.wisecondorx_chr_statistics.txt",
                 "PosCon4/PosCon4.wisecondorx_segments.bed",
+                "PosCon4/PosCon4.wisecondorx_statistics.txt",
                 "PosCon4/chr1.png",
                 "PosCon4/chr22.png",
                 "PosCon4/genome_wide.png",
@@ -154,10 +154,10 @@
             ]
         ],
         "meta": {
-            "nf-test": "0.8.4",
-            "nextflow": "24.02.0"
+            "nf-test": "0.9.0",
+            "nextflow": "24.04.4"
         },
-        "timestamp": "2024-04-29T11:33:35.756593527"
+        "timestamp": "2024-09-24T16:43:30.360357399"
     },
     "output callers": {
         "content": [
@@ -191,8 +191,8 @@
                 "PosCon1/wisecondorx/PosCon1.wisecondorx.vcf.gz.tbi",
                 "PosCon1/wisecondorx/PosCon1.wisecondorx_aberrations.bed",
                 "PosCon1/wisecondorx/PosCon1.wisecondorx_bins.bed",
-                "PosCon1/wisecondorx/PosCon1.wisecondorx_chr_statistics.txt",
                 "PosCon1/wisecondorx/PosCon1.wisecondorx_segments.bed",
+                "PosCon1/wisecondorx/PosCon1.wisecondorx_statistics.txt",
                 "PosCon1/wisecondorx/chr1.png",
                 "PosCon1/wisecondorx/chr22.png",
                 "PosCon1/wisecondorx/genome_wide.png",
@@ -222,8 +222,8 @@
                 "PosCon2/wisecondorx/PosCon2.wisecondorx.vcf.gz.tbi",
                 "PosCon2/wisecondorx/PosCon2.wisecondorx_aberrations.bed",
                 "PosCon2/wisecondorx/PosCon2.wisecondorx_bins.bed",
-                "PosCon2/wisecondorx/PosCon2.wisecondorx_chr_statistics.txt",
                 "PosCon2/wisecondorx/PosCon2.wisecondorx_segments.bed",
+                "PosCon2/wisecondorx/PosCon2.wisecondorx_statistics.txt",
                 "PosCon2/wisecondorx/chr1.png",
                 "PosCon2/wisecondorx/chr22.png",
                 "PosCon2/wisecondorx/genome_wide.png",
@@ -253,8 +253,8 @@
                 "PosCon3/wisecondorx/PosCon3.wisecondorx.vcf.gz.tbi",
                 "PosCon3/wisecondorx/PosCon3.wisecondorx_aberrations.bed",
                 "PosCon3/wisecondorx/PosCon3.wisecondorx_bins.bed",
-                "PosCon3/wisecondorx/PosCon3.wisecondorx_chr_statistics.txt",
                 "PosCon3/wisecondorx/PosCon3.wisecondorx_segments.bed",
+                "PosCon3/wisecondorx/PosCon3.wisecondorx_statistics.txt",
                 "PosCon3/wisecondorx/chr1.png",
                 "PosCon3/wisecondorx/chr22.png",
                 "PosCon3/wisecondorx/genome_wide.png",
@@ -284,8 +284,8 @@
                 "PosCon4/wisecondorx/PosCon4.wisecondorx.vcf.gz.tbi",
                 "PosCon4/wisecondorx/PosCon4.wisecondorx_aberrations.bed",
                 "PosCon4/wisecondorx/PosCon4.wisecondorx_bins.bed",
-                "PosCon4/wisecondorx/PosCon4.wisecondorx_chr_statistics.txt",
                 "PosCon4/wisecondorx/PosCon4.wisecondorx_segments.bed",
+                "PosCon4/wisecondorx/PosCon4.wisecondorx_statistics.txt",
                 "PosCon4/wisecondorx/chr1.png",
                 "PosCon4/wisecondorx/chr22.png",
                 "PosCon4/wisecondorx/genome_wide.png",
@@ -294,9 +294,9 @@
             ]
         ],
         "meta": {
-            "nf-test": "0.8.4",
-            "nextflow": "24.02.0"
+            "nf-test": "0.9.0",
+            "nextflow": "24.04.4"
         },
-        "timestamp": "2024-04-29T11:47:12.295054901"
+        "timestamp": "2024-09-24T16:45:01.53178248"
     }
 }

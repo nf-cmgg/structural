@@ -97,6 +97,7 @@ workflow BAM_SV_CALLING {
 
     // Scramble is unfinished. It needs a lot of improvements if we were to add it
 
+    ch_merged_vcfs = Channel.empty()
     if(val_callers.size() > 1) {
         VCF_MERGE_CALLERS_JASMINE(
             ch_called_vcfs,
@@ -115,7 +116,6 @@ workflow BAM_SV_CALLING {
             }
             .set { ch_merged_vcfs }
     }
-
 
     emit:
     vcfs                = ch_merged_vcfs    // channel: [ val(meta), path(vcf), path(tbi) ]

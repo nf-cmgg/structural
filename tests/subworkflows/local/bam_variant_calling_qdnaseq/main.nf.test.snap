@@ -27,7 +27,7 @@
                         "sex": "male",
                         "caller": "qdnaseq"
                     },
-                    "test.bed:md5,19be72c3f56297070c6070ded3419dee"
+                    "test.qdnaseq.bed:md5,19be72c3f56297070c6070ded3419dee"
                 ],
                 [
                     {
@@ -36,7 +36,7 @@
                         "sex": "female",
                         "caller": "qdnaseq"
                     },
-                    "test2.bed:md5,fed14c95db6bed194f40f262d68399d1"
+                    "test2.qdnaseq.bed:md5,fed14c95db6bed194f40f262d68399d1"
                 ]
             ],
             10,

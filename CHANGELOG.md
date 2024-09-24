@@ -1,8 +1,24 @@
 # nf-cmgg/structural: Changelog
 # nf-cmgg/structural: Changelog
 
+# nf-cmgg/structural: Changelog
+
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
+
+## v0.3.0dev
+
+### `Added`
+
+### `Changes`
+
+1. Updated the pipeline to be compatible with future nextflow updates
+2. Removed the `max_cpus`, `max_memory` and `max_time` parameter in favor of the new built-in `resourceLimits`
+3. Replaced `nf-validation` with `nf-schema`
+
+### `Fixed`
+
+1. Fail the pipeline when the sex determination failed. This will now prompt the user to add the sex to the samplesheet so the pipeline doesn't do any wrong assumptions
 
 ## v0.2.0 - [19 July 2024] - Mighty Manneken Pis
 

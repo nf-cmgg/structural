@@ -54,9 +54,10 @@ workflow BAM_CNV_CALLING {
         ch_called_vcfs = ch_called_vcfs.mix(BAM_VARIANT_CALLING_WISECONDORX.out.vcf)
     }
 
+    ch_merged_vcfs = Channel.empty()
     if(val_callers.size() > 1) {
         VCF_MERGE_CALLERS_JASMINE(
-            ch_called_vcfs.map { it + [[]] },
+            ch_called_vcfs.map { meta, vcf -> [meta, vcf, []] },
             ch_fasta,
             ch_fai,
             val_callers,

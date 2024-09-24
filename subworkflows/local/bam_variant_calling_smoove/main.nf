@@ -49,8 +49,8 @@ workflow BAM_VARIANT_CALLING_SMOOVE {
     ch_versions = ch_versions.mix(TABIX_CALLER.out.versions.first())
 
     ch_svync_configs
-        .map {
-            it.find { it.toString().contains("smoove") }
+        .map { configs ->
+            configs.find { config -> config.toString().contains("smoove") }
         }
         .set { ch_smoove_svync_config }
 

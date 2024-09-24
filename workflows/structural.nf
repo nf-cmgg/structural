@@ -1,10 +1,12 @@
+import java.util.Scanner
+
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     VALIDATE INPUTS
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
 
-include { paramsSummaryMap       } from 'plugin/nf-validation'
+include { paramsSummaryMap       } from 'plugin/nf-schema'
 include { paramsSummaryMultiqc   } from '../subworkflows/nf-core/utils_nfcore_pipeline'
 include { softwareVersionsToYAML } from '../subworkflows/nf-core/utils_nfcore_pipeline'
 include { methodsDescriptionText } from '../subworkflows/local/utils_nfcore_structural_pipeline'
@@ -85,7 +87,7 @@ workflow STRUCTURAL {
     concat_output               // Concatenate all output files
 
     // value inputs
-    callers                     // All callers to be used
+    input_callers               // All callers to be used
     sv_callers_support          // How many SV callers are needed to support the variant
     cnv_callers_support         // How many CNV callers are needed to support the variant
     genome                      // The genome to use
@@ -111,26 +113,25 @@ workflow STRUCTURAL {
     //
 
     // When making changes here, make sure to also update the following files: conf/modules.config
-    def List<String> svCallers = ["delly", "manta", "smoove"] //, "gridss"
-    def List<String> cnvCallers = ["qdnaseq", "wisecondorx"]
-    def List<String> repeatsCallers = ["expansionhunter"]
+    def svCallers = ["delly", "manta", "smoove"] //, "gridss"
+    def cnvCallers = ["qdnaseq", "wisecondorx"]
+    def repeatsCallers = ["expansionhunter"]
 
-    def List<String> allCallers = svCallers + cnvCallers + repeatsCallers
-    def List<String> annotationCallers = svCallers + cnvCallers
+    def allCallers = svCallers + cnvCallers + repeatsCallers
+    def annotationCallers = svCallers + cnvCallers
 
     // Callers that need the sex
-    def List<String> sexCallers = ["expansionhunter", "qdnaseq"]
+    def sexCallers = ["expansionhunter", "qdnaseq"]
 
-    def lower_cased_callers = callers.toLowerCase()
-    def callers = lower_cased_callers.tokenize(",").collect {
-        if(it == "all") {return allCallers}
-        if(it == "sv")  {return svCallers}
-        if(it == "cnv") {return cnvCallers}
-        if(it == "rre") {return repeatsCallers}
-        return it
+    def callers = input_callers.toLowerCase().tokenize(",").collect { caller ->
+        if(caller == "all") {return allCallers}
+        if(caller == "sv")  {return svCallers}
+        if(caller == "cnv") {return cnvCallers}
+        if(caller == "rre") {return repeatsCallers}
+        return caller
     }.flatten()
 
-    for (caller in callers) {
+    callers.each { caller ->
         if(!(caller in allCallers)) { error("The caller '${caller}' is not supported please specify a comma delimited list with on or more of the following callers: ${allCallers}".toString()) }
     }
 
@@ -158,20 +159,20 @@ workflow STRUCTURAL {
     // Create input channels from parameters
     //
 
-    ch_fasta                    = Channel.fromPath(fasta).map{[[id:'fasta'], it]}.collect()
-    ch_annotsv_candidate_genes  = annotsv_candidate_genes ?  Channel.fromPath(annotsv_candidate_genes).map{[[], it]}.collect() : [[],[]]
-    ch_annotsv_gene_transcripts = annotsv_gene_transcripts ? Channel.fromPath(annotsv_gene_transcripts).map{[[], it]}.collect() : [[],[]]
+    ch_fasta                    = Channel.fromPath(fasta).collect { fasta_file -> [[id:'fasta'], fasta_file ] }
+    ch_annotsv_candidate_genes  = annotsv_candidate_genes ?  Channel.fromPath(annotsv_candidate_genes).collect { genes_file -> [[], genes_file] } : [[],[]]
+    ch_annotsv_gene_transcripts = annotsv_gene_transcripts ? Channel.fromPath(annotsv_gene_transcripts).collect { transcripts_file -> [[], transcripts_file] } : [[],[]]
     ch_vcfanno_lua              = vcfanno_lua ?              Channel.fromPath(vcfanno_lua).collect() : []
-    ch_catalog                  = expansionhunter_catalog ?  Channel.fromPath(expansionhunter_catalog).map{[[id:'catalog'], it]}.collect() : [[],[]]
-    ch_qdnaseq_male             = qdnaseq_male ?             Channel.fromPath(qdnaseq_male).map{[[id:'qdnaseq'], it]}.collect() : [[],[]]
-    ch_qdnaseq_female           = qdnaseq_female ?           Channel.fromPath(qdnaseq_female).map{[[id:'qdnaseq'], it]}.collect() : [[],[]]
-    ch_wisecondorx_reference    = wisecondorx_reference ?    Channel.fromPath(wisecondorx_reference).map{[[id:'wisecondorx'], it]}.collect() : [[],[]]
-    ch_blacklist                = blacklist ?                Channel.fromPath(blacklist).map{[[id:'blacklist'], it]}.collect() : [[],[]]
+    ch_catalog                  = expansionhunter_catalog ?  Channel.fromPath(expansionhunter_catalog).collect { catalog_file -> [[id:'catalog'], catalog_file] } : [[],[]]
+    ch_qdnaseq_male             = qdnaseq_male ?             Channel.fromPath(qdnaseq_male).collect { qdnaseq_file -> [[id:'qdnaseq_male'], qdnaseq_file] } : [[],[]]
+    ch_qdnaseq_female           = qdnaseq_female ?           Channel.fromPath(qdnaseq_female).collect { qdnaseq_file -> [[id:'qdnaseq_female'], qdnaseq_file] } : [[],[]]
+    ch_wisecondorx_reference    = wisecondorx_reference ?    Channel.fromPath(wisecondorx_reference).collect { wcx_file -> [[id:'wisecondorx'], wcx_file] } : [[],[]]
+    ch_blacklist                = blacklist ?                Channel.fromPath(blacklist).collect { blacklist_file -> [[id:'blacklist'], blacklist_file] } : [[],[]]
     ch_manta_config             = manta_config ?             Channel.fromPath(manta_config).collect() : [[]]
     ch_svync_configs            = svync_dir ?                Channel.fromPath("${svync_dir}/*.yaml", checkIfExists:true).collect() : []
     ch_bedgovcf_configs         = bedgovcf_dir ?             Channel.fromPath("${bedgovcf_dir}/*.yaml", checkIfExists:true).collect() : []
 
-    val_vcfanno_resources       = vcfanno_resources ?        vcfanno_resources.split(",").collect{file(it, checkIfExists:true)}.flatten() : []
+    val_vcfanno_resources       = vcfanno_resources ?        vcfanno_resources.split(",").collect { resource_file -> file(resource_file, checkIfExists:true) }.flatten() : []
     val_default_vcfanno_tomls   = vcfanno_default_dir ?      files("${vcfanno_default_dir}/*.toml", checkIfExists:true) : []
     val_vcfanno_toml            = vcfanno_toml ?             file(vcfanno_toml, checkIfExists:true) : []
 
@@ -187,10 +188,10 @@ workflow STRUCTURAL {
         )
 
         ch_versions = ch_versions.mix(SAMTOOLS_FAIDX.out.versions)
-        ch_fai      = SAMTOOLS_FAIDX.out.fai.map{[[id:'fai'], it]}.collect()
+        ch_fai      = SAMTOOLS_FAIDX.out.fai.collect { fai_file -> [[id:'fai'], fai_file] }
     }
     else {
-        ch_fai = Channel.fromPath(fai).map{[[id:"fai"],it]}.collect()
+        ch_fai = Channel.fromPath(fai).collect { fai_file -> [[id:'fai'], fai_file] }
     }
 
     // if(!bwa && "gridss" in callers){
@@ -225,12 +226,11 @@ workflow STRUCTURAL {
         ch_versions = ch_versions.mix(ANNOTSV_INSTALLANNOTATIONS.out.versions)
 
         ANNOTSV_INSTALLANNOTATIONS.out.annotations
-            .map { [[id:"annotsv"], it] }
-            .collect()
+            .collect { annotations -> [[id:"annotsv_annotations"], annotations] }
             .set { ch_annotsv_annotations }
     }
     else if(annotate && callers.intersect(annotationCallers)) {
-        ch_annotsv_annotations_input = Channel.fromPath(annotsv_annotations).map{[[id:"annotsv_annotations"], it]}.collect()
+        ch_annotsv_annotations_input = Channel.fromPath(annotsv_annotations).collect { annotations -> [[id:"annotsv_annotations"], annotations] }
         if(annotsv_annotations.endsWith(".tar.gz")){
             UNTAR_ANNOTSV(
                 ch_annotsv_annotations_input
@@ -241,7 +241,7 @@ workflow STRUCTURAL {
                 .collect()
                 .set { ch_annotsv_annotations }
         } else {
-            ch_annotsv_annotations = Channel.fromPath(annotsv_annotations).map{[[id:"annotsv_annotations"], it]}.collect()
+            ch_annotsv_annotations = Channel.fromPath(annotsv_annotations).collect { annotations -> [[id:"annotsv_annotations"], annotations] }
         }
     }
     else {
@@ -254,7 +254,7 @@ workflow STRUCTURAL {
         )
         ch_versions = ch_versions.mix(ENSEMBLVEP_DOWNLOAD.out.versions)
 
-        ch_vep_cache = ENSEMBLVEP_DOWNLOAD.out.cache.map{it[1]}.collect()
+        ch_vep_cache = ENSEMBLVEP_DOWNLOAD.out.cache.collect { annotations -> annotations[1] }
     }
     else if (vep_cache && annotate && callers.intersect(annotationCallers)) {
         ch_vep_cache = Channel.fromPath(vep_cache).collect()
@@ -268,17 +268,21 @@ workflow STRUCTURAL {
     //
 
     BAM_PREPARE_SAMTOOLS(
-        ch_samplesheet.map{ it.subList(0, 3) },
+        ch_samplesheet.map { meta, cram, crai, small_variants ->
+            [ meta, cram, crai ]
+        },
         ch_fasta,
         ch_fai
     )
     ch_versions = ch_versions.mix(BAM_PREPARE_SAMTOOLS.out.versions)
 
     ch_samplesheet
-        .map{ [it[0]] + it.subList(3, it.size()) }
+        .map { meta, cram, crai, small_variants ->
+            [ meta, small_variants ]
+        }
         .groupTuple()
-        .map {
-            [ it[0] ] + it.subList(1, it.size()).collect { it.find { it != [] } ?: [] }
+        .map { meta, small_variants ->
+            [ meta, small_variants.find { small_variant -> small_variant != [] } ?: [] ]
         }
         .set { ch_deduplicated }
 
@@ -290,16 +294,17 @@ workflow STRUCTURAL {
     // Determine the gender if needed
     //
 
+    ch_input_sex = Channel.empty()
     if(callers.intersect(sexCallers)) {
         ch_input_no_sex
-            .branch {
-                sex: it[0].sex
-                no_sex: !it[0].sex
+            .branch { meta, cram, crai, small_variants ->
+                sex: meta.sex
+                no_sex: !meta.sex
             }
             .set { ch_samplegender_input }
 
         NGSBITS_SAMPLEGENDER(
-            ch_samplegender_input.no_sex.map{ it.subList(0, 3) },
+            ch_samplegender_input.no_sex,
             ch_fasta,
             ch_fai,
             "xy"
@@ -308,9 +313,9 @@ workflow STRUCTURAL {
 
         NGSBITS_SAMPLEGENDER.out.tsv
             .join(ch_samplegender_input.no_sex, failOnDuplicate:true, failOnMismatch:true)
-            .map {
-                new_meta = it[0] + [sex:get_sex(it[1], it[0].sample)]
-                return [ new_meta ] + it.subList(2, it.size())
+            .map { meta, tsv, cram, crai ->
+                def new_meta = meta + [sex:get_sex(tsv, meta.sample)]
+                return [ new_meta, cram, crai ]
             }
             .mix(ch_samplegender_input.sex)
             .set { ch_input_sex }
@@ -319,10 +324,10 @@ workflow STRUCTURAL {
     }
 
     ch_input_sex
-        .multiMap({ meta, cram, crai, small_variants ->
+        .multiMap { meta, cram, crai, small_variants ->
             crams:          [ meta, cram, crai ]
             small_variants: [ meta, small_variants ]
-        })
+        }
         .set { ch_inputs }
 
     //
@@ -331,7 +336,7 @@ workflow STRUCTURAL {
 
     if(sv_callers_to_use){
 
-        count_types++
+        count_types += 1
         variant_types.add("sv")
 
         BAM_SV_CALLING(
@@ -355,7 +360,7 @@ workflow STRUCTURAL {
 
     if(cnv_callers_to_use){
 
-        count_types++
+        count_types += 1
         variant_types.add("cnv")
 
         BAM_CNV_CALLING(
@@ -412,7 +417,7 @@ workflow STRUCTURAL {
 
     if(callers.intersect(repeatsCallers)){
 
-        count_types++
+        count_types += 1
 
         BAM_REPEAT_ESTIMATION_EXPANSIONHUNTER(
             ch_inputs.crams,
@@ -429,8 +434,8 @@ workflow STRUCTURAL {
     // Concatenate the VCF files from different types of analysis
     //
 
+    ch_concat_vcfs = Channel.empty()
     if(count_types > 1 && concat_output) {
-
         ch_outputs
             .map { meta, vcf, tbi ->
                 def new_meta = meta - meta.subMap("variant_type")
@@ -446,10 +451,8 @@ workflow STRUCTURAL {
 
         VCF_CONCAT_BCFTOOLS.out.vcfs
             .set { ch_concat_vcfs }
-
     } else {
-        ch_outputs
-            .set { ch_concat_vcfs }
+        ch_outputs.set { ch_concat_vcfs }
     }
 
     //
@@ -484,7 +487,9 @@ workflow STRUCTURAL {
         ch_multiqc_files.collect(),
         ch_multiqc_config.toList(),
         ch_multiqc_custom_config.toList(),
-        ch_multiqc_logo.toList()
+        ch_multiqc_logo.toList(),
+        [],
+        []
     )
 
     emit:
@@ -502,10 +507,10 @@ workflow STRUCTURAL {
 def get_sex(tsv, id) {
     if(workflow.stubRun) {
         return "female"
-        log.warn("Couldn't define the sex of sample ${id}. Defaulting to female. (Specify the sex in the samplesheet to avoid this warning.)")
+        log.warn("STUB: Couldn't define the sex of sample ${id}. Defaulting to female. (Specify the sex in the samplesheet to avoid this warning.)")
     }
-    split_tsv = tsv.splitCsv(sep:"\t", header:true, strip:true)
-    sex = split_tsv[0].gender
+    def split_tsv = tsv.splitCsv(sep:"\t", header:true, strip:true)
+    def sex = split_tsv[0].gender
     if(sex == "others") {
         sex = "female"
         log.warn("Couldn't define the sex of sample ${id}. Defaulting to female. (Specify the sex in the samplesheet to avoid this warning.)")

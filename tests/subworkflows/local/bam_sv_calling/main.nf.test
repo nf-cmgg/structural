@@ -10,8 +10,6 @@ nextflow_workflow {
 
     options "-stub"
 
-    config "./nextflow.config"
-
     test("homo_sapiens - manta") {
 
         when {

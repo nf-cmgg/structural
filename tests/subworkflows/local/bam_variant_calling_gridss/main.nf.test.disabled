@@ -8,8 +8,6 @@
 //     tag "subworkflows_local"
 //     tag "bam_variant_calling_gridss"
 
-//     config "./nextflow.config"
-
 //     test("homo_sapiens") {
 
 //         setup {

@@ -105,7 +105,7 @@ nextflow_workflow {
                 input[11] = params.genome
                 input[12] = params.species
                 input[13] = params.vep_cache_version
-                input[14] = null
+                input[14] = params.annotations_filter
                 input[15] = []
                 input[16] = files("\${params.vcfanno_tomls}/*.toml", checkIfExists:true)
                 """
@@ -163,7 +163,7 @@ nextflow_workflow {
                 input[7] = []
                 input[8] = []
                 input[9] = []
-                input[10] = ["sv", "cnv]
+                input[10] = ["sv", "cnv"]
                 input[11] = params.genome
                 input[12] = params.species
                 input[13] = params.vep_cache_version

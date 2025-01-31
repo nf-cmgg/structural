@@ -102,7 +102,7 @@
                     },
                     "ngsbits/samplegender": {
                         "branch": "master",
-                        "git_sha": "023e119cfa102f319b6dcfd06abecf7f3c2b8df1",
+                        "git_sha": "0e9cb409c32d3ec4f0d3804588e4778971c09b7e",
                         "installed_by": ["modules"]
                     },
                     "samtools/convert": {

@@ -13,7 +13,7 @@
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
 
-include { STRUCTURAL  } from './workflows/structural'
+include { STRUCTURAL              } from './workflows/structural'
 include { PIPELINE_INITIALISATION } from './subworkflows/local/utils_nfcore_structural_pipeline'
 include { PIPELINE_COMPLETION     } from './subworkflows/local/utils_nfcore_structural_pipeline'
 include { getGenomeAttribute      } from './subworkflows/local/utils_nfcore_structural_pipeline'

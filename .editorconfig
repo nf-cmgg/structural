@@ -11,6 +11,9 @@ indent_style = space
 [*.{md,yml,yaml,html,css,scss,js}]
 indent_size = 2
 
+[nextflow.config]
+indent_size = 0
+
 # These files are edited and tested upstream in nf-core/modules
 [/modules/nf-core/**]
 charset = unset

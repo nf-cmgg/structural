@@ -120,6 +120,12 @@
                     "hidden": true,
                     "help_text": "Do not load `igenomes.config` when running the pipeline. You may choose this option if you observe clashes between custom parameters and those supplied in `igenomes.config`."
                 },
+                "igenomes_base": {
+                    "type": "string",
+                    "description": "The base path where the iGenomes references can be found",
+                    "exists": true,
+                    "format": "directory-path"
+                },
                 "genomes_base": {
                     "type": "string",
                     "description": "The base path where the references can be found",
@@ -200,7 +206,7 @@
             "properties": {
                 "help": {
                     "type": "boolean",
-                    "description": "Display help text.",
+                    "description": "Display version and exit.",
                     "fa_icon": "fas fa-question-circle",
                     "hidden": true
                 },
@@ -278,6 +284,16 @@
                 "monochrome_logs": {
                     "type": "boolean",
                     "description": "Output monochrome logs"
+                },
+                "pipelines_testdata_base_path": {
+                    "type": "string",
+                    "hidden": true,
+                    "description": "The base path to of the pipeline test data",
+                    "default": "https://raw.githubusercontent.com/nf-core/test-datasets/"
+                },
+                "trace_report_suffix": {
+                    "type": "string",
+                    "hidden": true
                 }
             }
         },

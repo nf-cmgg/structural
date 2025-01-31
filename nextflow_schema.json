@@ -5,7 +5,6 @@
     "description": "A bioinformatics best-practice analysis pipeline for calling structural variants (SVs), copy number variants (CNVs) and repeat region expansions (RREs) from short DNA reads",
     "type": "object",
     "$defs": {
-    "$defs": {
         "input_output_options": {
             "title": "Input/output options",
             "type": "object",
@@ -120,6 +119,12 @@
                     "fa_icon": "fas fa-ban",
                     "hidden": true,
                     "help_text": "Do not load `igenomes.config` when running the pipeline. You may choose this option if you observe clashes between custom parameters and those supplied in `igenomes.config`."
+                },
+                "igenomes_base": {
+                    "type": "string",
+                    "description": "The base path where the iGenomes references can be found",
+                    "exists": true,
+                    "format": "directory-path"
                 },
                 "genomes_base": {
                     "type": "string",
@@ -279,6 +284,16 @@
                 "monochrome_logs": {
                     "type": "boolean",
                     "description": "Output monochrome logs"
+                },
+                "pipelines_testdata_base_path": {
+                    "type": "string",
+                    "hidden": true,
+                    "description": "The base path to of the pipeline test data",
+                    "default": "https://raw.githubusercontent.com/nf-core/test-datasets/"
+                },
+                "trace_report_suffix": {
+                    "type": "string",
+                    "hidden": true
                 }
             }
         },
@@ -477,14 +492,11 @@
     "allOf": [
         {
             "$ref": "#/$defs/input_output_options"
-            "$ref": "#/$defs/input_output_options"
         },
         {
             "$ref": "#/$defs/reference_genome_options"
-            "$ref": "#/$defs/reference_genome_options"
         },
         {
-            "$ref": "#/$defs/institutional_config_options"
             "$ref": "#/$defs/institutional_config_options"
         },
         {

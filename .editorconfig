@@ -12,7 +12,7 @@ indent_style = space
 indent_size = 2
 
 [nextflow.config]
-indent_size = 0
+indent_size = unset
 
 # These files are edited and tested upstream in nf-core/modules
 [/modules/nf-core/**]

@@ -1,26 +1,38 @@
 lint:
+  actions_ci: false
   files_exist:
+    - CITATIONS.md
+    - docs/README.md
     - CODE_OF_CONDUCT.md
-    - assets/nf-core-structural_logo_light.png
-    - docs/images/nf-core-structural_logo_light.png
-    - docs/images/nf-core-structural_logo_dark.png
     - .github/ISSUE_TEMPLATE/config.yml
     - .github/workflows/awstest.yml
     - .github/workflows/awsfulltest.yml
-  files_unchanged:
-    - CODE_OF_CONDUCT.md
     - assets/nf-core-structural_logo_light.png
     - docs/images/nf-core-structural_logo_light.png
     - docs/images/nf-core-structural_logo_dark.png
+  files_unchanged:
+    - LICENSE
+    - .github/PULL_REQUEST_TEMPLATE.md
+    - .github/CONTRIBUTING.md
     - .github/ISSUE_TEMPLATE/bug_report.yml
-  multiqc_config:
-    - report_comment
+    - .github/workflows/linting.yml
+    - assets/email_template.txt
+    - assets/email_template.html
+    - docs/README.md
+    - .prettierignore
   nextflow_config:
     - manifest.name
     - manifest.homePage
+nf_core_version: 3.2.0
 repository_type: pipeline
 template:
   author: nvnieuwk
-  description: A nextflow pipeline for calling and annotating variants
+  description: A bioinformatics best-practice analysis pipeline for calling structural
+    variants (SVs), copy number variants (CNVs) and repeat region expansions (RREs)
+    from short DNA reads.
+  force: false
+  is_nfcore: false
   name: structural
-  prefix: nf-cmgg
+  org: nf-cmgg
+  outdir: .
+  version: 0.3.0dev

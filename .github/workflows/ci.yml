@@ -7,11 +7,14 @@ on:
   pull_request:
   release:
     types: [published]
+  workflow_dispatch:
 
 env:
   NXF_ANSI_LOG: false
   AWS_ACCESS_KEY_ID: ${{ secrets.UGENT_S3_ACCESS_KEY }}
   AWS_SECRET_ACCESS_KEY: ${{ secrets.UGENT_S3_SECRET_KEY }}
+  NXF_SINGULARITY_CACHEDIR: ${{ github.workspace }}/.singularity
+  NXF_SINGULARITY_LIBRARYDIR: ${{ github.workspace }}/.singularity
 
 concurrency:
   group: "${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}"
@@ -58,10 +61,12 @@ jobs:
           sudo rm -rf /opt/ghc
 
       - name: Check out pipeline code
-        uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4
+        with:
+          fetch-depth: 0
 
-      - name: Install Nextflow
-        uses: nf-core/setup-nextflow@v1
+      - name: Set up Nextflow
+        uses: nf-core/setup-nextflow@v2
         with:
           version: "${{ matrix.NXF_VER }}"
 

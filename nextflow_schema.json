@@ -5,6 +5,7 @@
     "description": "A bioinformatics best-practice analysis pipeline for calling structural variants (SVs), copy number variants (CNVs) and repeat region expansions (RREs) from short DNA reads",
     "type": "object",
     "$defs": {
+    "$defs": {
         "input_output_options": {
             "title": "Input/output options",
             "type": "object",
@@ -200,7 +201,7 @@
             "properties": {
                 "help": {
                     "type": "boolean",
-                    "description": "Display help text.",
+                    "description": "Display version and exit.",
                     "fa_icon": "fas fa-question-circle",
                     "hidden": true
                 },
@@ -476,11 +477,14 @@
     "allOf": [
         {
             "$ref": "#/$defs/input_output_options"
+            "$ref": "#/$defs/input_output_options"
         },
         {
             "$ref": "#/$defs/reference_genome_options"
+            "$ref": "#/$defs/reference_genome_options"
         },
         {
+            "$ref": "#/$defs/institutional_config_options"
             "$ref": "#/$defs/institutional_config_options"
         },
         {

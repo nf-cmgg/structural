@@ -17,21 +17,21 @@ workflow VCF_MERGE_FAMILY_JASMINE {
 
     main:
 
-    ch_versions     = Channel.empty()
+    def ch_versions     = Channel.empty()
 
-    ch_vcfs
-        .filter { meta, vcf, tbi -> meta.family_count > 1 }
+    def ch_jasmine_input = ch_vcfs
+        .filter { meta, _vcf, _tbi -> meta.family_count > 1 }
         .map { meta, vcf, tbi ->
             def new_meta = meta - meta.subMap("sample", "sex") + ["id":meta.variant_type ? "${meta.family}.${meta.variant_type}" : meta.family]
             [ groupKey(new_meta, meta.family_count), vcf, tbi ]
         }
         .groupTuple()
         .tap { ch_consensus_reheader_input }
-        .map { meta, vcfs, tbis ->
+        .map { meta, vcfs, _tbis ->
             [ meta.id, meta, vcfs ]
         }
         .tap { ch_meta_file_list }
-        .map { id, meta, vcfs ->
+        .map { id, _meta, vcfs ->
             [ "${id}_list.txt", vcfs.collect { vcf -> vcf.baseName }.join("\n") ]
         }
         .collectFile()
@@ -40,10 +40,9 @@ workflow VCF_MERGE_FAMILY_JASMINE {
             [ id, meta_file ]
         }
         .join(ch_meta_file_list, failOnMismatch:true, failOnDuplicate:true)
-        .map { id, file_list, meta, vcfs ->
+        .map { _id, file_list, meta, vcfs ->
             [ meta, vcfs, [], [], file_list ]
         }
-        .set { ch_jasmine_input }
 
     JASMINESV(
         ch_jasmine_input,
@@ -58,10 +57,9 @@ workflow VCF_MERGE_FAMILY_JASMINE {
     )
     ch_versions = ch_versions.mix(FIX_CALLERS.out.versions.first())
 
-    FIX_CALLERS.out.vcf
+    def ch_reheader_input = FIX_CALLERS.out.vcf
         .join(ch_consensus_reheader_input, failOnDuplicate:true, failOnMismatch:true)
         .dump(tag:"family_reheader_input", pretty: true)
-        .set { ch_reheader_input }
 
     BCFTOOLS_CONSENSUS_REHEADER(
         ch_reheader_input,
@@ -80,9 +78,8 @@ workflow VCF_MERGE_FAMILY_JASMINE {
     )
     ch_versions = ch_versions.mix(TABIX_TABIX.out.versions.first())
 
-    BCFTOOLS_SORT.out.vcf
+    def ch_vcfs_out = BCFTOOLS_SORT.out.vcf
         .join(TABIX_TABIX.out.tbi, failOnMismatch:true, failOnDuplicate:true)
-        .set { ch_vcfs_out }
 
     emit:
     vcfs        = ch_vcfs_out    // channel: [ val(meta), path(vcf), path(tbi) ]

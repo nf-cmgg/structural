@@ -14,9 +14,9 @@ workflow BAM_PREPARE_SAMTOOLS {
 
     main:
 
-    ch_versions     = Channel.empty()
+    def ch_versions     = Channel.empty()
 
-    ch_crams
+    def ch_merge_input = ch_crams
         .groupTuple() // no size needed here as no process has been run before this
         .branch { meta, cram, crai ->
             multiple: cram.size() > 1
@@ -24,7 +24,6 @@ workflow BAM_PREPARE_SAMTOOLS {
             single: cram.size() == 1
                 return [ meta, cram[0], crai[0] ]
         }
-        .set { ch_merge_input }
 
     SAMTOOLS_MERGE(
         ch_merge_input.multiple,
@@ -33,24 +32,22 @@ workflow BAM_PREPARE_SAMTOOLS {
     )
     ch_versions = ch_versions.mix(SAMTOOLS_MERGE.out.versions.first())
 
-    ch_merge_input.single
+    def ch_index_input = ch_merge_input.single
         .mix(SAMTOOLS_MERGE.out.cram)
         .branch { meta, cram, crai=[] ->
             index: crai
             no_index: !crai
                 return [ meta, cram ]
         }
-        .set { ch_index_input }
 
     SAMTOOLS_INDEX(
         ch_index_input.no_index
     )
     ch_versions = ch_versions.mix(SAMTOOLS_INDEX.out.versions.first())
 
-    ch_index_input.no_index
+    def ch_crams_ready = ch_index_input.no_index
         .join(SAMTOOLS_INDEX.out.crai, failOnMismatch:true, failOnDuplicate:true)
         .mix(ch_index_input.index)
-        .set { ch_crams_ready }
 
     emit:
     crams    = ch_crams_ready // channel: [ val(meta), path(cram), path(crai) ]

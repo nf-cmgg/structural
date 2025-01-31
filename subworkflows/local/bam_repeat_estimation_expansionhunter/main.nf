@@ -15,14 +15,13 @@ workflow BAM_REPEAT_ESTIMATION_EXPANSIONHUNTER {
 
     main:
 
-    ch_versions = Channel.empty()
+    def ch_versions = Channel.empty()
 
-    ch_crams
+    def ch_expansionhunter_input = ch_crams
         .map { meta, cram, crai ->
             def new_meta = meta + ["variant_type":"repeats"]
             [ new_meta, cram, crai ]
         }
-        .set { ch_expansionhunter_input }
 
     EXPANSIONHUNTER(
         ch_expansionhunter_input,
@@ -32,7 +31,7 @@ workflow BAM_REPEAT_ESTIMATION_EXPANSIONHUNTER {
     )
     ch_versions = ch_versions.mix(EXPANSIONHUNTER.out.versions.first())
 
-    Channel.of(
+    def ch_ref_header = Channel.of(
         '##INFO=<ID=REF,Number=1,Type=Integer,Description="Count of reads mapping across this breakend">',
         '##INFO=<ID=RU,Number=1,Type=String,Description="The repeat unit of the STR">',
         '##INFO=<ID=REPREF,Number=1,Type=Integer,Description="How many repeats are in the reference">',
@@ -49,14 +48,12 @@ workflow BAM_REPEAT_ESTIMATION_EXPANSIONHUNTER {
         '##FORMAT=<ID=ADIR,Number=1,Type=String,Description="The amount of in-repeat reads that are consistent with the repeat allele">'
         )
         .collectFile(name:'header.txt', newLine:true)
-        .set { ch_ref_header }
 
-    EXPANSIONHUNTER.out.vcf
+    def ch_annotate_input = EXPANSIONHUNTER.out.vcf
         .combine(ch_ref_header)
         .map { meta, vcf, ref_header ->
             [ meta, vcf, [], [], [], ref_header]
         }
-        .set { ch_annotate_input }
 
     BCFTOOLS_ANNOTATE(
         ch_annotate_input
@@ -68,9 +65,8 @@ workflow BAM_REPEAT_ESTIMATION_EXPANSIONHUNTER {
     )
     ch_versions = ch_versions.mix(TABIX_TABIX.out.versions.first())
 
-    BCFTOOLS_ANNOTATE.out.vcf
+    def ch_vcfs = BCFTOOLS_ANNOTATE.out.vcf
         .join(TABIX_TABIX.out.tbi, failOnDuplicate:true, failOnMismatch:true)
-        .set { ch_vcfs }
 
     emit:
     vcfs                = ch_vcfs    // channel: [ val(meta), path(vcf), path(tbi) ]

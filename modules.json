@@ -44,7 +44,7 @@
                     },
                     "bwa/index": {
                         "branch": "master",
-                        "git_sha": "6278bf9afd4a4b2d00fa6052250e73da3d91546f",
+                        "git_sha": "2d20463181b1c38981a02e90d3084b5f9fa8d540",
                         "installed_by": ["modules"]
                     },
                     "delly/call": {

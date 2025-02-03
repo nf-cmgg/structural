@@ -28,14 +28,13 @@ workflow PIPELINE_INITIALISATION {
     take:
     version           // boolean: Display version and exit
     validate_params   // boolean: Boolean whether to validate parameters against the schema at runtime
-    monochrome_logs   // boolean: Do not use coloured log outputs
     nextflow_cli_args //   array: List of positional nextflow CLI args
     outdir            //  string: The output directory where the results will be saved
     input             //  string: Path to input samplesheet
 
     main:
 
-    ch_versions = Channel.empty()
+    def ch_versions = Channel.empty()
 
     //
     // Print version and exit if required and dump pipeline parameters to JSON file
@@ -72,7 +71,7 @@ workflow PIPELINE_INITIALISATION {
     // Create channel from input file provided through params.input
     //
 
-    Channel.fromList(samplesheetToList(input, "assets/schema_input.json"))
+    def ch_samplesheet = Channel.fromList(samplesheetToList(input, "assets/schema_input.json"))
         .map { row ->
             def meta = row[0]
             def new_meta = meta.family ? meta : meta + [family:meta.sample]
@@ -87,10 +86,10 @@ workflow PIPELINE_INITIALISATION {
         }
         .combine(ch_raw_input)
         .map { row -> // counts, family, meta, ...
+            // TODO rethink this later on
             row[2] = row[2] + ["family_count":row[0][row[1]].size()]
             return row.subList(2, row.size())
         }
-        .set { ch_samplesheet }
 
     emit:
     samplesheet = ch_samplesheet
@@ -115,7 +114,7 @@ workflow PIPELINE_COMPLETION {
     multiqc_report  //  string: Path to MultiQC report
 
     main:
-    summary_params = paramsSummaryMap(workflow, parameters_schema: "nextflow_schema.json")
+    def summary_params = paramsSummaryMap(workflow, parameters_schema: "nextflow_schema.json")
     def multiqc_reports = multiqc_report.toList()
 
     //

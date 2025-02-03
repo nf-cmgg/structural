@@ -24,9 +24,9 @@ workflow BAM_CNV_CALLING {
 
     main:
 
-    ch_versions     = Channel.empty()
-    ch_reports      = Channel.empty()
-    ch_called_vcfs  = Channel.empty()
+    def ch_versions     = Channel.empty()
+    def ch_reports      = Channel.empty()
+    def ch_called_vcfs  = Channel.empty()
 
     if("qdnaseq" in val_callers) {
         BAM_VARIANT_CALLING_QDNASEQ(
@@ -54,7 +54,7 @@ workflow BAM_CNV_CALLING {
         ch_called_vcfs = ch_called_vcfs.mix(BAM_VARIANT_CALLING_WISECONDORX.out.vcf)
     }
 
-    ch_merged_vcfs = Channel.empty()
+    def ch_merged_vcfs = Channel.empty()
     if(val_callers.size() > 1) {
         VCF_MERGE_CALLERS_JASMINE(
             ch_called_vcfs.map { meta, vcf -> [meta, vcf, []] },
@@ -64,8 +64,7 @@ workflow BAM_CNV_CALLING {
             "cnv"
         )
         ch_versions = ch_versions.mix(VCF_MERGE_CALLERS_JASMINE.out.versions)
-        VCF_MERGE_CALLERS_JASMINE.out.vcfs
-            .set { ch_merged_vcfs }
+        ch_merged_vcfs = VCF_MERGE_CALLERS_JASMINE.out.vcfs
 
     } else {
         TABIX_TABIX(
@@ -73,13 +72,12 @@ workflow BAM_CNV_CALLING {
         )
         ch_versions = ch_versions.mix(TABIX_TABIX.out.versions.first())
 
-        ch_called_vcfs
+        ch_merged_vcfs = ch_called_vcfs
             .join(TABIX_TABIX.out.tbi, failOnDuplicate:true, failOnMismatch:true)
             .map { meta, vcf, tbi ->
                 def new_meta = meta - meta.subMap("caller") + [variant_type:"cnv"]
                 [ new_meta, vcf, tbi ]
             }
-            .set { ch_merged_vcfs }
     }
 
 

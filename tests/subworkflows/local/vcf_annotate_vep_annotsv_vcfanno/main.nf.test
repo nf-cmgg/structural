@@ -36,24 +36,20 @@ nextflow_workflow {
                     [id:"fasta"],
                     file(params.fasta, checkIfExists: true)
                 ])
-                input[3] = Channel.value([
-                    [id:"fai"],
-                    file(params.fai, checkIfExists: true)
-                ])
+                input[3] = [[],[]]
                 input[4] = [[],[]]
                 input[5] = [[],[]]
-                input[6] = [[],[]]
+                input[6] = []
                 input[7] = []
                 input[8] = []
                 input[9] = []
-                input[10] = []
-                input[11] = ["sv"]
-                input[12] = params.genome
-                input[13] = params.species
-                input[14] = params.vep_cache_version
-                input[15] = null
-                input[16] = []
-                input[17] = files("\${params.vcfanno_tomls}/*.toml", checkIfExists:true)
+                input[10] = ["sv"]
+                input[11] = params.genome
+                input[12] = params.species
+                input[13] = params.vep_cache_version
+                input[14] = null
+                input[15] = []
+                input[16] = files("\${params.vcfanno_tomls}/*.toml", checkIfExists:true)
                 """
             }
         }
@@ -98,24 +94,20 @@ nextflow_workflow {
                     [id:"fasta"],
                     file(params.fasta, checkIfExists: true)
                 ])
-                input[3] = Channel.value([
-                    [id:"fai"],
-                    file(params.fai, checkIfExists: true)
-                ])
+                input[3] = [[],[]]
                 input[4] = [[],[]]
                 input[5] = [[],[]]
-                input[6] = [[],[]]
+                input[6] = []
                 input[7] = []
                 input[8] = []
                 input[9] = []
-                input[10] = []
-                input[11] = ["cnv"]
-                input[12] = params.genome
-                input[13] = params.species
-                input[14] = params.vep_cache_version
-                input[15] = params.annotations_filter
-                input[16] = []
-                input[17] = files("\${params.vcfanno_tomls}/*.toml", checkIfExists:true)
+                input[10] = ["cnv"]
+                input[11] = params.genome
+                input[12] = params.species
+                input[13] = params.vep_cache_version
+                input[14] = params.annotations_filter
+                input[15] = []
+                input[16] = files("\${params.vcfanno_tomls}/*.toml", checkIfExists:true)
                 """
             }
         }
@@ -164,24 +156,20 @@ nextflow_workflow {
                     [id:"fasta"],
                     file(params.fasta, checkIfExists: true)
                 ])
-                input[3] = Channel.value([
-                    [id:"fai"],
-                    file(params.fai, checkIfExists: true)
-                ])
+                input[3] = [[],[]]
                 input[4] = [[],[]]
                 input[5] = [[],[]]
-                input[6] = [[],[]]
+                input[6] = []
                 input[7] = []
                 input[8] = []
                 input[9] = []
-                input[10] = []
-                input[11] = ["sv", "cnv"]
-                input[12] = params.genome
-                input[13] = params.species
-                input[14] = params.vep_cache_version
-                input[15] = null
-                input[16] = []
-                input[17] = files("\${params.vcfanno_tomls}/*.toml", checkIfExists:true)
+                input[10] = ["sv", "cnv"]
+                input[11] = params.genome
+                input[12] = params.species
+                input[13] = params.vep_cache_version
+                input[14] = null
+                input[15] = []
+                input[16] = files("\${params.vcfanno_tomls}/*.toml", checkIfExists:true)
                 """
             }
         }

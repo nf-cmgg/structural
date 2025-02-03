@@ -21,9 +21,9 @@ workflow BAM_SV_CALLING {
 
     main:
 
-    ch_versions     = Channel.empty()
-    ch_reports      = Channel.empty()
-    ch_called_vcfs  = Channel.empty()
+    def ch_versions     = Channel.empty()
+    def ch_reports      = Channel.empty()
+    def ch_called_vcfs  = Channel.empty()
 
     //
     // Calling variants using Manta
@@ -97,7 +97,7 @@ workflow BAM_SV_CALLING {
 
     // Scramble is unfinished. It needs a lot of improvements if we were to add it
 
-    ch_merged_vcfs = Channel.empty()
+    def ch_merged_vcfs = Channel.empty()
     if(val_callers.size() > 1) {
         VCF_MERGE_CALLERS_JASMINE(
             ch_called_vcfs,
@@ -107,14 +107,13 @@ workflow BAM_SV_CALLING {
             "sv"
         )
         ch_versions = ch_versions.mix(VCF_MERGE_CALLERS_JASMINE.out.versions)
-        VCF_MERGE_CALLERS_JASMINE.out.vcfs.set { ch_merged_vcfs }
+        ch_merged_vcfs = VCF_MERGE_CALLERS_JASMINE.out.vcfs
     } else {
-        ch_called_vcfs
+        ch_merged_vcfs = ch_called_vcfs
             .map { meta, vcf, tbi ->
                 def new_meta = meta - meta.subMap("caller") + [variant_type:"sv"]
                 [ new_meta, vcf, tbi ]
             }
-            .set { ch_merged_vcfs }
     }
 
     emit:

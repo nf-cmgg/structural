@@ -9,6 +9,7 @@ include { TABIX_TABIX                       } from '../../../modules/nf-core/tab
 include { BAM_VARIANT_CALLING_QDNASEQ       } from '../bam_variant_calling_qdnaseq/main'
 include { BAM_VARIANT_CALLING_WISECONDORX   } from '../bam_variant_calling_wisecondorx/main'
 include { VCF_MERGE_CALLERS_JASMINE         } from '../vcf_merge_callers_jasmine/main'
+include { QDNASEQ } from '../../../modules/local/qdnaseq/main.nf'
 
 workflow BAM_CNV_CALLING {
     take:
@@ -28,6 +29,7 @@ workflow BAM_CNV_CALLING {
     def ch_reports      = Channel.empty()
     def ch_called_vcfs  = Channel.empty()
 
+    def ch_qdnaseq_out  = Channel.empty()
     if("qdnaseq" in val_callers) {
         BAM_VARIANT_CALLING_QDNASEQ(
             ch_crams,
@@ -39,8 +41,12 @@ workflow BAM_CNV_CALLING {
         )
         ch_versions = ch_versions.mix(BAM_VARIANT_CALLING_QDNASEQ.out.versions)
         ch_called_vcfs = ch_called_vcfs.mix(BAM_VARIANT_CALLING_QDNASEQ.out.vcf)
+        ch_qdnaseq_out = BAM_VARIANT_CALLING_QDNASEQ.out.beds
+            .mix(BAM_VARIANT_CALLING_QDNASEQ.out.segments)
+            .mix(BAM_VARIANT_CALLING_QDNASEQ.out.statistics)
     }
 
+    def ch_wisecondorx_out = Channel.empty()
     if("wisecondorx" in val_callers) {
         BAM_VARIANT_CALLING_WISECONDORX(
             ch_crams,
@@ -52,6 +58,12 @@ workflow BAM_CNV_CALLING {
         )
         ch_versions = ch_versions.mix(BAM_VARIANT_CALLING_WISECONDORX.out.versions)
         ch_called_vcfs = ch_called_vcfs.mix(BAM_VARIANT_CALLING_WISECONDORX.out.vcf)
+        ch_wisecondorx_out = BAM_VARIANT_CALLING_WISECONDORX.out.aberrations_bed
+            .mix(BAM_VARIANT_CALLING_WISECONDORX.out.bins_bed)
+            .mix(BAM_VARIANT_CALLING_WISECONDORX.out.chr_plots)
+            .mix(BAM_VARIANT_CALLING_WISECONDORX.out.chr_statistics)
+            .mix(BAM_VARIANT_CALLING_WISECONDORX.out.genome_plot)
+            .mix(BAM_VARIANT_CALLING_WISECONDORX.out.segments_bed)
     }
 
     def ch_merged_vcfs = Channel.empty()
@@ -82,6 +94,8 @@ workflow BAM_CNV_CALLING {
 
 
     emit:
+    wisecondorx         = ch_wisecondorx_out
+    qdnaseq             = ch_qdnaseq_out
     versions            = ch_versions
     reports             = ch_reports
     vcfs                = ch_merged_vcfs

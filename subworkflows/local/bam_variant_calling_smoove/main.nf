@@ -5,7 +5,6 @@
 include { SMOOVE_CALL                   } from '../../../modules/nf-core/smoove/call/main'
 include { BCFTOOLS_SORT                 } from '../../../modules/nf-core/bcftools/sort/main'
 include { TABIX_TABIX                   } from '../../../modules/nf-core/tabix/tabix/main'
-include { TABIX_TABIX as TABIX_CALLER   } from '../../../modules/nf-core/tabix/tabix/main'
 include { SVYNC                         } from '../../../modules/nf-core/svync/main'
 
 workflow BAM_VARIANT_CALLING_SMOOVE {
@@ -25,7 +24,8 @@ workflow BAM_VARIANT_CALLING_SMOOVE {
 
     def ch_smoove_input = ch_crams
         .map { meta, cram, crai ->
-            [ meta, cram, crai, [] ]
+            def new_meta = meta + [caller:'smoove']
+            [ new_meta, cram, crai, [] ]
         }
         .dump(tag: 'smoove_input', pretty: true)
 
@@ -42,26 +42,20 @@ workflow BAM_VARIANT_CALLING_SMOOVE {
     )
     ch_versions = ch_versions.mix(BCFTOOLS_SORT.out.versions.first())
 
-    TABIX_CALLER(
-        BCFTOOLS_SORT.out.vcf
-    )
-    ch_versions = ch_versions.mix(TABIX_CALLER.out.versions.first())
-
     def ch_smoove_svync_config = ch_svync_configs
         .map { configs ->
             configs.find { config -> config.toString().contains("smoove") }
         }
 
     def ch_smoove_vcfs = BCFTOOLS_SORT.out.vcf
+        .join(BCFTOOLS_SORT.out.tbi)
+
+    def ch_svync_input = ch_smoove_vcfs
         .combine(ch_smoove_svync_config)
-        .map{ meta, vcf, config ->
-            def new_meta = meta + [caller:'smoove']
-            [ new_meta, vcf, [], config ]
-        }
         .dump(tag: 'smoove_vcfs', pretty: true)
 
     SVYNC(
-        ch_smoove_vcfs
+        ch_svync_input
     )
     ch_versions = ch_versions.mix(SVYNC.out.versions.first())
 
@@ -74,7 +68,8 @@ workflow BAM_VARIANT_CALLING_SMOOVE {
         .join(TABIX_TABIX.out.tbi)
 
     emit:
-    smoove_vcfs = ch_out_vcfs    // channel: [ val(meta), path(vcf), path(tbi) ]
+    raw_vcfs    = ch_smoove_vcfs    // channel: [ val(meta), path(vcf), path(tbi) ]
+    smoove_vcfs = ch_out_vcfs       // channel: [ val(meta), path(vcf), path(tbi) ]
 
     versions    = ch_versions
 }

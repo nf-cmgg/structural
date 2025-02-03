@@ -7,6 +7,8 @@
 ----------------------------------------------------------------------------------------
 */
 
+nextflow.preview.output = true
+
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     IMPORT FUNCTIONS / MODULES / SUBWORKFLOWS / WORKFLOWS
@@ -123,6 +125,70 @@ workflow {
         params.hook_url,
         STRUCTURAL.out.multiqc_report
     )
+
+    publish:
+    STRUCTURAL.out.caller_vcfs >> 'caller_vcfs'
+    STRUCTURAL.out.sample_vcfs >> 'sample_vcfs'
+    STRUCTURAL.out.family_vcfs >> 'family_vcfs'
+    STRUCTURAL.out.qdnaseq_out >> 'qdnaseq_out'
+    STRUCTURAL.out.wisecondorx_out >> 'wisecondorx_out'
+    STRUCTURAL.out.multiqc_report >> 'multiqc'
+    STRUCTURAL.out.multiqc_data >> 'multiqc_data'
+
+}
+
+output {
+    'caller_vcfs' {
+        enabled params.output_callers
+        path { meta, vcf, _tbi -> { file -> 
+            if(file == vcf.name) {
+                return "${meta.sample}/${meta.caller}/${meta.sample}.vcf.gz"
+            }
+            return "${meta.sample}/${meta.caller}/${meta.sample}.vcf.gz.tbi"
+        } }
+    }
+    'sample_vcfs' {
+        path { meta, vcf, _tbi -> { file ->
+            def base = "${meta.id}/${meta.id}${meta.variant_type ? '.' + meta.variant_type : ''}"
+            if(file == vcf.name) {
+                return "${base}.vcf.gz"
+            }
+            return "${base}.vcf.gz.tbi"
+        } }
+    }
+    'family_vcfs' {
+        path { meta, vcf, _tbi -> { file -> 
+            def base = "${meta.id}/${meta.id}${meta.variant_type ? '.' + meta.variant_type : ''}"
+            if(file == vcf.name) {
+                return "${base}.vcf.gz"
+            }
+            return "${base}.vcf.gz.tbi"
+        } }
+    }
+    'qdnaseq_out' {
+        path { meta, _bed -> { file ->
+            if(file == "statistics.out") {
+                return "${meta.id}/${meta.id}.qdnaseq.statistics.out"
+            }
+            def new_name = file.replaceFirst(meta.id, "${meta.id}.qdnaseq")
+            return "${meta.id}/${new_name}"
+        } }
+    }
+    'wisecondorx_out' {
+        path { meta, _bed -> { file ->
+            if(file.endsWith(".png")) {
+                return "${meta.id}/${meta.id}.wisecondorx.${file}"
+            }
+            def new_name = file.replaceFirst(meta.id, "${meta.id}.wisecondorx")
+            return "${meta.id}/${new_name}"
+        } }
+    }
+    'multiqc' {
+        path { _report -> { _file -> "multiqc/multiqc_report.html"}}
+    }
+    'multiqc_data' {
+        path { _folder -> { _file -> "multiqc/multiqc_data"}}
+    }
 }
 
 /*

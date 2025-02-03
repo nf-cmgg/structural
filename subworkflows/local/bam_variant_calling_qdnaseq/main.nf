@@ -57,6 +57,12 @@ workflow BAM_VARIANT_CALLING_QDNASEQ {
     def ch_qdnaseq_beds = QDNASEQ_MALE.out.bed
         .mix(QDNASEQ_FEMALE.out.bed)
 
+    def ch_qdnaseq_segments = QDNASEQ_MALE.out.segments
+        .mix(QDNASEQ_FEMALE.out.segments)
+
+    def ch_qdnaseq_statistics = QDNASEQ_MALE.out.statistics
+        .mix(QDNASEQ_FEMALE.out.statistics)
+
     GAWK(
         ch_qdnaseq_beds,
         []
@@ -92,9 +98,11 @@ workflow BAM_VARIANT_CALLING_QDNASEQ {
     ch_versions = ch_versions.mix(TABIX_TABIX.out.versions.first())
 
     emit:
-    qdnaseq_beds    = ch_qdnaseq_beds  // channel: [ val(meta), path(bed) ]
-    vcf             = ch_vcf           // channel: [ val(meta), path(vcf) ]
+    beds        = ch_qdnaseq_beds       // channel: [ val(meta), path(bed) ]
+    segments    = ch_qdnaseq_segments   // channel: [ val(meta), path(bed) ]
+    statistics  = ch_qdnaseq_statistics // channel: [ val(meta), path(stats) ]
+    vcf         = ch_vcf                // channel: [ val(meta), path(vcf) ]
 
-    versions        = ch_versions
+    versions    = ch_versions
 }
 

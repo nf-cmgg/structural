@@ -15,6 +15,7 @@ process EXPANSIONHUNTER {
 
     output:
     tuple val(meta), path("*.vcf.gz")        , emit: vcf
+    tuple val(meta), path("*.vcf.gz.tbi")    , emit: tbi
     tuple val(meta), path("*.json.gz")       , emit: json
     tuple val(meta), path("*_realigned.bam") , emit: bam
     path "versions.yml"                      , emit: versions
@@ -36,6 +37,7 @@ process EXPANSIONHUNTER {
         --variant-catalog ${variant_catalog}
 
     bgzip --threads ${task.cpus} ${args2} ${prefix}.vcf
+    tabix ${prefix}.vcf.gz
     bgzip --threads ${task.cpus} ${args2} ${prefix}.json
 
     cat <<-END_VERSIONS > versions.yml
@@ -49,6 +51,7 @@ process EXPANSIONHUNTER {
     def prefix = task.ext.prefix ?: "${meta.id}"
     """
     echo "" | gzip > ${prefix}.vcf.gz
+    touch ${prefix}.vcf.gz.tbi
     echo "" | gzip > ${prefix}.json.gz
     touch ${prefix}_realigned.bam
 

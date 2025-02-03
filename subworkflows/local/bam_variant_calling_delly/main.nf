@@ -15,7 +15,7 @@ workflow BAM_VARIANT_CALLING_DELLY {
 
     main:
 
-    ch_versions     = Channel.empty()
+    def ch_versions     = Channel.empty()
 
     //
     // Calling variants using Delly
@@ -23,7 +23,8 @@ workflow BAM_VARIANT_CALLING_DELLY {
 
     def ch_delly_input = ch_crams
         .map { meta, cram, crai ->
-            [ meta, cram, crai, [], [], [] ]
+            def new_meta = meta + [caller:'delly']
+            [ new_meta, cram, crai, [], [], [] ]
         }
         .dump(tag: 'delly_input', pretty: true)
 
@@ -41,15 +42,13 @@ workflow BAM_VARIANT_CALLING_DELLY {
 
     def ch_delly_vcfs = DELLY_CALL.out.bcf
         .join(DELLY_CALL.out.csi, failOnDuplicate:true, failOnMismatch:true)
+
+    def ch_svync_input = ch_delly_vcfs
         .combine(ch_delly_svync_config)
-        .map { meta, vcf, tbi, config ->
-            def new_meta = meta + [caller:"delly"]
-            [ new_meta, vcf, tbi, config ]
-        }
         .dump(tag: 'delly_vcfs', pretty: true)
 
     SVYNC(
-        ch_delly_vcfs
+        ch_svync_input
     )
     ch_versions = ch_versions.mix(SVYNC.out.versions.first())
 
@@ -62,7 +61,8 @@ workflow BAM_VARIANT_CALLING_DELLY {
         .join(TABIX_TABIX.out.tbi)
 
     emit:
-    delly_vcfs  = ch_out_vcfs // channel: [ val(meta), path(vcf), path(tbi) ]
+    raw_vcfs    = ch_delly_vcfs // channel: [ val(meta), path(vcf), path(tbi) ]
+    delly_vcfs  = ch_out_vcfs   // channel: [ val(meta), path(vcf), path(tbi) ]
 
     versions    = ch_versions
 }

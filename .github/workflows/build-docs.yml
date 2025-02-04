@@ -49,9 +49,16 @@ jobs:
       - name: Install dependencies
         run: pip install mkdocs-material pymdown-extensions pillow cairosvg mike
 
-      - name: Build docs
+      - name: Build dev docs
+        if: ${{ github.head_ref || github.ref_name }} == 'dev'
         run: |
-          [[ ${{ steps.version.outputs.version }} == "dev" ]] && mike deploy --push ${{ steps.version.outputs.version }} || mike deploy --push --update-aliases ${{ steps.version.outputs.version }} latest
+          mike deploy --push dev
+
+      - name: Build production docs
+        if: ${{ github.head_ref || github.ref_name }} == 'master'
+        run: |
+          mike deploy --push --update-aliases ${{ steps.version.outputs.version }} latest
+  
 
       - name: Set default docs
         run: mike set-default --push latest

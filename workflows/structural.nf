@@ -433,7 +433,7 @@ workflow STRUCTURAL {
     if(count_types > 1 && concat_output) {
         def ch_concat_input = ch_outputs
             .map { meta, vcf, tbi ->
-                def new_meta = meta - meta.subMap("variant_type")
+                def new_meta = meta - meta.subMap("variant_type", "caller")
                 [ new_meta, vcf, tbi ]
             }
 

@@ -71,25 +71,32 @@ workflow PIPELINE_INITIALISATION {
     // Create channel from input file provided through params.input
     //
 
-    def ch_samplesheet = Channel.fromList(samplesheetToList(input, "assets/schema_input.json"))
-        .map { row ->
-            def meta = row[0]
-            def new_meta = meta.family ? meta : meta + [family:meta.sample]
-            return [ new_meta.family, new_meta ] + row.subList(1, row.size())
+    def family_counts = [:]
+
+    def samplesheetList = samplesheetToList(input, "assets/schema_input.json")
+
+    samplesheetList.each { row ->
+        def family = row[0].family ?: row[0].sample
+        if(family) {
+            def current_count = family_counts.get(family) ?: 0
+            family_counts[family] = current_count + 1
         }
-        .tap { ch_raw_input }
-        .reduce([:]) { counts, entry ->
-            def family = entry[0]
-            counts[family] = ((counts[family] ?: []) + [entry[1].id])
-            counts[family] = counts[family].unique()
-            return counts
+    }
+
+    def ch_samplesheet = Channel.fromList(samplesheetList)
+        .map { meta, cram, crai, small_variants ->
+            def new_meta = meta + [
+                family:meta.family ?: meta.sample,
+                family_count:family_counts[meta.family] ?: 1
+            ]
+            return [ new_meta, cram, crai, small_variants ]
         }
-        .combine(ch_raw_input)
-        .map { row -> // counts, family, meta, ...
-            // TODO rethink this later on
-            row[2] = row[2] + ["family_count":row[0][row[1]].size()]
-            return row.subList(2, row.size())
-        }
+
+    //
+    // Copy the samplesheet to the output directory
+    //
+
+    file(input).copyTo("${workflow.outputDir}/samplesheet.csv")
 
     emit:
     samplesheet = ch_samplesheet

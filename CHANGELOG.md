@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### `Added`
 
+1. Added the samplesheet to the pipeline output as `OUTDIR/samplesheet.csv`
+
 ### `Changes`
 
 1. Updated the pipeline to be compatible with future nextflow updates
@@ -14,6 +16,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 3. Replaced `nf-validation` with `nf-schema`
 4. Updated to nf-core template v3.2.0
 5. Fixed language server errors
+6. Removed the old output publishing code and used the new workflow output definitions instead
+7. Bumped the minimal nextflow version to 24.10.0
 
 ### `Fixed`
 

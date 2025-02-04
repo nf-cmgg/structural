@@ -140,7 +140,7 @@ workflow {
 output {
     'caller_vcfs' {
         enabled params.output_callers
-        path { meta, vcf, _tbi -> { file -> 
+        path { meta, vcf, _tbi -> { file ->
             if(file == vcf.name) {
                 return "${meta.sample}/${meta.caller}/${meta.sample}.vcf.gz"
             }
@@ -157,7 +157,7 @@ output {
         } }
     }
     'family_vcfs' {
-        path { meta, vcf, _tbi -> { file -> 
+        path { meta, vcf, _tbi -> { file ->
             def base = "${meta.id}/${meta.id}${meta.variant_type ? '.' + meta.variant_type : ''}"
             if(file == vcf.name) {
                 return "${base}.vcf.gz"

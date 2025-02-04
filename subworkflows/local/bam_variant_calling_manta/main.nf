@@ -76,7 +76,7 @@ workflow BAM_VARIANT_CALLING_MANTA {
 
     def ch_manta_vcfs = MANTA_CONVERTINVERSION.out.vcf
         .join(MANTA_CONVERTINVERSION.out.tbi, failOnDuplicate:true, failOnMismatch:true)
-        
+
     def ch_svync_input = ch_manta_vcfs
         .combine(ch_manta_svync_config)
         .dump(tag: 'manta_vcfs', pretty: true)

@@ -5,40 +5,22 @@
                 
             ],
             [
-                [
-                    "PosCon1.repeats.vcf.gz",
-                    "PosCon1.repeats.vcf.gz.tbi"
-                ],
-                [
-                    "PosCon2.repeats.vcf.gz",
-                    "PosCon2.repeats.vcf.gz.tbi"
-                ],
-                [
-                    "PosCon3.repeats.vcf.gz",
-                    "PosCon3.repeats.vcf.gz.tbi"
-                ],
-                [
-                    "PosCon4.repeats.vcf.gz",
-                    "PosCon4.repeats.vcf.gz.tbi"
-                ],
-                [
-                    "multiqc_data",
-                    "multiqc_report.html"
-                ]
-            ],
-            [
-                "PosCon1",
-                "PosCon2",
-                "PosCon3",
-                "PosCon4",
-                "multiqc",
-                "pipeline_info"
+                "PosCon1/PosCon1.repeats.vcf.gz",
+                "PosCon1/PosCon1.repeats.vcf.gz.tbi",
+                "PosCon2/PosCon2.repeats.vcf.gz",
+                "PosCon2/PosCon2.repeats.vcf.gz.tbi",
+                "PosCon3/PosCon3.repeats.vcf.gz",
+                "PosCon3/PosCon3.repeats.vcf.gz.tbi",
+                "PosCon4/PosCon4.repeats.vcf.gz",
+                "PosCon4/PosCon4.repeats.vcf.gz.tbi",
+                "multiqc/multiqc_report.html",
+                "samplesheet.csv"
             ]
         ],
         "meta": {
             "nf-test": "0.9.1",
             "nextflow": "24.10.3"
         },
-        "timestamp": "2025-02-04T09:49:49.160301297"
+        "timestamp": "2025-02-04T14:31:49.390938584"
     }
 }

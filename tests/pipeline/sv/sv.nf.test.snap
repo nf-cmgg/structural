@@ -5,41 +5,23 @@
                 
             ],
             [
-                [
-                    "PosCon1.sv.vcf.gz",
-                    "PosCon1.sv.vcf.gz.tbi"
-                ],
-                [
-                    "PosCon2.sv.vcf.gz",
-                    "PosCon2.sv.vcf.gz.tbi"
-                ],
-                [
-                    "PosCon3.sv.vcf.gz",
-                    "PosCon3.sv.vcf.gz.tbi"
-                ],
-                [
-                    "PosCon4.sv.vcf.gz",
-                    "PosCon4.sv.vcf.gz.tbi"
-                ],
-                [
-                    "multiqc_data",
-                    "multiqc_report.html"
-                ]
-            ],
-            [
-                "PosCon1",
-                "PosCon2",
-                "PosCon3",
-                "PosCon4",
-                "multiqc",
-                "pipeline_info"
+                "PosCon1/PosCon1.sv.vcf.gz",
+                "PosCon1/PosCon1.sv.vcf.gz.tbi",
+                "PosCon2/PosCon2.sv.vcf.gz",
+                "PosCon2/PosCon2.sv.vcf.gz.tbi",
+                "PosCon3/PosCon3.sv.vcf.gz",
+                "PosCon3/PosCon3.sv.vcf.gz.tbi",
+                "PosCon4/PosCon4.sv.vcf.gz",
+                "PosCon4/PosCon4.sv.vcf.gz.tbi",
+                "multiqc/multiqc_report.html",
+                "samplesheet.csv"
             ]
         ],
         "meta": {
             "nf-test": "0.9.1",
             "nextflow": "24.10.3"
         },
-        "timestamp": "2025-02-04T09:51:10.58214673"
+        "timestamp": "2025-02-04T14:53:15.213679787"
     },
     "delly": {
         "content": [
@@ -47,40 +29,22 @@
                 
             ],
             [
-                [
-                    "PosCon1.sv.vcf.gz",
-                    "PosCon1.sv.vcf.gz.tbi"
-                ],
-                [
-                    "PosCon2.sv.vcf.gz",
-                    "PosCon2.sv.vcf.gz.tbi"
-                ],
-                [
-                    "PosCon3.sv.vcf.gz",
-                    "PosCon3.sv.vcf.gz.tbi"
-                ],
-                [
-                    "PosCon4.sv.vcf.gz",
-                    "PosCon4.sv.vcf.gz.tbi"
-                ],
-                [
-                    "multiqc_data",
-                    "multiqc_report.html"
-                ]
-            ],
-            [
-                "PosCon1",
-                "PosCon2",
-                "PosCon3",
-                "PosCon4",
-                "multiqc",
-                "pipeline_info"
+                "PosCon1/PosCon1.sv.vcf.gz",
+                "PosCon1/PosCon1.sv.vcf.gz.tbi",
+                "PosCon2/PosCon2.sv.vcf.gz",
+                "PosCon2/PosCon2.sv.vcf.gz.tbi",
+                "PosCon3/PosCon3.sv.vcf.gz",
+                "PosCon3/PosCon3.sv.vcf.gz.tbi",
+                "PosCon4/PosCon4.sv.vcf.gz",
+                "PosCon4/PosCon4.sv.vcf.gz.tbi",
+                "multiqc/multiqc_report.html",
+                "samplesheet.csv"
             ]
         ],
         "meta": {
             "nf-test": "0.9.1",
             "nextflow": "24.10.3"
         },
-        "timestamp": "2025-02-04T09:50:18.804266098"
+        "timestamp": "2025-02-04T14:52:19.41494813"
     }
 }

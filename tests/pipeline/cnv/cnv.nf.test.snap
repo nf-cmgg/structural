@@ -5,81 +5,63 @@
                 
             ],
             [
-                [
-                    "PosCon1.cnv.vcf.gz",
-                    "PosCon1.cnv.vcf.gz.tbi",
-                    "PosCon1.qdnaseq.qdnaseq.bed",
-                    "PosCon1.qdnaseq.qdnaseq_segments.txt",
-                    "PosCon1.qdnaseq.statistics.out",
-                    "PosCon1.wisecondorx.chr1.png",
-                    "PosCon1.wisecondorx.chr22.png",
-                    "PosCon1.wisecondorx.genome_wide.png",
-                    "PosCon1.wisecondorx.wisecondorx_aberrations.bed",
-                    "PosCon1.wisecondorx.wisecondorx_bins.bed",
-                    "PosCon1.wisecondorx.wisecondorx_segments.bed",
-                    "PosCon1.wisecondorx.wisecondorx_statistics.txt"
-                ],
-                [
-                    "PosCon2.cnv.vcf.gz",
-                    "PosCon2.cnv.vcf.gz.tbi",
-                    "PosCon2.qdnaseq.qdnaseq.bed",
-                    "PosCon2.qdnaseq.qdnaseq_segments.txt",
-                    "PosCon2.qdnaseq.statistics.out",
-                    "PosCon2.wisecondorx.chr1.png",
-                    "PosCon2.wisecondorx.chr22.png",
-                    "PosCon2.wisecondorx.genome_wide.png",
-                    "PosCon2.wisecondorx.wisecondorx_aberrations.bed",
-                    "PosCon2.wisecondorx.wisecondorx_bins.bed",
-                    "PosCon2.wisecondorx.wisecondorx_segments.bed",
-                    "PosCon2.wisecondorx.wisecondorx_statistics.txt"
-                ],
-                [
-                    "PosCon3.cnv.vcf.gz",
-                    "PosCon3.cnv.vcf.gz.tbi",
-                    "PosCon3.qdnaseq.qdnaseq.bed",
-                    "PosCon3.qdnaseq.qdnaseq_segments.txt",
-                    "PosCon3.qdnaseq.statistics.out",
-                    "PosCon3.wisecondorx.chr1.png",
-                    "PosCon3.wisecondorx.chr22.png",
-                    "PosCon3.wisecondorx.genome_wide.png",
-                    "PosCon3.wisecondorx.wisecondorx_aberrations.bed",
-                    "PosCon3.wisecondorx.wisecondorx_bins.bed",
-                    "PosCon3.wisecondorx.wisecondorx_segments.bed",
-                    "PosCon3.wisecondorx.wisecondorx_statistics.txt"
-                ],
-                [
-                    "PosCon4.cnv.vcf.gz",
-                    "PosCon4.cnv.vcf.gz.tbi",
-                    "PosCon4.qdnaseq.qdnaseq.bed",
-                    "PosCon4.qdnaseq.qdnaseq_segments.txt",
-                    "PosCon4.qdnaseq.statistics.out",
-                    "PosCon4.wisecondorx.chr1.png",
-                    "PosCon4.wisecondorx.chr22.png",
-                    "PosCon4.wisecondorx.genome_wide.png",
-                    "PosCon4.wisecondorx.wisecondorx_aberrations.bed",
-                    "PosCon4.wisecondorx.wisecondorx_bins.bed",
-                    "PosCon4.wisecondorx.wisecondorx_segments.bed",
-                    "PosCon4.wisecondorx.wisecondorx_statistics.txt"
-                ],
-                [
-                    "multiqc_data",
-                    "multiqc_report.html"
-                ]
-            ],
-            [
-                "PosCon1",
-                "PosCon2",
-                "PosCon3",
-                "PosCon4",
-                "multiqc",
-                "pipeline_info"
+                "PosCon1/PosCon1.cnv.vcf.gz",
+                "PosCon1/PosCon1.cnv.vcf.gz.tbi",
+                "PosCon1/PosCon1.qdnaseq.qdnaseq.bed",
+                "PosCon1/PosCon1.qdnaseq.qdnaseq_segments.txt",
+                "PosCon1/PosCon1.qdnaseq.statistics.out",
+                "PosCon1/PosCon1.wisecondorx.chr1.png",
+                "PosCon1/PosCon1.wisecondorx.chr22.png",
+                "PosCon1/PosCon1.wisecondorx.genome_wide.png",
+                "PosCon1/PosCon1.wisecondorx.wisecondorx_aberrations.bed",
+                "PosCon1/PosCon1.wisecondorx.wisecondorx_bins.bed",
+                "PosCon1/PosCon1.wisecondorx.wisecondorx_segments.bed",
+                "PosCon1/PosCon1.wisecondorx.wisecondorx_statistics.txt",
+                "PosCon2/PosCon2.cnv.vcf.gz",
+                "PosCon2/PosCon2.cnv.vcf.gz.tbi",
+                "PosCon2/PosCon2.qdnaseq.qdnaseq.bed",
+                "PosCon2/PosCon2.qdnaseq.qdnaseq_segments.txt",
+                "PosCon2/PosCon2.qdnaseq.statistics.out",
+                "PosCon2/PosCon2.wisecondorx.chr1.png",
+                "PosCon2/PosCon2.wisecondorx.chr22.png",
+                "PosCon2/PosCon2.wisecondorx.genome_wide.png",
+                "PosCon2/PosCon2.wisecondorx.wisecondorx_aberrations.bed",
+                "PosCon2/PosCon2.wisecondorx.wisecondorx_bins.bed",
+                "PosCon2/PosCon2.wisecondorx.wisecondorx_segments.bed",
+                "PosCon2/PosCon2.wisecondorx.wisecondorx_statistics.txt",
+                "PosCon3/PosCon3.cnv.vcf.gz",
+                "PosCon3/PosCon3.cnv.vcf.gz.tbi",
+                "PosCon3/PosCon3.qdnaseq.qdnaseq.bed",
+                "PosCon3/PosCon3.qdnaseq.qdnaseq_segments.txt",
+                "PosCon3/PosCon3.qdnaseq.statistics.out",
+                "PosCon3/PosCon3.wisecondorx.chr1.png",
+                "PosCon3/PosCon3.wisecondorx.chr22.png",
+                "PosCon3/PosCon3.wisecondorx.genome_wide.png",
+                "PosCon3/PosCon3.wisecondorx.wisecondorx_aberrations.bed",
+                "PosCon3/PosCon3.wisecondorx.wisecondorx_bins.bed",
+                "PosCon3/PosCon3.wisecondorx.wisecondorx_segments.bed",
+                "PosCon3/PosCon3.wisecondorx.wisecondorx_statistics.txt",
+                "PosCon4/PosCon4.cnv.vcf.gz",
+                "PosCon4/PosCon4.cnv.vcf.gz.tbi",
+                "PosCon4/PosCon4.qdnaseq.qdnaseq.bed",
+                "PosCon4/PosCon4.qdnaseq.qdnaseq_segments.txt",
+                "PosCon4/PosCon4.qdnaseq.statistics.out",
+                "PosCon4/PosCon4.wisecondorx.chr1.png",
+                "PosCon4/PosCon4.wisecondorx.chr22.png",
+                "PosCon4/PosCon4.wisecondorx.genome_wide.png",
+                "PosCon4/PosCon4.wisecondorx.wisecondorx_aberrations.bed",
+                "PosCon4/PosCon4.wisecondorx.wisecondorx_bins.bed",
+                "PosCon4/PosCon4.wisecondorx.wisecondorx_segments.bed",
+                "PosCon4/PosCon4.wisecondorx.wisecondorx_statistics.txt",
+                "multiqc/multiqc_report.html",
+                "samplesheet.csv"
             ]
         ],
         "meta": {
             "nf-test": "0.9.1",
             "nextflow": "24.10.3"
         },
-        "timestamp": "2025-02-04T09:43:58.953981396"
+        "timestamp": "2025-02-04T14:44:41.409129649"
     },
     "qdnaseq": {
         "content": [
@@ -87,52 +69,34 @@
                 
             ],
             [
-                [
-                    "PosCon1.cnv.vcf.gz",
-                    "PosCon1.cnv.vcf.gz.tbi",
-                    "PosCon1.qdnaseq.qdnaseq.bed",
-                    "PosCon1.qdnaseq.qdnaseq_segments.txt",
-                    "PosCon1.qdnaseq.statistics.out"
-                ],
-                [
-                    "PosCon2.cnv.vcf.gz",
-                    "PosCon2.cnv.vcf.gz.tbi",
-                    "PosCon2.qdnaseq.qdnaseq.bed",
-                    "PosCon2.qdnaseq.qdnaseq_segments.txt",
-                    "PosCon2.qdnaseq.statistics.out"
-                ],
-                [
-                    "PosCon3.cnv.vcf.gz",
-                    "PosCon3.cnv.vcf.gz.tbi",
-                    "PosCon3.qdnaseq.qdnaseq.bed",
-                    "PosCon3.qdnaseq.qdnaseq_segments.txt",
-                    "PosCon3.qdnaseq.statistics.out"
-                ],
-                [
-                    "PosCon4.cnv.vcf.gz",
-                    "PosCon4.cnv.vcf.gz.tbi",
-                    "PosCon4.qdnaseq.qdnaseq.bed",
-                    "PosCon4.qdnaseq.qdnaseq_segments.txt",
-                    "PosCon4.qdnaseq.statistics.out"
-                ],
-                [
-                    "multiqc_data",
-                    "multiqc_report.html"
-                ]
-            ],
-            [
-                "PosCon1",
-                "PosCon2",
-                "PosCon3",
-                "PosCon4",
-                "multiqc",
-                "pipeline_info"
+                "PosCon1/PosCon1.cnv.vcf.gz",
+                "PosCon1/PosCon1.cnv.vcf.gz.tbi",
+                "PosCon1/PosCon1.qdnaseq.qdnaseq.bed",
+                "PosCon1/PosCon1.qdnaseq.qdnaseq_segments.txt",
+                "PosCon1/PosCon1.qdnaseq.statistics.out",
+                "PosCon2/PosCon2.cnv.vcf.gz",
+                "PosCon2/PosCon2.cnv.vcf.gz.tbi",
+                "PosCon2/PosCon2.qdnaseq.qdnaseq.bed",
+                "PosCon2/PosCon2.qdnaseq.qdnaseq_segments.txt",
+                "PosCon2/PosCon2.qdnaseq.statistics.out",
+                "PosCon3/PosCon3.cnv.vcf.gz",
+                "PosCon3/PosCon3.cnv.vcf.gz.tbi",
+                "PosCon3/PosCon3.qdnaseq.qdnaseq.bed",
+                "PosCon3/PosCon3.qdnaseq.qdnaseq_segments.txt",
+                "PosCon3/PosCon3.qdnaseq.statistics.out",
+                "PosCon4/PosCon4.cnv.vcf.gz",
+                "PosCon4/PosCon4.cnv.vcf.gz.tbi",
+                "PosCon4/PosCon4.qdnaseq.qdnaseq.bed",
+                "PosCon4/PosCon4.qdnaseq.qdnaseq_segments.txt",
+                "PosCon4/PosCon4.qdnaseq.statistics.out",
+                "multiqc/multiqc_report.html",
+                "samplesheet.csv"
             ]
         ],
         "meta": {
             "nf-test": "0.9.1",
             "nextflow": "24.10.3"
         },
-        "timestamp": "2025-02-04T09:43:11.653925983"
+        "timestamp": "2025-02-04T14:43:48.170539881"
     }
 }

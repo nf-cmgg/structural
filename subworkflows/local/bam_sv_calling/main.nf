@@ -24,6 +24,7 @@ workflow BAM_SV_CALLING {
     def ch_versions     = Channel.empty()
     def ch_reports      = Channel.empty()
     def ch_called_vcfs  = Channel.empty()
+    def ch_raw_vcfs     = Channel.empty()
 
     //
     // Calling variants using Manta
@@ -38,6 +39,7 @@ workflow BAM_SV_CALLING {
             ch_svync_configs
         )
 
+        ch_raw_vcfs     = ch_raw_vcfs.mix(BAM_VARIANT_CALLING_MANTA.out.raw_vcfs)
         ch_called_vcfs  = ch_called_vcfs.mix(BAM_VARIANT_CALLING_MANTA.out.manta_vcfs)
         ch_versions     = ch_versions.mix(BAM_VARIANT_CALLING_MANTA.out.versions)
     }
@@ -54,6 +56,7 @@ workflow BAM_SV_CALLING {
             ch_svync_configs
         )
 
+        ch_raw_vcfs     = ch_raw_vcfs.mix(BAM_VARIANT_CALLING_DELLY.out.raw_vcfs)
         ch_called_vcfs  = ch_called_vcfs.mix(BAM_VARIANT_CALLING_DELLY.out.delly_vcfs)
         ch_versions     = ch_versions.mix(BAM_VARIANT_CALLING_DELLY.out.versions)
     }
@@ -70,6 +73,7 @@ workflow BAM_SV_CALLING {
             ch_svync_configs
         )
 
+        ch_raw_vcfs     = ch_raw_vcfs.mix(BAM_VARIANT_CALLING_SMOOVE.out.raw_vcfs)
         ch_called_vcfs  = ch_called_vcfs.mix(BAM_VARIANT_CALLING_SMOOVE.out.smoove_vcfs)
         ch_versions     = ch_versions.mix(BAM_VARIANT_CALLING_SMOOVE.out.versions)
     }
@@ -117,6 +121,7 @@ workflow BAM_SV_CALLING {
     }
 
     emit:
+    caller_vcfs         = ch_raw_vcfs       // channel: [ val(meta), path(vcf), path(tbi)]
     vcfs                = ch_merged_vcfs    // channel: [ val(meta), path(vcf), path(tbi) ]
 
     versions            = ch_versions

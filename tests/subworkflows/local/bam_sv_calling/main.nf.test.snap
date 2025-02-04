@@ -14,14 +14,14 @@
                 "test.svync.smoove.vcf.gz",
                 "test.svync.smoove.vcf.gz.tbi"
             ],
-            5,
+            4,
             0
         ],
         "meta": {
-            "nf-test": "0.8.4",
-            "nextflow": "24.02.0"
+            "nf-test": "0.9.1",
+            "nextflow": "24.10.3"
         },
-        "timestamp": "2024-04-29T13:24:56.132319567"
+        "timestamp": "2025-02-04T09:55:07.170444795"
     },
     "homo_sapiens - manta": {
         "content": [

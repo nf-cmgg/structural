@@ -19,7 +19,7 @@ workflow BAM_REPEAT_ESTIMATION_EXPANSIONHUNTER {
 
     def ch_expansionhunter_input = ch_crams
         .map { meta, cram, crai ->
-            def new_meta = meta + ["variant_type":"repeats"]
+            def new_meta = meta + [variant_type:"repeats", caller:'expansionhunter']
             [ new_meta, cram, crai ]
         }
 
@@ -49,10 +49,13 @@ workflow BAM_REPEAT_ESTIMATION_EXPANSIONHUNTER {
         )
         .collectFile(name:'header.txt', newLine:true)
 
-    def ch_annotate_input = EXPANSIONHUNTER.out.vcf
+    def ch_expansionhunter_vcfs = EXPANSIONHUNTER.out.vcf
+        .join(EXPANSIONHUNTER.out.tbi, failOnDuplicate:true, failOnMismatch:true)
+
+    def ch_annotate_input = ch_expansionhunter_vcfs
         .combine(ch_ref_header)
-        .map { meta, vcf, ref_header ->
-            [ meta, vcf, [], [], [], ref_header]
+        .map { meta, vcf, tbi, ref_header ->
+            [ meta, vcf, tbi, [], [], ref_header]
         }
 
     BCFTOOLS_ANNOTATE(
@@ -69,7 +72,8 @@ workflow BAM_REPEAT_ESTIMATION_EXPANSIONHUNTER {
         .join(TABIX_TABIX.out.tbi, failOnDuplicate:true, failOnMismatch:true)
 
     emit:
-    vcfs                = ch_vcfs    // channel: [ val(meta), path(vcf), path(tbi) ]
+    caller_vcfs = ch_expansionhunter_vcfs   // channel: [ val(meta), path(vcf), path(tbi) ]
+    vcfs        = ch_vcfs                   // channel: [ val(meta), path(vcf), path(tbi) ]
 
-    versions            = ch_versions
+    versions    = ch_versions
 }

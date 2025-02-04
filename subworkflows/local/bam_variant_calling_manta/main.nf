@@ -46,6 +46,10 @@ workflow BAM_VARIANT_CALLING_MANTA {
     //
 
     def ch_manta_input = ch_crams
+        .map { meta, cram, crai ->
+            def new_meta = meta + [caller:"manta"]
+            [ new_meta, cram, crai ]
+        }
         .combine(ch_contigs)
         .dump(tag: 'manta_input', pretty: true)
 
@@ -76,15 +80,13 @@ workflow BAM_VARIANT_CALLING_MANTA {
 
     def ch_manta_vcfs = MANTA_CONVERTINVERSION.out.vcf
         .join(MANTA_CONVERTINVERSION.out.tbi, failOnDuplicate:true, failOnMismatch:true)
+
+    def ch_svync_input = ch_manta_vcfs
         .combine(ch_manta_svync_config)
-        .map{ meta, vcf, tbi, config ->
-            def new_meta = meta + [caller:"manta"]
-            [ new_meta, vcf, tbi, config ]
-        }
         .dump(tag: 'manta_vcfs', pretty: true)
 
     SVYNC(
-        ch_manta_vcfs
+        ch_svync_input
     )
     ch_versions = ch_versions.mix(SVYNC.out.versions.first())
 
@@ -97,7 +99,8 @@ workflow BAM_VARIANT_CALLING_MANTA {
         .join(TABIX_TABIX.out.tbi)
 
     emit:
-    manta_vcfs  = ch_out_vcfs  // channel: [ val(meta), path(vcf), path(tbi) ]
+    raw_vcfs    = ch_manta_vcfs // channel: [ val(meta), path(vcf), path(tbi) ]
+    manta_vcfs  = ch_out_vcfs   // channel: [ val(meta), path(vcf), path(tbi) ]
 
     versions    = ch_versions
 }

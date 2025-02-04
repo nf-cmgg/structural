@@ -80,6 +80,10 @@ workflow VCF_MERGE_FAMILY_JASMINE {
 
     def ch_vcfs_out = BCFTOOLS_SORT.out.vcf
         .join(TABIX_TABIX.out.tbi, failOnMismatch:true, failOnDuplicate:true)
+        .map { meta, vcf, tbi ->
+            def new_meta = meta + [id:meta.family]
+            [ new_meta, vcf, tbi ]
+        }
 
     emit:
     vcfs        = ch_vcfs_out    // channel: [ val(meta), path(vcf), path(tbi) ]

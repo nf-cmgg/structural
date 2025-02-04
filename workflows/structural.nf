@@ -99,6 +99,7 @@ workflow STRUCTURAL {
 
     def ch_versions         = Channel.empty()
     def ch_reports          = Channel.empty()
+    def ch_caller_vcfs      = Channel.empty()
 
     def variant_types = [] // The variant types that can be annotated this run
     def count_types = 0 // The amount of different variant types that can be concatenated
@@ -334,6 +335,7 @@ workflow STRUCTURAL {
             sv_callers_to_use
         )
 
+        ch_caller_vcfs = ch_caller_vcfs.mix(BAM_SV_CALLING.out.caller_vcfs)
         ch_versions = ch_versions.mix(BAM_SV_CALLING.out.versions)
         ch_reports  = ch_reports.mix(BAM_SV_CALLING.out.reports)
         ch_annotation_input = ch_annotation_input.mix(BAM_SV_CALLING.out.vcfs)
@@ -344,6 +346,8 @@ workflow STRUCTURAL {
     // Copy number calling
     //
 
+    def ch_wisecondorx_out = Channel.empty()
+    def ch_qdnaseq_out = Channel.empty()
     if(cnv_callers_to_use){
 
         count_types += 1
@@ -360,8 +364,11 @@ workflow STRUCTURAL {
             ch_bedgovcf_configs,
             cnv_callers_to_use
         )
+
         ch_versions         = ch_versions.mix(BAM_CNV_CALLING.out.versions)
         ch_annotation_input = ch_annotation_input.mix(BAM_CNV_CALLING.out.vcfs)
+        ch_wisecondorx_out  = BAM_CNV_CALLING.out.wisecondorx
+        ch_qdnaseq_out      = BAM_CNV_CALLING.out.qdnaseq
     }
 
     //
@@ -411,8 +418,10 @@ workflow STRUCTURAL {
             ch_fai,
             ch_catalog
         )
-        ch_versions = ch_versions.mix(BAM_REPEAT_ESTIMATION_EXPANSIONHUNTER.out.versions)
-        ch_outputs  = ch_outputs.mix(BAM_REPEAT_ESTIMATION_EXPANSIONHUNTER.out.vcfs)
+
+        ch_caller_vcfs  = ch_caller_vcfs.mix(BAM_REPEAT_ESTIMATION_EXPANSIONHUNTER.out.caller_vcfs)
+        ch_versions     = ch_versions.mix(BAM_REPEAT_ESTIMATION_EXPANSIONHUNTER.out.versions)
+        ch_outputs      = ch_outputs.mix(BAM_REPEAT_ESTIMATION_EXPANSIONHUNTER.out.vcfs)
 
     }
 
@@ -424,7 +433,7 @@ workflow STRUCTURAL {
     if(count_types > 1 && concat_output) {
         def ch_concat_input = ch_outputs
             .map { meta, vcf, tbi ->
-                def new_meta = meta - meta.subMap("variant_type")
+                def new_meta = meta - meta.subMap("variant_type", "caller")
                 [ new_meta, vcf, tbi ]
             }
 
@@ -448,6 +457,8 @@ workflow STRUCTURAL {
         ch_fasta,
         ch_fai
     )
+
+    def ch_family_vcfs = VCF_MERGE_FAMILY_JASMINE.out.vcfs
 
     //
     // Collate and save software versions
@@ -475,8 +486,14 @@ workflow STRUCTURAL {
     )
 
     emit:
-    multiqc_report = MULTIQC.out.report.toList() // channel: /path/to/multiqc_report.html
-    versions       = ch_versions                 // channel: [ path(versions.yml) ]
+    caller_vcfs     = ch_caller_vcfs              // channel: [ val(meta), path(vcf), path(tbi) ]
+    sample_vcfs     = ch_concat_vcfs              // channel: [ val(meta), path(vcf), path(tbi) ]
+    family_vcfs     = ch_family_vcfs              // channel: [ val(meta), path(vcf), path(tbi) ]
+    qdnaseq_out     = ch_qdnaseq_out              // channel: [ val(meta), path(file) ]
+    wisecondorx_out = ch_wisecondorx_out          // channel: [ val(meta), path(file) ]
+    multiqc_report  = MULTIQC.out.report.toList() // channel: /path/to/multiqc_report.html
+    multiqc_data    = MULTIQC.out.data            // channel: /path/to/multiqc_data
+    versions        = ch_versions                 // channel: [ path(versions.yml) ]
 }
 
 

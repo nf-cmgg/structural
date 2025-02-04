@@ -29,8 +29,8 @@ jobs:
     strategy:
       matrix:
         NXF_VER:
-          - "24.04.2"
-          - "latest-stable"
+          - "24.04.10"
+          - "latest-everything"
         test:
           - "pipeline_sv"
           - "pipeline_cnv"

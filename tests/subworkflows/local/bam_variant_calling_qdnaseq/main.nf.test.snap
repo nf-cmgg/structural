@@ -39,13 +39,53 @@
                     "test2.qdnaseq.bed:md5,fed14c95db6bed194f40f262d68399d1"
                 ]
             ],
+            [
+                [
+                    {
+                        "id": "test",
+                        "sample": "test",
+                        "sex": "male",
+                        "caller": "qdnaseq"
+                    },
+                    "statistics.out:md5,8474a33820902d3e614b0f318260437a"
+                ],
+                [
+                    {
+                        "id": "test2",
+                        "sample": "test2",
+                        "sex": "female",
+                        "caller": "qdnaseq"
+                    },
+                    "statistics.out:md5,9db22c9f986c7f48fced249d3b68bb74"
+                ]
+            ],
+            [
+                [
+                    {
+                        "id": "test",
+                        "sample": "test",
+                        "sex": "male",
+                        "caller": "qdnaseq"
+                    },
+                    "test.qdnaseq_segments.txt:md5,0bf2ea37f6d565ce85c4705821783eff"
+                ],
+                [
+                    {
+                        "id": "test2",
+                        "sample": "test2",
+                        "sex": "female",
+                        "caller": "qdnaseq"
+                    },
+                    "test2.qdnaseq_segments.txt:md5,d5976953f94626d6e740ce1ba7e17fd4"
+                ]
+            ],
             10,
             0
         ],
         "meta": {
-            "nf-test": "0.8.4",
-            "nextflow": "24.02.0"
+            "nf-test": "0.9.1",
+            "nextflow": "24.10.3"
         },
-        "timestamp": "2024-03-11T14:20:46.776654022"
+        "timestamp": "2025-02-04T10:02:19.045067793"
     }
 }

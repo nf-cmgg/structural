@@ -48,7 +48,9 @@ nextflow_workflow {
                 { assert workflow.success },
                 { assert snapshot(
                     workflow.out.vcf,
-                    workflow.out.qdnaseq_beds,
+                    workflow.out.beds,
+                    workflow.out.statistics,
+                    workflow.out.segments,
                     workflow.trace.succeeded().size(),
                     workflow.trace.failed().size()
                 ).match() }

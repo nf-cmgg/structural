@@ -46,10 +46,6 @@ workflow BAM_VARIANT_CALLING_MANTA {
     //
 
     def ch_manta_input = ch_crams
-        .map { meta, cram, crai ->
-            def new_meta = meta + [caller:'manta']
-            [ new_meta, cram, crai ]
-        }
         .combine(ch_contigs)
         .dump(tag: 'manta_input', pretty: true)
 

@@ -69,14 +69,15 @@
                 "PosCon4/PosCon4.wisecondorx.wisecondorx_bins.bed",
                 "PosCon4/PosCon4.wisecondorx.wisecondorx_segments.bed",
                 "PosCon4/PosCon4.wisecondorx.wisecondorx_statistics.txt",
-                "multiqc/multiqc_report.html"
+                "multiqc/multiqc_report.html",
+                "samplesheet.csv"
             ]
         ],
         "meta": {
             "nf-test": "0.9.1",
             "nextflow": "24.10.3"
         },
-        "timestamp": "2025-02-03T17:29:37.751774585"
+        "timestamp": "2025-02-04T14:35:47.691405609"
     },
     "concat": {
         "content": [
@@ -132,14 +133,15 @@
                 "PosCon4/PosCon4.wisecondorx.wisecondorx_bins.bed",
                 "PosCon4/PosCon4.wisecondorx.wisecondorx_segments.bed",
                 "PosCon4/PosCon4.wisecondorx.wisecondorx_statistics.txt",
-                "multiqc/multiqc_report.html"
+                "multiqc/multiqc_report.html",
+                "samplesheet.csv"
             ]
         ],
         "meta": {
             "nf-test": "0.9.1",
             "nextflow": "24.10.3"
         },
-        "timestamp": "2025-02-04T09:41:11.813082143"
+        "timestamp": "2025-02-04T14:37:23.059367032"
     },
     "output callers": {
         "content": [
@@ -243,13 +245,14 @@
                 "PosCon4/manta/PosCon4.vcf.gz.tbi",
                 "PosCon4/smoove/PosCon4.vcf.gz",
                 "PosCon4/smoove/PosCon4.vcf.gz.tbi",
-                "multiqc/multiqc_report.html"
+                "multiqc/multiqc_report.html",
+                "samplesheet.csv"
             ]
         ],
         "meta": {
             "nf-test": "0.9.1",
             "nextflow": "24.10.3"
         },
-        "timestamp": "2025-02-03T17:43:19.478354687"
+        "timestamp": "2025-02-04T14:43:02.361185058"
     }
 }

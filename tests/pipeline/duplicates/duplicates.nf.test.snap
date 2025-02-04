@@ -5,52 +5,40 @@
                 
             ],
             [
-                [
-                    "PosCon1.cnv.vcf.gz",
-                    "PosCon1.cnv.vcf.gz.tbi",
-                    "PosCon1.repeats.vcf.gz",
-                    "PosCon1.repeats.vcf.gz.tbi",
-                    "PosCon1.sv.vcf.gz",
-                    "PosCon1.sv.vcf.gz.tbi",
-                    "PosCon1.wisecondorx.chr1.png",
-                    "PosCon1.wisecondorx.chr22.png",
-                    "PosCon1.wisecondorx.genome_wide.png",
-                    "PosCon1.wisecondorx.wisecondorx_aberrations.bed",
-                    "PosCon1.wisecondorx.wisecondorx_bins.bed",
-                    "PosCon1.wisecondorx.wisecondorx_segments.bed",
-                    "PosCon1.wisecondorx.wisecondorx_statistics.txt"
-                ],
-                [
-                    "PosCon3.cnv.vcf.gz",
-                    "PosCon3.cnv.vcf.gz.tbi",
-                    "PosCon3.repeats.vcf.gz",
-                    "PosCon3.repeats.vcf.gz.tbi",
-                    "PosCon3.sv.vcf.gz",
-                    "PosCon3.sv.vcf.gz.tbi",
-                    "PosCon3.wisecondorx.chr1.png",
-                    "PosCon3.wisecondorx.chr22.png",
-                    "PosCon3.wisecondorx.genome_wide.png",
-                    "PosCon3.wisecondorx.wisecondorx_aberrations.bed",
-                    "PosCon3.wisecondorx.wisecondorx_bins.bed",
-                    "PosCon3.wisecondorx.wisecondorx_segments.bed",
-                    "PosCon3.wisecondorx.wisecondorx_statistics.txt"
-                ],
-                [
-                    "multiqc_data",
-                    "multiqc_report.html"
-                ]
-            ],
-            [
-                "PosCon1",
-                "PosCon3",
-                "multiqc",
-                "pipeline_info"
+                "PosCon1/PosCon1.cnv.vcf.gz",
+                "PosCon1/PosCon1.cnv.vcf.gz.tbi",
+                "PosCon1/PosCon1.repeats.vcf.gz",
+                "PosCon1/PosCon1.repeats.vcf.gz.tbi",
+                "PosCon1/PosCon1.sv.vcf.gz",
+                "PosCon1/PosCon1.sv.vcf.gz.tbi",
+                "PosCon1/PosCon1.wisecondorx.chr1.png",
+                "PosCon1/PosCon1.wisecondorx.chr22.png",
+                "PosCon1/PosCon1.wisecondorx.genome_wide.png",
+                "PosCon1/PosCon1.wisecondorx.wisecondorx_aberrations.bed",
+                "PosCon1/PosCon1.wisecondorx.wisecondorx_bins.bed",
+                "PosCon1/PosCon1.wisecondorx.wisecondorx_segments.bed",
+                "PosCon1/PosCon1.wisecondorx.wisecondorx_statistics.txt",
+                "PosCon3/PosCon3.cnv.vcf.gz",
+                "PosCon3/PosCon3.cnv.vcf.gz.tbi",
+                "PosCon3/PosCon3.repeats.vcf.gz",
+                "PosCon3/PosCon3.repeats.vcf.gz.tbi",
+                "PosCon3/PosCon3.sv.vcf.gz",
+                "PosCon3/PosCon3.sv.vcf.gz.tbi",
+                "PosCon3/PosCon3.wisecondorx.chr1.png",
+                "PosCon3/PosCon3.wisecondorx.chr22.png",
+                "PosCon3/PosCon3.wisecondorx.genome_wide.png",
+                "PosCon3/PosCon3.wisecondorx.wisecondorx_aberrations.bed",
+                "PosCon3/PosCon3.wisecondorx.wisecondorx_bins.bed",
+                "PosCon3/PosCon3.wisecondorx.wisecondorx_segments.bed",
+                "PosCon3/PosCon3.wisecondorx.wisecondorx_statistics.txt",
+                "multiqc/multiqc_report.html",
+                "samplesheet.csv"
             ]
         ],
         "meta": {
             "nf-test": "0.9.1",
             "nextflow": "24.10.3"
         },
-        "timestamp": "2025-02-04T09:44:41.706884712"
+        "timestamp": "2025-02-04T14:45:29.439885168"
     }
 }

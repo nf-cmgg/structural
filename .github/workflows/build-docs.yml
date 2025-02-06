@@ -58,7 +58,6 @@ jobs:
         if: ${{ github.head_ref || github.ref_name }} == 'master'
         run: |
           mike deploy --push --update-aliases ${{ steps.version.outputs.version }} latest
-  
 
       - name: Set default docs
         run: mike set-default --push latest

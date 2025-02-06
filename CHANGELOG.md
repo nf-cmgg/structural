@@ -22,6 +22,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### `Fixed`
 
 1. Fail the pipeline when the sex determination failed. This will now prompt the user to add the sex to the samplesheet so the pipeline doesn't do any wrong assumptions
+2. Fixed the Jasmine module output VCFs being empty when no variants have been merged. This file now contains the header of one of the input VCFs
 
 ## v0.2.0 - [19 July 2024] - Mighty Manneken Pis
 

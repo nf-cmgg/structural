@@ -96,7 +96,7 @@ workflow PIPELINE_INITIALISATION {
     // Copy the samplesheet to the output directory
     //
 
-    file(input).copyTo("${workflow.outputDir.toUri()}/samplesheet.${file(input).extension}")
+    file(input).copyTo("${outdir}/samplesheet.${file(input).extension}")
 
     emit:
     samplesheet = ch_samplesheet

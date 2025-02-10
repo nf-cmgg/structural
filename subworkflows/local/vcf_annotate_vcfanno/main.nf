@@ -19,7 +19,6 @@ workflow VCF_ANNOTATE_VCFANNO {
     main:
 
     def ch_versions = Channel.empty()
-    def ch_reports  = Channel.empty()
 
     def ch_vcfanno_toml = Channel.empty()
     def ch_vcfanno_input = Channel.empty()
@@ -28,7 +27,7 @@ workflow VCF_ANNOTATE_VCFANNO {
             .collectFile(name:"vcfanno.toml", newLine:true)
             .collect()
         def ch_collected_specific_resources = ch_sample_specific_resources.map { entry ->
-            [ entry[0], entry[1..-1] ]
+            [ entry[0], entry[1..-1].findAll { res_file -> res_file != [] } ]
         }
         ch_vcfanno_input = ch_vcfs.join(ch_collected_specific_resources, failOnMismatch:true, failOnDuplicate:true)
     } else {
@@ -51,7 +50,7 @@ workflow VCF_ANNOTATE_VCFANNO {
     def ch_annotated_vcfs = Channel.empty()
     if(filter) {
         BCFTOOLS_FILTER(
-            VCFANNO.out.vcf
+            ch_vcfanno_output
         )
         ch_versions = ch_versions.mix(BCFTOOLS_FILTER.out.versions.first())
 
@@ -63,7 +62,6 @@ workflow VCF_ANNOTATE_VCFANNO {
     emit:
     vcfs            = ch_annotated_vcfs  // channel: [ val(meta), path(vcf), path(tbi) ]
 
-    reports         = ch_reports
     versions        = ch_versions
 }
 

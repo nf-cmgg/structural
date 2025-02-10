@@ -7,14 +7,10 @@ include { BCFTOOLS_CONSENSUS_REHEADER               } from '../../../modules/loc
 
 include { ANNOTSV_ANNOTSV                           } from '../../../modules/nf-core/annotsv/annotsv/main'
 include { ENSEMBLVEP_VEP                            } from '../../../modules/nf-core/ensemblvep/vep/main'
-include { VCFANNO                                   } from '../../../modules/nf-core/vcfanno/main'
-include { TABIX_BGZIPTABIX as TABIX_ANNOTATED       } from '../../../modules/nf-core/tabix/bgziptabix/main'
 include { TABIX_TABIX as TABIX_ANNOTSV              } from '../../../modules/nf-core/tabix/tabix/main'
 include { TABIX_TABIX as TABIX_VEP                  } from '../../../modules/nf-core/tabix/tabix/main'
 include { BCFTOOLS_FILTER                           } from '../../../modules/nf-core/bcftools/filter/main'
-include { BCFTOOLS_FILTER as BCFTOOLS_FILTER_COMMON } from '../../../modules/nf-core/bcftools/filter/main'
 include { BCFTOOLS_CONCAT                           } from '../../../modules/nf-core/bcftools/concat/main'
-include { TABIX_TABIX as TABIX_FILTER               } from '../../../modules/nf-core/tabix/tabix/main'
 
 workflow VCF_ANNOTATE_VEP_ANNOTSV {
     take:
@@ -39,7 +35,7 @@ workflow VCF_ANNOTATE_VEP_ANNOTSV {
     // Run AnnotSV and VEP in parallel and merge TSV from AnnotSV with VCF from VEP during VCFanno
 
     BCFTOOLS_FILTER(
-        ch_vcfs.map { meta, vcf, _tbi -> [ meta, vcf ]}
+        ch_vcfs
     )
     ch_versions = ch_versions.mix(BCFTOOLS_FILTER.out.versions.first())
 

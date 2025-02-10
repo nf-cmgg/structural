@@ -81,9 +81,8 @@
                     },
                     "jasminesv": {
                         "branch": "master",
-                        "git_sha": "92bf2a8afa318a64f9d333cf87b510c662fd4274",
-                        "installed_by": ["modules"],
-                        "patch": "modules/nf-core/jasminesv/jasminesv.diff"
+                        "git_sha": "a33c6de0a147226454c4a52db710826f2d9fafbe",
+                        "installed_by": ["modules"]
                     },
                     "manta/convertinversion": {
                         "branch": "master",

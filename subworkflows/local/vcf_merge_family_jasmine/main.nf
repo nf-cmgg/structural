@@ -26,26 +26,12 @@ workflow VCF_MERGE_FAMILY_JASMINE {
             [ groupKey(new_meta, meta.family_count), vcf, tbi ]
         }
         .groupTuple()
-        .tap { ch_consensus_reheader_input }
-        .map { meta, vcfs, _tbis ->
-            [ meta.id, meta, vcfs ]
-        }
-        .tap { ch_meta_file_list }
-        .map { id, _meta, vcfs ->
-            [ "${id}_list.txt", vcfs.collect { vcf -> vcf.baseName }.join("\n") ]
-        }
-        .collectFile()
-        .map { meta_file ->
-            def id = meta_file.name.replaceAll("_list.txt\$", "")
-            [ id, meta_file ]
-        }
-        .join(ch_meta_file_list, failOnMismatch:true, failOnDuplicate:true)
-        .map { _id, file_list, meta, vcfs ->
-            [ meta, vcfs, [], [], file_list ]
-        }
+
 
     JASMINESV(
-        ch_jasmine_input,
+        ch_jasmine_input.map { meta, vcfs, _tbis ->
+            [ meta, vcfs, [], [] ]
+        },
         ch_fasta,
         ch_fai,
         []
@@ -58,7 +44,10 @@ workflow VCF_MERGE_FAMILY_JASMINE {
     ch_versions = ch_versions.mix(FIX_CALLERS.out.versions.first())
 
     def ch_reheader_input = FIX_CALLERS.out.vcf
-        .join(ch_consensus_reheader_input, failOnDuplicate:true, failOnMismatch:true)
+        .join(ch_jasmine_input, failOnDuplicate:true, failOnMismatch:true)
+        .map { meta, merged_vcf, vcfs, tbis ->
+            [ meta, merged_vcf, vcfs, tbis ]
+        }
         .dump(tag:"family_reheader_input", pretty: true)
 
     BCFTOOLS_CONSENSUS_REHEADER(

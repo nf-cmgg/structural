@@ -28,9 +28,8 @@
                     },
                     "bcftools/filter": {
                         "branch": "master",
-                        "git_sha": "a3893076a76e91b3ff152faddf872f00778fb224",
-                        "installed_by": ["modules"],
-                        "patch": "modules/nf-core/bcftools/filter/bcftools-filter.diff"
+                        "git_sha": "81880787133db07d9b4c1febd152c090eb8325dc",
+                        "installed_by": ["modules"]
                     },
                     "bcftools/sort": {
                         "branch": "master",
@@ -152,7 +151,7 @@
                     },
                     "vcfanno": {
                         "branch": "master",
-                        "git_sha": "b558cd24f8751dcda51f957391f5f9cb83e28586",
+                        "git_sha": "81880787133db07d9b4c1febd152c090eb8325dc",
                         "installed_by": ["modules"]
                     },
                     "wisecondorx/convert": {

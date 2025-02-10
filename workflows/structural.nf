@@ -21,7 +21,8 @@ include { methodsDescriptionText } from '../subworkflows/local/utils_nfcore_stru
 include { BAM_PREPARE_SAMTOOLS                  } from '../subworkflows/local/bam_prepare_samtools/main'
 include { BAM_SV_CALLING                        } from '../subworkflows/local/bam_sv_calling/main'
 include { BAM_CNV_CALLING                       } from '../subworkflows/local/bam_cnv_calling/main'
-include { VCF_ANNOTATE_VEP_ANNOTSV_VCFANNO      } from '../subworkflows/local/vcf_annotate_vep_annotsv_vcfanno/main'
+include { VCF_ANNOTATE_VEP_ANNOTSV              } from '../subworkflows/local/vcf_annotate_vep_annotsv/main'
+include { VCF_ANNOTATE_VCFANNO                  } from '../subworkflows/local/vcf_annotate_vcfanno/main'
 include { BAM_REPEAT_ESTIMATION_EXPANSIONHUNTER } from '../subworkflows/local/bam_repeat_estimation_expansionhunter/main'
 include { VCF_CONCAT_BCFTOOLS                   } from '../subworkflows/local/vcf_concat_bcftools/main'
 include { VCF_MERGE_FAMILY_JASMINE              } from '../subworkflows/local/vcf_merge_family_jasmine/main'
@@ -375,9 +376,10 @@ workflow STRUCTURAL {
     // Annotate the variants
     //
 
-    def ch_outputs = Channel.empty()
+    def ch_annotation_output = Channel.empty()
+    def ch_annotsv_vcfs = Channel.empty()
     if(annotate) {
-        VCF_ANNOTATE_VEP_ANNOTSV_VCFANNO(
+        VCF_ANNOTATE_VEP_ANNOTSV(
             ch_annotation_input,
             ch_inputs.small_variants,
             ch_fasta,
@@ -386,20 +388,34 @@ workflow STRUCTURAL {
             ch_annotsv_gene_transcripts,
             ch_vep_cache,
             ch_vep_extra_files,
-            ch_vcfanno_lua,
-            val_vcfanno_resources,
             variant_types,
             genome,
             species,
-            vep_cache_version,
-            annotations_filter,
-            val_vcfanno_toml,
-            val_default_vcfanno_tomls
+            vep_cache_version
         )
 
-        ch_reports  = ch_reports.mix(VCF_ANNOTATE_VEP_ANNOTSV_VCFANNO.out.reports)
-        ch_versions = ch_versions.mix(VCF_ANNOTATE_VEP_ANNOTSV_VCFANNO.out.versions)
-        ch_outputs  = ch_outputs.mix(VCF_ANNOTATE_VEP_ANNOTSV_VCFANNO.out.vcfs)
+        ch_reports              = ch_reports.mix(VCF_ANNOTATE_VEP_ANNOTSV.out.reports)
+        ch_versions             = ch_versions.mix(VCF_ANNOTATE_VEP_ANNOTSV.out.versions)
+        ch_annotation_output    = VCF_ANNOTATE_VEP_ANNOTSV.out.vep_vcfs
+        ch_annotsv_vcfs         = VCF_ANNOTATE_VEP_ANNOTSV.out.annotsv_vcfs
+    } else {
+        ch_annotation_output    = ch_annotation_input
+    }
+
+    def ch_outputs = Channel.empty()
+    if(annotate || vcfanno_toml) {
+        VCF_ANNOTATE_VCFANNO(
+            ch_annotation_output,
+            ch_annotsv_vcfs,
+            ch_vcfanno_lua,
+            val_vcfanno_resources,
+            annotations_filter,
+            val_vcfanno_toml,
+            val_default_vcfanno_tomls,
+            annotate
+        )
+        ch_versions = ch_versions.mix(VCF_ANNOTATE_VCFANNO.out.versions)
+        ch_outputs  = ch_outputs.mix(VCF_ANNOTATE_VCFANNO.out.vcfs)
     } else {
         ch_outputs  = ch_outputs.mix(ch_annotation_input)
     }

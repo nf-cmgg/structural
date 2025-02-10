@@ -18,6 +18,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 5. Fixed language server errors
 6. Removed the old output publishing code and used the new workflow output definitions instead
 7. Bumped the minimal nextflow version to 24.10.0
+8. VCFanno will now run when `--vcfanno_toml` has been given and `--annotate` has not been given. You still need to supply `--annotate` to get the full annotation, but this can be used check for common variants without having to perform full annotation.
 
 ### `Fixed`
 

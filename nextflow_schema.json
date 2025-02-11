@@ -331,9 +331,9 @@
                     "type": "boolean",
                     "description": "Also output a concatenated VCF with all variant types analysed included."
                 },
-                "annotations_filter": {
+                "filter": {
                     "type": "string",
-                    "description": "The filter arguments to use after annotating.",
+                    "description": "The filter options to perform on SV and CNV VCF files as postprocessing",
                     "help_text": "A common use case for this is to filter out common variants. You can supply a VCF file with common variants to VCFanno and filter out the matching variants using this parameter"
                 }
             }

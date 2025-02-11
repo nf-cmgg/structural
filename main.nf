@@ -110,7 +110,7 @@ workflow {
         params.species,
         params.vep_assembly,
         params.vep_cache_version,
-        params.annotations_filter,
+        params.filter,
         params.outdir
     )
     //

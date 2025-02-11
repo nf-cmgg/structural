@@ -1,20 +1,19 @@
 nextflow_workflow {
 
-    name "Test Workflow VCF_ANNOTATE_VEP_ANNOTSV_VCFANNO"
-    script "subworkflows/local/vcf_annotate_vep_annotsv_vcfanno/main.nf"
-    workflow "VCF_ANNOTATE_VEP_ANNOTSV_VCFANNO"
+    name "Test Workflow VCF_ANNOTATE_VEP_ANNOTSV"
+    script "subworkflows/local/vcf_annotate_vep_annotsv/main.nf"
+    workflow "VCF_ANNOTATE_VEP_ANNOTSV"
 
     tag "subworkflows"
     tag "subworkflows_local"
-    tag "vcf_annotate_vep_annotsv_vcfanno"
+    tag "vcf_annotate_vep_annotsv"
 
     options "-stub"
 
-    test("homo_sapiens - sv, no_filter") {
+    test("homo_sapiens - sv") {
 
         when {
             params {
-                annotations_filter = null
                 genome = "GRCh38"
                 species = "homo_sapiens"
                 vep_cache_version = 110
@@ -41,15 +40,10 @@ nextflow_workflow {
                 input[5] = [[],[]]
                 input[6] = []
                 input[7] = []
-                input[8] = []
-                input[9] = []
-                input[10] = ["sv"]
-                input[11] = params.genome
-                input[12] = params.species
-                input[13] = params.vep_cache_version
-                input[14] = null
-                input[15] = []
-                input[16] = files("\${params.vcfanno_tomls}/*.toml", checkIfExists:true)
+                input[8] = ["sv"]
+                input[9] = params.genome
+                input[10] = params.species
+                input[11] = params.vep_cache_version
                 """
             }
         }
@@ -58,21 +52,22 @@ nextflow_workflow {
             assertAll(
                 { assert workflow.success },
                 { assert snapshot(
-                    workflow.out.vcfs.collect { it.collect { it instanceof Map ? it : file(it).name } },
-                    workflow.out.reports,
-                    workflow.trace.succeeded().size(),
-                    workflow.trace.failed().size()
+                    workflow.out.collectEntries { key, value ->
+                        if(key.matches("^\\d+\$") || key.matches('versions')) {
+                            return null
+                        }
+                        return [ key, value ]
+                    }.findAll { it != null }
                 ).match() }
             )
         }
 
     }
 
-    test("homo_sapiens - cnv, filter") {
+    test("homo_sapiens - cnv") {
 
         when {
             params {
-                annotations_filter = "-i FILTER='PASS'"
                 genome = "GRCh38"
                 species = "homo_sapiens"
                 vep_cache_version = 110
@@ -99,15 +94,10 @@ nextflow_workflow {
                 input[5] = [[],[]]
                 input[6] = []
                 input[7] = []
-                input[8] = []
-                input[9] = []
-                input[10] = ["cnv"]
-                input[11] = params.genome
-                input[12] = params.species
-                input[13] = params.vep_cache_version
-                input[14] = params.annotations_filter
-                input[15] = []
-                input[16] = files("\${params.vcfanno_tomls}/*.toml", checkIfExists:true)
+                input[8] = ["cnv"]
+                input[9] = params.genome
+                input[10] = params.species
+                input[11] = params.vep_cache_version
                 """
             }
         }
@@ -116,10 +106,12 @@ nextflow_workflow {
             assertAll(
                 { assert workflow.success },
                 { assert snapshot(
-                    workflow.out.vcfs.collect { it.collect { it instanceof Map ? it : file(it).name } },
-                    workflow.out.reports,
-                    workflow.trace.succeeded().size(),
-                    workflow.trace.failed().size()
+                    workflow.out.collectEntries { key, value ->
+                        if(key.matches("^\\d+\$") || key.matches('versions')) {
+                            return null
+                        }
+                        return [ key, value ]
+                    }.findAll { it != null }
                 ).match() }
             )
         }
@@ -130,7 +122,6 @@ nextflow_workflow {
 
         when {
             params {
-                annotations_filter = null
                 genome = "GRCh38"
                 species = "homo_sapiens"
                 vep_cache_version = 110
@@ -161,15 +152,10 @@ nextflow_workflow {
                 input[5] = [[],[]]
                 input[6] = []
                 input[7] = []
-                input[8] = []
-                input[9] = []
-                input[10] = ["sv", "cnv"]
-                input[11] = params.genome
-                input[12] = params.species
-                input[13] = params.vep_cache_version
-                input[14] = null
-                input[15] = []
-                input[16] = files("\${params.vcfanno_tomls}/*.toml", checkIfExists:true)
+                input[8] = ["sv", "cnv"]
+                input[9] = params.genome
+                input[10] = params.species
+                input[11] = params.vep_cache_version
                 """
             }
         }
@@ -178,10 +164,12 @@ nextflow_workflow {
             assertAll(
                 { assert workflow.success },
                 { assert snapshot(
-                    workflow.out.vcfs.collect { it.collect { it instanceof Map ? it : file(it).name } },
-                    workflow.out.reports,
-                    workflow.trace.succeeded().size(),
-                    workflow.trace.failed().size()
+                    workflow.out.collectEntries { key, value ->
+                        if(key.matches("^\\d+\$") || key.matches('versions')) {
+                            return null
+                        }
+                        return [ key, value ]
+                    }.findAll { it != null }
                 ).match() }
             )
         }

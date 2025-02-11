@@ -7,16 +7,12 @@ include { BCFTOOLS_CONSENSUS_REHEADER               } from '../../../modules/loc
 
 include { ANNOTSV_ANNOTSV                           } from '../../../modules/nf-core/annotsv/annotsv/main'
 include { ENSEMBLVEP_VEP                            } from '../../../modules/nf-core/ensemblvep/vep/main'
-include { VCFANNO                                   } from '../../../modules/nf-core/vcfanno/main'
-include { TABIX_BGZIPTABIX as TABIX_ANNOTATED       } from '../../../modules/nf-core/tabix/bgziptabix/main'
 include { TABIX_TABIX as TABIX_ANNOTSV              } from '../../../modules/nf-core/tabix/tabix/main'
 include { TABIX_TABIX as TABIX_VEP                  } from '../../../modules/nf-core/tabix/tabix/main'
 include { BCFTOOLS_FILTER                           } from '../../../modules/nf-core/bcftools/filter/main'
-include { BCFTOOLS_FILTER as BCFTOOLS_FILTER_COMMON } from '../../../modules/nf-core/bcftools/filter/main'
 include { BCFTOOLS_CONCAT                           } from '../../../modules/nf-core/bcftools/concat/main'
-include { TABIX_TABIX as TABIX_FILTER               } from '../../../modules/nf-core/tabix/tabix/main'
 
-workflow VCF_ANNOTATE_VEP_ANNOTSV_VCFANNO {
+workflow VCF_ANNOTATE_VEP_ANNOTSV {
     take:
         ch_vcfs                                 // channel: [mandatory] [ val(meta), path(vcf), path(tbi) ] VCFs containing the called structural variants
         ch_small_variants                       // channel: [mandatory] [ val(meta), path(vcf) ] VCFs containing small variants used in AnnotSV
@@ -26,15 +22,10 @@ workflow VCF_ANNOTATE_VEP_ANNOTSV_VCFANNO {
         ch_annotsv_gene_transcripts             // channel: [optional]  [ val(meta), path(gene_transcripts) ]
         ch_vep_cache                            // channel: [optional]  [ path(cache) ] => The path to the local VEP cache
         ch_vep_extra_files                      // channel: [optional]  [ path(file1, file2, file3...) ] => The VEP extra files
-        ch_vcfanno_lua                          // channel: [optional]  [ path(lua) ] => The lua script to influence VCFanno
-        val_vcfanno_resources                   // list:    [optional]  [ path(file1, file2, file3...) ] => The extra VCFanno files
         val_variant_types                       // list:    [mandatory] => The variant types
         genome                                  // string:  [mandatory] => The genome used by the variant callers
         species                                 // string:  [mandatory] => The species used by VEP
         vep_cache_version                       // integer: [mandatory] => The VEP cache version to use
-        filter                                  // string:  [optional]  => A filter pattern to use after annotating
-        vcfanno_toml                            // file:    [optional]  => A vcfanno TOML config
-        default_vcfanno_tomls                   // list:    [mandatory] => A list of default vcfanno configs to be concatenated with the input TOML
 
     main:
 
@@ -44,7 +35,7 @@ workflow VCF_ANNOTATE_VEP_ANNOTSV_VCFANNO {
     // Run AnnotSV and VEP in parallel and merge TSV from AnnotSV with VCF from VEP during VCFanno
 
     BCFTOOLS_FILTER(
-        ch_vcfs.map { meta, vcf, _tbi -> [ meta, vcf ]}
+        ch_vcfs
     )
     ch_versions = ch_versions.mix(BCFTOOLS_FILTER.out.versions.first())
 
@@ -120,9 +111,6 @@ workflow VCF_ANNOTATE_VEP_ANNOTSV_VCFANNO {
 
     def ch_annotsv_output = BCFTOOLS_CONCAT.out.vcf
         .join(TABIX_ANNOTSV.out.tbi, failOnDuplicate:true, failOnMismatch:true)
-        .map { meta, vcf, tbi ->
-            [ meta, [vcf, tbi] ]
-        }
 
     ENSEMBLVEP_VEP(
         ch_vcfs,
@@ -144,113 +132,10 @@ workflow VCF_ANNOTATE_VEP_ANNOTSV_VCFANNO {
     def ch_vep_output = ENSEMBLVEP_VEP.out.vcf
         .join(TABIX_VEP.out.tbi, failOnDuplicate:true, failOnMismatch:true)
 
-    def ch_vcfanno_input = CustomChannelOperators.joinOnKeys(
-        ch_vep_output,
-        ch_annotsv_output,
-        ['id', 'sample', 'sex', 'family', 'family_count', 'variant_type']
-    )
-
-    def ch_vcfanno_toml = Channel.fromList(create_vcfanno_toml(val_vcfanno_resources, vcfanno_toml, default_vcfanno_tomls))
-        .collectFile(name:"vcfanno.toml", newLine:true)
-        .collect()
-
-    VCFANNO(
-        ch_vcfanno_input,
-        ch_vcfanno_toml,
-        ch_vcfanno_lua,
-        val_vcfanno_resources ? Channel.fromList(val_vcfanno_resources).collect() : []
-    )
-    ch_versions = ch_versions.mix(VCFANNO.out.versions)
-
-    def ch_annotated_vcfs = Channel.empty()
-    if(filter) {
-        BCFTOOLS_FILTER_COMMON(
-            VCFANNO.out.vcf
-        )
-        ch_versions = ch_versions.mix(BCFTOOLS_FILTER_COMMON.out.versions.first())
-
-        TABIX_FILTER(
-            BCFTOOLS_FILTER_COMMON.out.vcf
-        )
-        ch_versions = ch_versions.mix(TABIX_FILTER.out.versions.first())
-
-        ch_annotated_vcfs = BCFTOOLS_FILTER_COMMON.out.vcf.join(TABIX_FILTER.out.tbi, failOnDuplicate:true, failOnMismatch:true)
-    } else {
-        TABIX_ANNOTATED(
-            VCFANNO.out.vcf
-        )
-        ch_versions = ch_versions.mix(TABIX_ANNOTATED.out.versions)
-
-        ch_annotated_vcfs = TABIX_ANNOTATED.out.gz_tbi
-    }
-
     emit:
-    vcfs            = ch_annotated_vcfs  // channel: [ val(meta), path(vcf), path(tbi) ]
+    vep_vcfs        = ch_vep_output     // channel: [ val(meta), path(vcf), path(tbi) ]
+    annotsv_vcfs    = ch_annotsv_output // channel: [ val(meta), path(vcf), path(tbi) ]
 
     reports         = ch_reports
     versions        = ch_versions
-}
-
-def create_vcfanno_toml(vcfanno_resources, input_vcfanno_toml, List<Path> vcfanno_defaults) {
-    def vcfanno_toml = input_vcfanno_toml ? parse_toml(input_vcfanno_toml) : [:]
-    def default_tomls = parse_toml(vcfanno_defaults)
-    def resources = vcfanno_resources.collect { Path resource -> resource.fileName.toString() }
-    resources.add("annotsv_annotated.vcf.gz" as String)
-    def output = []
-    resources.each { file_name ->
-        if (vcfanno_toml.containsKey(file_name)){
-            output.add(vcfanno_toml[file_name])
-        }
-        else if (default_tomls.containsKey(file_name)){
-            output.add(default_tomls[file_name])
-        }
-    }
-    def postannotation = vcfanno_toml.postannotation != [] ? vcfanno_toml.postannotation : default_tomls.postannotation
-    if (postannotation != []){
-        output.add(postannotation)
-    }
-    return output.flatten()
-}
-
-def parse_toml(tomls) {
-    def output = [:]
-    output.postannotation = []
-    def toml_list = tomls instanceof List ? tomls : [tomls]
-    toml_list.each { toml ->
-        def info = ""
-        def file = ""
-        def fields = []
-        toml.readLines().each { line ->
-            if (line.startsWith("#")) { return }
-            if (line == "[[annotation]]" || line == "[[postannotation]]") {
-                if (info.startsWith("[[postannotation]]")) {
-                    output.postannotation.add(create_toml_config(fields))
-                }
-                else if(info != "") {
-                    output[file] = create_toml_config(fields)
-                }
-                if (info != "") {
-                    info = ""
-                    file = ""
-                    fields = []
-                }
-                info = line
-            }
-            else if (line.startsWith("file")) {
-                file = line.split("\"")[-1]
-            }
-            fields.add(line)
-        }
-        if (info.startsWith("[[postannotation]]")) {
-            output.postannotation.add(create_toml_config(fields))
-        } else {
-            output[file] = create_toml_config(fields)
-        }
-    }
-    return output
-}
-
-def create_toml_config(fields_list) {
-    def config = fields_list.findAll { field -> field != "" }.join("\n")
-    return "${config}\n"
 }

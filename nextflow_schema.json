@@ -344,11 +344,6 @@
             "description": "Options specific for the Delly execution",
             "default": "",
             "properties": {
-                "delly_sv_types": {
-                    "type": "string",
-                    "default": "ALL",
-                    "description": "Which SV types delly should search for in the variant calling"
-                },
                 "delly_map_qual": {
                     "type": "integer",
                     "default": 1,

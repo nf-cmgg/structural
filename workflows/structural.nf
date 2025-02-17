@@ -495,6 +495,9 @@ workflow STRUCTURAL {
     if(bedpe) {
         def ch_vcftobedpe_input = ch_concat_vcfs
             .mix(ch_family_vcfs)
+            .filter { meta, _vcf, _tbi ->
+                meta.variant_type != "repeats"
+            }
             .map { meta, vcf, _tbi ->
                 [ meta, vcf ]
             }

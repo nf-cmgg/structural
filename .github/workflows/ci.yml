@@ -37,6 +37,7 @@ jobs:
           - "pipeline_repeats"
           - "pipeline_duplicates"
           - "pipeline_families"
+          - "pipeline_bedpe"
           - "bam_cnv_calling"
           - "bam_prepare_samtools"
           - "bam_repeat_estimation_expansionhunter"

@@ -1,0 +1,105 @@
+nextflow_pipeline {
+
+    name "Test Workflow main.nf"
+    script "main.nf"
+
+    tag "pipeline"
+    tag "pipeline_bedpe"
+
+    options "-stub"
+
+    test("output BEDPE files") {
+
+        when {
+            params {
+                outdir = "${outputDir}"
+                callers = "delly"
+                bedpe = true
+                max_cpus   = 2
+                max_memory = '6.GB'
+                max_time   = '6.h'
+            }
+        }
+
+        then {
+            assertAll(
+                { assert workflow.success },
+                { assert snapshot(
+                    workflow.stdout,
+                    path("${outputDir}")
+                        .list()
+                        .collect { getRecursiveFileNames(it, "${outputDir}") }
+                        .flatten()
+                        .findAll {
+                            !it.contains("pipeline_info/")
+                        }
+                ).match()}
+            )
+        }
+
+    }
+
+    test("fail on concat with repeats") {
+
+        when {
+            params {
+                outdir = "${outputDir}"
+                callers = "expansionhunter"
+                concat_output = true
+                bedpe = true
+                max_cpus   = 2
+                max_memory = '6.GB'
+                max_time   = '6.h'
+            }
+        }
+
+        then {
+            assertAll(
+                { assert workflow.failed },
+                { assert snapshot(
+                    workflow.stdout
+                ).match()}
+            )
+        }
+
+    }
+
+    test("don't output BEDPE for repeats") {
+
+        when {
+            params {
+                outdir = "${outputDir}"
+                callers = "expansionhunter"
+                bedpe = true
+                max_cpus   = 2
+                max_memory = '6.GB'
+                max_time   = '6.h'
+            }
+        }
+
+        then {
+            assertAll(
+                { assert workflow.success },
+                { assert snapshot(
+                    workflow.stdout,
+                    path("${outputDir}")
+                        .list()
+                        .collect { getRecursiveFileNames(it, "${outputDir}") }
+                        .flatten()
+                        .findAll {
+                            !it.contains("pipeline_info/")
+                        }
+                ).match()}
+            )
+        }
+
+    }
+
+}
+
+def getRecursiveFileNames(fileOrDir, outputDir) {
+    if(file(fileOrDir.toString()).isDirectory()) {
+        return fileOrDir.list().collect { getRecursiveFileNames(it, outputDir) }
+    }
+    return fileOrDir.toString().replace("${outputDir}/", "")
+}

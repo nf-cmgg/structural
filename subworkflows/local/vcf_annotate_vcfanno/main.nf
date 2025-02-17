@@ -30,7 +30,7 @@ workflow VCF_ANNOTATE_VCFANNO {
         }
         ch_vcfanno_input = ch_vcfs.join(ch_collected_specific_resources, failOnMismatch:true, failOnDuplicate:true)
     } else {
-        ch_vcfanno_toml = Channel.fromPath(vcfanno_toml)
+        ch_vcfanno_toml = Channel.fromPath(vcfanno_toml).collect()
         ch_vcfanno_input = ch_vcfs.map { meta, vcf, tbi ->
             [ meta, vcf, tbi, [] ]
         }

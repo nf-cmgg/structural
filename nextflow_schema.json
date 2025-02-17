@@ -335,6 +335,10 @@
                     "type": "string",
                     "description": "The filter arguments to use after annotating.",
                     "help_text": "A common use case for this is to filter out common variants. You can supply a VCF file with common variants to VCFanno and filter out the matching variants using this parameter"
+                },
+                "bedpe": {
+                    "type": "boolean",
+                    "description": "Output BEDPE files derived from the VCF files alongside the VCF files"
                 }
             }
         },

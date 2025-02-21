@@ -18,7 +18,7 @@
       
       
       <link rel="icon" href="../assets/images/favicon.png">
-      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.6.3">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.6.5">
     
     
       
@@ -26,7 +26,7 @@
       
     
     
-      <link rel="stylesheet" href="../assets/stylesheets/main.d7758b05.min.css">
+      <link rel="stylesheet" href="../assets/stylesheets/main.8608ea7d.min.css">
       
         
         <link rel="stylesheet" href="../assets/stylesheets/palette.06af60db.min.css">
@@ -400,15 +400,6 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#max-job-request-options" class="md-nav__link">
-    <span class="md-ellipsis">
-      Max job request options
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
   <a href="#generic-options" class="md-nav__link">
     <span class="md-ellipsis">
       Generic options
@@ -563,15 +554,6 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#max-job-request-options" class="md-nav__link">
-    <span class="md-ellipsis">
-      Max job request options
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
   <a href="#generic-options" class="md-nav__link">
     <span class="md-ellipsis">
       Generic options
@@ -663,7 +645,7 @@
 
 
 <h1 id="nf-cmggstructural-pipeline-parameters">nf-cmgg/structural pipeline parameters</h1>
-<p>A nextflow pipeline for calling structural variants</p>
+<p>A bioinformatics best-practice analysis pipeline for calling structural variants (SVs), copy number variants (CNVs) and repeat region expansions (RREs) from short DNA reads</p>
 <h2 id="inputoutput-options">Input/output options</h2>
 <p>Define where the pipeline should find input data and save output data.</p>
 <table>
@@ -751,14 +733,6 @@
 <td></td>
 </tr>
 <tr>
-<td><code>bwa</code></td>
-<td>Path to the BWA index folder</td>
-<td><code>string</code></td>
-<td></td>
-<td></td>
-<td></td>
-</tr>
-<tr>
 <td><code>expansionhunter_catalog</code></td>
 <td>Path to the expansionhunter catalog</td>
 <td><code>string</code></td>
@@ -807,6 +781,14 @@
 <td>True</td>
 </tr>
 <tr>
+<td><code>igenomes_base</code></td>
+<td>The base path where the iGenomes references can be found</td>
+<td><code>string</code></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
 <td><code>genomes_base</code></td>
 <td>The base path where the references can be found</td>
 <td><code>string</code></td>
@@ -829,6 +811,14 @@
 <td>/conf/</td>
 <td></td>
 <td></td>
+</tr>
+<tr>
+<td><code>genomes</code></td>
+<td>A map containing all references for all genomes</td>
+<td><code>object</code></td>
+<td></td>
+<td></td>
+<td>True</td>
 </tr>
 </tbody>
 </table>
@@ -896,46 +886,6 @@
 </tr>
 </tbody>
 </table>
-<h2 id="max-job-request-options">Max job request options</h2>
-<p>Set the top limit for requested resources for any single job.</p>
-<table>
-<thead>
-<tr>
-<th>Parameter</th>
-<th>Description</th>
-<th>Type</th>
-<th>Default</th>
-<th>Required</th>
-<th>Hidden</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><code>max_cpus</code></td>
-<td>Maximum number of CPUs that can be requested for any single job. <details><summary>Help</summary><small>Use to set an upper-limit for the CPU requirement for each process. Should be an integer e.g. <code>--max_cpus 1</code></small></details></td>
-<td><code>integer</code></td>
-<td>16</td>
-<td></td>
-<td>True</td>
-</tr>
-<tr>
-<td><code>max_memory</code></td>
-<td>Maximum amount of memory that can be requested for any single job. <details><summary>Help</summary><small>Use to set an upper-limit for the memory requirement for each process. Should be a string in the format integer-unit e.g. <code>--max_memory '8.GB'</code></small></details></td>
-<td><code>string</code></td>
-<td>128.GB</td>
-<td></td>
-<td>True</td>
-</tr>
-<tr>
-<td><code>max_time</code></td>
-<td>Maximum amount of time that can be requested for any single job. <details><summary>Help</summary><small>Use to set an upper-limit for the time requirement for each process. Should be a string in the format integer-unit e.g. <code>--max_time '2.h'</code></small></details></td>
-<td><code>string</code></td>
-<td>240.h</td>
-<td></td>
-<td>True</td>
-</tr>
-</tbody>
-</table>
 <h2 id="generic-options">Generic options</h2>
 <p>Less common options for the pipeline, typically set in a config file.</p>
 <table>
@@ -952,7 +902,7 @@
 <tbody>
 <tr>
 <td><code>help</code></td>
-<td>Display help text.</td>
+<td>Display version and exit.</td>
 <td><code>boolean</code></td>
 <td></td>
 <td></td>
@@ -999,14 +949,6 @@
 <td>True</td>
 </tr>
 <tr>
-<td><code>monochromeLogs</code></td>
-<td>Do not use coloured log outputs.</td>
-<td><code>boolean</code></td>
-<td></td>
-<td></td>
-<td>True</td>
-</tr>
-<tr>
 <td><code>hook_url</code></td>
 <td>Incoming hook URL for messaging service <details><summary>Help</summary><small>Incoming hook URL for messaging service. Currently, MS Teams and Slack are supported.</small></details></td>
 <td><code>string</code></td>
@@ -1047,25 +989,25 @@
 <td>True</td>
 </tr>
 <tr>
-<td><code>validationShowHiddenParams</code></td>
-<td>Show all params when using <code>--help</code> <details><summary>Help</summary><small>By default, parameters set as <em>hidden</em> in the schema are not shown on the command line when a user runs with <code>--help</code>. Specifying this option will tell the pipeline to show all parameters.</small></details></td>
+<td><code>monochrome_logs</code></td>
+<td>Output monochrome logs</td>
 <td><code>boolean</code></td>
 <td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td><code>pipelines_testdata_base_path</code></td>
+<td>The base path to of the pipeline test data</td>
+<td><code>string</code></td>
+<td>https://raw.githubusercontent.com/nf-core/test-datasets/</td>
 <td></td>
 <td>True</td>
 </tr>
 <tr>
-<td><code>validationFailUnrecognisedParams</code></td>
-<td>Validation of parameters fails when an unrecognised parameter is found. <details><summary>Help</summary><small>By default, when an unrecognised parameter is found, it returns a warinig.</small></details></td>
-<td><code>boolean</code></td>
+<td><code>trace_report_suffix</code></td>
 <td></td>
-<td></td>
-<td>True</td>
-</tr>
-<tr>
-<td><code>validationLenientMode</code></td>
-<td>Validation of parameters in lenient more. <details><summary>Help</summary><small>Allows string values that are parseable as numbers or booleans. For further information see <a href="https://github.com/everit-org/json-schema#lenient-mode">JSONSchema docs</a>.</small></details></td>
-<td><code>boolean</code></td>
+<td><code>string</code></td>
 <td></td>
 <td></td>
 <td>True</td>
@@ -1158,14 +1100,6 @@
 </tr>
 </thead>
 <tbody>
-<tr>
-<td><code>delly_sv_types</code></td>
-<td>Which SV types delly should search for in the variant calling</td>
-<td><code>string</code></td>
-<td>ALL</td>
-<td></td>
-<td></td>
-</tr>
 <tr>
 <td><code>delly_map_qual</code></td>
 <td>The mapping quality to use for delly</td>
@@ -1266,7 +1200,7 @@
 <td><code>vep_cache_version</code></td>
 <td>The version of the VEP cache to use. <details><summary>Help</summary><small>This version should be present in the folder supplied by <code>--vep_cache</code>. This version should be the same as <code>--vep_version</code> when no VEP cache was given with <code>--vep_cache</code></small></details></td>
 <td><code>integer</code></td>
-<td>108</td>
+<td>112</td>
 <td></td>
 <td></td>
 </tr>
@@ -1282,7 +1216,7 @@
 <td><code>vep_version</code></td>
 <td>The version of VEP to use</td>
 <td><code>number</code></td>
-<td>109.3</td>
+<td>112.0</td>
 <td></td>
 <td></td>
 </tr>
@@ -1291,30 +1225,6 @@
 <td>The species used for the analysis. Should be all lowercase and spaces should be underscorses.</td>
 <td><code>string</code></td>
 <td>homo_sapiens</td>
-<td></td>
-<td></td>
-</tr>
-<tr>
-<td><code>vep_phenotypes</code></td>
-<td>Use the Phenotypes VEP plugin <details><summary>Help</summary><small>This requires <code>--phenotypes</code> and <code>--phenotypes_tbi</code>. </small></details></td>
-<td><code>boolean</code></td>
-<td></td>
-<td></td>
-<td></td>
-</tr>
-<tr>
-<td><code>phenotypes</code></td>
-<td>Path to the phenotypes GFF file</td>
-<td><code>string</code></td>
-<td></td>
-<td></td>
-<td></td>
-</tr>
-<tr>
-<td><code>phenotypes_tbi</code></td>
-<td>Path to the phenotypes GFF index file</td>
-<td><code>string</code></td>
-<td></td>
 <td></td>
 <td></td>
 </tr>
@@ -1357,14 +1267,6 @@
 <td></td>
 <td></td>
 <td></td>
-</tr>
-<tr>
-<td><code>annotsv_file_name</code></td>
-<td>The default name of the AnnotSV VCFs. This should not be changed unless absolutely necessary.</td>
-<td><code>string</code></td>
-<td>annotsv_annotated</td>
-<td></td>
-<td>True</td>
 </tr>
 </tbody>
 </table>

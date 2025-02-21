@@ -4,8 +4,8 @@ process DELLY_CALL {
 
     conda "${moduleDir}/environment.yml"
     container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
-        'https://depot.galaxyproject.org/singularity/delly:1.2.6--hb7e2ac5_1' :
-        'biocontainers/delly:1.2.6--hb7e2ac5_1' }"
+        'https://depot.galaxyproject.org/singularity/delly:1.3.3--h4d20210_0' :
+        'biocontainers/delly:1.3.3--h4d20210_0' }"
 
     input:
     tuple val(meta), path(input), path(input_index), path(vcf), path(vcf_index), path(exclude_bed)
@@ -29,7 +29,7 @@ process DELLY_CALL {
     def exclude = exclude_bed ? "--exclude ${exclude_bed}" : ""
 
     def bcf_output = suffix == "bcf" ? "--outfile ${prefix}.bcf" : ""
-    def vcf_output = suffix == "vcf" ? "| sed 's/CONSENSUS/SVINSSEQ/g' | bgzip ${args2} --threads ${task.cpus} --stdout > ${prefix}.vcf.gz && tabix ${prefix}.vcf.gz" : ""
+    def vcf_output = suffix == "vcf" ? "| bgzip ${args2} --threads ${task.cpus} --stdout > ${prefix}.vcf.gz && tabix ${prefix}.vcf.gz" : ""
 
     def genotype = vcf ? "--vcffile ${vcf}" : ""
 

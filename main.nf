@@ -101,6 +101,7 @@ workflow {
         // booleans
         params.annotate,
         params.concat_output,
+        params.bedpe,
 
         // values
         params.callers,
@@ -127,13 +128,14 @@ workflow {
     )
 
     publish:
-    STRUCTURAL.out.caller_vcfs >> 'caller_vcfs'
-    STRUCTURAL.out.sample_vcfs >> 'sample_vcfs'
-    STRUCTURAL.out.family_vcfs >> 'family_vcfs'
-    STRUCTURAL.out.qdnaseq_out >> 'qdnaseq_out'
-    STRUCTURAL.out.wisecondorx_out >> 'wisecondorx_out'
-    STRUCTURAL.out.multiqc_report >> 'multiqc'
-    STRUCTURAL.out.multiqc_data >> 'multiqc_data'
+    STRUCTURAL.out.caller_vcfs      >> 'caller_vcfs'
+    STRUCTURAL.out.sample_vcfs      >> 'sample_vcfs'
+    STRUCTURAL.out.family_vcfs      >> 'family_vcfs'
+    STRUCTURAL.out.qdnaseq_out      >> 'qdnaseq_out'
+    STRUCTURAL.out.wisecondorx_out  >> 'wisecondorx_out'
+    STRUCTURAL.out.bedpe            >> 'bedpe'
+    STRUCTURAL.out.multiqc_report   >> 'multiqc'
+    STRUCTURAL.out.multiqc_data     >> 'multiqc_data'
 
 }
 
@@ -181,6 +183,12 @@ output {
             }
             def new_name = file.replaceFirst(meta.id, "${meta.id}.wisecondorx")
             return "${meta.id}/${new_name}"
+        } }
+    }
+    'bedpe' {
+        path { meta, _bedpe -> { file ->
+            def base = "${meta.id}/${meta.id}${meta.variant_type ? '.' + meta.variant_type : ''}"
+            return "${base}.bedpe"
         } }
     }
     'multiqc' {

@@ -23,7 +23,7 @@
                     },
                     "bcftools/concat": {
                         "branch": "master",
-                        "git_sha": "b42fec6f7c6e5d0716685cabb825ef6bf6e386b5",
+                        "git_sha": "81880787133db07d9b4c1febd152c090eb8325dc",
                         "installed_by": ["modules"]
                     },
                     "bcftools/filter": {
@@ -48,9 +48,8 @@
                     },
                     "delly/call": {
                         "branch": "master",
-                        "git_sha": "92bf2a8afa318a64f9d333cf87b510c662fd4274",
-                        "installed_by": ["modules"],
-                        "patch": "modules/nf-core/delly/call/delly-call.diff"
+                        "git_sha": "699f066b2d90f079378205ce557f9ea75d90dbf9",
+                        "installed_by": ["modules"]
                     },
                     "ensemblvep/download": {
                         "branch": "master",
@@ -129,9 +128,14 @@
                         "git_sha": "f2fdc5e81efe36beff213752ce1a8e71fceeacba",
                         "installed_by": ["modules"]
                     },
+                    "svtools/vcftobedpe": {
+                        "branch": "master",
+                        "git_sha": "5cf15e4c5ad6d06718b35e5ec1655c7c0a105880",
+                        "installed_by": ["modules"]
+                    },
                     "svync": {
                         "branch": "master",
-                        "git_sha": "3df1a372b844c98c31ec3446faac7c75e64518a3",
+                        "git_sha": "916a4cbc4f831d501860495b157c4857833e22a7",
                         "installed_by": ["modules"]
                     },
                     "tabix/bgziptabix": {

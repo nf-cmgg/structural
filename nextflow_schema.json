@@ -335,6 +335,10 @@
                     "type": "string",
                     "description": "The filter options to perform on SV and CNV VCF files as postprocessing",
                     "help_text": "A common use case for this is to filter out common variants. You can supply a VCF file with common variants to VCFanno and filter out the matching variants using this parameter"
+                },
+                "bedpe": {
+                    "type": "boolean",
+                    "description": "Output BEDPE files derived from the VCF files alongside the VCF files"
                 }
             }
         },
@@ -344,11 +348,6 @@
             "description": "Options specific for the Delly execution",
             "default": "",
             "properties": {
-                "delly_sv_types": {
-                    "type": "string",
-                    "default": "ALL",
-                    "description": "Which SV types delly should search for in the variant calling"
-                },
                 "delly_map_qual": {
                     "type": "integer",
                     "default": 1,

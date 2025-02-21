@@ -8,6 +8,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### `Added`
 
 1. Added the samplesheet to the pipeline output as `OUTDIR/samplesheet.csv`
+2. Added the `--bedpe` parameter. This makes the pipeline output BEDPE files alongside the VCF files.
+3. Added parallelization on SV type to the delly flow
 
 ### `Changes`
 
@@ -20,6 +22,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 7. Bumped the minimal nextflow version to 24.10.0
 8. VCFanno will now run when `--vcfanno_toml` has been given and `--annotate` has not been given. You still need to supply `--annotate` to get the full annotation, but this can be used check for common variants without having to perform full annotation.
 9. Changed the `--annotations_filter` parameter to a `--filter` parameter. This parameter takes an argument of `bcftools filter` to filter the resulting VCFs.
+10. Removed the `--delly_sv_types` parameter.
+
 
 ### `Fixed`
 

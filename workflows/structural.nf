@@ -44,6 +44,7 @@ include { UNTAR as UNTAR_ANNOTSV            } from '../modules/nf-core/untar/mai
 include { UNTAR as UNTAR_BWA                } from '../modules/nf-core/untar/main'
 include { NGSBITS_SAMPLEGENDER              } from '../modules/nf-core/ngsbits/samplegender/main'
 include { BCFTOOLS_FILTER                   } from '../modules/nf-core/bcftools/filter/main'
+include { SVTOOLS_VCFTOBEDPE                } from '../modules/nf-core/svtools/vcftobedpe/main'
 include { MULTIQC                           } from '../modules/nf-core/multiqc/main'
 
 /*
@@ -85,6 +86,7 @@ workflow STRUCTURAL {
     // boolean inputs
     annotate                    // Run annotation on SV and CNV data
     concat_output               // Concatenate all output files
+    bedpe                       // Create BEDPE files from the VCFs and output them
 
     // value inputs
     input_callers               // All callers to be used
@@ -158,6 +160,7 @@ workflow STRUCTURAL {
 
     def sv_callers_to_use = callers.intersect(svCallers)
     def cnv_callers_to_use = callers.intersect(cnvCallers)
+    def repeats_callers_to_use = callers.intersect(repeatsCallers)
 
     if (sv_callers_to_use && sv_callers_support > sv_callers_to_use.size()) {
         error("The 'sv_callers_support' option (${sv_callers_support}) is higher than the amount of SV callers given (${sv_callers_to_use.size()}). Please adjust 'sv_callers_support' to a value lower of equal to the amount of SV callers to use.")
@@ -173,6 +176,10 @@ workflow STRUCTURAL {
 
     if ("wisecondorx" in callers && !wisecondorx_reference) {
         error("Please give the WisecondorX reference using 'wisecondorx_reference'")
+    }
+
+    if (repeats_callers_to_use.size() > 0 && bedpe && concat_output) {
+        error("Can't create BEDPE files from VCFs that contains repeat expansions. Don't specify either --concat_output or omit all repeat callers from the --callers parameter.")
     }
 
     //
@@ -480,13 +487,39 @@ workflow STRUCTURAL {
     // Merge VCFs of the same family into a multi-sample VCF
     //
 
+    def ch_merge_vcfs = ch_concat_vcfs.filter { meta, _vcf, _tbi ->
+        meta.family_count > 1
+    }
+
     VCF_MERGE_FAMILY_JASMINE(
-        ch_concat_vcfs,
+        ch_merge_vcfs,
         ch_fasta,
         ch_fai
     )
 
     def ch_family_vcfs = VCF_MERGE_FAMILY_JASMINE.out.vcfs
+
+    //
+    // Convert VCF files to BEDPE files
+    //
+
+    def ch_bedpe = Channel.empty()
+    if(bedpe) {
+        def ch_vcftobedpe_input = ch_concat_vcfs
+            .mix(ch_family_vcfs)
+            .filter { meta, _vcf, _tbi ->
+                meta.variant_type != "repeats"
+            }
+            .map { meta, vcf, _tbi ->
+                [ meta, vcf ]
+            }
+
+        SVTOOLS_VCFTOBEDPE(
+            ch_vcftobedpe_input
+        )
+        ch_versions = ch_versions.mix(SVTOOLS_VCFTOBEDPE.out.versions)
+        ch_bedpe = SVTOOLS_VCFTOBEDPE.out.bedpe
+    }
 
     //
     // Collate and save software versions
@@ -519,6 +552,7 @@ workflow STRUCTURAL {
     family_vcfs     = ch_family_vcfs              // channel: [ val(meta), path(vcf), path(tbi) ]
     qdnaseq_out     = ch_qdnaseq_out              // channel: [ val(meta), path(file) ]
     wisecondorx_out = ch_wisecondorx_out          // channel: [ val(meta), path(file) ]
+    bedpe           = ch_bedpe                    // channel: [ val(meta), path(bedpe) ]
     multiqc_report  = MULTIQC.out.report.toList() // channel: /path/to/multiqc_report.html
     multiqc_data    = MULTIQC.out.data            // channel: /path/to/multiqc_data
     versions        = ch_versions                 // channel: [ path(versions.yml) ]

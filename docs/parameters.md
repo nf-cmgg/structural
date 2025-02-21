@@ -86,11 +86,10 @@ Options specific to the execution of this pipeline
 
 Options specific for the Delly execution
 
-| Parameter               | Description                                                   | Type      | Default | Required | Hidden |
-| ----------------------- | ------------------------------------------------------------- | --------- | ------- | -------- | ------ |
-| `delly_sv_types`        | Which SV types delly should search for in the variant calling | `string`  | ALL     |          |        |
-| `delly_map_qual`        | The mapping quality to use for delly                          | `integer` | 1       |          |        |
-| `delly_min_clique_size` | The minimum clique size to use for delly                      | `integer` | 2       |          |        |
+| Parameter               | Description                              | Type      | Default | Required | Hidden |
+| ----------------------- | ---------------------------------------- | --------- | ------- | -------- | ------ |
+| `delly_map_qual`        | The mapping quality to use for delly     | `integer` | 1       |          |        |
+| `delly_min_clique_size` | The minimum clique size to use for delly | `integer` | 2       |          |        |
 
 ## Manta parameters
 

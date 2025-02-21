@@ -128,6 +128,11 @@
                         "git_sha": "f2fdc5e81efe36beff213752ce1a8e71fceeacba",
                         "installed_by": ["modules"]
                     },
+                    "svtools/vcftobedpe": {
+                        "branch": "master",
+                        "git_sha": "5cf15e4c5ad6d06718b35e5ec1655c7c0a105880",
+                        "installed_by": ["modules"]
+                    },
                     "svync": {
                         "branch": "master",
                         "git_sha": "916a4cbc4f831d501860495b157c4857833e22a7",

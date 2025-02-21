@@ -8,7 +8,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### `Added`
 
 1. Added the samplesheet to the pipeline output as `OUTDIR/samplesheet.csv`
-2. Added parallelization on SV type to the delly flow
+2. Added the `--bedpe` parameter. This makes the pipeline output BEDPE files alongside the VCF files.
+3. Added parallelization on SV type to the delly flow
 
 ### `Changes`
 

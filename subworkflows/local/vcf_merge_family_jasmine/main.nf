@@ -20,7 +20,6 @@ workflow VCF_MERGE_FAMILY_JASMINE {
     def ch_versions     = Channel.empty()
 
     def ch_jasmine_input = ch_vcfs
-        .filter { meta, _vcf, _tbi -> meta.family_count > 1 }
         .map { meta, vcf, tbi ->
             def new_meta = meta - meta.subMap("sample", "sex") + ["id":meta.variant_type ? "${meta.family}.${meta.variant_type}" : meta.family]
             [ groupKey(new_meta, meta.family_count), vcf, tbi ]

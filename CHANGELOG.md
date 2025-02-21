@@ -24,7 +24,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 9. Changed the `--annotations_filter` parameter to a `--filter` parameter. This parameter takes an argument of `bcftools filter` to filter the resulting VCFs.
 10. Removed the `--delly_sv_types` parameter.
 
-
 ### `Fixed`
 
 1. Fail the pipeline when the sex determination failed. This will now prompt the user to add the sex to the samplesheet so the pipeline doesn't do any wrong assumptions

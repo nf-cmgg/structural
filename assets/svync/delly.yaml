@@ -16,6 +16,11 @@ info:
       DEL: -~sub:$INFO/END,$POS
       INS: $INFO/SVLEN
       TRA: 1
+  SVINSSEQ:
+    value: $INFO/CONSENSUS
+    number: 1
+    type: string
+    description: The sequence of the insertion
   CIEND:
     value: $INFO/CIEND
     number: 2

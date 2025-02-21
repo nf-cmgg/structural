@@ -35,10 +35,21 @@ nextflow_workflow {
             assertAll(
                 { assert workflow.success },
                 { assert snapshot(
-                    path(workflow.out.delly_vcfs[0][1]).linesGzip[-4..-1],
-                    file(workflow.out.delly_vcfs[0][2]).name,
-                    workflow.trace.succeeded().size(),
-                    workflow.trace.failed().size()
+                    workflow.out.collectEntries { key, value ->
+                        if(key.matches("^\\d+\$") || key == "versions") {
+                            return null
+                        }
+                        else if(key.contains("vcf")) {
+                            return [
+                                key,
+                                value.collect { meta, vcf, tbi ->
+                                    [meta, "${file(vcf).name},variantsMD5:${path(vcf).vcf.variantsMD5}", file(tbi).name ]
+                                }
+                            ]
+                        }
+                        return [key, value]
+                    }
+                    .findAll { it != null }
                 ).match() }
             )
         }

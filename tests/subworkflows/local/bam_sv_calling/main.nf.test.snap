@@ -1,98 +1,174 @@
 {
     "homo_sapiens - smoove": {
         "content": [
-            [
-                
-            ],
-            [
-                {
-                    "id": "test",
-                    "sample": "test",
-                    "sex": "male",
-                    "variant_type": "sv"
-                },
-                "test.svync.smoove.vcf.gz",
-                "test.svync.smoove.vcf.gz.tbi"
-            ],
-            4,
-            0
+            {
+                "caller_vcfs": [
+                    [
+                        {
+                            "id": "test",
+                            "sample": "test",
+                            "sex": "male",
+                            "caller": "smoove"
+                        },
+                        "test.smoove.vcf.gz,variantsMD5:d41d8cd98f00b204e9800998ecf8427e",
+                        "test.smoove.vcf.gz.tbi"
+                    ]
+                ],
+                "reports": [
+                    
+                ],
+                "vcfs": [
+                    [
+                        {
+                            "id": "test",
+                            "sample": "test",
+                            "sex": "male",
+                            "variant_type": "sv"
+                        },
+                        "test.svync.smoove.vcf.gz,variantsMD5:d41d8cd98f00b204e9800998ecf8427e",
+                        "test.svync.smoove.vcf.gz.tbi"
+                    ]
+                ]
+            }
         ],
         "meta": {
             "nf-test": "0.9.1",
-            "nextflow": "24.10.3"
+            "nextflow": "24.10.4"
         },
-        "timestamp": "2025-02-04T09:55:07.170444795"
+        "timestamp": "2025-02-13T17:26:20.360641721"
     },
     "homo_sapiens - manta": {
         "content": [
-            [
-                
-            ],
-            [
-                {
-                    "id": "test",
-                    "sample": "test",
-                    "sex": "male",
-                    "variant_type": "sv"
-                },
-                "test.svync.manta.vcf.gz",
-                "test.svync.manta.vcf.gz.tbi"
-            ],
-            6,
-            0
+            {
+                "caller_vcfs": [
+                    [
+                        {
+                            "id": "test",
+                            "sample": "test",
+                            "sex": "male",
+                            "caller": "manta"
+                        },
+                        "test.manta.vcf.gz,variantsMD5:ea34aed2ce82f64ff1899b2c2d9bc5da",
+                        "test.manta.vcf.gz.tbi"
+                    ]
+                ],
+                "reports": [
+                    
+                ],
+                "vcfs": [
+                    [
+                        {
+                            "id": "test",
+                            "sample": "test",
+                            "sex": "male",
+                            "variant_type": "sv"
+                        },
+                        "test.svync.manta.vcf.gz,variantsMD5:73d9618ba3a50341575d3c9c1d2796ab",
+                        "test.svync.manta.vcf.gz.tbi"
+                    ]
+                ]
+            }
         ],
         "meta": {
-            "nf-test": "0.8.4",
-            "nextflow": "24.02.0"
+            "nf-test": "0.9.1",
+            "nextflow": "24.10.4"
         },
-        "timestamp": "2024-03-11T14:04:24.17658191"
+        "timestamp": "2025-02-13T17:25:48.450406346"
     },
     "homo_sapiens - delly": {
         "content": [
-            [
-                
-            ],
-            [
-                {
-                    "id": "test",
-                    "sample": "test",
-                    "sex": "male",
-                    "variant_type": "sv"
-                },
-                "test.svync.delly.vcf.gz",
-                "test.svync.delly.vcf.gz.tbi"
-            ],
-            3,
-            0
+            {
+                "caller_vcfs": [
+                    [
+                        {
+                            "id": "test",
+                            "sample": "test",
+                            "sex": "male",
+                            "caller": "delly"
+                        },
+                        "test.delly.vcf.gz,variantsMD5:20ac9de57e6fd564de976eb30835c15c",
+                        "test.delly.vcf.gz.tbi"
+                    ]
+                ],
+                "reports": [
+                    
+                ],
+                "vcfs": [
+                    [
+                        {
+                            "id": "test",
+                            "sample": "test",
+                            "sex": "male",
+                            "variant_type": "sv"
+                        },
+                        "test.svync.delly.vcf.gz,variantsMD5:caf4116f675c20783b0119c98e70f2ea",
+                        "test.svync.delly.vcf.gz.tbi"
+                    ]
+                ]
+            }
         ],
         "meta": {
-            "nf-test": "0.8.4",
-            "nextflow": "24.02.0"
+            "nf-test": "0.9.1",
+            "nextflow": "24.10.4"
         },
-        "timestamp": "2024-03-11T14:04:41.148774402"
+        "timestamp": "2025-02-13T17:26:06.285138049"
     },
     "homo_sapiens - all sv callers": {
         "content": [
-            [
-                
-            ],
-            [
-                {
-                    "id": "test",
-                    "sample": "test",
-                    "sex": "male",
-                    "variant_type": "sv"
-                },
-                "test.sv.vcf.gz",
-                "test.sv.vcf.gz.tbi"
-            ],
-            18,
-            0
+            {
+                "caller_vcfs": [
+                    [
+                        {
+                            "id": "test",
+                            "sample": "test",
+                            "sex": "male",
+                            "caller": "delly"
+                        },
+                        "test.delly.vcf.gz,variantsMD5:20ac9de57e6fd564de976eb30835c15c",
+                        "test.delly.vcf.gz.tbi"
+                    ],
+                    [
+                        {
+                            "id": "test",
+                            "sample": "test",
+                            "sex": "male",
+                            "caller": "manta"
+                        },
+                        "test.manta.vcf.gz,variantsMD5:ea34aed2ce82f64ff1899b2c2d9bc5da",
+                        "test.manta.vcf.gz.tbi"
+                    ],
+                    [
+                        {
+                            "id": "test",
+                            "sample": "test",
+                            "sex": "male",
+                            "caller": "smoove"
+                        },
+                        "test.smoove.vcf.gz,variantsMD5:d41d8cd98f00b204e9800998ecf8427e",
+                        "test.smoove.vcf.gz.tbi"
+                    ]
+                ],
+                "reports": [
+                    
+                ],
+                "vcfs": [
+                    [
+                        {
+                            "id": "test",
+                            "sample": "test",
+                            "sex": "male",
+                            "variant_type": "sv"
+                        },
+                        "test.sv.vcf.gz,variantsMD5:2d626bce1f675bc7c41ec59d9a09a7aa",
+                        "test.sv.vcf.gz.tbi"
+                    ]
+                ]
+            }
         ],
         "meta": {
-            "nf-test": "0.8.4",
-            "nextflow": "24.02.0"
+            "nf-test": "0.9.1",
+            "nextflow": "24.10.4"
         },
-        "timestamp": "2024-03-11T14:05:53.52450825"
+        "timestamp": "2025-02-13T17:26:51.327526373"
     }
 }

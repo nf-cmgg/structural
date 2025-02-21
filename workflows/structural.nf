@@ -43,6 +43,7 @@ include { ANNOTSV_INSTALLANNOTATIONS        } from '../modules/nf-core/annotsv/i
 include { UNTAR as UNTAR_ANNOTSV            } from '../modules/nf-core/untar/main'
 include { UNTAR as UNTAR_BWA                } from '../modules/nf-core/untar/main'
 include { NGSBITS_SAMPLEGENDER              } from '../modules/nf-core/ngsbits/samplegender/main'
+include { BCFTOOLS_FILTER                   } from '../modules/nf-core/bcftools/filter/main'
 include { SVTOOLS_VCFTOBEDPE                } from '../modules/nf-core/svtools/vcftobedpe/main'
 include { MULTIQC                           } from '../modules/nf-core/multiqc/main'
 
@@ -95,7 +96,7 @@ workflow STRUCTURAL {
     species                     // The species to be used by VEP
     vep_assembly                // The genome assembly to be downloaded for VEP
     vep_cache_version           // The version of the VEP cache to use
-    annotations_filter          // The filter pattern to use after annotation
+    filter                      // The filter pattern to use after annotation
     outdir                      // The output directory of the pipeline
 
     main:
@@ -409,22 +410,33 @@ workflow STRUCTURAL {
         ch_annotation_output    = ch_annotation_input
     }
 
-    def ch_outputs = Channel.empty()
+    def ch_vcfanno_output = Channel.empty()
     if(annotate || vcfanno_toml) {
         VCF_ANNOTATE_VCFANNO(
             ch_annotation_output,
             ch_annotsv_vcfs,
             ch_vcfanno_lua,
             val_vcfanno_resources,
-            annotations_filter,
             val_vcfanno_toml,
             val_default_vcfanno_tomls,
             annotate
         )
         ch_versions = ch_versions.mix(VCF_ANNOTATE_VCFANNO.out.versions)
-        ch_outputs  = ch_outputs.mix(VCF_ANNOTATE_VCFANNO.out.vcfs)
+        ch_vcfanno_output  = VCF_ANNOTATE_VCFANNO.out.vcfs
     } else {
-        ch_outputs  = ch_outputs.mix(ch_annotation_input)
+        ch_vcfanno_output  = ch_annotation_input
+    }
+
+    def ch_outputs = Channel.empty()
+    if(filter) {
+        BCFTOOLS_FILTER(
+            ch_vcfanno_output
+        )
+        def ch_filter_output = BCFTOOLS_FILTER.out.vcf.join(BCFTOOLS_FILTER.out.tbi, failOnMismatch:true, failOnDuplicate:true)
+        ch_outputs = ch_outputs.mix(ch_filter_output)
+        ch_versions = ch_versions.mix(BCFTOOLS_FILTER.out.versions)
+    } else {
+        ch_outputs = ch_outputs.mix(ch_vcfanno_output)
     }
 
     //

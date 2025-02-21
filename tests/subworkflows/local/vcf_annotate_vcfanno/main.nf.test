@@ -10,12 +10,9 @@ nextflow_workflow {
 
     options "-stub"
 
-    test("homo_sapiens - no_filter, annotate") {
+    test("homo_sapiens - annotate") {
 
         when {
-            params {
-                annotations_filter = null
-            }
             workflow {
                 """
                 def meta = [id:"test", sample:"test", sex:"male", family: "test1", family_count:1, hpo:[], variant_type:'sv']
@@ -31,10 +28,9 @@ nextflow_workflow {
                 ])
                 input[2] = []
                 input[3] = []
-                input[4] = params.annotations_filter
-                input[5] = []
-                input[6] = files("\${params.vcfanno_tomls}/*.toml", checkIfExists:true)
-                input[7] = true
+                input[4] = []
+                input[5] = files("\${params.vcfanno_tomls}/*.toml", checkIfExists:true)
+                input[6] = true
                 """
             }
         }
@@ -55,12 +51,9 @@ nextflow_workflow {
 
     }
 
-    test("homo_sapiens - filter, no_annotate") {
+    test("homo_sapiens - no_annotate") {
 
         when {
-            params {
-                annotations_filter = "-i FILTER='PASS'"
-            }
             workflow {
                 """
                 def meta = [id:"test", sample:"test", sex:"male", family: "test1", family_count:1, hpo:[], variant_type:'sv']
@@ -76,55 +69,9 @@ nextflow_workflow {
                 ])
                 input[2] = []
                 input[3] = []
-                input[4] = params.annotations_filter
-                input[5] = files("\${params.vcfanno_tomls}/*.toml", checkIfExists:true)[0]
-                input[6] = files("\${params.vcfanno_tomls}/*.toml", checkIfExists:true)
-                input[7] = false
-                """
-            }
-        }
-
-        then {
-            assertAll(
-                { assert workflow.success },
-                { assert snapshot(
-                    workflow.out.collectEntries { key, value ->
-                        if(key.matches("^\\d+\$") || key.matches('versions')) {
-                            return null
-                        }
-                        return [ key, value ]
-                    }.findAll { it != null }
-                ).match() }
-            )
-        }
-
-    }
-
-    test("homo_sapiens - filter, annotate") {
-
-        when {
-            params {
-                annotations_filter = null
-            }
-            workflow {
-                """
-                def meta = [id:"test", sample:"test", sex:"male", family: "test1", family_count:1, hpo:[], variant_type:'sv']
-                input[0] = Channel.of([
-                    meta,
-                    file(params.sv_vcf1, checkIfExists:true),
-                    file(params.sv_tbi1, checkIfExists:true)
-                ])
-                input[1] = Channel.of([
-                    meta,
-                    [],
-                    []
-                ])
-                input[2] = []
-                input[3] = []
-                input[4] = params.annotations_filter
-                input[5] = []
-                input[6] = files("\${params.vcfanno_tomls}/*.toml", checkIfExists:true)
-                input[7] = true
+                input[4] = files("\${params.vcfanno_tomls}/*.toml", checkIfExists:true)[0]
+                input[5] = files("\${params.vcfanno_tomls}/*.toml", checkIfExists:true)
+                input[6] = false
                 """
             }
         }

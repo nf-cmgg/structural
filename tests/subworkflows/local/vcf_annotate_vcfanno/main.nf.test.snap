@@ -1,33 +1,5 @@
 {
-    "homo_sapiens - filter, no_annotate": {
-        "content": [
-            {
-                "vcfs": [
-                    [
-                        {
-                            "id": "test",
-                            "sample": "test",
-                            "sex": "male",
-                            "family": "test1",
-                            "family_count": 1,
-                            "hpo": [
-                                
-                            ],
-                            "variant_type": "sv"
-                        },
-                        "test.sv.filtered.vcf.gz:md5,68b329da9893e34099c7d8ad5cb9c940",
-                        "test.sv.filtered.vcf.gz.tbi:md5,d41d8cd98f00b204e9800998ecf8427e"
-                    ]
-                ]
-            }
-        ],
-        "meta": {
-            "nf-test": "0.9.1",
-            "nextflow": "24.10.4"
-        },
-        "timestamp": "2025-02-10T16:55:00.763124808"
-    },
-    "homo_sapiens - filter, annotate": {
+    "homo_sapiens - no_annotate": {
         "content": [
             {
                 "vcfs": [
@@ -53,9 +25,9 @@
             "nf-test": "0.9.1",
             "nextflow": "24.10.4"
         },
-        "timestamp": "2025-02-10T16:55:09.970621986"
+        "timestamp": "2025-02-12T14:07:01.425728203"
     },
-    "homo_sapiens - no_filter, annotate": {
+    "homo_sapiens - annotate": {
         "content": [
             {
                 "vcfs": [
@@ -81,6 +53,6 @@
             "nf-test": "0.9.1",
             "nextflow": "24.10.4"
         },
-        "timestamp": "2025-02-10T16:54:50.521405941"
+        "timestamp": "2025-02-12T14:06:51.583328891"
     }
 }

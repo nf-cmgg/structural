@@ -11,7 +11,6 @@ workflow VCF_ANNOTATE_VCFANNO {
         ch_sample_specific_resources            // channel: [optional]  [ val(meta), path(vcf), path(tbi) ] Files containing resources that are sample-specific
         ch_vcfanno_lua                          // channel: [optional]  [ path(lua) ] => The lua script to influence VCFanno
         val_vcfanno_resources                   // list:    [optional]  [ path(file1, file2, file3...) ] => The extra VCFanno files
-        filter                                  // string:  [optional]  => A filter pattern to use after annotating
         vcfanno_toml                            // file:    [optional]  => A vcfanno TOML config
         default_vcfanno_tomls                   // list:    [mandatory] => A list of default vcfanno configs to be concatenated with the input TOML
         annotate                                // boolean: [mandatory] => Whether or not to run the full annotation or only the specified annotations
@@ -31,7 +30,7 @@ workflow VCF_ANNOTATE_VCFANNO {
         }
         ch_vcfanno_input = ch_vcfs.join(ch_collected_specific_resources, failOnMismatch:true, failOnDuplicate:true)
     } else {
-        ch_vcfanno_toml = Channel.fromPath(vcfanno_toml)
+        ch_vcfanno_toml = Channel.fromPath(vcfanno_toml).collect()
         ch_vcfanno_input = ch_vcfs.map { meta, vcf, tbi ->
             [ meta, vcf, tbi, [] ]
         }
@@ -45,19 +44,7 @@ workflow VCF_ANNOTATE_VCFANNO {
     )
     ch_versions = ch_versions.mix(VCFANNO.out.versions)
 
-    def ch_vcfanno_output = VCFANNO.out.vcf.join(VCFANNO.out.tbi, failOnDuplicate:true, failOnMismatch:true)
-
-    def ch_annotated_vcfs = Channel.empty()
-    if(filter) {
-        BCFTOOLS_FILTER(
-            ch_vcfanno_output
-        )
-        ch_versions = ch_versions.mix(BCFTOOLS_FILTER.out.versions.first())
-
-        ch_annotated_vcfs = BCFTOOLS_FILTER.out.vcf.join(BCFTOOLS_FILTER.out.tbi, failOnDuplicate:true, failOnMismatch:true)
-    } else {
-        ch_annotated_vcfs = ch_vcfanno_output
-    }
+    def ch_annotated_vcfs = VCFANNO.out.vcf.join(VCFANNO.out.tbi, failOnDuplicate:true, failOnMismatch:true)
 
     emit:
     vcfs            = ch_annotated_vcfs  // channel: [ val(meta), path(vcf), path(tbi) ]

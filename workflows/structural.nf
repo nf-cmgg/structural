@@ -391,6 +391,7 @@ workflow STRUCTURAL {
             ch_annotation_input,
             ch_inputs.small_variants,
             ch_fasta,
+            ch_fai,
             ch_annotsv_annotations,
             ch_annotsv_candidate_genes,
             ch_annotsv_gene_transcripts,

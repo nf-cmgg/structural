@@ -18,7 +18,6 @@ workflow VCF_ANNOTATE_VEP_ANNOTSV {
         ch_vcfs                                 // channel: [mandatory] [ val(meta), path(vcf), path(tbi) ] VCFs containing the called structural variants
         ch_small_variants                       // channel: [mandatory] [ val(meta), path(vcf) ] VCFs containing small variants used in AnnotSV
         ch_fasta                                // channel: [mandatory] [ val(meta), path(fasta) ] => The fasta reference file
-        ch_fai                                  // channel: [mandatory] [ val(meta), path(fasta) ] => The fasta reference file
         ch_annotsv_annotations                  // channel: [mandatory] [ val(meta), path(annotations) ] => The annotations for AnnotSV
         ch_annotsv_candidate_genes              // channel: [optional]  [ val(meta), path(candidate_genes) ]
         ch_annotsv_gene_transcripts             // channel: [optional]  [ val(meta), path(gene_transcripts) ]
@@ -81,12 +80,13 @@ workflow VCF_ANNOTATE_VEP_ANNOTSV {
         }
 
     def val_additional_headers = [
-        '##INFO=<ID=BNDrescue,Number=0,Type=Flag,Description="The other BND of this pair can be recovered"'
+        '##INFO=<ID=BNDrescue,Number=0,Type=Flag,Description="The other BND of this pair can be recovered"',
+        '##contig=<ID=M,length=16569,assembly=GRCh38>'
     ]
 
     BCFTOOLS_CONSENSUS_REHEADER(
         ch_consensus_reheader_input,
-        ch_fai,
+        [[],[]],
         val_additional_headers
     )
     ch_versions = ch_versions.mix(BCFTOOLS_CONSENSUS_REHEADER.out.versions.first())

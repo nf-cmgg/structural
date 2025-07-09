@@ -11,6 +11,7 @@ include { TABIX_TABIX as TABIX_ANNOTSV              } from '../../../modules/nf-
 include { TABIX_TABIX as TABIX_VEP                  } from '../../../modules/nf-core/tabix/tabix/main'
 include { BCFTOOLS_FILTER                           } from '../../../modules/nf-core/bcftools/filter/main'
 include { BCFTOOLS_CONCAT                           } from '../../../modules/nf-core/bcftools/concat/main'
+include { BCFTOOLS_SORT                             } from '../../../modules/nf-core/bcftools/sort/main'
 
 workflow VCF_ANNOTATE_VEP_ANNOTSV {
     take:
@@ -104,13 +105,13 @@ workflow VCF_ANNOTATE_VEP_ANNOTSV {
     )
     ch_versions = ch_versions.mix(BCFTOOLS_CONCAT.out.versions.first())
 
-    TABIX_ANNOTSV(
+    BCFTOOLS_SORT(
         BCFTOOLS_CONCAT.out.vcf
     )
-    ch_versions = ch_versions.mix(TABIX_ANNOTSV.out.versions.first())
+    ch_versions = ch_versions.mix(BCFTOOLS_SORT.out.versions.first())
 
-    def ch_annotsv_output = BCFTOOLS_CONCAT.out.vcf
-        .join(TABIX_ANNOTSV.out.tbi, failOnDuplicate:true, failOnMismatch:true)
+    def ch_annotsv_output = BCFTOOLS_SORT.out.vcf
+        .join(BCFTOOLS_SORT.out.tbi, failOnDuplicate:true, failOnMismatch:true)
 
     ENSEMBLVEP_VEP(
         ch_vcfs,

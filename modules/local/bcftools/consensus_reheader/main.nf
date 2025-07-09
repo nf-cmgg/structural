@@ -23,7 +23,7 @@ process BCFTOOLS_CONSENSUS_REHEADER {
     def add_additional = additional_headers ?
     """
     cat <<-EOF >> ${prefix}.temp.txt
-    ${additional_headers.join("\t\n")}
+${additional_headers.join("\t\n")}
     EOF
     """ : ""
 

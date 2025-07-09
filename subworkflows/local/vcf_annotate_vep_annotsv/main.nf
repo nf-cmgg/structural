@@ -80,7 +80,8 @@ workflow VCF_ANNOTATE_VEP_ANNOTSV {
         }
 
     def val_additional_headers = [
-        '##INFO=<ID=BNDrescue,Number=0,Type=Flag,Description="The other BND of this pair can be recovered"'
+        '##INFO=<ID=BNDrescue,Number=0,Type=Flag,Description="The other BND of this pair can be recovered"',
+        '##contig=<ID=M,length=16569,assembly=GRCh38>'
     ]
 
     BCFTOOLS_CONSENSUS_REHEADER(

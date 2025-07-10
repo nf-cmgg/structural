@@ -7,12 +7,12 @@
                 "nf-core": {
                     "annotsv/annotsv": {
                         "branch": "master",
-                        "git_sha": "a94ad45fa5b350961c374c46f79bc86cd5853353",
+                        "git_sha": "296d216c3f6384936a6526b6fbed7e6412259fb4",
                         "installed_by": ["modules"]
                     },
                     "annotsv/installannotations": {
                         "branch": "master",
-                        "git_sha": "a94ad45fa5b350961c374c46f79bc86cd5853353",
+                        "git_sha": "296d216c3f6384936a6526b6fbed7e6412259fb4",
                         "installed_by": ["modules"]
                     },
                     "bcftools/annotate": {

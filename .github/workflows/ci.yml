@@ -21,7 +21,7 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  test_all:
+  test:
     name: Run nf-test with ${{ matrix.test }}-${{ matrix.NXF_VER }}
     # Only run on push if this is the nf-core dev branch (merged PRs)
     if: "${{ github.event_name != 'push' || (github.event_name == 'push' && github.repository == 'nf-cmgg/structural') }}"
@@ -29,7 +29,7 @@ jobs:
     strategy:
       matrix:
         NXF_VER:
-          - "24.10.0"
+          - "25.04.0"
           - "latest-everything"
         test:
           - "pipeline_sv"

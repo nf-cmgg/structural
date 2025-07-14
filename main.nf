@@ -128,74 +128,68 @@ workflow {
     )
 
     publish:
-    STRUCTURAL.out.caller_vcfs      >> 'caller_vcfs'
-    STRUCTURAL.out.sample_vcfs      >> 'sample_vcfs'
-    STRUCTURAL.out.family_vcfs      >> 'family_vcfs'
-    STRUCTURAL.out.qdnaseq_out      >> 'qdnaseq_out'
-    STRUCTURAL.out.wisecondorx_out  >> 'wisecondorx_out'
-    STRUCTURAL.out.bedpe            >> 'bedpe'
-    STRUCTURAL.out.multiqc_report   >> 'multiqc'
-    STRUCTURAL.out.multiqc_data     >> 'multiqc_data'
+    caller_vcfs     = STRUCTURAL.out.caller_vcfs
+    sample_vcfs     = STRUCTURAL.out.sample_vcfs
+    family_vcfs     = STRUCTURAL.out.family_vcfs
+    qdnaseq_out     = STRUCTURAL.out.qdnaseq_out
+    wisecondorx_out = STRUCTURAL.out.wisecondorx_out
+    bedpe           = STRUCTURAL.out.bedpe
+    multiqc         = STRUCTURAL.out.multiqc_report
+    multiqc_data    = STRUCTURAL.out.multiqc_data
 
 }
 
 output {
-    'caller_vcfs' {
+    caller_vcfs {
         enabled params.output_callers
-        path { meta, vcf, _tbi -> { file ->
-            if(file == vcf.name) {
-                return "${meta.sample}/${meta.caller}/${meta.sample}.vcf.gz"
-            }
-            return "${meta.sample}/${meta.caller}/${meta.sample}.vcf.gz.tbi"
-        } }
+        path { meta, vcf, tbi ->
+            vcf >> "${meta.sample}/${meta.caller}/${meta.sample}.vcf.gz"
+            tbi >> "${meta.sample}/${meta.caller}/${meta.sample}.vcf.gz.tbi"
+        }
     }
-    'sample_vcfs' {
-        path { meta, vcf, _tbi -> { file ->
+    sample_vcfs {
+        path { meta, vcf, tbi ->
             def base = "${meta.id}/${meta.id}${meta.variant_type ? '.' + meta.variant_type : ''}"
-            if(file == vcf.name) {
-                return "${base}.vcf.gz"
-            }
-            return "${base}.vcf.gz.tbi"
-        } }
+            vcf >> "${base}.vcf.gz"
+            tbi >> "${base}.vcf.gz.tbi"
+        }
     }
-    'family_vcfs' {
-        path { meta, vcf, _tbi -> { file ->
+    family_vcfs {
+        path { meta, vcf, tbi ->
             def base = "${meta.id}/${meta.id}${meta.variant_type ? '.' + meta.variant_type : ''}"
-            if(file == vcf.name) {
-                return "${base}.vcf.gz"
-            }
-            return "${base}.vcf.gz.tbi"
-        } }
+            vcf >> "${base}.vcf.gz"
+            tbi >> "${base}.vcf.gz.tbi"
+        }
     }
-    'qdnaseq_out' {
-        path { meta, _bed -> { file ->
-            if(file == "statistics.out") {
-                return "${meta.id}/${meta.id}.qdnaseq.statistics.out"
-            }
-            def new_name = file.replaceFirst(meta.id, "${meta.id}.qdnaseq")
-            return "${meta.id}/${new_name}"
-        } }
+    qdnaseq_out {
+        path { meta, _bed_qdnaseq -> "$meta.id/qdnaseq/"
+            // def base_suffix = bed_qdnaseq.name.replace(meta.id, "${meta.id}.qdnaseq")
+            // bed_qdnaseq >> bed_qdnaseq.name == "statistics.out" ?
+            //     "${meta.id}/${meta.id}.qdnaseq.statistics.out" :
+            //     "${meta.id}/${base_suffix}"
+        }
     }
-    'wisecondorx_out' {
-        path { meta, _bed -> { file ->
-            if(file.endsWith(".png")) {
-                return "${meta.id}/${meta.id}.wisecondorx.${file}"
-            }
-            def new_name = file.replaceFirst(meta.id, "${meta.id}.wisecondorx")
-            return "${meta.id}/${new_name}"
-        } }
+    wisecondorx_out {
+        path { meta, _bed -> "$meta.id/wisecondorx/"
+            // if(bed.name.endsWith(".png")) {
+            //     bed >> "${meta.id}/${meta.id}.wisecondorx.${bed.name}"
+            // } else {
+            //     def new_name = bed.name.replaceFirst(meta.id, "${meta.id}.wisecondorx")
+            //     bed >> "${meta.id}/${new_name}"
+            // }
+        }
     }
-    'bedpe' {
-        path { meta, _bedpe -> { file ->
+    bedpe {
+        path { meta, bedpe ->
             def base = "${meta.id}/${meta.id}${meta.variant_type ? '.' + meta.variant_type : ''}"
-            return "${base}.bedpe"
-        } }
+            bedpe >> "${base}.bedpe"
+        }
     }
-    'multiqc' {
-        path { _report -> { _file -> "multiqc/multiqc_report.html"}}
+    multiqc {
+        path { "multiqc/" }
     }
-    'multiqc_data' {
-        path { _folder -> { _file -> "multiqc/multiqc_data"}}
+    multiqc_data {
+        path { "multiqc/" }
     }
 }
 

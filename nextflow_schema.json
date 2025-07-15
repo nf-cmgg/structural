@@ -73,6 +73,22 @@
                     "pattern": "^\\S+\\.fai$",
                     "mimetype": "text/plain"
                 },
+                "dict": {
+                    "type": "string",
+                    "description": "The sequence dictionary of the FASTA reference file",
+                    "exists": true,
+                    "format": "file-path",
+                    "pattern": "^\\S+\\.dict$",
+                    "mimetype": "text/plain"
+                },
+                "gtf": {
+                    "type": "string",
+                    "description": "Path to GTF file for the reference genome. Gene and transcript annotations will be added when this file is provided",
+                    "exists": true,
+                    "format": "file-path",
+                    "pattern": "^\\S+\\.gtf$",
+                    "mimetype": "text/plain"
+                },
                 "expansionhunter_catalog": {
                     "type": "string",
                     "description": "Path to the expansionhunter catalog",

@@ -28,6 +28,8 @@ include { getGenomeAttribute      } from './subworkflows/local/utils_nfcore_stru
 
 params.fasta                    = getGenomeAttribute('fasta')
 params.fai                      = getGenomeAttribute('fai')
+params.dict                     = getGenomeAttribute('dict')
+params.gtf                      = getGenomeAttribute('gtf')
 params.vep_cache                = getGenomeAttribute('vep_cache')
 // params.bwa                      = getGenomeAttribute('bwa')
 params.annotsv_annotations      = getGenomeAttribute('annotsv_annotations')
@@ -81,6 +83,8 @@ workflow {
         // files
         params.fasta,
         params.fai,
+        params.dict,
+        params.gtf,
         params.expansionhunter_catalog ?: "https://github.com/Illumina/ExpansionHunter/raw/master/variant_catalog/grch38/variant_catalog.json",
         params.qdnaseq_female,
         params.qdnaseq_male,

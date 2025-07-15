@@ -66,6 +66,16 @@
                         "git_sha": "b42fec6f7c6e5d0716685cabb825ef6bf6e386b5",
                         "installed_by": ["modules"]
                     },
+                    "gatk4/createsequencedictionary": {
+                        "branch": "master",
+                        "git_sha": "41dfa3f7c0ffabb96a6a813fe321c6d1cc5b6e46",
+                        "installed_by": ["modules"]
+                    },
+                    "gatk4/svannotate": {
+                        "branch": "master",
+                        "git_sha": "cc7e281e7877146dac79c5a484e6e2b10086234a",
+                        "installed_by": ["modules"]
+                    },
                     "gawk": {
                         "branch": "master",
                         "git_sha": "b42fec6f7c6e5d0716685cabb825ef6bf6e386b5",

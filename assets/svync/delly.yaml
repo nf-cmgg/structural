@@ -1,6 +1,8 @@
 id: delly_$INFO/SVTYPE
 alt:
-  BND: TRA
+  alts:
+    BND: <TRA>
+  value: <$INFO/SVTYPE>
 info:
   CALLERS:
     value: delly

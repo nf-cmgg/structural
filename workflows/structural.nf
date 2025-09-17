@@ -37,6 +37,8 @@ include { VCF_MERGE_FAMILY_JASMINE              } from '../subworkflows/local/vc
 // MODULE: Installed directly from nf-core/modules
 //
 include { SAMTOOLS_FAIDX                    } from '../modules/nf-core/samtools/faidx/main'
+include { GATK4_CREATESEQUENCEDICTIONARY    } from '../modules/nf-core/gatk4/createsequencedictionary/main'
+include { PREPROCESS_GTF                    } from '../modules/local/preprocess_gtf/main'
 include { BWA_INDEX                         } from '../modules/nf-core/bwa/index/main'
 include { ENSEMBLVEP_DOWNLOAD               } from '../modules/nf-core/ensemblvep/download/main'
 include { ANNOTSV_INSTALLANNOTATIONS        } from '../modules/nf-core/annotsv/installannotations/main'
@@ -45,6 +47,7 @@ include { UNTAR as UNTAR_BWA                } from '../modules/nf-core/untar/mai
 include { NGSBITS_SAMPLEGENDER              } from '../modules/nf-core/ngsbits/samplegender/main'
 include { BCFTOOLS_FILTER                   } from '../modules/nf-core/bcftools/filter/main'
 include { SVTOOLS_VCFTOBEDPE                } from '../modules/nf-core/svtools/vcftobedpe/main'
+include { GATK4_SVANNOTATE                  } from '../modules/nf-core/gatk4/svannotate/main'
 include { MULTIQC                           } from '../modules/nf-core/multiqc/main'
 
 /*
@@ -66,6 +69,8 @@ workflow STRUCTURAL {
     // file inputs
     fasta                       // The fasta file to use
     fai                         // The index of the fasta file
+    dict                        // The dictionary of the fasta file
+    gtf                         // The GTF file to use for annotation
     expansionhunter_catalog     // The expansionhunter catalog
     qdnaseq_female              // The QDNAseq annotations for female samples
     qdnaseq_male                // The QDNAseq annotations for male samples
@@ -198,6 +203,32 @@ workflow STRUCTURAL {
     }
     else {
         ch_fai = Channel.fromPath(fai).collect { fai_file -> [[id:'fai'], fai_file] }
+    }
+
+    def ch_dict = Channel.empty()
+    // Dictionary is only needed for GATK4_SVANNOTATE
+    if(!dict && gtf) {
+        GATK4_CREATESEQUENCEDICTIONARY(
+            ch_fasta
+        )
+        ch_versions = ch_versions.mix(GATK4_CREATESEQUENCEDICTIONARY.out.versions)
+
+        ch_dict = GATK4_CREATESEQUENCEDICTIONARY.out.dict.collect()
+    }
+    else if(dict) {
+        ch_dict = Channel.fromPath(dict).collect { dict_file -> [[id:'dict'], dict_file] }
+    }
+
+    def ch_preprocessed_gtf = Channel.empty()
+    // Sanitize GTF file to adhere to the extremely strict GTF parsing in SVAnnotate
+    if (gtf) {
+        ch_sanitize_input = Channel.fromPath(gtf).collect { gtf_file -> [[id:'gtf'], gtf_file] }
+        PREPROCESS_GTF(
+            ch_sanitize_input
+        )
+        ch_versions = ch_versions.mix(PREPROCESS_GTF.out.versions)
+
+        ch_preprocessed_gtf = PREPROCESS_GTF.out.gtf.collect()
     }
 
     // if(!bwa && "gridss" in callers){
@@ -434,16 +465,35 @@ workflow STRUCTURAL {
         ch_vcfanno_output  = ch_annotation_input
     }
 
-    def ch_outputs = Channel.empty()
+    def ch_filter_outputs = Channel.empty()
     if(filter) {
         BCFTOOLS_FILTER(
             ch_vcfanno_output
         )
-        def ch_filter_output = BCFTOOLS_FILTER.out.vcf.join(BCFTOOLS_FILTER.out.tbi, failOnMismatch:true, failOnDuplicate:true)
-        ch_outputs = ch_outputs.mix(ch_filter_output)
+        ch_filter_outputs = BCFTOOLS_FILTER.out.vcf.join(BCFTOOLS_FILTER.out.tbi, failOnMismatch:true, failOnDuplicate:true)
         ch_versions = ch_versions.mix(BCFTOOLS_FILTER.out.versions)
     } else {
-        ch_outputs = ch_outputs.mix(ch_vcfanno_output)
+        ch_filter_outputs = ch_vcfanno_output
+    }
+
+    def ch_outputs = Channel.empty()
+    if(gtf) {
+        def ch_svannotate_input = ch_filter_outputs
+            .map { meta, vcf, tbi ->
+                [ meta, vcf, tbi, [], [] ] // TODO add BED files
+            }
+
+        GATK4_SVANNOTATE(
+            ch_svannotate_input,
+            ch_fasta,
+            ch_fai,
+            ch_dict,
+            ch_preprocessed_gtf
+        )
+        ch_versions = ch_versions.mix(GATK4_SVANNOTATE.out.versions.first())
+        ch_outputs = ch_outputs.mix(GATK4_SVANNOTATE.out.vcf.join(GATK4_SVANNOTATE.out.tbi, failOnMismatch:true, failOnDuplicate:true))
+    } else {
+        ch_outputs = ch_outputs.mix(ch_filter_outputs)
     }
 
     //

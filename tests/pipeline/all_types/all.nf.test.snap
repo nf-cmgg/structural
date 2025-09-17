@@ -2,7 +2,7 @@
     "all": {
         "content": [
             [
-                
+
             ],
             [
                 "PosCon1/PosCon1.cnv.vcf.gz",
@@ -82,7 +82,7 @@
     "concat": {
         "content": [
             [
-                
+
             ],
             [
                 "PosCon1/PosCon1.vcf.gz",
@@ -141,12 +141,12 @@
             "nf-test": "0.9.2",
             "nextflow": "25.04.6"
         },
-        "timestamp": "2025-07-10T16:20:18.015157817"
+        "timestamp": "2025-07-22T11:45:55.747550179"
     },
     "output callers": {
         "content": [
             [
-                
+
             ],
             [
                 "PosCon1/PosCon1.cnv.vcf.gz",

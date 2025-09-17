@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 1. Added the samplesheet to the pipeline output as `OUTDIR/samplesheet.csv`
 2. Added the `--bedpe` parameter. This makes the pipeline output BEDPE files alongside the VCF files.
 3. Added parallelization on SV type to the delly flow
+4. Added a `--gtf` parameter for annotation of gene and transcript overlap using `gatk SVAnnotate`.
 
 ### `Changes`
 
@@ -30,6 +31,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 1. Fail the pipeline when the sex determination failed. This will now prompt the user to add the sex to the samplesheet so the pipeline doesn't do any wrong assumptions
 2. Fixed the Jasmine module output VCFs being empty when no variants have been merged. This file now contains the header of one of the input VCFs
 3. AnnotSV VCF files are now sorted before trying to combine it with the VEP output.
+4. Fixed a map issue when the sex field is empty in the samplesheet
 
 ## v0.2.0 - [19 July 2024] - Mighty Manneken Pis
 

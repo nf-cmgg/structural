@@ -300,8 +300,14 @@ workflow STRUCTURAL {
                 no_sex: !meta.sex
             }
 
+        def ch_samplegender_multi = ch_samplegender_input.no_sex
+            .multiMap { meta, cram, crai, small_variants ->
+                cram: [ meta, cram, crai ]
+                other: [ meta, small_variants ]
+            }
+
         NGSBITS_SAMPLEGENDER(
-            ch_samplegender_input.no_sex,
+            ch_samplegender_multi.cram,
             ch_fasta,
             ch_fai,
             "xy"
@@ -309,10 +315,11 @@ workflow STRUCTURAL {
         ch_versions = ch_versions.mix(NGSBITS_SAMPLEGENDER.out.versions.first())
 
         ch_input_sex = NGSBITS_SAMPLEGENDER.out.tsv
-            .join(ch_samplegender_input.no_sex, failOnDuplicate:true, failOnMismatch:true)
-            .map { meta, tsv, cram, crai ->
+            .join(ch_samplegender_multi.cram, failOnDuplicate:true, failOnMismatch:true)
+            .join(ch_samplegender_multi.other, failOnDuplicate:true, failOnMismatch:true)
+            .map { meta, tsv, cram, crai, small_variants ->
                 def new_meta = meta + [sex:get_sex(tsv, meta.sample)]
-                return [ new_meta, cram, crai ]
+                return [ new_meta, cram, crai, small_variants ]
             }
             .mix(ch_samplegender_input.sex)
     } else {

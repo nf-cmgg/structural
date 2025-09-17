@@ -25,6 +25,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 9. Changed the `--annotations_filter` parameter to a `--filter` parameter. This parameter takes an argument of `bcftools filter` to filter the resulting VCFs.
 10. Removed the `--delly_sv_types` parameter.
 11. Moved all `wisecondorx` and `qdnaseq` outputs to a separate directory in each sample output.
+12. Bumped all annotation modules to the latest versions
 
 ### `Fixed`
 

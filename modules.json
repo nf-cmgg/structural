@@ -53,12 +53,12 @@
                     },
                     "ensemblvep/download": {
                         "branch": "master",
-                        "git_sha": "3db4f8488315cd7d7cf3fcb64251f6603210e831",
+                        "git_sha": "f9234d35f5b9143313a4773fb54716876c030323",
                         "installed_by": ["modules"]
                     },
                     "ensemblvep/vep": {
                         "branch": "master",
-                        "git_sha": "b42fec6f7c6e5d0716685cabb825ef6bf6e386b5",
+                        "git_sha": "f9234d35f5b9143313a4773fb54716876c030323",
                         "installed_by": ["modules"]
                     },
                     "expansionhunter": {

@@ -73,7 +73,7 @@
                     },
                     "gatk4/svannotate": {
                         "branch": "master",
-                        "git_sha": "cc7e281e7877146dac79c5a484e6e2b10086234a",
+                        "git_sha": "a57253204b8f4022edfeaa3ae2f5e2abecd8858b",
                         "installed_by": ["modules"]
                     },
                     "gawk": {

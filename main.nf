@@ -37,6 +37,8 @@ params.expansionhunter_catalog  = getGenomeAttribute('expansionhunter_catalog')
 params.qdnaseq_male             = getGenomeAttribute("qdnaseq_male_${params.qdnaseq_bin_size.toInteger() / 1000}kbp".toString())
 params.qdnaseq_female           = getGenomeAttribute("qdnaseq_female_${params.qdnaseq_bin_size.toInteger() / 1000}kbp".toString())
 params.wisecondorx_reference    = getGenomeAttribute('wisecondorx_reference')
+params.strvctvre_phylop         = getGenomeAttribute('strvctvre_phylop')
+params.strvctvre_data           = getGenomeAttribute('strvctvre_data')
 
 
 /*
@@ -101,6 +103,8 @@ workflow {
         "${projectDir}/assets/svync",
         "${projectDir}/assets/bedgovcf",
         "${projectDir}/assets/vcfanno",
+        params.strvctvre_phylop,
+        params.strvctvre_data,
 
         // booleans
         params.annotate,

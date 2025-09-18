@@ -2,18 +2,22 @@ include { VCF_ANNOTATE_VCFANNO  } from '../../../subworkflows/local/vcf_annotate
 
 include { ENSEMBLVEP_VEP        } from '../../../modules/nf-core/ensemblvep/vep/main'
 include { GATK4_SVANNOTATE      } from '../../../modules/nf-core/gatk4/svannotate/main'
+include { STRVCTVRE_STRVCTVRE   } from '../../../modules/nf-core/strvctvre/strvctvre/main'
+include { TABIX_BGZIPTABIX      } from '../../../modules/nf-core/tabix/bgziptabix/main'
 
 workflow VCF_ANNOTATE {
     take:
     vcfs                                 // channel: [mandatory] [ val(meta), path(vcf), path(tbi) ] VCFs containing the called structural variants
     fasta                                // channel: [mandatory] [ val(meta), path(fasta) ] => The fasta reference file
-    fai                                  // channel: [mandatory] [ val(meta), path(fai) ] => The fasta index file
-    dict                                 // channel: [mandatory] [ val(meta), path(dict) ] => The fasta dict file
-    gtf                                  // channel: [mandatory] [ val(meta), path(gtf) ] => The preprocessed GTF file for SVAnnotate
+    fai                                  // channel: [optional]  [ val(meta), path(fai) ] => The fasta index file
+    dict                                 // channel: [optional]  [ val(meta), path(dict) ] => The fasta dict file
+    gtf                                  // channel: [optional]  [ val(meta), path(gtf) ] => The preprocessed GTF file for SVAnnotate
     vep_cache                            // channel: [optional]  [ path(cache) ] => The path to the local VEP cache
     vep_extra_files                      // channel: [optional]  [ path(file1, file2, file3...) ] => The VEP extra files
     vcfanno_lua                          // channel: [optional]  [ path(lua) ] => The lua script to influence VCFanno
-    vcfanno_toml                         // file:    [optional]  => A vcfanno TOML config
+    vcfanno_toml                         // channel: [optional]  [ path(toml) ] => A vcfanno TOML config
+    strvctvre_phylop                     // channel: [optional]  [ val(meta), path(phylop) ] => The phylop bigwig file for StrVCTVRE
+    strvctvre_data                       // channel: [optional]  [ val(meta), path(data_dir) ] => The data directory for StrVCTVRE
     genome                               // string:  [mandatory] => The genome used by the variant callers
     species                              // string:  [mandatory] => The species used by VEP
     vep_cache_version                    // integer: [mandatory] => The VEP cache version to use
@@ -72,8 +76,25 @@ workflow VCF_ANNOTATE {
         ch_svannotate = GATK4_SVANNOTATE.out.vcf.join(GATK4_SVANNOTATE.out.tbi, failOnMismatch:true, failOnDuplicate:true)
     }
 
+    def ch_strvctvre = ch_svannotate
+    if( tools.contains("strvctvre") || tools.contains("strvctvre") ) {
+        STRVCTVRE_STRVCTVRE(
+            ch_svannotate.map { meta, vcf, tbi -> [ meta, vcf, tbi, genome ] },
+            strvctvre_phylop,
+            strvctvre_data
+        )
+        ch_versions = ch_versions.mix(STRVCTVRE_STRVCTVRE.out.versions.first())
+
+        TABIX_BGZIPTABIX(
+            STRVCTVRE_STRVCTVRE.out.vcf
+        )
+        ch_versions = ch_versions.mix(TABIX_BGZIPTABIX.out.versions.first())
+
+        ch_strvctvre = TABIX_BGZIPTABIX.out.gz_tbi
+    }
+
     emit:
-    vcfs = Channel.empty()
+    vcfs = ch_strvctvre
     versions = ch_versions
     reports = ch_reports
 }

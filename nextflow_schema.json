@@ -121,6 +121,20 @@
                     "format": "file-path",
                     "mimetype": "application/octet-stream"
                 },
+                "strvctvre_phylop": {
+                    "type": "string",
+                    "format": "file-path",
+                    "pattern": "^\\S+\\.bw$",
+                    "exists": true,
+                    "description": "Path to the StrVCTVRE phylo bigwig file"
+                },
+                "strvctvre_data": {
+                    "type": "string",
+                    "format": "directory-path",
+                    "pattern": "^\\S+$",
+                    "exists": true,
+                    "description": "Path to the StrVCTVRE data directory"
+                },
                 "blacklist": {
                     "type": "string",
                     "pattern": "^\\S+\\.bed$",

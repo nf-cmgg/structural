@@ -138,6 +138,11 @@
                         "git_sha": "f2fdc5e81efe36beff213752ce1a8e71fceeacba",
                         "installed_by": ["modules"]
                     },
+                    "strvctvre/strvctvre": {
+                        "branch": "master",
+                        "git_sha": "e05456babfdf276f4771b140d04fb41eb2a2d13c",
+                        "installed_by": ["modules"]
+                    },
                     "svtools/vcftobedpe": {
                         "branch": "master",
                         "git_sha": "5cf15e4c5ad6d06718b35e5ec1655c7c0a105880",

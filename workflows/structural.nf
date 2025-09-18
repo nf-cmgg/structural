@@ -88,6 +88,8 @@ workflow STRUCTURAL {
     svync_dir                   // A directory containing svync configs (they must end in '.yaml' and contain the full name of the caller)
     bedgovcf_dir                // A directory containing bedgovcf configs (they must end in '.yaml' and contain the full name of the caller)
     vcfanno_default_dir         // A directory containing the default vcfanno configs (they must end in '.toml')
+    strvctvre_phylop            // A bigwig file containing the phylop reference for StrVCTVRE
+    strvctvre_data              // A directory containing the reference data for StrVCTVRE
 
     // boolean inputs
     annotate                    // Run annotation on SV and CNV data
@@ -131,6 +133,8 @@ workflow STRUCTURAL {
     def ch_manta_config             = manta_config ?             Channel.fromPath(manta_config).collect() : [[]]
     def ch_svync_configs            = svync_dir ?                Channel.fromPath("${svync_dir}/*.yaml", checkIfExists:true).collect() : []
     def ch_bedgovcf_configs         = bedgovcf_dir ?             Channel.fromPath("${bedgovcf_dir}/*.yaml", checkIfExists:true).collect() : []
+    def ch_strvctvre_phylop         = strvctvre_phylop ?         Channel.value([[id:'phylop'], file(strvctvre_phylop)]) : [[:],[]]
+    def ch_strvctvre_data           = strvctvre_data ?           Channel.value([[id:'strvctvre_data'], file(strvctvre_data)]) : [[:],[]]
 
     def val_vcfanno_resources       = vcfanno_resources ?        vcfanno_resources.split(",").collect { resource_file -> file(resource_file, checkIfExists:true) }.flatten() : []
     def val_default_vcfanno_tomls   = vcfanno_default_dir ?      files("${vcfanno_default_dir}/*.toml", checkIfExists:true) : []
@@ -440,6 +444,8 @@ workflow STRUCTURAL {
             ch_vep_extra_files,
             ch_vcfanno_lua,
             val_vcfanno_toml,
+            ch_strvctvre_phylop,
+            ch_strvctvre_data,
             genome,
             species,
             vep_cache_version,

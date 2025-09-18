@@ -7,48 +7,32 @@ include { BCFTOOLS_FILTER   } from '../../../modules/nf-core/bcftools/filter/mai
 
 workflow VCF_ANNOTATE_VCFANNO {
     take:
-        ch_vcfs                                 // channel: [mandatory] [ val(meta), path(vcf), path(tbi) ] VCFs containing the called structural variants
-        ch_sample_specific_resources            // channel: [optional]  [ val(meta), path(vcf), path(tbi) ] Files containing resources that are sample-specific
+        ch_vcfs                                 // channel: [mandatory] [ val(meta), path(vcf), path(tbi), path(specific_resources) ] VCFs containing the called structural variants
         ch_vcfanno_lua                          // channel: [optional]  [ path(lua) ] => The lua script to influence VCFanno
         val_vcfanno_resources                   // list:    [optional]  [ path(file1, file2, file3...) ] => The extra VCFanno files
         vcfanno_toml                            // file:    [optional]  => A vcfanno TOML config
         default_vcfanno_tomls                   // list:    [mandatory] => A list of default vcfanno configs to be concatenated with the input TOML
-        annotate                                // boolean: [mandatory] => Whether or not to run the full annotation or only the specified annotations
 
     main:
 
     def ch_versions = Channel.empty()
 
-    def ch_vcfanno_toml = Channel.empty()
-    def ch_vcfanno_input = Channel.empty()
-    if(annotate) {
-        ch_vcfanno_toml = Channel.fromList(create_vcfanno_toml(val_vcfanno_resources, vcfanno_toml, default_vcfanno_tomls))
-            .collectFile(name:"vcfanno.toml", newLine:true)
-            .collect()
-        def ch_collected_specific_resources = ch_sample_specific_resources.map { entry ->
-            [ entry[0], entry[1..-1].findAll { res_file -> res_file != [] } ]
-        }
-        ch_vcfanno_input = ch_vcfs.join(ch_collected_specific_resources, failOnMismatch:true, failOnDuplicate:true)
-    } else {
-        ch_vcfanno_toml = Channel.fromPath(vcfanno_toml).collect()
-        ch_vcfanno_input = ch_vcfs.map { meta, vcf, tbi ->
-            [ meta, vcf, tbi, [] ]
-        }
-    }
+    def ch_vcfanno_toml = Channel.fromList(create_vcfanno_toml(val_vcfanno_resources, vcfanno_toml, default_vcfanno_tomls))
+        .collectFile(name:"vcfanno.toml", newLine:true)
+        .collect()
 
     VCFANNO(
-        ch_vcfanno_input,
+        ch_vcfs,
         ch_vcfanno_toml,
         ch_vcfanno_lua,
         val_vcfanno_resources ? Channel.fromList(val_vcfanno_resources).collect() : []
     )
-    ch_versions = ch_versions.mix(VCFANNO.out.versions)
+    ch_versions = ch_versions.mix(VCFANNO.out.versions.first())
 
     def ch_annotated_vcfs = VCFANNO.out.vcf.join(VCFANNO.out.tbi, failOnDuplicate:true, failOnMismatch:true)
 
     emit:
     vcfs            = ch_annotated_vcfs  // channel: [ val(meta), path(vcf), path(tbi) ]
-
     versions        = ch_versions
 }
 

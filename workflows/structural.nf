@@ -24,6 +24,7 @@ include { BAM_CNV_CALLING                       } from '../subworkflows/local/ba
 include { VCF_ANNOTATE_VEP_ANNOTSV              } from '../subworkflows/local/vcf_annotate_vep_annotsv/main'
 include { VCF_ANNOTATE_VCFANNO                  } from '../subworkflows/local/vcf_annotate_vcfanno/main'
 include { BAM_REPEAT_ESTIMATION_EXPANSIONHUNTER } from '../subworkflows/local/bam_repeat_estimation_expansionhunter/main'
+include { VCF_ANNOTATE                          } from '../subworkflows/local/vcf_annotate/main'
 include { VCF_CONCAT_BCFTOOLS                   } from '../subworkflows/local/vcf_concat_bcftools/main'
 include { VCF_MERGE_FAMILY_JASMINE              } from '../subworkflows/local/vcf_merge_family_jasmine/main'
 
@@ -76,9 +77,9 @@ workflow STRUCTURAL {
     qdnaseq_male                // The QDNAseq annotations for male samples
     wisecondorx_reference       // The WisecondorX annotations file
     vep_cache                   // The VEP cache directory
-    annotsv_annotations         // The annotations directory for AnnotSV
-    annotsv_candidate_genes     // A file containing the AnnotSV candidate genes
-    annotsv_gene_transcripts    // A file containing the AnnotSV gene transcripts
+    // annotsv_annotations         // The annotations directory for AnnotSV
+    // annotsv_candidate_genes     // A file containing the AnnotSV candidate genes
+    // annotsv_gene_transcripts    // A file containing the AnnotSV gene transcripts
     vcfanno_lua                 // A Lua script to use with vcfanno
     vcfanno_resources           // A comma delimited list of paths to vcfanno resource files
     vcfanno_toml                // The vcfanno config to
@@ -103,6 +104,7 @@ workflow STRUCTURAL {
     vep_cache_version           // The version of the VEP cache to use
     filter                      // The filter pattern to use after annotation
     outdir                      // The output directory of the pipeline
+    annotate_tools              // The tools to be used for annotation
 
     main:
 
@@ -118,8 +120,8 @@ workflow STRUCTURAL {
     //
 
     def ch_fasta                    = Channel.fromPath(fasta).collect { fasta_file -> [[id:'fasta'], fasta_file ] }
-    def ch_annotsv_candidate_genes  = annotsv_candidate_genes ?  Channel.fromPath(annotsv_candidate_genes).collect { genes_file -> [[], genes_file] } : [[],[]]
-    def ch_annotsv_gene_transcripts = annotsv_gene_transcripts ? Channel.fromPath(annotsv_gene_transcripts).collect { transcripts_file -> [[], transcripts_file] } : [[],[]]
+    // def ch_annotsv_candidate_genes  = annotsv_candidate_genes ?  Channel.fromPath(annotsv_candidate_genes).collect { genes_file -> [[], genes_file] } : [[],[]]
+    // def ch_annotsv_gene_transcripts = annotsv_gene_transcripts ? Channel.fromPath(annotsv_gene_transcripts).collect { transcripts_file -> [[], transcripts_file] } : [[],[]]
     def ch_vcfanno_lua              = vcfanno_lua ?              Channel.fromPath(vcfanno_lua).collect() : []
     def ch_catalog                  = expansionhunter_catalog ?  Channel.fromPath(expansionhunter_catalog).collect { catalog_file -> [[id:'catalog'], catalog_file] } : [[],[]]
     def ch_qdnaseq_male             = qdnaseq_male ?             Channel.fromPath(qdnaseq_male).collect { qdnaseq_file -> [[id:'qdnaseq_male'], qdnaseq_file] } : [[],[]]
@@ -185,6 +187,10 @@ workflow STRUCTURAL {
 
     if (repeats_callers_to_use.size() > 0 && bedpe && concat_output) {
         error("Can't create BEDPE files from VCFs that contains repeat expansions. Don't specify either --concat_output or omit all repeat callers from the --callers parameter.")
+    }
+
+    if (annotate && (annotate_tools.contains("svannotate") || annotate_tools.contains("all")) && !gtf) {
+        error("The GTF file is required when using SVAnnotate. Please provide it using the 'gtf' parameter.")
     }
 
     //
@@ -258,28 +264,28 @@ workflow STRUCTURAL {
     //     ch_bwa_index = Channel.empty()
     // }
 
-    def ch_annotsv_annotations = Channel.empty()
-    if(annotate && !annotsv_annotations && callers.intersect(annotationCallers)) {
-        ANNOTSV_INSTALLANNOTATIONS()
-        ch_versions = ch_versions.mix(ANNOTSV_INSTALLANNOTATIONS.out.versions)
+    // def ch_annotsv_annotations = Channel.empty()
+    // if(annotate && !annotsv_annotations && callers.intersect(annotationCallers)) {
+    //     ANNOTSV_INSTALLANNOTATIONS()
+    //     ch_versions = ch_versions.mix(ANNOTSV_INSTALLANNOTATIONS.out.versions)
 
-        ch_annotsv_annotations = ANNOTSV_INSTALLANNOTATIONS.out.annotations
-            .collect { annotations -> [[id:"annotsv_annotations"], annotations] }
-    }
-    else if(annotate && callers.intersect(annotationCallers)) {
-        ch_annotsv_annotations_input = Channel.fromPath(annotsv_annotations).collect { annotations -> [[id:"annotsv_annotations"], annotations] }
-        if(annotsv_annotations.endsWith(".tar.gz")){
-            UNTAR_ANNOTSV(
-                ch_annotsv_annotations_input
-            )
-            ch_versions = ch_versions.mix(UNTAR_ANNOTSV.out.versions)
+    //     ch_annotsv_annotations = ANNOTSV_INSTALLANNOTATIONS.out.annotations
+    //         .collect { annotations -> [[id:"annotsv_annotations"], annotations] }
+    // }
+    // else if(annotate && callers.intersect(annotationCallers)) {
+    //     ch_annotsv_annotations_input = Channel.fromPath(annotsv_annotations).collect { annotations -> [[id:"annotsv_annotations"], annotations] }
+    //     if(annotsv_annotations.endsWith(".tar.gz")){
+    //         UNTAR_ANNOTSV(
+    //             ch_annotsv_annotations_input
+    //         )
+    //         ch_versions = ch_versions.mix(UNTAR_ANNOTSV.out.versions)
 
-            ch_annotsv_annotations = UNTAR_ANNOTSV.out.untar
-                .collect()
-        } else {
-            ch_annotsv_annotations = Channel.fromPath(annotsv_annotations).collect { annotations -> [[id:"annotsv_annotations"], annotations] }
-        }
-    }
+    //         ch_annotsv_annotations = UNTAR_ANNOTSV.out.untar
+    //             .collect()
+    //     } else {
+    //         ch_annotsv_annotations = Channel.fromPath(annotsv_annotations).collect { annotations -> [[id:"annotsv_annotations"], annotations] }
+    //     }
+    // }
 
     def ch_vep_cache = Channel.empty()
     if(!vep_cache && annotate && callers.intersect(annotationCallers)) {
@@ -422,78 +428,37 @@ workflow STRUCTURAL {
     // Annotate the variants
     //
 
-    def ch_annotation_output = Channel.empty()
-    def ch_annotsv_vcfs = Channel.empty()
-    if(annotate) {
-        VCF_ANNOTATE_VEP_ANNOTSV(
+    def ch_annotation_output = ch_annotation_input
+    if(annotate && annotate_tools.size() > 0) {
+        VCF_ANNOTATE(
             ch_annotation_input,
-            ch_inputs.small_variants,
-            ch_fasta,
-            ch_annotsv_annotations,
-            ch_annotsv_candidate_genes,
-            ch_annotsv_gene_transcripts,
-            ch_vep_cache,
-            ch_vep_extra_files,
-            variant_types,
-            genome,
-            species,
-            vep_cache_version
-        )
-
-        ch_reports              = ch_reports.mix(VCF_ANNOTATE_VEP_ANNOTSV.out.reports)
-        ch_versions             = ch_versions.mix(VCF_ANNOTATE_VEP_ANNOTSV.out.versions)
-        ch_annotation_output    = VCF_ANNOTATE_VEP_ANNOTSV.out.vep_vcfs
-        ch_annotsv_vcfs         = VCF_ANNOTATE_VEP_ANNOTSV.out.annotsv_vcfs
-    } else {
-        ch_annotation_output    = ch_annotation_input
-    }
-
-    def ch_vcfanno_output = Channel.empty()
-    if(annotate || vcfanno_toml) {
-        VCF_ANNOTATE_VCFANNO(
-            ch_annotation_output,
-            ch_annotsv_vcfs,
-            ch_vcfanno_lua,
-            val_vcfanno_resources,
-            val_vcfanno_toml,
-            val_default_vcfanno_tomls,
-            annotate
-        )
-        ch_versions = ch_versions.mix(VCF_ANNOTATE_VCFANNO.out.versions)
-        ch_vcfanno_output  = VCF_ANNOTATE_VCFANNO.out.vcfs
-    } else {
-        ch_vcfanno_output  = ch_annotation_input
-    }
-
-    def ch_filter_outputs = Channel.empty()
-    if(filter) {
-        BCFTOOLS_FILTER(
-            ch_vcfanno_output
-        )
-        ch_filter_outputs = BCFTOOLS_FILTER.out.vcf.join(BCFTOOLS_FILTER.out.tbi, failOnMismatch:true, failOnDuplicate:true)
-        ch_versions = ch_versions.mix(BCFTOOLS_FILTER.out.versions)
-    } else {
-        ch_filter_outputs = ch_vcfanno_output
-    }
-
-    def ch_outputs = Channel.empty()
-    if(gtf) {
-        def ch_svannotate_input = ch_filter_outputs
-            .map { meta, vcf, tbi ->
-                [ meta, vcf, tbi, [], [] ] // TODO add BED files
-            }
-
-        GATK4_SVANNOTATE(
-            ch_svannotate_input,
             ch_fasta,
             ch_fai,
             ch_dict,
-            ch_preprocessed_gtf
+            ch_preprocessed_gtf,
+            ch_vep_cache,
+            ch_vep_extra_files,
+            ch_vcfanno_lua,
+            val_vcfanno_toml,
+            genome,
+            species,
+            vep_cache_version,
+            val_vcfanno_resources,
+            val_default_vcfanno_tomls,
+            annotate_tools
         )
-        ch_versions = ch_versions.mix(GATK4_SVANNOTATE.out.versions.first())
-        ch_outputs = ch_outputs.mix(GATK4_SVANNOTATE.out.vcf.join(GATK4_SVANNOTATE.out.tbi, failOnMismatch:true, failOnDuplicate:true))
-    } else {
-        ch_outputs = ch_outputs.mix(ch_filter_outputs)
+        ch_versions = ch_versions.mix(VCF_ANNOTATE.out.versions)
+        ch_reports  = ch_reports.mix(VCF_ANNOTATE.out.reports)
+        ch_annotation_output = VCF_ANNOTATE.out.vcfs
+    }
+
+    def ch_outputs = ch_annotation_output
+    if(filter) {
+        BCFTOOLS_FILTER(
+            ch_annotation_output
+        )
+        ch_outputs = BCFTOOLS_FILTER.out.vcf.join(BCFTOOLS_FILTER.out.tbi, failOnMismatch:true, failOnDuplicate:true)
+        ch_versions = ch_versions.mix(BCFTOOLS_FILTER.out.versions)
     }
 
     //

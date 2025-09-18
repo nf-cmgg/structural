@@ -1,6 +1,8 @@
 //
 // Annotate the VCFs
 //
+// Deprecated subworkflow: keep this in the pipeline until a final decision is made on whether to keep using AnnotSV
+//
 
 include { BCFTOOLS_SPLIT_BY_SVTYPE                  } from '../../../modules/local/bcftools/split_by_svtype'
 include { BCFTOOLS_CONSENSUS_REHEADER               } from '../../../modules/local/bcftools/consensus_reheader'

@@ -64,7 +64,8 @@
                     "expansionhunter": {
                         "branch": "master",
                         "git_sha": "b42fec6f7c6e5d0716685cabb825ef6bf6e386b5",
-                        "installed_by": ["modules"]
+                        "installed_by": ["modules"],
+                        "patch": "modules/nf-core/expansionhunter/expansionhunter.diff"
                     },
                     "gatk4/createsequencedictionary": {
                         "branch": "master",
@@ -141,12 +142,14 @@
                     "strvctvre/strvctvre": {
                         "branch": "master",
                         "git_sha": "e05456babfdf276f4771b140d04fb41eb2a2d13c",
-                        "installed_by": ["modules"]
+                        "installed_by": ["modules"],
+                        "patch": "modules/nf-core/strvctvre/strvctvre/strvctvre-strvctvre.diff"
                     },
                     "svtools/vcftobedpe": {
                         "branch": "master",
                         "git_sha": "5cf15e4c5ad6d06718b35e5ec1655c7c0a105880",
-                        "installed_by": ["modules"]
+                        "installed_by": ["modules"],
+                        "patch": "modules/nf-core/svtools/vcftobedpe/svtools-vcftobedpe.diff"
                     },
                     "svync": {
                         "branch": "master",
@@ -190,12 +193,12 @@
                 "nf-core": {
                     "utils_nextflow_pipeline": {
                         "branch": "master",
-                        "git_sha": "d20fb2a9cc3e2835e9d067d1046a63252eb17352",
+                        "git_sha": "05954dab2ff481bcb999f24455da29a5828af08d",
                         "installed_by": ["subworkflows"]
                     },
                     "utils_nfcore_pipeline": {
                         "branch": "master",
-                        "git_sha": "2fdce49d30c0254f76bc0f13c55c17455c1251ab",
+                        "git_sha": "05954dab2ff481bcb999f24455da29a5828af08d",
                         "installed_by": ["subworkflows"]
                     },
                     "utils_nfschema_plugin": {

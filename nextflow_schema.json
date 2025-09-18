@@ -315,12 +315,6 @@
                     "type": "boolean",
                     "description": "Output monochrome logs"
                 },
-                "pipelines_testdata_base_path": {
-                    "type": "string",
-                    "hidden": true,
-                    "description": "The base path to of the pipeline test data",
-                    "default": "https://raw.githubusercontent.com/nf-core/test-datasets/"
-                },
                 "trace_report_suffix": {
                     "type": "string",
                     "hidden": true

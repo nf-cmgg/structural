@@ -10,6 +10,10 @@ lint:
     - assets/nf-core-structural_logo_light.png
     - docs/images/nf-core-structural_logo_light.png
     - docs/images/nf-core-structural_logo_dark.png
+    - .github/workflows/nf-test.yml
+    - .github/actions/get-shards/action.yml
+    - .github/actions/nf-test/action.yml
+    - tests/default.nf.test
   files_unchanged:
     - LICENSE
     - .github/PULL_REQUEST_TEMPLATE.md

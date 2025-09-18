@@ -11,6 +11,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 2. Added the `--bedpe` parameter. This makes the pipeline output BEDPE files alongside the VCF files.
 3. Added parallelization on SV type to the delly flow
 4. Added a `--gtf` parameter for annotation of gene and transcript overlap using `gatk SVAnnotate`.
+14. Added `StrVCTVRE` as a new annotation tool
 
 ### `Changes`
 
@@ -26,6 +27,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 10. Removed the `--delly_sv_types` parameter.
 11. Moved all `wisecondorx` and `qdnaseq` outputs to a separate directory in each sample output.
 12. Bumped all annotation modules to the latest versions
+13. Reworked the annotation structure to a per tool structure. Specify the annotations tools you want to run with `--annotate_tools`. This parameter takes a comma-separated list of tool names (options: `vep`, `vcfanno`, `svannotate`, `strvctvre` or `all` (=> all tools))
 
 ### `Fixed`
 

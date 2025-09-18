@@ -1,0 +1,167 @@
+{
+    "homo_sapiens - strvctvre": {
+        "content": [
+            {
+                "reports": [
+                    
+                ],
+                "vcfs": [
+                    [
+                        {
+                            "id": "test",
+                            "sample": "test",
+                            "sex": "male",
+                            "family": "test1",
+                            "family_count": 1,
+                            "hpo": [
+                                
+                            ],
+                            "variant_type": "sv"
+                        },
+                        "test.sv.strvctvre.vcf.gz:md5,68b329da9893e34099c7d8ad5cb9c940",
+                        "test.sv.strvctvre.vcf.gz.tbi:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "versions": [
+                    {
+                        "VCF_ANNOTATE:TABIX_BGZIPTABIX": {
+                            "tabix": "1.19.1"
+                        }
+                    },
+                    {
+                        "VCF_ANNOTATE:STRVCTVRE_STRVCTVRE": {
+                            "strvctvre": "1.10"
+                        }
+                    }
+                ]
+            }
+        ],
+        "meta": {
+            "nf-test": "0.9.2",
+            "nextflow": "25.04.6"
+        },
+        "timestamp": "2025-09-18T16:39:18.734993799"
+    },
+    "homo_sapiens - svannotate": {
+        "content": [
+            {
+                "reports": [
+                    
+                ],
+                "vcfs": [
+                    [
+                        {
+                            "id": "test",
+                            "sample": "test",
+                            "sex": "male",
+                            "family": "test1",
+                            "family_count": 1,
+                            "hpo": [
+                                
+                            ],
+                            "variant_type": "sv"
+                        },
+                        "test.sv.svannotate.vcf.gz:md5,68b329da9893e34099c7d8ad5cb9c940",
+                        "test.sv.svannotate.vcf.gz.tbi:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "versions": [
+                    {
+                        "VCF_ANNOTATE:GATK4_SVANNOTATE": {
+                            "gatk4": "4.6.1.0"
+                        }
+                    }
+                ]
+            }
+        ],
+        "meta": {
+            "nf-test": "0.9.2",
+            "nextflow": "25.04.6"
+        },
+        "timestamp": "2025-09-18T16:37:20.479982511"
+    },
+    "homo_sapiens - vcfanno": {
+        "content": [
+            {
+                "reports": [
+                    
+                ],
+                "vcfs": [
+                    
+                ],
+                "versions": [
+                    
+                ]
+            }
+        ],
+        "meta": {
+            "nf-test": "0.9.2",
+            "nextflow": "25.04.6"
+        },
+        "timestamp": "2025-09-18T16:25:29.485702235"
+    },
+    "homo_sapiens - all": {
+        "content": [
+            {
+                "reports": [
+                    "test.vep_summary.html:md5,d41d8cd98f00b204e9800998ecf8427e"
+                ],
+                "vcfs": [
+                    
+                ],
+                "versions": [
+                    {
+                        "VCF_ANNOTATE:ENSEMBLVEP_VEP": {
+                            "ensemblvep": 115.1,
+                            "tabix": 1.21
+                        }
+                    }
+                ]
+            }
+        ],
+        "meta": {
+            "nf-test": "0.9.2",
+            "nextflow": "25.04.6"
+        },
+        "timestamp": "2025-09-18T16:36:34.504712288"
+    },
+    "homo_sapiens - vep": {
+        "content": [
+            {
+                "reports": [
+                    "test.vep_summary.html:md5,d41d8cd98f00b204e9800998ecf8427e"
+                ],
+                "vcfs": [
+                    [
+                        {
+                            "id": "test",
+                            "sample": "test",
+                            "sex": "male",
+                            "family": "test1",
+                            "family_count": 1,
+                            "hpo": [
+                                
+                            ],
+                            "variant_type": "sv"
+                        },
+                        "test.vep.vcf.gz:md5,68b329da9893e34099c7d8ad5cb9c940",
+                        "test.vep.vcf.gz.tbi:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "versions": [
+                    {
+                        "VCF_ANNOTATE:ENSEMBLVEP_VEP": {
+                            "ensemblvep": 115.1,
+                            "tabix": 1.21
+                        }
+                    }
+                ]
+            }
+        ],
+        "meta": {
+            "nf-test": "0.9.2",
+            "nextflow": "25.04.6"
+        },
+        "timestamp": "2025-09-18T16:35:38.9355384"
+    }
+}

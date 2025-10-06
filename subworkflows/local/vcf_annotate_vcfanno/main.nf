@@ -16,20 +16,28 @@ workflow VCF_ANNOTATE_VCFANNO {
     main:
 
     def ch_versions = Channel.empty()
+    def ch_annotated_vcfs = Channel.empty()
 
-    def ch_vcfanno_toml = Channel.fromList(create_vcfanno_toml(val_vcfanno_resources, vcfanno_toml, default_vcfanno_tomls))
-        .collectFile(name:"vcfanno.toml", newLine:true)
-        .collect()
+    def val_toml = create_vcfanno_toml(val_vcfanno_resources, vcfanno_toml, default_vcfanno_tomls)
+    println val_toml
+    if( val_toml ) {
+        def ch_vcfanno_toml = Channel.fromList(val_toml)
+            .collectFile(name:"vcfanno.toml", newLine:true)
+            .collect()
 
-    VCFANNO(
-        ch_vcfs,
-        ch_vcfanno_toml,
-        ch_vcfanno_lua,
-        val_vcfanno_resources ? Channel.fromList(val_vcfanno_resources).collect() : []
-    )
-    ch_versions = ch_versions.mix(VCFANNO.out.versions.first())
+        VCFANNO(
+            ch_vcfs,
+            ch_vcfanno_toml,
+            ch_vcfanno_lua,
+            val_vcfanno_resources ? Channel.fromList(val_vcfanno_resources).collect() : []
+        )
+        ch_versions = ch_versions.mix(VCFANNO.out.versions.first())
 
-    def ch_annotated_vcfs = VCFANNO.out.vcf.join(VCFANNO.out.tbi, failOnDuplicate:true, failOnMismatch:true)
+        ch_annotated_vcfs = VCFANNO.out.vcf.join(VCFANNO.out.tbi, failOnDuplicate:true, failOnMismatch:true)
+    } else {
+        // If no TOML is provided, skip VCFANNO and just pass the input VCFs to output
+        ch_annotated_vcfs = ch_vcfs
+    }
 
     emit:
     vcfs            = ch_annotated_vcfs  // channel: [ val(meta), path(vcf), path(tbi) ]
@@ -54,7 +62,7 @@ def create_vcfanno_toml(vcfanno_resources, input_vcfanno_toml, List<Path> vcfann
     if (postannotation != []){
         output.add(postannotation)
     }
-    return output.flatten()
+    return output.findAll { value -> value != null }.flatten()
 }
 
 def parse_toml(tomls) {

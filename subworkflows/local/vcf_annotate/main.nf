@@ -48,7 +48,7 @@ workflow VCF_ANNOTATE {
     def ch_vcfanno = ch_vep
     if( tools.contains("vcfanno") || tools.contains("all") ) {
         VCF_ANNOTATE_VCFANNO(
-            ch_vep.map { meta, vcf, tbi -> [ meta, vcf, tbi, []]},
+            ch_vep,
             vcfanno_lua,
             vcfanno_resources,
             vcfanno_toml,
@@ -77,7 +77,7 @@ workflow VCF_ANNOTATE {
     }
 
     def ch_strvctvre = ch_svannotate
-    if( tools.contains("strvctvre") || tools.contains("strvctvre") ) {
+    if( tools.contains("strvctvre") || tools.contains("all") ) {
         STRVCTVRE_STRVCTVRE(
             ch_svannotate.map { meta, vcf, tbi -> [ meta, vcf, tbi, genome ] },
             strvctvre_phylop,

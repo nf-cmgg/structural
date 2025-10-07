@@ -40,14 +40,14 @@ nextflow_workflow {
                 ]) // dict
                 input[4] = Channel.value([
                     [id:"gtf"],
-                    []
+                    file(params.gtf, checkIfExists: true)
                 ]) // gtf
                 input[5] = [] // vep_cache
                 input[6] = [] // vep_extra_files
                 input[7] = [] // vcfanno_lua
                 input[8] = [] // vcfanno_toml
-                input[9] = [] // strvctvre_phylop
-                input[10] = [] // strvctvre_data
+                input[9] = [[:], []] // strvctvre_phylop
+                input[10] = [[:], []] // strvctvre_data
                 input[11] = params.genome
                 input[12] = params.species
                 input[13] = params.vep_cache_version
@@ -109,14 +109,14 @@ nextflow_workflow {
                 ]) // dict
                 input[4] = Channel.value([
                     [id:"gtf"],
-                    []
+                    file(params.gtf, checkIfExists: true)
                 ]) // gtf
                 input[5] = [] // vep_cache
                 input[6] = [] // vep_extra_files
                 input[7] = [] // vcfanno_lua
                 input[8] = [] // vcfanno_toml
-                input[9] = [] // strvctvre_phylop
-                input[10] = [] // strvctvre_data
+                input[9] = [[:], []] // strvctvre_phylop
+                input[10] = [[:], []] // strvctvre_data
                 input[11] = params.genome
                 input[12] = params.species
                 input[13] = params.vep_cache_version
@@ -176,14 +176,14 @@ nextflow_workflow {
                 ]) // dict
                 input[4] = Channel.value([
                     [id:"gtf"],
-                    []
+                    file(params.gtf, checkIfExists: true)
                 ]) // gtf
                 input[5] = [] // vep_cache
                 input[6] = [] // vep_extra_files
                 input[7] = [] // vcfanno_lua
                 input[8] = [] // vcfanno_toml
-                input[9] = [] // strvctvre_phylop
-                input[10] = [] // strvctvre_data
+                input[9] = [[:], []] // strvctvre_phylop
+                input[10] = [[:], []] // strvctvre_data
                 input[11] = params.genome
                 input[12] = params.species
                 input[13] = params.vep_cache_version
@@ -245,14 +245,14 @@ nextflow_workflow {
                 ]) // dict
                 input[4] = Channel.value([
                     [id:"gtf"],
-                    []
+                    file(params.gtf, checkIfExists: true)
                 ]) // gtf
                 input[5] = [] // vep_cache
                 input[6] = [] // vep_extra_files
                 input[7] = [] // vcfanno_lua
                 input[8] = [] // vcfanno_toml
-                input[9] = [] // strvctvre_phylop
-                input[10] = [] // strvctvre_data
+                input[9] = [[:], []] // strvctvre_phylop
+                input[10] = [[:], []] // strvctvre_data
                 input[11] = params.genome
                 input[12] = params.species
                 input[13] = params.vep_cache_version
@@ -314,7 +314,7 @@ nextflow_workflow {
                 ]) // dict
                 input[4] = Channel.value([
                     [id:"gtf"],
-                    []
+                    file(params.gtf, checkIfExists: true)
                 ]) // gtf
                 input[5] = [] // vep_cache
                 input[6] = [] // vep_extra_files

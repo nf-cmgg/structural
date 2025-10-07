@@ -19,7 +19,6 @@ workflow VCF_ANNOTATE_VCFANNO {
     def ch_annotated_vcfs = Channel.empty()
 
     def val_toml = create_vcfanno_toml(val_vcfanno_resources, vcfanno_toml, default_vcfanno_tomls)
-    println val_toml
     if( val_toml ) {
         def ch_vcfanno_toml = Channel.fromList(val_toml)
             .collectFile(name:"vcfanno.toml", newLine:true)

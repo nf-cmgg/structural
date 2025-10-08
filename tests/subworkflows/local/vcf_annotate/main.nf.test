@@ -1,0 +1,353 @@
+nextflow_workflow {
+
+    name "Test Workflow VCF_ANNOTATE"
+    script "subworkflows/local/vcf_annotate/main.nf"
+    workflow "VCF_ANNOTATE"
+
+    tag "subworkflows"
+    tag "subworkflows_local"
+    tag "vcf_annotate"
+
+    test("homo_sapiens - all") {
+
+        options "-stub"
+
+        when {
+            params {
+                genome = "GRCh38"
+                species = "homo_sapiens"
+                vep_cache_version = 110
+            }
+            workflow {
+                """
+                def meta = [id:"test", sample:"test", sex:"male", family: "test1", family_count:1, hpo:[]]
+                input[0] = Channel.of([
+                    meta + [variant_type:"sv"],
+                    file(params.sv_vcf1, checkIfExists:true),
+                    file(params.sv_tbi1, checkIfExists:true)
+                ]) // vcfs
+                input[1] = Channel.value([
+                    [id:"fasta"],
+                    file(params.fasta, checkIfExists: true)
+                ]) // fasta
+                input[2] = Channel.value([
+                    [id:"fai"],
+                    file(params.fai, checkIfExists: true)
+                ]) // fai
+                input[3] = Channel.value([
+                    [id:"dict"],
+                    file(params.dict, checkIfExists: true)
+                ]) // dict
+                input[4] = Channel.value([
+                    [id:"gtf"],
+                    file(params.gtf, checkIfExists: true)
+                ]) // gtf
+                input[5] = [] // vep_cache
+                input[6] = [] // vep_extra_files
+                input[7] = [] // vcfanno_lua
+                input[8] = [] // vcfanno_toml
+                input[9] = [[:], []] // strvctvre_phylop
+                input[10] = [[:], []] // strvctvre_data
+                input[11] = params.genome
+                input[12] = params.species
+                input[13] = params.vep_cache_version
+                input[14] = [] // vcfanno_resources
+                input[15] = file("${baseDir}/assets/vcfanno/*.toml") // vcfanno_default_tomls
+                input[16] = ["all"] // tools
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert workflow.success },
+                { assert snapshot(
+                    workflow.out.collectEntries { key, value ->
+                        if(key.matches("^\\d+\$")) {
+                            return
+                        }
+                        if(key == "versions") {
+                            return [ key, value.collect { path(it).yaml } ]
+                        }
+                        return [ key, value ]
+                    }
+                ).match() }
+            )
+        }
+
+    }
+
+    test("homo_sapiens - vep") {
+
+        options "-stub"
+
+        when {
+            params {
+                genome = "GRCh38"
+                species = "homo_sapiens"
+                vep_cache_version = 110
+            }
+            workflow {
+                """
+                def meta = [id:"test", sample:"test", sex:"male", family: "test1", family_count:1, hpo:[]]
+                input[0] = Channel.of([
+                    meta + [variant_type:"sv"],
+                    file(params.sv_vcf1, checkIfExists:true),
+                    file(params.sv_tbi1, checkIfExists:true)
+                ]) // vcfs
+                input[1] = Channel.value([
+                    [id:"fasta"],
+                    file(params.fasta, checkIfExists: true)
+                ]) // fasta
+                input[2] = Channel.value([
+                    [id:"fai"],
+                    file(params.fai, checkIfExists: true)
+                ]) // fai
+                input[3] = Channel.value([
+                    [id:"dict"],
+                    file(params.dict, checkIfExists: true)
+                ]) // dict
+                input[4] = Channel.value([
+                    [id:"gtf"],
+                    file(params.gtf, checkIfExists: true)
+                ]) // gtf
+                input[5] = [] // vep_cache
+                input[6] = [] // vep_extra_files
+                input[7] = [] // vcfanno_lua
+                input[8] = [] // vcfanno_toml
+                input[9] = [[:], []] // strvctvre_phylop
+                input[10] = [[:], []] // strvctvre_data
+                input[11] = params.genome
+                input[12] = params.species
+                input[13] = params.vep_cache_version
+                input[14] = [] // vcfanno_resources
+                input[15] = file("${baseDir}/assets/vcfanno/*.toml") // vcfanno_default_tomls
+                input[16] = ["vep"] // tools
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert workflow.success },
+                { assert snapshot(
+                    workflow.out.collectEntries { key, value ->
+                        if(key.matches("^\\d+\$")) {
+                            return
+                        }
+                        if(key == "versions") {
+                            return [ key, value.collect { path(it).yaml } ]
+                        }
+                        return [ key, value ]
+                    }
+                ).match() }
+            )
+        }
+
+    }
+
+    test("homo_sapiens - vcfanno") {
+
+        when {
+            params {
+                genome = "GRCh38"
+                species = "homo_sapiens"
+                vep_cache_version = 110
+            }
+            workflow {
+                """
+                def meta = [id:"test", sample:"test", sex:"male", family: "test1", family_count:1, hpo:[]]
+                input[0] = Channel.of([
+                    meta + [variant_type:"sv"],
+                    file(params.sv_vcf1, checkIfExists:true),
+                    file(params.sv_tbi1, checkIfExists:true)
+                ]) // vcfs
+                input[1] = Channel.value([
+                    [id:"fasta"],
+                    file(params.fasta, checkIfExists: true)
+                ]) // fasta
+                input[2] = Channel.value([
+                    [id:"fai"],
+                    file(params.fai, checkIfExists: true)
+                ]) // fai
+                input[3] = Channel.value([
+                    [id:"dict"],
+                    file(params.dict, checkIfExists: true)
+                ]) // dict
+                input[4] = Channel.value([
+                    [id:"gtf"],
+                    file(params.gtf, checkIfExists: true)
+                ]) // gtf
+                input[5] = [] // vep_cache
+                input[6] = [] // vep_extra_files
+                input[7] = [] // vcfanno_lua
+                input[8] = [] // vcfanno_toml
+                input[9] = [[:], []] // strvctvre_phylop
+                input[10] = [[:], []] // strvctvre_data
+                input[11] = params.genome
+                input[12] = params.species
+                input[13] = params.vep_cache_version
+                input[14] = [] // vcfanno_resources
+                input[15] = file("${baseDir}/assets/vcfanno/*.toml") // vcfanno_default_tomls
+                input[16] = ["vcfanno"] // tools
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert workflow.success },
+                { assert snapshot(
+                    workflow.out.collectEntries { key, value ->
+                        if(key.matches("^\\d+\$")) {
+                            return
+                        }
+                        if(key == "versions") {
+                            return [ key, value.collect { path(it).yaml } ]
+                        }
+                        return [ key, value ]
+                    }
+                ).match() }
+            )
+        }
+
+    }
+
+    test("homo_sapiens - svannotate") {
+
+        options "-stub"
+
+        when {
+            params {
+                genome = "GRCh38"
+                species = "homo_sapiens"
+                vep_cache_version = 110
+            }
+            workflow {
+                """
+                def meta = [id:"test", sample:"test", sex:"male", family: "test1", family_count:1, hpo:[]]
+                input[0] = Channel.of([
+                    meta + [variant_type:"sv"],
+                    file(params.sv_vcf1, checkIfExists:true),
+                    file(params.sv_tbi1, checkIfExists:true)
+                ]) // vcfs
+                input[1] = Channel.value([
+                    [id:"fasta"],
+                    file(params.fasta, checkIfExists: true)
+                ]) // fasta
+                input[2] = Channel.value([
+                    [id:"fai"],
+                    file(params.fai, checkIfExists: true)
+                ]) // fai
+                input[3] = Channel.value([
+                    [id:"dict"],
+                    file(params.dict, checkIfExists: true)
+                ]) // dict
+                input[4] = Channel.value([
+                    [id:"gtf"],
+                    file(params.gtf, checkIfExists: true)
+                ]) // gtf
+                input[5] = [] // vep_cache
+                input[6] = [] // vep_extra_files
+                input[7] = [] // vcfanno_lua
+                input[8] = [] // vcfanno_toml
+                input[9] = [[:], []] // strvctvre_phylop
+                input[10] = [[:], []] // strvctvre_data
+                input[11] = params.genome
+                input[12] = params.species
+                input[13] = params.vep_cache_version
+                input[14] = [] // vcfanno_resources
+                input[15] = file("${baseDir}/assets/vcfanno/*.toml") // vcfanno_default_tomls
+                input[16] = ["svannotate"] // tools
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert workflow.success },
+                { assert snapshot(
+                    workflow.out.collectEntries { key, value ->
+                        if(key.matches("^\\d+\$")) {
+                            return
+                        }
+                        if(key == "versions") {
+                            return [ key, value.collect { path(it).yaml } ]
+                        }
+                        return [ key, value ]
+                    }
+                ).match() }
+            )
+        }
+
+    }
+
+    test("homo_sapiens - strvctvre") {
+
+        options "-stub"
+
+        when {
+            params {
+                genome = "GRCh38"
+                species = "homo_sapiens"
+                vep_cache_version = 110
+            }
+            workflow {
+                """
+                def meta = [id:"test", sample:"test", sex:"male", family: "test1", family_count:1, hpo:[]]
+                input[0] = Channel.of([
+                    meta + [variant_type:"sv"],
+                    file(params.sv_vcf1, checkIfExists:true),
+                    file(params.sv_tbi1, checkIfExists:true)
+                ]) // vcfs
+                input[1] = Channel.value([
+                    [id:"fasta"],
+                    file(params.fasta, checkIfExists: true)
+                ]) // fasta
+                input[2] = Channel.value([
+                    [id:"fai"],
+                    file(params.fai, checkIfExists: true)
+                ]) // fai
+                input[3] = Channel.value([
+                    [id:"dict"],
+                    file(params.dict, checkIfExists: true)
+                ]) // dict
+                input[4] = Channel.value([
+                    [id:"gtf"],
+                    file(params.gtf, checkIfExists: true)
+                ]) // gtf
+                input[5] = [] // vep_cache
+                input[6] = [] // vep_extra_files
+                input[7] = [] // vcfanno_lua
+                input[8] = [] // vcfanno_toml
+                input[9] = [[:], []] // strvctvre_phylop
+                input[10] = [[:], []] // strvctvre_data
+                input[11] = params.genome
+                input[12] = params.species
+                input[13] = params.vep_cache_version
+                input[14] = [] // vcfanno_resources
+                input[15] = file("${baseDir}/assets/vcfanno/*.toml") // vcfanno_default_tomls
+                input[16] = ["strvctvre"] // tools
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert workflow.success },
+                { assert snapshot(
+                    workflow.out.collectEntries { key, value ->
+                        if(key.matches("^\\d+\$")) {
+                            return
+                        }
+                        if(key == "versions") {
+                            return [ key, value.collect { path(it).yaml } ]
+                        }
+                        return [ key, value ]
+                    }
+                ).match() }
+            )
+        }
+
+    }
+}

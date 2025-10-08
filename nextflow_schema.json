@@ -121,6 +121,20 @@
                     "format": "file-path",
                     "mimetype": "application/octet-stream"
                 },
+                "strvctvre_phylop": {
+                    "type": "string",
+                    "format": "file-path",
+                    "pattern": "^\\S+\\.bw$",
+                    "exists": true,
+                    "description": "Path to the StrVCTVRE phylo bigwig file"
+                },
+                "strvctvre_data": {
+                    "type": "string",
+                    "format": "directory-path",
+                    "pattern": "^\\S+$",
+                    "exists": true,
+                    "description": "Path to the StrVCTVRE data directory"
+                },
                 "blacklist": {
                     "type": "string",
                     "pattern": "^\\S+\\.bed$",
@@ -301,12 +315,6 @@
                     "type": "boolean",
                     "description": "Output monochrome logs"
                 },
-                "pipelines_testdata_base_path": {
-                    "type": "string",
-                    "hidden": true,
-                    "description": "The base path to of the pipeline test data",
-                    "default": "https://raw.githubusercontent.com/nf-core/test-datasets/"
-                },
                 "trace_report_suffix": {
                     "type": "string",
                     "hidden": true
@@ -323,7 +331,8 @@
                     "type": "string",
                     "default": "manta,smoove,delly,expansionhunter,wisecondorx",
                     "description": "A comma-seperated list of callers to use. Can be one or more these: smoove/delly/manta/expansionhunter/qdnaseq/wisecondorx.",
-                    "help_text": "Following keywords can also be used as shortcuts to certain callers: \n- all: Use all callers\n- sv: Use all SV callers\n- cnv: Use all CNV callers\n- rre: Use all RRE callers"
+                    "help_text": "Following keywords can also be used as shortcuts to certain callers: \n- all: Use all callers\n- sv: Use all SV callers\n- cnv: Use all CNV callers\n- rre: Use all RRE callers",
+                    "pattern": "^((manta|delly|smoove|wisecondorx|qdnaseq|expansionhunter|all|sv|cnv|rre)?,?)*(?<!,)$"
                 },
                 "output_callers": {
                     "type": "boolean",
@@ -342,6 +351,12 @@
                 "annotate": {
                     "type": "boolean",
                     "description": "Run the annotation with Ensembl VEP and AnnotSV (and optionally VCFanno)."
+                },
+                "annotate_tools": {
+                    "type": "string",
+                    "description": "A comma-separated list of tools to use for annotation. Possible values: vep,svannotate,vcfanno,strvctvre. Default is all tools.",
+                    "default": "all",
+                    "pattern": "^((vep|vcfanno|svannotate|strvctvre|all)?,?)*(?<!,)$"
                 },
                 "concat_output": {
                     "type": "boolean",
@@ -445,39 +460,10 @@
                 }
             }
         },
-        "annotsv_options": {
-            "title": "AnnotSV options",
-            "type": "object",
-            "description": "Options specific to the execution of AnnotSV",
-            "default": "",
-            "properties": {
-                "annotsv_annotations": {
-                    "type": "string",
-                    "description": "The full path to the AnnotSV annotations folder. This can be a tarzipped folder.",
-                    "help_text": "When --annotate is set to true and this isn't given, the annotations will be downloaded automatically (this is not recommended though).",
-                    "exists": true,
-                    "format": "path"
-                },
-                "annotsv_candidate_genes": {
-                    "type": "string",
-                    "description": "The full path the candidate genes file for AnnotSV",
-                    "exists": true,
-                    "format": "file-path",
-                    "mimetype": "text/plain"
-                },
-                "annotsv_gene_transcripts": {
-                    "type": "string",
-                    "description": "The full path to the gene transcripts file for AnnotSV",
-                    "exists": true,
-                    "format": "file-path",
-                    "mimetype": "text/plain"
-                }
-            }
-        },
         "vcfanno_options": {
             "title": "VCFanno options",
             "type": "object",
-            "description": "Options for the execution of AnnotSV",
+            "description": "Options for the execution of VCFanno",
             "default": "",
             "properties": {
                 "vcfanno_toml": {
@@ -531,9 +517,6 @@
         },
         {
             "$ref": "#/$defs/vep_options"
-        },
-        {
-            "$ref": "#/$defs/annotsv_options"
         },
         {
             "$ref": "#/$defs/vcfanno_options"

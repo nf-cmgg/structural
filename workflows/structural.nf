@@ -77,9 +77,6 @@ workflow STRUCTURAL {
     qdnaseq_male                // The QDNAseq annotations for male samples
     wisecondorx_reference       // The WisecondorX annotations file
     vep_cache                   // The VEP cache directory
-    // annotsv_annotations         // The annotations directory for AnnotSV
-    // annotsv_candidate_genes     // A file containing the AnnotSV candidate genes
-    // annotsv_gene_transcripts    // A file containing the AnnotSV gene transcripts
     vcfanno_lua                 // A Lua script to use with vcfanno
     vcfanno_resources           // A comma delimited list of paths to vcfanno resource files
     vcfanno_toml                // The vcfanno config to
@@ -241,56 +238,6 @@ workflow STRUCTURAL {
 
         ch_preprocessed_gtf = PREPROCESS_GTF.out.gtf.collect()
     }
-
-    // if(!bwa && "gridss" in callers){
-    //     BWA_INDEX(
-    //         ch_fasta
-    //     )
-
-    //     ch_versions  = ch_versions.mix(BWA_INDEX.out.versions)
-    //     ch_bwa_index = BWA_INDEX.out.index.map{[[id:'bwa'], it[1]]}.collect()
-    // }
-    // else if(bwa && "gridss" in callers) {
-    //     ch_bwa_index_input = channel.fromPath(bwa).map{[[id:"bwa"],it]}.collect()
-    //     if(bwa.endsWith(".tar.gz")) {
-    //         UNTAR_BWA(
-    //             ch_bwa_index_input
-    //         )
-    //         ch_versions = ch_versions.mix(UNTAR_BWA.out.versions)
-
-    //         UNTAR_BWA.out.untar
-    //             .collect()
-    //             .set { ch_bwa_index }
-    //     } else {
-    //         ch_bwa_index = ch_bwa_index_input
-    //     }
-    // }
-    // else {
-    //     ch_bwa_index = channel.empty()
-    // }
-
-    // def ch_annotsv_annotations = channel.empty()
-    // if(annotate && !annotsv_annotations && callers.intersect(annotationCallers)) {
-    //     ANNOTSV_INSTALLANNOTATIONS()
-    //     ch_versions = ch_versions.mix(ANNOTSV_INSTALLANNOTATIONS.out.versions)
-
-    //     ch_annotsv_annotations = ANNOTSV_INSTALLANNOTATIONS.out.annotations
-    //         .collect { annotations -> [[id:"annotsv_annotations"], annotations] }
-    // }
-    // else if(annotate && callers.intersect(annotationCallers)) {
-    //     ch_annotsv_annotations_input = channel.fromPath(annotsv_annotations).collect { annotations -> [[id:"annotsv_annotations"], annotations] }
-    //     if(annotsv_annotations.endsWith(".tar.gz")){
-    //         UNTAR_ANNOTSV(
-    //             ch_annotsv_annotations_input
-    //         )
-    //         ch_versions = ch_versions.mix(UNTAR_ANNOTSV.out.versions)
-
-    //         ch_annotsv_annotations = UNTAR_ANNOTSV.out.untar
-    //             .collect()
-    //     } else {
-    //         ch_annotsv_annotations = channel.fromPath(annotsv_annotations).collect { annotations -> [[id:"annotsv_annotations"], annotations] }
-    //     }
-    // }
 
     def ch_vep_cache = channel.empty()
     if(!vep_cache && annotate && callers.intersect(annotationCallers)) {

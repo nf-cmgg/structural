@@ -13,7 +13,7 @@
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
 
-include { STRUCTURAL  } from './workflows/structural'
+include { STRUCTURAL              } from './workflows/structural'
 include { PIPELINE_INITIALISATION } from './subworkflows/local/utils_nfcore_structural_pipeline'
 include { PIPELINE_COMPLETION     } from './subworkflows/local/utils_nfcore_structural_pipeline'
 include { getGenomeAttribute      } from './subworkflows/local/utils_nfcore_structural_pipeline'
@@ -61,7 +61,10 @@ workflow {
         params.validate_params,
         args,
         params.outdir,
-        params.input
+        params.input,
+        params.help,
+        params.help_full,
+        params.show_hidden
     )
 
     def ch_multiqc_config          = Channel.fromPath("$projectDir/assets/multiqc_config.yml", checkIfExists: true)

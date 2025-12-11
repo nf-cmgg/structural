@@ -92,6 +92,30 @@ work                # Directory containing the nextflow working files
 # Other nextflow hidden files, eg. history of pipeline runs and old logs.
 ```
 
+If you wish to repeatedly use the same parameters for multiple runs, rather than specifying each flag in the command, you can specify these in a params file.
+
+Pipeline settings can be provided in a `yaml` or `json` file via `-params-file <file>`.
+
+> [!WARNING]
+> Do not use `-c <file>` to specify parameters as this will result in errors. Custom config files specified with `-c` must only be used for [tuning process resource specifications](https://nf-co.re/docs/usage/configuration#tuning-workflow-resources), other infrastructural tweaks (such as output directories), or module arguments (args).
+
+The above pipeline run specified with a params file in yaml format:
+
+```bash
+nextflow run nf-cmgg/structural -profile docker -params-file params.yaml
+```
+
+with:
+
+```yaml title="params.yaml"
+input: './samplesheet.csv'
+outdir: './results/'
+genome: 'GRCh37'
+<...>
+```
+
+You can also generate such `YAML`/`JSON` files via [nf-core/launch](https://nf-co.re/launch).
+
 ### Updating the pipeline
 
 When you run the above command, Nextflow automatically pulls the pipeline code from GitHub and stores it as a cached version. When running the pipeline after this, it will always use the cached version if available - even if the pipeline has been updated since. To make sure that you're running the latest version of the pipeline, make sure that you regularly update the cached version of the pipeline:

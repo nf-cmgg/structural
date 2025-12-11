@@ -28,7 +28,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 11. Moved all `wisecondorx` and `qdnaseq` outputs to a separate directory in each sample output.
 12. Bumped all annotation modules to the latest versions
 13. Reworked the annotation structure to a per tool structure. Specify the annotations tools you want to run with `--annotate_tools`. This parameter takes a comma-separated list of tool names (options: `vep`, `vcfanno`, `svannotate`, `strvctvre` or `all` (=> all tools))
-5. Updated to nf-core template v3.5.1
+14. Updated to nf-core template v3.5.1
 
 ### `Fixed`
 

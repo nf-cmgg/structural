@@ -76,4 +76,3 @@ workflow BAM_VARIANT_CALLING_WISECONDORX {
 
     versions        = ch_versions                               // channel: path(versions.yml)
 }
-

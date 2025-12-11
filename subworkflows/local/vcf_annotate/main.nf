@@ -26,8 +26,8 @@ workflow VCF_ANNOTATE {
     tools                                // list:    [optional]  => The tools used for annotation (default: all tools)
 
     main:
-    def ch_versions = Channel.empty()
-    def ch_reports = Channel.empty()
+    def ch_versions = channel.empty()
+    def ch_reports = channel.empty()
 
     def ch_vep = vcfs
     if( tools.contains("vep") || tools.contains("all") ) {

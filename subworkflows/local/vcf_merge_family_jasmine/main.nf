@@ -17,7 +17,7 @@ workflow VCF_MERGE_FAMILY_JASMINE {
 
     main:
 
-    def ch_versions     = Channel.empty()
+    def ch_versions     = channel.empty()
 
     def ch_jasmine_input = ch_vcfs
         .map { meta, vcf, tbi ->

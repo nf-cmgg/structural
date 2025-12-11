@@ -32,8 +32,8 @@ workflow VCF_ANNOTATE_VEP_ANNOTSV {
 
     main:
 
-    def ch_versions = Channel.empty()
-    def ch_reports  = Channel.empty()
+    def ch_versions = channel.empty()
+    def ch_reports  = channel.empty()
 
     // Run AnnotSV and VEP in parallel and merge TSV from AnnotSV with VCF from VEP during VCFanno
 
@@ -48,7 +48,7 @@ workflow VCF_ANNOTATE_VEP_ANNOTSV {
     ch_versions = ch_versions.mix(BCFTOOLS_SPLIT_BY_SVTYPE.out.versions.first())
 
     def ch_small_variants_types = ch_small_variants
-        .combine(Channel.fromList(val_variant_types))
+        .combine(channel.fromList(val_variant_types))
         .map { meta, vcf, type ->
             def new_meta = meta + [ variant_type:type ]
             [ new_meta, vcf ]

@@ -18,7 +18,7 @@ workflow BAM_VARIANT_CALLING_MANTA {
 
     main:
 
-    def ch_versions     = Channel.empty()
+    def ch_versions     = channel.empty()
 
     //
     // Create a contigs BED file

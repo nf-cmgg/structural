@@ -95,7 +95,7 @@ workflow PIPELINE_INITIALISATION {
         }
     }
 
-    def ch_samplesheet = Channel.fromList(samplesheetList)
+    def ch_samplesheet = channel.fromList(samplesheetList)
         .map { meta, cram, crai, small_variants ->
             def new_meta = meta + [
                 family:meta.family ?: meta.sample,

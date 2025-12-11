@@ -21,10 +21,10 @@ workflow BAM_SV_CALLING {
 
     main:
 
-    def ch_versions     = Channel.empty()
-    def ch_reports      = Channel.empty()
-    def ch_called_vcfs  = Channel.empty()
-    def ch_raw_vcfs     = Channel.empty()
+    def ch_versions     = channel.empty()
+    def ch_reports      = channel.empty()
+    def ch_called_vcfs  = channel.empty()
+    def ch_raw_vcfs     = channel.empty()
 
     //
     // Calling variants using Manta
@@ -101,7 +101,7 @@ workflow BAM_SV_CALLING {
 
     // Scramble is unfinished. It needs a lot of improvements if we were to add it
 
-    def ch_merged_vcfs = Channel.empty()
+    def ch_merged_vcfs = channel.empty()
     if(val_callers.size() > 1) {
         VCF_MERGE_CALLERS_JASMINE(
             ch_called_vcfs,

@@ -15,7 +15,7 @@ workflow BAM_VARIANT_CALLING_WISECONDORX {
 
     main:
 
-    def ch_versions = Channel.empty()
+    def ch_versions = channel.empty()
 
     def ch_caller_crams = ch_crams
         .map { meta, cram, crai ->

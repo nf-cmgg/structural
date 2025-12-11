@@ -25,11 +25,11 @@ workflow BAM_CNV_CALLING {
 
     main:
 
-    def ch_versions     = Channel.empty()
-    def ch_reports      = Channel.empty()
-    def ch_called_vcfs  = Channel.empty()
+    def ch_versions     = channel.empty()
+    def ch_reports      = channel.empty()
+    def ch_called_vcfs  = channel.empty()
 
-    def ch_qdnaseq_out  = Channel.empty()
+    def ch_qdnaseq_out  = channel.empty()
     if("qdnaseq" in val_callers) {
         BAM_VARIANT_CALLING_QDNASEQ(
             ch_crams,
@@ -46,7 +46,7 @@ workflow BAM_CNV_CALLING {
             .mix(BAM_VARIANT_CALLING_QDNASEQ.out.statistics)
     }
 
-    def ch_wisecondorx_out = Channel.empty()
+    def ch_wisecondorx_out = channel.empty()
     if("wisecondorx" in val_callers) {
         BAM_VARIANT_CALLING_WISECONDORX(
             ch_crams,
@@ -66,7 +66,7 @@ workflow BAM_CNV_CALLING {
             .mix(BAM_VARIANT_CALLING_WISECONDORX.out.segments_bed)
     }
 
-    def ch_merged_vcfs = Channel.empty()
+    def ch_merged_vcfs = channel.empty()
     if(val_callers.size() > 1) {
         VCF_MERGE_CALLERS_JASMINE(
             ch_called_vcfs.map { meta, vcf -> [meta, vcf, []] },

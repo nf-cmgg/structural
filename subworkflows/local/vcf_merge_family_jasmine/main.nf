@@ -29,7 +29,7 @@ workflow VCF_MERGE_FAMILY_JASMINE {
 
     JASMINESV(
         ch_jasmine_input.map { meta, vcfs, _tbis ->
-            [ meta, vcfs, [], [] ]
+            [ meta, vcfs, [], [], [] ]
         },
         ch_fasta,
         ch_fai,

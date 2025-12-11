@@ -21,7 +21,6 @@ include { methodsDescriptionText } from '../subworkflows/local/utils_nfcore_stru
 include { BAM_PREPARE_SAMTOOLS                  } from '../subworkflows/local/bam_prepare_samtools/main'
 include { BAM_SV_CALLING                        } from '../subworkflows/local/bam_sv_calling/main'
 include { BAM_CNV_CALLING                       } from '../subworkflows/local/bam_cnv_calling/main'
-include { VCF_ANNOTATE_VEP_ANNOTSV              } from '../subworkflows/local/vcf_annotate_vep_annotsv/main'
 include { VCF_ANNOTATE_VCFANNO                  } from '../subworkflows/local/vcf_annotate_vcfanno/main'
 include { BAM_REPEAT_ESTIMATION_EXPANSIONHUNTER } from '../subworkflows/local/bam_repeat_estimation_expansionhunter/main'
 include { VCF_ANNOTATE                          } from '../subworkflows/local/vcf_annotate/main'
@@ -519,7 +518,7 @@ workflow STRUCTURAL {
     softwareVersionsToYAML(ch_versions.mix(topic_versions.versions_file))
         .mix(topic_versions_string)
         .collectFile(
-            storeDir: "${params.outdir}/pipeline_info",
+            storeDir: "${outdir}/pipeline_info",
             name:  'structural_software_'  + 'mqc_'  + 'versions.yml',
             sort: true,
             newLine: true

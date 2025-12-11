@@ -29,7 +29,7 @@ workflow VCF_MERGE_CALLERS_JASMINE {
         .groupTuple(size:val_callers.size())
         .tap { ch_consensus_reheader_input }
         .map { meta, vcfs, _tbis ->
-            [ meta, vcfs, [], [] ]
+            [ meta, vcfs, [], [], [] ]
         }
         .dump(tag:'jasmine_input', pretty:true)
 

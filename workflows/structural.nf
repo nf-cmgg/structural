@@ -42,7 +42,6 @@ include { GATK4_CREATESEQUENCEDICTIONARY    } from '../modules/nf-core/gatk4/cre
 include { PREPROCESS_GTF                    } from '../modules/local/preprocess_gtf/main'
 include { BWA_INDEX                         } from '../modules/nf-core/bwa/index/main'
 include { ENSEMBLVEP_DOWNLOAD               } from '../modules/nf-core/ensemblvep/download/main'
-include { ANNOTSV_INSTALLANNOTATIONS        } from '../modules/nf-core/annotsv/installannotations/main'
 include { UNTAR as UNTAR_ANNOTSV            } from '../modules/nf-core/untar/main'
 include { UNTAR as UNTAR_BWA                } from '../modules/nf-core/untar/main'
 include { NGSBITS_SAMPLEGENDER              } from '../modules/nf-core/ngsbits/samplegender/main'

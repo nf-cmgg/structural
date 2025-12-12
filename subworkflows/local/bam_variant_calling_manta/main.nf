@@ -60,8 +60,6 @@ workflow BAM_VARIANT_CALLING_MANTA {
         ch_manta_config
     )
 
-    ch_versions = ch_versions.mix(MANTA_GERMLINE.out.versions.first())
-
     //
     // Reformat the inversions into single inverted sequence junctions
     //
@@ -70,8 +68,6 @@ workflow BAM_VARIANT_CALLING_MANTA {
         MANTA_GERMLINE.out.diploid_sv_vcf,
         ch_fasta
     )
-
-    ch_versions = ch_versions.mix(MANTA_CONVERTINVERSION.out.versions.first())
 
     def ch_manta_svync_config = ch_svync_configs
         .map { configs ->

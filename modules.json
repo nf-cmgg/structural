@@ -74,17 +74,17 @@
                     },
                     "jasminesv": {
                         "branch": "master",
-                        "git_sha": "a70dc7ed7cec3563561b19dec48277a43aad4dbf",
+                        "git_sha": "671cad06f043fdf5c5aae7c49890ad8ccdacbb04",
                         "installed_by": ["modules"]
                     },
                     "manta/convertinversion": {
                         "branch": "master",
-                        "git_sha": "92bf2a8afa318a64f9d333cf87b510c662fd4274",
+                        "git_sha": "3485512d3930df1fcb66b5f92af639179bdfe4be",
                         "installed_by": ["modules"]
                     },
                     "manta/germline": {
                         "branch": "master",
-                        "git_sha": "ebc1733b77c702f19fe42076a5edfcbaa0d84f66",
+                        "git_sha": "3485512d3930df1fcb66b5f92af639179bdfe4be",
                         "installed_by": ["modules"]
                     },
                     "multiqc": {

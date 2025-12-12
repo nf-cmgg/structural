@@ -35,7 +35,6 @@ workflow VCF_MERGE_FAMILY_JASMINE {
         ch_fai,
         []
     )
-    ch_versions = ch_versions.mix(JASMINESV.out.versions.first())
 
     FIX_CALLERS(
         JASMINESV.out.vcf

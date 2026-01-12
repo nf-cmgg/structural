@@ -25,7 +25,6 @@ nextflow_pipeline {
             assertAll(
                 { assert workflow.success },
                 { assert snapshot(
-                    workflow.stdout,
                     path("${outputDir}")
                         .list()
                         .collect { getRecursiveFileNames(it, "${outputDir}") }
@@ -57,7 +56,6 @@ nextflow_pipeline {
             assertAll(
                 { assert workflow.success },
                 { assert snapshot(
-                    workflow.stdout,
                     path("${outputDir}")
                         .list()
                         .collect { getRecursiveFileNames(it, "${outputDir}") }
@@ -88,7 +86,6 @@ nextflow_pipeline {
             assertAll(
                 { assert workflow.success },
                 { assert snapshot(
-                    workflow.stdout,
                     path("${outputDir}")
                         .list()
                         .collect { getRecursiveFileNames(it, "${outputDir}") }
@@ -120,7 +117,6 @@ nextflow_pipeline {
             assertAll(
                 { assert workflow.success },
                 { assert snapshot(
-                    workflow.stdout,
                     path("${outputDir}")
                         .list()
                         .collect { getRecursiveFileNames(it, "${outputDir}") }

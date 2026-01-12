@@ -2,9 +2,6 @@
     "all": {
         "content": [
             [
-                
-            ],
-            [
                 "PosCon1/PosCon1.sv.vcf.gz",
                 "PosCon1/PosCon1.sv.vcf.gz.tbi",
                 "PosCon2/PosCon2.sv.vcf.gz",
@@ -13,22 +10,20 @@
                 "PosCon3/PosCon3.sv.vcf.gz.tbi",
                 "PosCon4/PosCon4.sv.vcf.gz",
                 "PosCon4/PosCon4.sv.vcf.gz.tbi",
+                "multiqc/multiqc_data/.stub",
                 "multiqc/multiqc_report.html",
                 "samplesheet.csv"
             ]
         ],
         "meta": {
-            "nf-test": "0.9.1",
-            "nextflow": "24.10.3"
+            "nf-test": "0.9.2",
+            "nextflow": "25.10.2"
         },
-        "timestamp": "2025-02-04T14:53:15.213679787"
+        "timestamp": "2025-12-11T14:35:23.911968106"
     },
     "delly": {
         "content": [
             [
-                
-            ],
-            [
                 "PosCon1/PosCon1.sv.vcf.gz",
                 "PosCon1/PosCon1.sv.vcf.gz.tbi",
                 "PosCon2/PosCon2.sv.vcf.gz",
@@ -37,14 +32,15 @@
                 "PosCon3/PosCon3.sv.vcf.gz.tbi",
                 "PosCon4/PosCon4.sv.vcf.gz",
                 "PosCon4/PosCon4.sv.vcf.gz.tbi",
+                "multiqc/multiqc_data/.stub",
                 "multiqc/multiqc_report.html",
                 "samplesheet.csv"
             ]
         ],
         "meta": {
-            "nf-test": "0.9.1",
-            "nextflow": "24.10.3"
+            "nf-test": "0.9.2",
+            "nextflow": "25.10.2"
         },
-        "timestamp": "2025-02-04T14:52:19.41494813"
+        "timestamp": "2025-12-11T14:34:12.904156278"
     }
 }

@@ -2,9 +2,6 @@
     "all": {
         "content": [
             [
-
-            ],
-            [
                 "PosCon1/PosCon1.cnv.vcf.gz",
                 "PosCon1/PosCon1.cnv.vcf.gz.tbi",
                 "PosCon1/PosCon1.repeats.vcf.gz",
@@ -69,21 +66,19 @@
                 "PosCon4/wisecondorx/chr1.png",
                 "PosCon4/wisecondorx/chr22.png",
                 "PosCon4/wisecondorx/genome_wide.png",
+                "multiqc/multiqc_data/.stub",
                 "multiqc/multiqc_report.html",
                 "samplesheet.csv"
             ]
         ],
         "meta": {
             "nf-test": "0.9.2",
-            "nextflow": "25.04.6"
+            "nextflow": "25.10.2"
         },
-        "timestamp": "2025-07-10T16:18:46.855944925"
+        "timestamp": "2025-12-11T14:17:13.61299374"
     },
     "concat": {
         "content": [
-            [
-
-            ],
             [
                 "PosCon1/PosCon1.vcf.gz",
                 "PosCon1/PosCon1.vcf.gz.tbi",
@@ -133,21 +128,19 @@
                 "PosCon4/wisecondorx/chr1.png",
                 "PosCon4/wisecondorx/chr22.png",
                 "PosCon4/wisecondorx/genome_wide.png",
+                "multiqc/multiqc_data/.stub",
                 "multiqc/multiqc_report.html",
                 "samplesheet.csv"
             ]
         ],
         "meta": {
             "nf-test": "0.9.2",
-            "nextflow": "25.04.6"
+            "nextflow": "25.10.2"
         },
-        "timestamp": "2025-07-22T11:45:55.747550179"
+        "timestamp": "2025-12-11T14:19:05.923251888"
     },
     "output callers": {
         "content": [
-            [
-
-            ],
             [
                 "PosCon1/PosCon1.cnv.vcf.gz",
                 "PosCon1/PosCon1.cnv.vcf.gz.tbi",
@@ -245,14 +238,15 @@
                 "PosCon4/wisecondorx/chr1.png",
                 "PosCon4/wisecondorx/chr22.png",
                 "PosCon4/wisecondorx/genome_wide.png",
+                "multiqc/multiqc_data/.stub",
                 "multiqc/multiqc_report.html",
                 "samplesheet.csv"
             ]
         ],
         "meta": {
             "nf-test": "0.9.2",
-            "nextflow": "25.04.6"
+            "nextflow": "25.10.2"
         },
-        "timestamp": "2025-07-10T16:21:41.411733092"
+        "timestamp": "2025-12-11T14:20:38.688571379"
     }
 }

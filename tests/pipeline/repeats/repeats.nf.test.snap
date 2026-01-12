@@ -2,9 +2,6 @@
     "expansionhunter": {
         "content": [
             [
-                
-            ],
-            [
                 "PosCon1/PosCon1.repeats.vcf.gz",
                 "PosCon1/PosCon1.repeats.vcf.gz.tbi",
                 "PosCon2/PosCon2.repeats.vcf.gz",
@@ -13,14 +10,15 @@
                 "PosCon3/PosCon3.repeats.vcf.gz.tbi",
                 "PosCon4/PosCon4.repeats.vcf.gz",
                 "PosCon4/PosCon4.repeats.vcf.gz.tbi",
+                "multiqc/multiqc_data/.stub",
                 "multiqc/multiqc_report.html",
                 "samplesheet.csv"
             ]
         ],
         "meta": {
-            "nf-test": "0.9.1",
-            "nextflow": "24.10.3"
+            "nf-test": "0.9.2",
+            "nextflow": "25.10.2"
         },
-        "timestamp": "2025-02-04T14:31:49.390938584"
+        "timestamp": "2025-12-11T14:33:06.321441212"
     }
 }

@@ -41,4 +41,3 @@ def process_file(file, output) -> None:
 
 if __name__ == "__main__":
     main()
-

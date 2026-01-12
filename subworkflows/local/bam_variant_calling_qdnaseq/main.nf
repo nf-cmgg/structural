@@ -105,4 +105,3 @@ workflow BAM_VARIANT_CALLING_QDNASEQ {
 
     versions    = ch_versions
 }
-

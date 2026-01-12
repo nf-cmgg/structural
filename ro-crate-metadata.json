@@ -22,8 +22,8 @@
             "@id": "./",
             "@type": "Dataset",
             "creativeWorkStatus": "InProgress",
-            "datePublished": "2025-01-31T10:23:25+00:00",
-            "description": "# nf-cmgg/structural\n\n[![GitHub Actions CI Status](https://github.com/nf-cmgg/structural/actions/workflows/ci.yml/badge.svg)](https://github.com/nf-cmgg/structural/actions/workflows/ci.yml)\n[![GitHub Actions Linting Status](https://github.com/nf-cmgg/structural/actions/workflows/linting.yml/badge.svg)](https://github.com/nf-cmgg/structural/actions/workflows/linting.yml)[![Cite with Zenodo](http://img.shields.io/badge/DOI-10.5281/zenodo.XXXXXXX-1073c8?labelColor=000000)](https://doi.org/10.5281/zenodo.XXXXXXX)\n[![nf-test](https://img.shields.io/badge/unit_tests-nf--test-337ab7.svg)](https://www.nf-test.com)\n\n[![Nextflow](https://img.shields.io/badge/nextflow%20DSL2-%E2%89%A525.04.0-23aa62.svg)](https://www.nextflow.io/)\n[![run with conda](http://img.shields.io/badge/run%20with-conda-3EB049?labelColor=000000&logo=anaconda)](https://docs.conda.io/en/latest/)\n[![run with docker](https://img.shields.io/badge/run%20with-docker-0db7ed?labelColor=000000&logo=docker)](https://www.docker.com/)\n[![run with singularity](https://img.shields.io/badge/run%20with-singularity-1d355c.svg?labelColor=000000)](https://sylabs.io/docs/)\n[![Launch on Seqera Platform](https://img.shields.io/badge/Launch%20%F0%9F%9A%80-Seqera%20Platform-%234256e7)](https://cloud.seqera.io/launch?pipeline=https://github.com/nf-cmgg/structural)\n\n## Introduction\n\n**nf-cmgg/structural** is a bioinformatics best-practice analysis pipeline for calling structural variants (SVs), copy number variants (CNVs) and repeat region expansions (RREs) from short DNA reads. The pipeline handles the calling of the variants and postprocessing (filtering, annotating...)\n\nPlease have a look at the [documentation](https://nf-cmgg.github.io/structural/latest/) on how to run the pipeline\n",
+            "datePublished": "2025-12-11T09:12:57+00:00",
+            "description": "# nf-cmgg/structural\n\n[![Open in GitHub Codespaces](https://img.shields.io/badge/Open_In_GitHub_Codespaces-black?labelColor=grey&logo=github)](https://github.com/codespaces/new/nf-cmgg/structural)\n[![GitHub Actions CI Status](https://github.com/nf-cmgg/structural/actions/workflows/nf-test.yml/badge.svg)](https://github.com/nf-cmgg/structural/actions/workflows/nf-test.yml)\n[![GitHub Actions Linting Status](https://github.com/nf-cmgg/structural/actions/workflows/linting.yml/badge.svg)](https://github.com/nf-cmgg/structural/actions/workflows/linting.yml)[![Cite with Zenodo](http://img.shields.io/badge/DOI-10.5281/zenodo.XXXXXXX-1073c8?labelColor=000000)](https://doi.org/10.5281/zenodo.XXXXXXX)\n[![nf-test](https://img.shields.io/badge/unit_tests-nf--test-337ab7.svg)](https://www.nf-test.com)\n\n[![Nextflow](https://img.shields.io/badge/version-%E2%89%A525.10.0-green?style=flat&logo=nextflow&logoColor=white&color=%230DC09D&link=https%3A%2F%2Fnextflow.io)](https://www.nextflow.io/)\n[![nf-core template version](https://img.shields.io/badge/nf--core_template-3.5.1-green?style=flat&logo=nfcore&logoColor=white&color=%2324B064&link=https%3A%2F%2Fnf-co.re)](https://github.com/nf-core/tools/releases/tag/3.5.1)\n[![run with conda](http://img.shields.io/badge/run%20with-conda-3EB049?labelColor=000000&logo=anaconda)](https://docs.conda.io/en/latest/)\n[![run with docker](https://img.shields.io/badge/run%20with-docker-0db7ed?labelColor=000000&logo=docker)](https://www.docker.com/)\n[![run with singularity](https://img.shields.io/badge/run%20with-singularity-1d355c.svg?labelColor=000000)](https://sylabs.io/docs/)\n[![Launch on Seqera Platform](https://img.shields.io/badge/Launch%20%F0%9F%9A%80-Seqera%20Platform-%234256e7)](https://cloud.seqera.io/launch?pipeline=https://github.com/nf-cmgg/structural)\n\n## Introduction\n\n**nf-cmgg/structural** is a bioinformatics best-practice analysis pipeline for calling structural variants (SVs), copy number variants (CNVs) and repeat region expansions (RREs) from short DNA reads. The pipeline handles the calling of the variants and postprocessing (filtering, annotating...)\n\nPlease have a look at the [documentation](https://nf-cmgg.github.io/structural/latest/) on how to run the pipeline\n",
             "hasPart": [
                 {
                     "@id": "main.nf"
@@ -93,7 +93,7 @@
             },
             "mentions": [
                 {
-                    "@id": "#0ea7178e-4cf9-4d95-9e0d-128328b520b6"
+                    "@id": "#a47f013e-9f93-467b-bf22-dc0970a3e036"
                 }
             ],
             "name": "nf-cmgg/structural"
@@ -126,7 +126,7 @@
                 }
             ],
             "dateCreated": "",
-            "dateModified": "2025-01-31T11:23:25Z",
+            "dateModified": "2025-12-11T10:12:57Z",
             "dct:conformsTo": "https://bioschemas.org/profiles/ComputationalWorkflow/1.0-RELEASE/",
             "keywords": [
                 "nf-core",
@@ -162,14 +162,14 @@
             "url": {
                 "@id": "https://www.nextflow.io/"
             },
-            "version": "!>=24.04.2"
+            "version": "!>=25.04.0"
         },
         {
-            "@id": "#0ea7178e-4cf9-4d95-9e0d-128328b520b6",
+            "@id": "#a47f013e-9f93-467b-bf22-dc0970a3e036",
             "@type": "TestSuite",
             "instance": [
                 {
-                    "@id": "#24420ffc-b536-4daa-bcd8-2d7cacd61715"
+                    "@id": "#510ab4d9-8d04-4950-98ed-62a933eb03e9"
                 }
             ],
             "mainEntity": {
@@ -178,10 +178,10 @@
             "name": "Test suite for nf-cmgg/structural"
         },
         {
-            "@id": "#24420ffc-b536-4daa-bcd8-2d7cacd61715",
+            "@id": "#510ab4d9-8d04-4950-98ed-62a933eb03e9",
             "@type": "TestInstance",
             "name": "GitHub Actions workflow for testing nf-cmgg/structural",
-            "resource": "repos/nf-cmgg/structural/actions/workflows/ci.yml",
+            "resource": "repos/nf-cmgg/structural/actions/workflows/nf-test.yml",
             "runsOn": {
                 "@id": "https://w3id.org/ro/terms/test#GithubService"
             },

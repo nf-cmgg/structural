@@ -21,7 +21,6 @@ include { methodsDescriptionText } from '../subworkflows/local/utils_nfcore_stru
 include { BAM_PREPARE_SAMTOOLS                  } from '../subworkflows/local/bam_prepare_samtools/main'
 include { BAM_SV_CALLING                        } from '../subworkflows/local/bam_sv_calling/main'
 include { BAM_CNV_CALLING                       } from '../subworkflows/local/bam_cnv_calling/main'
-include { VCF_ANNOTATE_VEP_ANNOTSV              } from '../subworkflows/local/vcf_annotate_vep_annotsv/main'
 include { VCF_ANNOTATE_VCFANNO                  } from '../subworkflows/local/vcf_annotate_vcfanno/main'
 include { BAM_REPEAT_ESTIMATION_EXPANSIONHUNTER } from '../subworkflows/local/bam_repeat_estimation_expansionhunter/main'
 include { VCF_ANNOTATE                          } from '../subworkflows/local/vcf_annotate/main'
@@ -42,7 +41,6 @@ include { GATK4_CREATESEQUENCEDICTIONARY    } from '../modules/nf-core/gatk4/cre
 include { PREPROCESS_GTF                    } from '../modules/local/preprocess_gtf/main'
 include { BWA_INDEX                         } from '../modules/nf-core/bwa/index/main'
 include { ENSEMBLVEP_DOWNLOAD               } from '../modules/nf-core/ensemblvep/download/main'
-include { ANNOTSV_INSTALLANNOTATIONS        } from '../modules/nf-core/annotsv/installannotations/main'
 include { UNTAR as UNTAR_ANNOTSV            } from '../modules/nf-core/untar/main'
 include { UNTAR as UNTAR_BWA                } from '../modules/nf-core/untar/main'
 include { NGSBITS_SAMPLEGENDER              } from '../modules/nf-core/ngsbits/samplegender/main'
@@ -77,9 +75,6 @@ workflow STRUCTURAL {
     qdnaseq_male                // The QDNAseq annotations for male samples
     wisecondorx_reference       // The WisecondorX annotations file
     vep_cache                   // The VEP cache directory
-    // annotsv_annotations         // The annotations directory for AnnotSV
-    // annotsv_candidate_genes     // A file containing the AnnotSV candidate genes
-    // annotsv_gene_transcripts    // A file containing the AnnotSV gene transcripts
     vcfanno_lua                 // A Lua script to use with vcfanno
     vcfanno_resources           // A comma delimited list of paths to vcfanno resource files
     vcfanno_toml                // The vcfanno config to
@@ -110,10 +105,10 @@ workflow STRUCTURAL {
 
     main:
 
-    def ch_versions         = Channel.empty()
-    def ch_reports          = Channel.empty()
-    def ch_caller_vcfs      = Channel.empty()
-    def ch_multiqc_files    = Channel.empty()
+    def ch_versions         = channel.empty()
+    def ch_reports          = channel.empty()
+    def ch_caller_vcfs      = channel.empty()
+    def ch_multiqc_files    = channel.empty()
 
     def variant_types = [] // The variant types that can be annotated this run
     def count_types = 0 // The amount of different variant types that can be concatenated
@@ -122,20 +117,20 @@ workflow STRUCTURAL {
     // Create input channels from parameters
     //
 
-    def ch_fasta                    = Channel.fromPath(fasta).collect { fasta_file -> [[id:'fasta'], fasta_file ] }
-    // def ch_annotsv_candidate_genes  = annotsv_candidate_genes ?  Channel.fromPath(annotsv_candidate_genes).collect { genes_file -> [[], genes_file] } : [[],[]]
-    // def ch_annotsv_gene_transcripts = annotsv_gene_transcripts ? Channel.fromPath(annotsv_gene_transcripts).collect { transcripts_file -> [[], transcripts_file] } : [[],[]]
-    def ch_vcfanno_lua              = vcfanno_lua ?              Channel.fromPath(vcfanno_lua).collect() : []
-    def ch_catalog                  = expansionhunter_catalog ?  Channel.fromPath(expansionhunter_catalog).collect { catalog_file -> [[id:'catalog'], catalog_file] } : [[],[]]
-    def ch_qdnaseq_male             = qdnaseq_male ?             Channel.fromPath(qdnaseq_male).collect { qdnaseq_file -> [[id:'qdnaseq_male'], qdnaseq_file] } : [[],[]]
-    def ch_qdnaseq_female           = qdnaseq_female ?           Channel.fromPath(qdnaseq_female).collect { qdnaseq_file -> [[id:'qdnaseq_female'], qdnaseq_file] } : [[],[]]
-    def ch_wisecondorx_reference    = wisecondorx_reference ?    Channel.fromPath(wisecondorx_reference).collect { wcx_file -> [[id:'wisecondorx'], wcx_file] } : [[],[]]
-    def ch_blacklist                = blacklist ?                Channel.fromPath(blacklist).collect { blacklist_file -> [[id:'blacklist'], blacklist_file] } : [[],[]]
-    def ch_manta_config             = manta_config ?             Channel.fromPath(manta_config).collect() : [[]]
-    def ch_svync_configs            = svync_dir ?                Channel.fromPath("${svync_dir}/*.yaml", checkIfExists:true).collect() : []
-    def ch_bedgovcf_configs         = bedgovcf_dir ?             Channel.fromPath("${bedgovcf_dir}/*.yaml", checkIfExists:true).collect() : []
-    def ch_strvctvre_phylop         = strvctvre_phylop ?         Channel.value([[id:'phylop'], file(strvctvre_phylop)]) : [[:],[]]
-    def ch_strvctvre_data           = strvctvre_data ?           Channel.value([[id:'strvctvre_data'], file(strvctvre_data)]) : [[:],[]]
+    def ch_fasta                    = channel.fromPath(fasta).collect { fasta_file -> [[id:'fasta'], fasta_file ] }
+    // def ch_annotsv_candidate_genes  = annotsv_candidate_genes ?  channel.fromPath(annotsv_candidate_genes).collect { genes_file -> [[], genes_file] } : [[],[]]
+    // def ch_annotsv_gene_transcripts = annotsv_gene_transcripts ? channel.fromPath(annotsv_gene_transcripts).collect { transcripts_file -> [[], transcripts_file] } : [[],[]]
+    def ch_vcfanno_lua              = vcfanno_lua ?              channel.fromPath(vcfanno_lua).collect() : []
+    def ch_catalog                  = expansionhunter_catalog ?  channel.fromPath(expansionhunter_catalog).collect { catalog_file -> [[id:'catalog'], catalog_file] } : [[],[]]
+    def ch_qdnaseq_male             = qdnaseq_male ?             channel.fromPath(qdnaseq_male).collect { qdnaseq_file -> [[id:'qdnaseq_male'], qdnaseq_file] } : [[],[]]
+    def ch_qdnaseq_female           = qdnaseq_female ?           channel.fromPath(qdnaseq_female).collect { qdnaseq_file -> [[id:'qdnaseq_female'], qdnaseq_file] } : [[],[]]
+    def ch_wisecondorx_reference    = wisecondorx_reference ?    channel.fromPath(wisecondorx_reference).collect { wcx_file -> [[id:'wisecondorx'], wcx_file] } : [[],[]]
+    def ch_blacklist                = blacklist ?                channel.fromPath(blacklist).collect { blacklist_file -> [[id:'blacklist'], blacklist_file] } : [[],[]]
+    def ch_manta_config             = manta_config ?             channel.fromPath(manta_config).collect() : [[]]
+    def ch_svync_configs            = svync_dir ?                channel.fromPath("${svync_dir}/*.yaml", checkIfExists:true).collect() : []
+    def ch_bedgovcf_configs         = bedgovcf_dir ?             channel.fromPath("${bedgovcf_dir}/*.yaml", checkIfExists:true).collect() : []
+    def ch_strvctvre_phylop         = strvctvre_phylop ?         channel.value([[id:'phylop'], file(strvctvre_phylop)]) : [[:],[]]
+    def ch_strvctvre_data           = strvctvre_data ?           channel.value([[id:'strvctvre_data'], file(strvctvre_data)]) : [[:],[]]
 
     def val_vcfanno_resources       = vcfanno_resources ?        vcfanno_resources.split(",").collect { resource_file -> file(resource_file, checkIfExists:true) }.flatten() : []
     def val_default_vcfanno_tomls   = vcfanno_default_dir ?      files("${vcfanno_default_dir}/*.toml", checkIfExists:true) : []
@@ -202,7 +197,7 @@ workflow STRUCTURAL {
     // Create optional inputs
     //
 
-    def ch_fai = Channel.empty()
+    def ch_fai = channel.empty()
     if(!fai){
         SAMTOOLS_FAIDX(
             ch_fasta,
@@ -213,10 +208,10 @@ workflow STRUCTURAL {
         ch_fai      = SAMTOOLS_FAIDX.out.fai.collect { fai_file -> [[id:'fai'], fai_file] }
     }
     else {
-        ch_fai = Channel.fromPath(fai).collect { fai_file -> [[id:'fai'], fai_file] }
+        ch_fai = channel.fromPath(fai).collect { fai_file -> [[id:'fai'], fai_file] }
     }
 
-    def ch_dict = Channel.empty()
+    def ch_dict = channel.empty()
     // Dictionary is only needed for GATK4_SVANNOTATE
     if(!dict && gtf) {
         GATK4_CREATESEQUENCEDICTIONARY(
@@ -227,13 +222,13 @@ workflow STRUCTURAL {
         ch_dict = GATK4_CREATESEQUENCEDICTIONARY.out.dict.collect()
     }
     else if(dict) {
-        ch_dict = Channel.fromPath(dict).collect { dict_file -> [[id:'dict'], dict_file] }
+        ch_dict = channel.fromPath(dict).collect { dict_file -> [[id:'dict'], dict_file] }
     }
 
-    def ch_preprocessed_gtf = Channel.empty()
+    def ch_preprocessed_gtf = channel.empty()
     // Sanitize GTF file to adhere to the extremely strict GTF parsing in SVAnnotate
     if (gtf) {
-        ch_sanitize_input = Channel.fromPath(gtf).collect { gtf_file -> [[id:'gtf'], gtf_file] }
+        ch_sanitize_input = channel.fromPath(gtf).collect { gtf_file -> [[id:'gtf'], gtf_file] }
         PREPROCESS_GTF(
             ch_sanitize_input
         )
@@ -242,67 +237,17 @@ workflow STRUCTURAL {
         ch_preprocessed_gtf = PREPROCESS_GTF.out.gtf.collect()
     }
 
-    // if(!bwa && "gridss" in callers){
-    //     BWA_INDEX(
-    //         ch_fasta
-    //     )
-
-    //     ch_versions  = ch_versions.mix(BWA_INDEX.out.versions)
-    //     ch_bwa_index = BWA_INDEX.out.index.map{[[id:'bwa'], it[1]]}.collect()
-    // }
-    // else if(bwa && "gridss" in callers) {
-    //     ch_bwa_index_input = Channel.fromPath(bwa).map{[[id:"bwa"],it]}.collect()
-    //     if(bwa.endsWith(".tar.gz")) {
-    //         UNTAR_BWA(
-    //             ch_bwa_index_input
-    //         )
-    //         ch_versions = ch_versions.mix(UNTAR_BWA.out.versions)
-
-    //         UNTAR_BWA.out.untar
-    //             .collect()
-    //             .set { ch_bwa_index }
-    //     } else {
-    //         ch_bwa_index = ch_bwa_index_input
-    //     }
-    // }
-    // else {
-    //     ch_bwa_index = Channel.empty()
-    // }
-
-    // def ch_annotsv_annotations = Channel.empty()
-    // if(annotate && !annotsv_annotations && callers.intersect(annotationCallers)) {
-    //     ANNOTSV_INSTALLANNOTATIONS()
-    //     ch_versions = ch_versions.mix(ANNOTSV_INSTALLANNOTATIONS.out.versions)
-
-    //     ch_annotsv_annotations = ANNOTSV_INSTALLANNOTATIONS.out.annotations
-    //         .collect { annotations -> [[id:"annotsv_annotations"], annotations] }
-    // }
-    // else if(annotate && callers.intersect(annotationCallers)) {
-    //     ch_annotsv_annotations_input = Channel.fromPath(annotsv_annotations).collect { annotations -> [[id:"annotsv_annotations"], annotations] }
-    //     if(annotsv_annotations.endsWith(".tar.gz")){
-    //         UNTAR_ANNOTSV(
-    //             ch_annotsv_annotations_input
-    //         )
-    //         ch_versions = ch_versions.mix(UNTAR_ANNOTSV.out.versions)
-
-    //         ch_annotsv_annotations = UNTAR_ANNOTSV.out.untar
-    //             .collect()
-    //     } else {
-    //         ch_annotsv_annotations = Channel.fromPath(annotsv_annotations).collect { annotations -> [[id:"annotsv_annotations"], annotations] }
-    //     }
-    // }
-
-    def ch_vep_cache = Channel.empty()
+    def ch_vep_cache = channel.empty()
     if(!vep_cache && annotate && callers.intersect(annotationCallers)) {
         ENSEMBLVEP_DOWNLOAD(
-            Channel.of([[id:"vep_cache"], vep_assembly, species, vep_cache_version]).collect()
+            channel.of([[id:"vep_cache"], vep_assembly, species, vep_cache_version]).collect()
         )
         ch_versions = ch_versions.mix(ENSEMBLVEP_DOWNLOAD.out.versions)
 
         ch_vep_cache = ENSEMBLVEP_DOWNLOAD.out.cache.collect { annotations -> annotations[1] }
     }
     else if (vep_cache && annotate && callers.intersect(annotationCallers)) {
-        ch_vep_cache = Channel.fromPath(vep_cache).collect()
+        ch_vep_cache = channel.fromPath(vep_cache).collect()
     }
 
     //
@@ -334,7 +279,7 @@ workflow STRUCTURAL {
     // Determine the gender if needed
     //
 
-    def ch_input_sex = Channel.empty()
+    def ch_input_sex = channel.empty()
     if(callers.intersect(sexCallers)) {
         def ch_samplegender_input = ch_input_no_sex
             .branch { meta, _cram, _crai, _small_variants ->
@@ -378,7 +323,7 @@ workflow STRUCTURAL {
     // Call the variants
     //
 
-    def ch_annotation_input = Channel.empty()
+    def ch_annotation_input = channel.empty()
     if(sv_callers_to_use){
 
         count_types += 1
@@ -404,8 +349,8 @@ workflow STRUCTURAL {
     // Copy number calling
     //
 
-    def ch_wisecondorx_out = Channel.empty()
-    def ch_qdnaseq_out = Channel.empty()
+    def ch_wisecondorx_out = channel.empty()
+    def ch_qdnaseq_out = channel.empty()
     if(cnv_callers_to_use){
 
         count_types += 1
@@ -493,7 +438,7 @@ workflow STRUCTURAL {
     // Concatenate the VCF files from different types of analysis
     //
 
-    def ch_concat_vcfs = Channel.empty()
+    def ch_concat_vcfs = channel.empty()
     if(count_types > 1 && concat_output) {
         def ch_concat_input = ch_outputs
             .map { meta, vcf, tbi ->
@@ -532,7 +477,7 @@ workflow STRUCTURAL {
     // Convert VCF files to BEDPE files
     //
 
-    def ch_bedpe = Channel.empty()
+    def ch_bedpe = channel.empty()
     if(bedpe) {
         def ch_vcftobedpe_input = ch_concat_vcfs
             .mix(ch_family_vcfs)
@@ -553,7 +498,8 @@ workflow STRUCTURAL {
     //
     // Collate and save software versions
     //
-    def topic_versions = Channel.topic("versions")
+
+    def topic_versions = channel.topic("versions")
         .distinct()
         .branch { entry ->
             versions_file: entry instanceof Path
@@ -573,7 +519,7 @@ workflow STRUCTURAL {
     softwareVersionsToYAML(ch_versions.mix(topic_versions.versions_file))
         .mix(topic_versions_string)
         .collectFile(
-            storeDir: "${params.outdir}/pipeline_info",
+            storeDir: "${outdir}/pipeline_info",
             name:  'structural_software_'  + 'mqc_'  + 'versions.yml',
             sort: true,
             newLine: true

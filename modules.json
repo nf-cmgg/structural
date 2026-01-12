@@ -5,16 +5,6 @@
         "https://github.com/nf-core/modules.git": {
             "modules": {
                 "nf-core": {
-                    "annotsv/annotsv": {
-                        "branch": "master",
-                        "git_sha": "296d216c3f6384936a6526b6fbed7e6412259fb4",
-                        "installed_by": ["modules"]
-                    },
-                    "annotsv/installannotations": {
-                        "branch": "master",
-                        "git_sha": "296d216c3f6384936a6526b6fbed7e6412259fb4",
-                        "installed_by": ["modules"]
-                    },
                     "bcftools/annotate": {
                         "branch": "master",
                         "git_sha": "2ad29c2aed06d815d9f68ad7ba20b3b1c574ce9c",
@@ -82,25 +72,19 @@
                         "git_sha": "b42fec6f7c6e5d0716685cabb825ef6bf6e386b5",
                         "installed_by": ["modules"]
                     },
-                    "gridss/gridss": {
-                        "branch": "master",
-                        "git_sha": "3f5420aa22e00bd030a2556dfdffc9e164ec0ec5",
-                        "installed_by": ["modules"],
-                        "patch": "modules/nf-core/gridss/gridss/gridss-gridss.diff"
-                    },
                     "jasminesv": {
                         "branch": "master",
-                        "git_sha": "a33c6de0a147226454c4a52db710826f2d9fafbe",
+                        "git_sha": "671cad06f043fdf5c5aae7c49890ad8ccdacbb04",
                         "installed_by": ["modules"]
                     },
                     "manta/convertinversion": {
                         "branch": "master",
-                        "git_sha": "92bf2a8afa318a64f9d333cf87b510c662fd4274",
+                        "git_sha": "3485512d3930df1fcb66b5f92af639179bdfe4be",
                         "installed_by": ["modules"]
                     },
                     "manta/germline": {
                         "branch": "master",
-                        "git_sha": "ebc1733b77c702f19fe42076a5edfcbaa0d84f66",
+                        "git_sha": "3485512d3930df1fcb66b5f92af639179bdfe4be",
                         "installed_by": ["modules"]
                     },
                     "multiqc": {
@@ -203,7 +187,7 @@
                     },
                     "utils_nfschema_plugin": {
                         "branch": "master",
-                        "git_sha": "e753770db613ce014b3c4bc94f6cba443427b726",
+                        "git_sha": "ff506dcada6fc826ed0c641dc2ed1e98f7345fbe",
                         "installed_by": ["subworkflows"]
                     }
                 }

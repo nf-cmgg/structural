@@ -15,12 +15,12 @@ workflow VCF_ANNOTATE_VCFANNO {
 
     main:
 
-    def ch_versions = Channel.empty()
-    def ch_annotated_vcfs = Channel.empty()
+    def ch_versions = channel.empty()
+    def ch_annotated_vcfs = channel.empty()
 
     def val_toml = create_vcfanno_toml(val_vcfanno_resources, vcfanno_toml, default_vcfanno_tomls)
     if( val_toml ) {
-        def ch_vcfanno_toml = Channel.fromList(val_toml)
+        def ch_vcfanno_toml = channel.fromList(val_toml)
             .collectFile(name:"vcfanno.toml", newLine:true)
             .collect()
 
@@ -28,7 +28,7 @@ workflow VCF_ANNOTATE_VCFANNO {
             ch_vcfs,
             ch_vcfanno_toml,
             ch_vcfanno_lua,
-            val_vcfanno_resources ? Channel.fromList(val_vcfanno_resources).collect() : []
+            val_vcfanno_resources ? channel.fromList(val_vcfanno_resources).collect() : []
         )
         ch_versions = ch_versions.mix(VCFANNO.out.versions.first())
 

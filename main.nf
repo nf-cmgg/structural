@@ -29,8 +29,6 @@ params.fai                      = getGenomeAttribute('fai')
 params.dict                     = getGenomeAttribute('dict')
 params.gtf                      = getGenomeAttribute('gtf')
 params.vep_cache                = getGenomeAttribute('vep_cache')
-// params.bwa                      = getGenomeAttribute('bwa')
-// params.annotsv_annotations      = getGenomeAttribute('annotsv_annotations')
 params.expansionhunter_catalog  = getGenomeAttribute('expansionhunter_catalog')
 params.qdnaseq_male             = getGenomeAttribute("qdnaseq_male_${params.qdnaseq_bin_size.toInteger() / 1000}kbp".toString())
 params.qdnaseq_female           = getGenomeAttribute("qdnaseq_female_${params.qdnaseq_bin_size.toInteger() / 1000}kbp".toString())
@@ -67,9 +65,9 @@ workflow {
         params.show_hidden
     )
 
-    def ch_multiqc_config          = Channel.fromPath("$projectDir/assets/multiqc_config.yml", checkIfExists: true)
-    def ch_multiqc_custom_config   = params.multiqc_config ? Channel.fromPath( params.multiqc_config, checkIfExists: true ) : Channel.empty()
-    def ch_multiqc_logo            = params.multiqc_logo   ? Channel.fromPath( params.multiqc_logo, checkIfExists: true ) : Channel.empty()
+    def ch_multiqc_config          = channel.fromPath("$projectDir/assets/multiqc_config.yml", checkIfExists: true)
+    def ch_multiqc_custom_config   = params.multiqc_config ? channel.fromPath( params.multiqc_config, checkIfExists: true ) : channel.empty()
+    def ch_multiqc_logo            = params.multiqc_logo   ? channel.fromPath( params.multiqc_logo, checkIfExists: true ) : channel.empty()
     def ch_multiqc_custom_methods_description = params.multiqc_methods_description ? file(params.multiqc_methods_description, checkIfExists: true) : file("$projectDir/assets/methods_description_template.yml", checkIfExists: true)
 
     //
@@ -93,9 +91,6 @@ workflow {
         params.qdnaseq_male,
         params.wisecondorx_reference,
         params.vep_cache,
-        // params.annotsv_annotations,
-        // params.annotsv_candidate_genes,
-        // params.annotsv_gene_transcripts,
         params.vcfanno_lua,
         params.vcfanno_resources,
         params.vcfanno_toml,

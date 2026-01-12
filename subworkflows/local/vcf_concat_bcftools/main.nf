@@ -12,7 +12,7 @@ workflow VCF_CONCAT_BCFTOOLS {
 
     main:
 
-    def ch_versions = Channel.empty()
+    def ch_versions = channel.empty()
 
     def ch_concat_input = ch_vcfs
         .groupTuple(size:val_count_types)

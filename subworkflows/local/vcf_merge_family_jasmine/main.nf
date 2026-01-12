@@ -17,7 +17,7 @@ workflow VCF_MERGE_FAMILY_JASMINE {
 
     main:
 
-    def ch_versions     = Channel.empty()
+    def ch_versions     = channel.empty()
 
     def ch_jasmine_input = ch_vcfs
         .map { meta, vcf, tbi ->
@@ -29,13 +29,12 @@ workflow VCF_MERGE_FAMILY_JASMINE {
 
     JASMINESV(
         ch_jasmine_input.map { meta, vcfs, _tbis ->
-            [ meta, vcfs, [], [] ]
+            [ meta, vcfs, [], [], [] ]
         },
         ch_fasta,
         ch_fai,
         []
     )
-    ch_versions = ch_versions.mix(JASMINESV.out.versions.first())
 
     FIX_CALLERS(
         JASMINESV.out.vcf

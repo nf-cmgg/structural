@@ -19,7 +19,7 @@ workflow VCF_MERGE_CALLERS_JASMINE {
 
     main:
 
-    def ch_versions     = Channel.empty()
+    def ch_versions     = channel.empty()
 
     def ch_jasmine_input = ch_vcfs
         .map { meta, vcf, tbi ->
@@ -29,7 +29,7 @@ workflow VCF_MERGE_CALLERS_JASMINE {
         .groupTuple(size:val_callers.size())
         .tap { ch_consensus_reheader_input }
         .map { meta, vcfs, _tbis ->
-            [ meta, vcfs, [], [] ]
+            [ meta, vcfs, [], [], [] ]
         }
         .dump(tag:'jasmine_input', pretty:true)
 
@@ -39,7 +39,6 @@ workflow VCF_MERGE_CALLERS_JASMINE {
         ch_fai,
         []
     )
-    ch_versions = ch_versions.mix(JASMINESV.out.versions.first())
 
     FIX_CALLERS(
         JASMINESV.out.vcf

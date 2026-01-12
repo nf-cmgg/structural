@@ -15,7 +15,7 @@ workflow BAM_REPEAT_ESTIMATION_EXPANSIONHUNTER {
 
     main:
 
-    def ch_versions = Channel.empty()
+    def ch_versions = channel.empty()
 
     def ch_expansionhunter_input = ch_crams
         .map { meta, cram, crai ->
@@ -31,7 +31,7 @@ workflow BAM_REPEAT_ESTIMATION_EXPANSIONHUNTER {
     )
     ch_versions = ch_versions.mix(EXPANSIONHUNTER.out.versions.first())
 
-    def ch_ref_header = Channel.of(
+    def ch_ref_header = channel.of(
         '##INFO=<ID=REF,Number=1,Type=Integer,Description="Count of reads mapping across this breakend">',
         '##INFO=<ID=RU,Number=1,Type=String,Description="The repeat unit of the STR">',
         '##INFO=<ID=REPREF,Number=1,Type=Integer,Description="How many repeats are in the reference">',

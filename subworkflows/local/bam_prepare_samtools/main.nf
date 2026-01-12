@@ -14,7 +14,7 @@ workflow BAM_PREPARE_SAMTOOLS {
 
     main:
 
-    def ch_versions     = Channel.empty()
+    def ch_versions     = channel.empty()
 
     def ch_merge_input = ch_crams
         .groupTuple() // no size needed here as no process has been run before this

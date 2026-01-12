@@ -32,12 +32,10 @@ nf_core_version: 3.5.1
 repository_type: pipeline
 template:
   author: nvnieuwk
-  description: A bioinformatics best-practice analysis pipeline for calling structural
-    variants (SVs), copy number variants (CNVs) and repeat region expansions (RREs)
-    from short DNA reads.
+  description: A bioinformatics best-practice analysis pipeline for calling structural variants (SVs), copy number variants (CNVs) and repeat region expansions (RREs) from short DNA reads.
   force: false
   is_nfcore: false
   name: structural
   org: nf-cmgg
   outdir: .
-  version: 0.3.0dev
+  version: 0.3.0

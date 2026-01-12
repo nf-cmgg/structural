@@ -58,13 +58,13 @@ ID56789	/path/to/ID56789.cram
 
 Following table contains all possible values for the samplesheet.
 
-| Column           | Description                                                                                                                                                  | Type   | Required           |
-| ---------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------ | ------ | ------------------ |
-| `sample`         | The custom sample name. Cannot contain spaces and doesn't have to unique. When the same sample has been given multiple times, the CRAM files will be merged. | string | :heavy_check_mark: |
-| `family`         | The family name of the current sample. All samples in the same family will be merged together at the end of the pipeline. Cannot contain spaces              | string | :x:                |
-| `cram`           | Path to the CRAM file to be used by the pipeline for the current sample.                                                                                     | string | :heavy_check_mark: |
-| `crai`           | Path to the CRAM index file                                                                                                                                  | string | :x:                |
-| `sex`            | The sex of the sample to be used by QDNAseq. Sex will be imputed when missing (Options: `male` or `female`)                                                  | string | :x:                |
+| Column   | Description                                                                                                                                                  | Type   | Required           |
+| -------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------ | ------ | ------------------ |
+| `sample` | The custom sample name. Cannot contain spaces and doesn't have to unique. When the same sample has been given multiple times, the CRAM files will be merged. | string | :heavy_check_mark: |
+| `family` | The family name of the current sample. All samples in the same family will be merged together at the end of the pipeline. Cannot contain spaces              | string | :x:                |
+| `cram`   | Path to the CRAM file to be used by the pipeline for the current sample.                                                                                     | string | :heavy_check_mark: |
+| `crai`   | Path to the CRAM index file                                                                                                                                  | string | :x:                |
+| `sex`    | The sex of the sample to be used by QDNAseq. Sex will be imputed when missing (Options: `male` or `female`)                                                  | string | :x:                |
 
 See following samplesheet for a working example of a samplesheet (used by the `test` profile of the pipeline):
 

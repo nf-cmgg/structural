@@ -61,7 +61,7 @@
                     "tabix": "1.19.1"
                 },
                 "Workflow": {
-                    "nf-cmgg/structural": "v0.3.0dev"
+                    "nf-cmgg/structural": "v0.3.0"
                 },
                 "task.process": {
                     "bioconductor-qdnaseq": "1.34.0",

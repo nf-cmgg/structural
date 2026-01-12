@@ -59,17 +59,19 @@ workflow BAM_REPEAT_ESTIMATION_EXPANSIONHUNTER {
         }
 
     BCFTOOLS_ANNOTATE(
-        ch_annotate_input
+        ch_annotate_input,
+        [],
+        [],
+        []
     )
     ch_versions = ch_versions.mix(BCFTOOLS_ANNOTATE.out.versions.first())
 
     TABIX_TABIX(
         BCFTOOLS_ANNOTATE.out.vcf
     )
-    ch_versions = ch_versions.mix(TABIX_TABIX.out.versions.first())
 
     def ch_vcfs = BCFTOOLS_ANNOTATE.out.vcf
-        .join(TABIX_TABIX.out.tbi, failOnDuplicate:true, failOnMismatch:true)
+        .join(TABIX_TABIX.out.index, failOnDuplicate:true, failOnMismatch:true)
 
     emit:
     caller_vcfs = ch_expansionhunter_vcfs   // channel: [ val(meta), path(vcf), path(tbi) ]

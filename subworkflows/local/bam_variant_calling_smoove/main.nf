@@ -62,10 +62,9 @@ workflow BAM_VARIANT_CALLING_SMOOVE {
     TABIX_TABIX(
         SVYNC.out.vcf
     )
-    ch_versions = ch_versions.mix(TABIX_TABIX.out.versions.first())
 
     def ch_out_vcfs = SVYNC.out.vcf
-        .join(TABIX_TABIX.out.tbi)
+        .join(TABIX_TABIX.out.index)
 
     emit:
     raw_vcfs    = ch_smoove_vcfs    // channel: [ val(meta), path(vcf), path(tbi) ]

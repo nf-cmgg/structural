@@ -26,7 +26,8 @@ workflow BAM_VARIANT_CALLING_MANTA {
 
     GAWK(
         ch_fai,
-        []
+        [],
+        false
     )
     ch_versions = ch_versions.mix(GAWK.out.versions)
 
@@ -35,7 +36,7 @@ workflow BAM_VARIANT_CALLING_MANTA {
     )
     ch_versions = ch_versions.mix(TABIX_BGZIPTABIX.out.versions)
 
-    def ch_contigs = TABIX_BGZIPTABIX.out.gz_tbi
+    def ch_contigs = TABIX_BGZIPTABIX.out.gz_index
         .map { _meta, bed_gz, tbi ->
             [bed_gz, tbi]
         }
@@ -89,10 +90,9 @@ workflow BAM_VARIANT_CALLING_MANTA {
     TABIX_TABIX(
         SVYNC.out.vcf
     )
-    ch_versions = ch_versions.mix(TABIX_TABIX.out.versions.first())
 
     def ch_out_vcfs = SVYNC.out.vcf
-        .join(TABIX_TABIX.out.tbi)
+        .join(TABIX_TABIX.out.index)
 
     emit:
     raw_vcfs    = ch_manta_vcfs // channel: [ val(meta), path(vcf), path(tbi) ]

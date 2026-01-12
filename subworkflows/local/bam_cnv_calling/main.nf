@@ -82,10 +82,9 @@ workflow BAM_CNV_CALLING {
         TABIX_TABIX(
             ch_called_vcfs
         )
-        ch_versions = ch_versions.mix(TABIX_TABIX.out.versions.first())
 
         ch_merged_vcfs = ch_called_vcfs
-            .join(TABIX_TABIX.out.tbi, failOnDuplicate:true, failOnMismatch:true)
+            .join(TABIX_TABIX.out.index, failOnDuplicate:true, failOnMismatch:true)
             .map { meta, vcf, tbi ->
                 def new_meta = meta - meta.subMap("caller") + [variant_type:"cnv"]
                 [ new_meta, vcf, tbi ]

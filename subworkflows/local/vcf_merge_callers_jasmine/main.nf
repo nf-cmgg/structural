@@ -67,10 +67,9 @@ workflow VCF_MERGE_CALLERS_JASMINE {
     TABIX_TABIX(
         BCFTOOLS_SORT.out.vcf
     )
-    ch_versions = ch_versions.mix(TABIX_TABIX.out.versions.first())
 
     def ch_vcfs_out = BCFTOOLS_SORT.out.vcf
-        .join(TABIX_TABIX.out.tbi, failOnMismatch:true, failOnDuplicate:true)
+        .join(TABIX_TABIX.out.index, failOnMismatch:true, failOnDuplicate:true)
 
     emit:
     vcfs        = ch_vcfs_out    // channel: [ val(meta), path(vcf), path(tbi) ]

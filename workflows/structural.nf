@@ -241,7 +241,6 @@ workflow STRUCTURAL {
         ENSEMBLVEP_DOWNLOAD(
             channel.of([[id:"vep_cache"], vep_assembly, species, vep_cache_version]).collect()
         )
-        ch_versions = ch_versions.mix(ENSEMBLVEP_DOWNLOAD.out.versions)
 
         ch_vep_cache = ENSEMBLVEP_DOWNLOAD.out.cache.collect { annotations -> annotations[1] }
     }

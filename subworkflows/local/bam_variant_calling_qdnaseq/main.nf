@@ -7,7 +7,6 @@ include { QDNASEQ as QDNASEQ_FEMALE     } from '../../../modules/local/qdnaseq/m
 include { SAMTOOLS_CONVERT              } from '../../../modules/nf-core/samtools/convert/main'
 include { GAWK                          } from '../../../modules/nf-core/gawk/main'
 include { BEDGOVCF                      } from '../../../modules/nf-core/bedgovcf/main'
-include { TABIX_TABIX                   } from '../../../modules/nf-core/tabix/tabix/main'
 
 workflow BAM_VARIANT_CALLING_QDNASEQ {
     take:
@@ -65,7 +64,8 @@ workflow BAM_VARIANT_CALLING_QDNASEQ {
 
     GAWK(
         ch_qdnaseq_beds,
-        []
+        [],
+        false
     )
     ch_versions = ch_versions.mix(GAWK.out.versions.first())
 
@@ -84,18 +84,12 @@ workflow BAM_VARIANT_CALLING_QDNASEQ {
         ch_bedgovcf_input,
         ch_fai
     )
-    ch_versions = ch_versions.mix(BEDGOVCF.out.versions.first())
 
     def ch_vcf = BEDGOVCF.out.vcf
         .map { meta, vcf ->
             def new_meta = meta - meta.subMap("caller")
             [ new_meta, vcf ]
         }
-
-    TABIX_TABIX(
-        BEDGOVCF.out.vcf
-    )
-    ch_versions = ch_versions.mix(TABIX_TABIX.out.versions.first())
 
     emit:
     beds        = ch_qdnaseq_beds       // channel: [ val(meta), path(bed) ]

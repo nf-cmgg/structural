@@ -3,7 +3,7 @@
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## v0.3.0dev
+## v0.3.0 - [12 Jan 2026] - Fantastic Frituur
 
 ### `Added`
 
@@ -29,13 +29,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 12. Bumped all annotation modules to the latest versions
 13. Reworked the annotation structure to a per tool structure. Specify the annotations tools you want to run with `--annotate_tools`. This parameter takes a comma-separated list of tool names (options: `vep`, `vcfanno`, `svannotate`, `strvctvre` or `all` (=> all tools))
 14. Updated to nf-core template v3.5.1
+15. Removed AnnotSV from the pipeline
 
 ### `Fixed`
 
 1. Fail the pipeline when the sex determination failed. This will now prompt the user to add the sex to the samplesheet so the pipeline doesn't do any wrong assumptions
 2. Fixed the Jasmine module output VCFs being empty when no variants have been merged. This file now contains the header of one of the input VCFs
-3. AnnotSV VCF files are now sorted before trying to combine it with the VEP output.
-4. Fixed a map issue when the sex field is empty in the samplesheet
+3. Fixed a map issue when the sex field is empty in the samplesheet
 
 ## v0.2.0 - [19 July 2024] - Mighty Manneken Pis
 

@@ -21,7 +21,6 @@ include { methodsDescriptionText } from '../subworkflows/local/utils_nfcore_stru
 include { BAM_PREPARE_SAMTOOLS                  } from '../subworkflows/local/bam_prepare_samtools/main'
 include { BAM_SV_CALLING                        } from '../subworkflows/local/bam_sv_calling/main'
 include { BAM_CNV_CALLING                       } from '../subworkflows/local/bam_cnv_calling/main'
-include { VCF_ANNOTATE_VCFANNO                  } from '../subworkflows/local/vcf_annotate_vcfanno/main'
 include { BAM_REPEAT_ESTIMATION_EXPANSIONHUNTER } from '../subworkflows/local/bam_repeat_estimation_expansionhunter/main'
 include { VCF_ANNOTATE                          } from '../subworkflows/local/vcf_annotate/main'
 include { VCF_CONCAT_BCFTOOLS                   } from '../subworkflows/local/vcf_concat_bcftools/main'
@@ -254,70 +253,45 @@ workflow STRUCTURAL {
     // Prepare the inputs
     //
 
-    def ch_deduplicated = ch_samplesheet
-        .map { meta, _cram, _crai, small_variants ->
-            [ meta, small_variants ]
-        }
-        .groupTuple()
-        .map { meta, small_variants ->
-            [ meta, small_variants.find { small_variant -> small_variant != [] } ?: [] ]
-        }
-
     BAM_PREPARE_SAMTOOLS(
-        ch_samplesheet.map { meta, cram, crai, _small_variants ->
-            [ meta, cram, crai ]
-        },
+        ch_samplesheet,
         ch_fasta,
         ch_fai
     )
     ch_versions = ch_versions.mix(BAM_PREPARE_SAMTOOLS.out.versions)
 
     def ch_input_no_sex = BAM_PREPARE_SAMTOOLS.out.crams
-        .join(ch_deduplicated, failOnDuplicate:true, failOnMismatch:true)
 
     //
     // Determine the gender if needed
     //
 
-    def ch_input_sex = channel.empty()
+    def ch_inputs = channel.empty()
     if(callers.intersect(sexCallers)) {
         def ch_samplegender_input = ch_input_no_sex
-            .branch { meta, _cram, _crai, _small_variants ->
+            .branch { meta, _cram, _crai ->
                 sex: meta.sex
                 no_sex: !meta.sex
             }
 
-        def ch_samplegender_multi = ch_samplegender_input.no_sex
-            .multiMap { meta, cram, crai, small_variants ->
-                cram: [ meta, cram, crai ]
-                other: [ meta, small_variants ]
-            }
-
         NGSBITS_SAMPLEGENDER(
-            ch_samplegender_multi.cram,
+            ch_samplegender_input.no_sex,
             ch_fasta,
             ch_fai,
             "xy"
         )
         ch_versions = ch_versions.mix(NGSBITS_SAMPLEGENDER.out.versions.first())
 
-        ch_input_sex = NGSBITS_SAMPLEGENDER.out.tsv
-            .join(ch_samplegender_multi.cram, failOnDuplicate:true, failOnMismatch:true)
-            .join(ch_samplegender_multi.other, failOnDuplicate:true, failOnMismatch:true)
-            .map { meta, tsv, cram, crai, small_variants ->
+        ch_inputs = NGSBITS_SAMPLEGENDER.out.tsv
+            .join(ch_samplegender_input.no_sex, failOnDuplicate:true, failOnMismatch:true)
+            .map { meta, tsv, cram, crai ->
                 def new_meta = meta + [sex:get_sex(tsv, meta.sample)]
-                return [ new_meta, cram, crai, small_variants ]
+                return [ new_meta, cram, crai ]
             }
             .mix(ch_samplegender_input.sex)
     } else {
-        ch_input_sex = ch_input_no_sex
+        ch_inputs = ch_input_no_sex
     }
-
-    def ch_inputs = ch_input_sex
-        .multiMap { meta, cram, crai, small_variants ->
-            crams:          [ meta, cram, crai ]
-            small_variants: [ meta, small_variants ]
-        }
 
     //
     // Call the variants
@@ -330,7 +304,7 @@ workflow STRUCTURAL {
         variant_types.add("sv")
 
         BAM_SV_CALLING(
-            ch_inputs.crams,
+            ch_inputs,
             ch_fasta,
             ch_fai,
             ch_manta_config,
@@ -357,7 +331,7 @@ workflow STRUCTURAL {
         variant_types.add("cnv")
 
         BAM_CNV_CALLING(
-            ch_inputs.crams,
+            ch_inputs,
             ch_fasta,
             ch_fai,
             ch_qdnaseq_male,
@@ -422,7 +396,7 @@ workflow STRUCTURAL {
         count_types += 1
 
         BAM_REPEAT_ESTIMATION_EXPANSIONHUNTER(
-            ch_inputs.crams,
+            ch_inputs,
             ch_fasta,
             ch_fai,
             ch_catalog

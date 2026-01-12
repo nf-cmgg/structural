@@ -22,14 +22,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 5. Fixed language server errors
 6. Removed the old output publishing code and used the new workflow output definitions instead
 7. Bumped the minimal nextflow version to 25.10.0
-8. VCFanno will now run when `--vcfanno_toml` has been given and `--annotate` has not been given. You still need to supply `--annotate` to get the full annotation, but this can be used check for common variants without having to perform full annotation.
-9. Changed the `--annotations_filter` parameter to a `--filter` parameter. This parameter takes an argument of `bcftools filter` to filter the resulting VCFs.
-10. Removed the `--delly_sv_types` parameter.
-11. Moved all `wisecondorx` and `qdnaseq` outputs to a separate directory in each sample output.
-12. Bumped all annotation modules to the latest versions
-13. Reworked the annotation structure to a per tool structure. Specify the annotations tools you want to run with `--annotate_tools`. This parameter takes a comma-separated list of tool names (options: `vep`, `vcfanno`, `svannotate`, `strvctvre` or `all` (=> all tools))
-14. Updated to nf-core template v3.5.1
-15. Removed AnnotSV from the pipeline
+8. Changed the `--annotations_filter` parameter to a `--filter` parameter. This parameter takes an argument of `bcftools filter` to filter the resulting VCFs.
+9. Removed the `--delly_sv_types` parameter.
+10. Moved all `wisecondorx` and `qdnaseq` outputs to a separate directory in each sample output.
+11. Bumped all annotation modules to the latest versions
+12. Reworked the annotation structure to a per tool structure. Specify the annotations tools you want to run with `--annotate_tools`. This parameter takes a comma-separated list of tool names (options: `vep`, `vcfanno`, `svannotate`, `strvctvre` or `all` (=> all tools))
+13. Updated to nf-core template v3.5.1
+14. Removed AnnotSV from the pipeline
+15. Removed the `small_variants` field from the samplesheet. Small variant VCFs are no longer used in the pipeline
 
 ### `Fixed`
 

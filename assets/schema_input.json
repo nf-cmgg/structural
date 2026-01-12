@@ -31,12 +31,6 @@
                 "format": "file-path",
                 "exists": true
             },
-            "small_variants": {
-                "type": "string",
-                "pattern": "^\\S+\\.vcf(\\.gz)?$",
-                "format": "file-path",
-                "exists": true
-            },
             "sex": {
                 "type": "string",
                 "meta": ["sex"],

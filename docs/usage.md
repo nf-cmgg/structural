@@ -64,7 +64,6 @@ Following table contains all possible values for the samplesheet.
 | `family`         | The family name of the current sample. All samples in the same family will be merged together at the end of the pipeline. Cannot contain spaces              | string | :x:                |
 | `cram`           | Path to the CRAM file to be used by the pipeline for the current sample.                                                                                     | string | :heavy_check_mark: |
 | `crai`           | Path to the CRAM index file                                                                                                                                  | string | :x:                |
-| `small_variants` | A VCF containing the SNV (small nucleotide variants) for the current sample to be used by AnnotSV                                                            | string | :x:                |
 | `sex`            | The sex of the sample to be used by QDNAseq. Sex will be imputed when missing (Options: `male` or `female`)                                                  | string | :x:                |
 
 See following samplesheet for a working example of a samplesheet (used by the `test` profile of the pipeline):

@@ -29,6 +29,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 12. Reworked the annotation structure to a per tool structure. Specify the annotations tools you want to run with `--annotate_tools`. This parameter takes a comma-separated list of tool names (options: `vep`, `vcfanno`, `svannotate`, `strvctvre` or `all` (=> all tools))
 13. Updated to nf-core template v3.5.1
 14. Removed AnnotSV from the pipeline
+15. Removed the `small_variants` field from the samplesheet. Small variant VCFs are no longer used in the pipeline
 
 ### `Fixed`
 

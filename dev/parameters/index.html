@@ -507,17 +507,6 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#annotsv-options" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        AnnotSV options
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
   <a href="#vcfanno-options" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -689,17 +678,6 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#annotsv-options" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        AnnotSV options
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
   <a href="#vcfanno-options" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -819,6 +797,22 @@
 <td></td>
 </tr>
 <tr>
+<td><code>dict</code></td>
+<td>The sequence dictionary of the FASTA reference file</td>
+<td><code>string</code></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td><code>gtf</code></td>
+<td>Path to GTF file for the reference genome. Gene and transcript annotations will be added when this file is provided</td>
+<td><code>string</code></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
 <td><code>expansionhunter_catalog</code></td>
 <td>Path to the expansionhunter catalog</td>
 <td><code>string</code></td>
@@ -845,6 +839,22 @@
 <tr>
 <td><code>wisecondorx_reference</code></td>
 <td>Path to the wisecondorx reference file</td>
+<td><code>string</code></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td><code>strvctvre_phylop</code></td>
+<td>Path to the StrVCTVRE phylo bigwig file</td>
+<td><code>string</code></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td><code>strvctvre_data</code></td>
+<td>Path to the StrVCTVRE data directory</td>
 <td><code>string</code></td>
 <td></td>
 <td></td>
@@ -970,6 +980,38 @@
 <td></td>
 <td>True</td>
 </tr>
+<tr>
+<td><code>pipelines_testdata_base_path</code></td>
+<td>Base URL or local path to location of pipeline test dataset files</td>
+<td><code>string</code></td>
+<td>https://raw.githubusercontent.com/nf-core/test-datasets/</td>
+<td></td>
+<td>True</td>
+</tr>
+<tr>
+<td><code>help</code></td>
+<td>Display the help message.</td>
+<td><code>['boolean', 'string']</code></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td><code>help_full</code></td>
+<td>Display the full detailed help message.</td>
+<td><code>boolean</code></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td><code>show_hidden</code></td>
+<td>Display hidden parameters in the help message (only works when --help or --help_full are provided).</td>
+<td><code>boolean</code></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
 </tbody>
 </table>
 <h2 id="generic-options">Generic options</h2>
@@ -987,14 +1029,6 @@
 </thead>
 <tbody>
 <tr>
-<td><code>help</code></td>
-<td>Display version and exit.</td>
-<td><code>boolean</code></td>
-<td></td>
-<td></td>
-<td>True</td>
-</tr>
-<tr>
 <td><code>version</code></td>
 <td>Display version and exit.</td>
 <td><code>boolean</code></td>
@@ -1004,7 +1038,7 @@
 </tr>
 <tr>
 <td><code>publish_dir_mode</code></td>
-<td>Method used to save pipeline results to output directory. <details><summary>Help</summary><small>The Nextflow <code>publishDir</code> option specifies which intermediate files should be saved to the output directory. This option tells the pipeline what method should be used to move these files. See <a href="https://www.nextflow.io/docs/latest/process.html#publishdir">Nextflow docs</a> for details.</small></details></td>
+<td>Method used to save pipeline results to output directory. (accepted: <code>symlink</code>|<code>rellink</code>|<code>link</code>|<code>copy</code>|<code>copyNoFollow</code>|<code>move</code>) <details><summary>Help</summary><small>The Nextflow <code>publishDir</code> option specifies which intermediate files should be saved to the output directory. This option tells the pipeline what method should be used to move these files. See <a href="https://www.nextflow.io/docs/latest/process.html#publishdir">Nextflow docs</a> for details.</small></details></td>
 <td><code>string</code></td>
 <td>copy</td>
 <td></td>
@@ -1083,14 +1117,6 @@
 <td></td>
 </tr>
 <tr>
-<td><code>pipelines_testdata_base_path</code></td>
-<td>The base path to of the pipeline test data</td>
-<td><code>string</code></td>
-<td>https://raw.githubusercontent.com/nf-core/test-datasets/</td>
-<td></td>
-<td>True</td>
-</tr>
-<tr>
 <td><code>trace_report_suffix</code></td>
 <td></td>
 <td><code>string</code></td>
@@ -1155,6 +1181,14 @@
 <td></td>
 </tr>
 <tr>
+<td><code>annotate_tools</code></td>
+<td>A comma-separated list of tools to use for annotation. Possible values: vep,svannotate,vcfanno,strvctvre. Default is all tools.</td>
+<td><code>string</code></td>
+<td>all</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
 <td><code>concat_output</code></td>
 <td>Also output a concatenated VCF with all variant types analysed included.</td>
 <td><code>boolean</code></td>
@@ -1166,6 +1200,14 @@
 <td><code>filter</code></td>
 <td>The filter options to perform on SV and CNV VCF files as postprocessing <details><summary>Help</summary><small>A common use case for this is to filter out common variants. You can supply a VCF file with common variants to VCFanno and filter out the matching variants using this parameter</small></details></td>
 <td><code>string</code></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td><code>bedpe</code></td>
+<td>Output BEDPE files derived from the VCF files alongside the VCF files</td>
+<td><code>boolean</code></td>
 <td></td>
 <td></td>
 <td></td>
@@ -1244,7 +1286,7 @@
 <tbody>
 <tr>
 <td><code>qdnaseq_bin_size</code></td>
-<td>The bin size to use for qdnaseq.</td>
+<td>The bin size to use for qdnaseq. (accepted: <code>5000</code>|<code>50000</code>|<code>100000</code>|<code>500000</code>)</td>
 <td><code>integer</code></td>
 <td>100000</td>
 <td></td>
@@ -1316,48 +1358,8 @@
 </tr>
 </tbody>
 </table>
-<h2 id="annotsv-options">AnnotSV options</h2>
-<p>Options specific to the execution of AnnotSV</p>
-<table>
-<thead>
-<tr>
-<th>Parameter</th>
-<th>Description</th>
-<th>Type</th>
-<th>Default</th>
-<th>Required</th>
-<th>Hidden</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><code>annotsv_annotations</code></td>
-<td>The full path to the AnnotSV annotations folder. This can be a tarzipped folder. <details><summary>Help</summary><small>When --annotate is set to true and this isn't given, the annotations will be downloaded automatically (this is not recommended though).</small></details></td>
-<td><code>string</code></td>
-<td></td>
-<td></td>
-<td></td>
-</tr>
-<tr>
-<td><code>annotsv_candidate_genes</code></td>
-<td>The full path the candidate genes file for AnnotSV</td>
-<td><code>string</code></td>
-<td></td>
-<td></td>
-<td></td>
-</tr>
-<tr>
-<td><code>annotsv_gene_transcripts</code></td>
-<td>The full path to the gene transcripts file for AnnotSV</td>
-<td><code>string</code></td>
-<td></td>
-<td></td>
-<td></td>
-</tr>
-</tbody>
-</table>
 <h2 id="vcfanno-options">VCFanno options</h2>
-<p>Options for the execution of AnnotSV</p>
+<p>Options for the execution of VCFanno</p>
 <table>
 <thead>
 <tr>

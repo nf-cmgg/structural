@@ -2,6 +2,7 @@ process FIX_CALLERS {
     tag "$meta.id"
     label 'process_low'
 
+    conda "${moduleDir}/environment.yml"
     container "quay.io/cmgg/python-tabix:0.0.1"
 
     input:

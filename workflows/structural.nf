@@ -105,10 +105,10 @@ workflow STRUCTURAL {
 
     main:
 
-    def ch_versions         = Channel.empty()
-    def ch_reports          = Channel.empty()
-    def ch_caller_vcfs      = Channel.empty()
-    def ch_multiqc_files    = Channel.empty()
+    def ch_versions         = channel.empty()
+    def ch_reports          = channel.empty()
+    def ch_caller_vcfs      = channel.empty()
+    def ch_multiqc_files    = channel.empty()
 
     def variant_types = [] // The variant types that can be annotated this run
     def count_types = 0 // The amount of different variant types that can be concatenated

@@ -53,15 +53,14 @@ workflow BAM_REPEAT_ESTIMATION_EXPANSIONHUNTER {
         .join(EXPANSIONHUNTER.out.tbi, failOnDuplicate:true, failOnMismatch:true)
 
     def ch_annotate_input = ch_expansionhunter_vcfs
-        .combine(ch_ref_header)
-        .map { meta, vcf, tbi, ref_header ->
-            [ meta, vcf, tbi, [], [], ref_header]
+        .map { meta, vcf, tbi ->
+            [ meta, vcf, tbi, [], [] ]
         }
 
     BCFTOOLS_ANNOTATE(
         ch_annotate_input,
         [],
-        [],
+        ch_ref_header,
         []
     )
     ch_versions = ch_versions.mix(BCFTOOLS_ANNOTATE.out.versions.first())

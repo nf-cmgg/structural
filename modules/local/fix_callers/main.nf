@@ -3,7 +3,9 @@ process FIX_CALLERS {
     label 'process_low'
 
     conda "${moduleDir}/environment.yml"
-    container "quay.io/cmgg/python-tabix:0.0.1"
+    container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
+        'https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/41/41b4cdbfbbd80bb6f5eea8e93b84b6f2c9c4fb9f64293eb36c7e2e2ae319a062/data':
+        'community.wave.seqera.io/library/htslib_python:94ea753cc6037594' }"
 
     input:
     tuple val(meta), path(vcf)

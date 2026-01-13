@@ -79,13 +79,13 @@
                     "test2.qdnaseq_segments.txt:md5,d5976953f94626d6e740ce1ba7e17fd4"
                 ]
             ],
-            10,
+            8,
             0
         ],
         "meta": {
-            "nf-test": "0.9.1",
-            "nextflow": "24.10.3"
+            "nf-test": "0.9.2",
+            "nextflow": "25.10.2"
         },
-        "timestamp": "2025-02-04T10:02:19.045067793"
+        "timestamp": "2026-01-13T10:32:17.284164343"
     }
 }

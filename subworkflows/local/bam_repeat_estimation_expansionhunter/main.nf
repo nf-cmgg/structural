@@ -48,6 +48,7 @@ workflow BAM_REPEAT_ESTIMATION_EXPANSIONHUNTER {
         '##FORMAT=<ID=ADIR,Number=1,Type=String,Description="The amount of in-repeat reads that are consistent with the repeat allele">'
         )
         .collectFile(name:'header.txt', newLine:true)
+        .collect()
 
     def ch_expansionhunter_vcfs = EXPANSIONHUNTER.out.vcf
         .join(EXPANSIONHUNTER.out.tbi, failOnDuplicate:true, failOnMismatch:true)

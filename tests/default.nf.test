@@ -29,7 +29,7 @@ nextflow_pipeline {
                     // All files with stable contents
                     stable_path,
                     // All VCF files with stable variants
-                    vcfs.collect { vcf -> "${vcf.getName()},variantsMD5:${path(vcf.toString()).vcf.variantsMD5}"}
+                    vcfs.collect { vcf -> "${vcf.toString().replace(params.outdir + "/", "")},variantsMD5:${path(vcf.toString()).vcf.variantsMD5}"}
                 ).match() }
             )
         }

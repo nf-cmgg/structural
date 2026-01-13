@@ -181,33 +181,33 @@
                 "samplesheet.csv:md5,62c45d657a5972f666db42743521ee43"
             ],
             [
-                "PosCon1.vcf.gz,variantsMD5:536cdf887d68ff667b117ebaf716b2e4",
-                "PosCon1.vcf.gz,variantsMD5:20ac9de57e6fd564de976eb30835c15c",
-                "PosCon1.vcf.gz,variantsMD5:aab7d1f1a0bd733971c921aaa497a3c3",
-                "PosCon1.vcf.gz,variantsMD5:ea34aed2ce82f64ff1899b2c2d9bc5da",
-                "PosCon1.vcf.gz,variantsMD5:d41d8cd98f00b204e9800998ecf8427e",
-                "PosCon2.vcf.gz,variantsMD5:abbafbded42419e31da54835f31a002a",
-                "PosCon2.vcf.gz,variantsMD5:cb046d37c6c796b6aaf9e3b5793ec723",
-                "PosCon2.vcf.gz,variantsMD5:96649c806adcbe582972f575141762bc",
-                "PosCon2.vcf.gz,variantsMD5:3f0cef0b03989a61774515c2388665a",
-                "PosCon2.vcf.gz,variantsMD5:d41d8cd98f00b204e9800998ecf8427e",
-                "PosCon3.vcf.gz,variantsMD5:cccbd2438a85041a2b5419532f3d90b4",
-                "PosCon3.vcf.gz,variantsMD5:cdfb36aca0449e97c71386056070a11b",
-                "PosCon3.vcf.gz,variantsMD5:96649c806adcbe582972f575141762bc",
-                "PosCon3.vcf.gz,variantsMD5:e2076228968e4150616e5a4a12f2326a",
-                "PosCon3.vcf.gz,variantsMD5:14d9eedc4d73de8551a4f74f42f3ead1",
-                "PosCon4.vcf.gz,variantsMD5:6c6113d93a4f2fdf6a6dc4976c40c60c",
-                "PosCon4.vcf.gz,variantsMD5:3a904d6467aa47798e349a12a4f748ef",
-                "PosCon4.vcf.gz,variantsMD5:aab7d1f1a0bd733971c921aaa497a3c3",
-                "PosCon4.vcf.gz,variantsMD5:d41d8cd98f00b204e9800998ecf8427e",
-                "PosCon4.vcf.gz,variantsMD5:d41d8cd98f00b204e9800998ecf8427e",
-                "family_1.vcf.gz,variantsMD5:ede21178b784ce89edaf54130f48034e"
+                "PosCon1/PosCon1.vcf.gz,variantsMD5:536cdf887d68ff667b117ebaf716b2e4",
+                "PosCon1/delly/PosCon1.vcf.gz,variantsMD5:20ac9de57e6fd564de976eb30835c15c",
+                "PosCon1/expansionhunter/PosCon1.vcf.gz,variantsMD5:aab7d1f1a0bd733971c921aaa497a3c3",
+                "PosCon1/manta/PosCon1.vcf.gz,variantsMD5:ea34aed2ce82f64ff1899b2c2d9bc5da",
+                "PosCon1/smoove/PosCon1.vcf.gz,variantsMD5:d41d8cd98f00b204e9800998ecf8427e",
+                "PosCon2/PosCon2.vcf.gz,variantsMD5:abbafbded42419e31da54835f31a002a",
+                "PosCon2/delly/PosCon2.vcf.gz,variantsMD5:cb046d37c6c796b6aaf9e3b5793ec723",
+                "PosCon2/expansionhunter/PosCon2.vcf.gz,variantsMD5:96649c806adcbe582972f575141762bc",
+                "PosCon2/manta/PosCon2.vcf.gz,variantsMD5:3f0cef0b03989a61774515c2388665a",
+                "PosCon2/smoove/PosCon2.vcf.gz,variantsMD5:d41d8cd98f00b204e9800998ecf8427e",
+                "PosCon3/PosCon3.vcf.gz,variantsMD5:d1a07a2cf16b5245b574bfaac6898ea8",
+                "PosCon3/delly/PosCon3.vcf.gz,variantsMD5:cdfb36aca0449e97c71386056070a11b",
+                "PosCon3/expansionhunter/PosCon3.vcf.gz,variantsMD5:96649c806adcbe582972f575141762bc",
+                "PosCon3/manta/PosCon3.vcf.gz,variantsMD5:e2076228968e4150616e5a4a12f2326a",
+                "PosCon3/smoove/PosCon3.vcf.gz,variantsMD5:14d9eedc4d73de8551a4f74f42f3ead1",
+                "PosCon4/PosCon4.vcf.gz,variantsMD5:6c6113d93a4f2fdf6a6dc4976c40c60c",
+                "PosCon4/delly/PosCon4.vcf.gz,variantsMD5:3a904d6467aa47798e349a12a4f748ef",
+                "PosCon4/expansionhunter/PosCon4.vcf.gz,variantsMD5:aab7d1f1a0bd733971c921aaa497a3c3",
+                "PosCon4/manta/PosCon4.vcf.gz,variantsMD5:d41d8cd98f00b204e9800998ecf8427e",
+                "PosCon4/smoove/PosCon4.vcf.gz,variantsMD5:d41d8cd98f00b204e9800998ecf8427e",
+                "family_1/family_1.vcf.gz,variantsMD5:ede21178b784ce89edaf54130f48034e"
             ]
         ],
         "meta": {
             "nf-test": "0.9.2",
             "nextflow": "25.10.2"
         },
-        "timestamp": "2026-01-13T11:24:19.361032143"
+        "timestamp": "2026-01-13T14:11:41.354981093"
     }
 }

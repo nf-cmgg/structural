@@ -45,13 +45,11 @@ workflow BAM_VARIANT_CALLING_QDNASEQ {
         ch_qdnaseq_input.male,
         ch_qdnaseq_male
     )
-    ch_versions = ch_versions.mix(QDNASEQ_MALE.out.versions.first())
 
     QDNASEQ_FEMALE(
         ch_qdnaseq_input.female,
         ch_qdnaseq_female
     )
-    ch_versions = ch_versions.mix(QDNASEQ_FEMALE.out.versions.first())
 
     def ch_qdnaseq_beds = QDNASEQ_MALE.out.bed
         .mix(QDNASEQ_FEMALE.out.bed)

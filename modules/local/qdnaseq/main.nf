@@ -2,7 +2,10 @@ process QDNASEQ {
     tag "$meta.id"
     label 'process_low'
 
-    container "quay.io/cmgg/qdnaseq:0.0.4"
+    conda "${moduleDir}/environment.yml"
+    container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
+        'https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/77/77b057272e6af69070dc1ee73d0a39d144e6641c0f4e625673de979b21b7bfd0/data':
+        'community.wave.seqera.io/library/bioconductor-qdnaseq_r-base_r-lsr:0304e1e0cbed3eab' }"
 
     input:
     tuple val(meta), path(bam), path(bai)
@@ -13,7 +16,7 @@ process QDNASEQ {
     tuple val(meta), path("*.cna")              , emit: cna
     tuple val(meta), path("*_segments.txt")     , emit: segments
     tuple val(meta), path("statistics.out")     , emit: statistics
-    path "versions.yml"                         , emit: versions
+    path "versions.yml"                         , emit: versions, topic: versions
 
     script:
     template "qDNAseq.R"

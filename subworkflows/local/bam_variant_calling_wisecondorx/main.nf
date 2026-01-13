@@ -52,7 +52,6 @@ workflow BAM_VARIANT_CALLING_WISECONDORX {
         ch_bedgovcf_input,
         ch_fai
     )
-    ch_versions = ch_versions.mix(BEDGOVCF.out.versions.first())
 
     def ch_vcf = BEDGOVCF.out.vcf
         .map { meta, vcf ->
@@ -63,7 +62,6 @@ workflow BAM_VARIANT_CALLING_WISECONDORX {
     TABIX_TABIX(
         BEDGOVCF.out.vcf
     )
-    ch_versions = ch_versions.mix(TABIX_TABIX.out.versions.first())
 
     emit:
     aberrations_bed = WISECONDORX_PREDICT.out.aberrations_bed   // channel: [ val(meta), path(bed) ]

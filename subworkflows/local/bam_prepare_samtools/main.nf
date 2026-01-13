@@ -28,9 +28,9 @@ workflow BAM_PREPARE_SAMTOOLS {
     SAMTOOLS_MERGE(
         ch_merge_input.multiple,
         ch_fasta,
-        ch_fai
+        ch_fai,
+        [[:],[]]
     )
-    ch_versions = ch_versions.mix(SAMTOOLS_MERGE.out.versions.first())
 
     def ch_index_input = ch_merge_input.single
         .mix(SAMTOOLS_MERGE.out.cram)

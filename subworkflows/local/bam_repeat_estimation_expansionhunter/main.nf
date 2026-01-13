@@ -48,28 +48,30 @@ workflow BAM_REPEAT_ESTIMATION_EXPANSIONHUNTER {
         '##FORMAT=<ID=ADIR,Number=1,Type=String,Description="The amount of in-repeat reads that are consistent with the repeat allele">'
         )
         .collectFile(name:'header.txt', newLine:true)
+        .collect()
 
     def ch_expansionhunter_vcfs = EXPANSIONHUNTER.out.vcf
         .join(EXPANSIONHUNTER.out.tbi, failOnDuplicate:true, failOnMismatch:true)
 
     def ch_annotate_input = ch_expansionhunter_vcfs
-        .combine(ch_ref_header)
-        .map { meta, vcf, tbi, ref_header ->
-            [ meta, vcf, tbi, [], [], ref_header]
+        .map { meta, vcf, tbi ->
+            [ meta, vcf, tbi, [], [] ]
         }
 
     BCFTOOLS_ANNOTATE(
-        ch_annotate_input
+        ch_annotate_input,
+        [],
+        ch_ref_header,
+        []
     )
     ch_versions = ch_versions.mix(BCFTOOLS_ANNOTATE.out.versions.first())
 
     TABIX_TABIX(
         BCFTOOLS_ANNOTATE.out.vcf
     )
-    ch_versions = ch_versions.mix(TABIX_TABIX.out.versions.first())
 
     def ch_vcfs = BCFTOOLS_ANNOTATE.out.vcf
-        .join(TABIX_TABIX.out.tbi, failOnDuplicate:true, failOnMismatch:true)
+        .join(TABIX_TABIX.out.index, failOnDuplicate:true, failOnMismatch:true)
 
     emit:
     caller_vcfs = ch_expansionhunter_vcfs   // channel: [ val(meta), path(vcf), path(tbi) ]

@@ -40,7 +40,6 @@ workflow VCF_ANNOTATE {
             fasta,
             vep_extra_files
         )
-        ch_versions = ch_versions.mix(ENSEMBLVEP_VEP.out.versions.first())
         ch_reports  = ch_reports.mix(ENSEMBLVEP_VEP.out.report)
         ch_vep = ENSEMBLVEP_VEP.out.vcf.join(ENSEMBLVEP_VEP.out.tbi, failOnDuplicate:true, failOnMismatch:true)
     }
@@ -90,7 +89,7 @@ workflow VCF_ANNOTATE {
         )
         ch_versions = ch_versions.mix(TABIX_BGZIPTABIX.out.versions.first())
 
-        ch_strvctvre = TABIX_BGZIPTABIX.out.gz_tbi
+        ch_strvctvre = TABIX_BGZIPTABIX.out.gz_index
     }
 
     emit:

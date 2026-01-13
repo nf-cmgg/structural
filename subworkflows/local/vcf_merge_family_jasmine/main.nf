@@ -63,10 +63,9 @@ workflow VCF_MERGE_FAMILY_JASMINE {
     TABIX_TABIX(
         BCFTOOLS_SORT.out.vcf
     )
-    ch_versions = ch_versions.mix(TABIX_TABIX.out.versions.first())
 
     def ch_vcfs_out = BCFTOOLS_SORT.out.vcf
-        .join(TABIX_TABIX.out.tbi, failOnMismatch:true, failOnDuplicate:true)
+        .join(TABIX_TABIX.out.index, failOnMismatch:true, failOnDuplicate:true)
         .map { meta, vcf, tbi ->
             def new_meta = meta + [id:meta.family]
             [ new_meta, vcf, tbi ]

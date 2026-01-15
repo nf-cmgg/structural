@@ -1,26 +1,54 @@
 {
     "test_ensemblvep_vep_fasta_tab_gz": {
         "content": [
-            [
-                "versions.yml:md5,bd2ba1b4741a7d0a224160b50859f4ba"
-            ]
+            {
+                "versions_ensemblvep": [
+                    [
+                        "ENSEMBLVEP_VEP",
+                        "ensemblvep",
+                        "115.2"
+                    ]
+                ],
+                "versions_tabix": [
+                    [
+                        "ENSEMBLVEP_VEP",
+                        "tabix",
+                        "1.21"
+                    ]
+                ]
+            }
         ],
         "meta": {
-            "nf-test": "0.8.4",
-            "nextflow": "24.03.0"
+            "nf-test": "0.9.3",
+            "nextflow": "25.10.2"
         },
-        "timestamp": "2024-04-15T17:35:20.694114"
+        "timestamp": "2026-01-07T17:42:48.122899762"
     },
-    "test_ensemblvep_vep_fasta_vcf": {
+    "test_ensemblvep_vep_fasta_vcf - stub (not really but linting complains otherwise)": {
         "content": [
-            [
-                "versions.yml:md5,bd2ba1b4741a7d0a224160b50859f4ba"
-            ]
+            {
+                "versions_ensemblvep": [
+                    [
+                        "ENSEMBLVEP_VEP",
+                        "ensemblvep",
+                        "115.2"
+                    ]
+                ],
+                "versions_tabix": [
+                    [
+                        "ENSEMBLVEP_VEP",
+                        "tabix",
+                        "1.21"
+                    ]
+                ]
+            },
+            "d41d8cd98f00b204e9800998ecf8427e",
+            "test.vcf.gz.tbi"
         ],
         "meta": {
-            "nf-test": "0.8.4",
-            "nextflow": "24.03.0"
+            "nf-test": "0.9.3",
+            "nextflow": "25.10.2"
         },
-        "timestamp": "2024-04-15T17:34:41.093843"
+        "timestamp": "2026-01-07T17:42:30.949059448"
     }
 }

@@ -24,8 +24,6 @@ nextflow_pipeline {
             assertAll(
                 { assert workflow.success },
                 { assert snapshot(
-                    workflow.stdout,
-
                     path("$outputDir")
                         .list()
                         .findAll { !it.toString().endsWith("pipeline_info") }
@@ -54,8 +52,6 @@ nextflow_pipeline {
             assertAll(
                 { assert workflow.success },
                 { assert snapshot(
-                    workflow.stdout,
-
                     path("$outputDir")
                         .list()
                         .findAll { !it.toString().endsWith("pipeline_info") }
@@ -84,8 +80,6 @@ nextflow_pipeline {
             assertAll(
                 { assert workflow.success },
                 { assert snapshot(
-                    workflow.stdout,
-
                     path("$outputDir")
                         .list()
                         .findAll { !it.toString().endsWith("pipeline_info") }

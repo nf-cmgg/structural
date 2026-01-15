@@ -1,4 +1,6 @@
 id: manta_$INFO/SVTYPE
+alt:
+  value: <$INFO/SVTYPE>
 info:
   CALLERS:
     value: manta

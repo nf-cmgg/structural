@@ -16,9 +16,6 @@ process BCFTOOLS_CONSENSUS_REHEADER {
     tuple val(meta), path("*.${extension}"), emit: vcf
     path "versions.yml"                    , emit: versions
 
-    when:
-    task.ext.when == null || task.ext.when
-
     script:
     def args    = task.ext.args ?: ''
     def prefix  = task.ext.prefix ?: "${meta.id}"
@@ -26,7 +23,7 @@ process BCFTOOLS_CONSENSUS_REHEADER {
     def add_additional = additional_headers ?
     """
     cat <<-EOF >> ${prefix}.temp.txt
-    ${additional_headers.join("\t\n")}
+    ${additional_headers.join("\n    ")}
     EOF
     """ : ""
 

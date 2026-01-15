@@ -18,7 +18,7 @@ workflow BAM_VARIANT_CALLING_MANTA {
 
     main:
 
-    ch_versions     = Channel.empty()
+    def ch_versions     = channel.empty()
 
     //
     // Create a contigs BED file
@@ -26,7 +26,8 @@ workflow BAM_VARIANT_CALLING_MANTA {
 
     GAWK(
         ch_fai,
-        []
+        [],
+        false
     )
     ch_versions = ch_versions.mix(GAWK.out.versions)
 
@@ -35,21 +36,23 @@ workflow BAM_VARIANT_CALLING_MANTA {
     )
     ch_versions = ch_versions.mix(TABIX_BGZIPTABIX.out.versions)
 
-    TABIX_BGZIPTABIX.out.gz_tbi
-        .map { meta, bed_gz, tbi ->
+    def ch_contigs = TABIX_BGZIPTABIX.out.gz_index
+        .map { _meta, bed_gz, tbi ->
             [bed_gz, tbi]
         }
         .collect()
-        .set { ch_contigs }
 
     //
     // Calling variants using Manta
     //
 
-    ch_crams
+    def ch_manta_input = ch_crams
+        .map { meta, cram, crai ->
+            def new_meta = meta + [caller:"manta"]
+            [ new_meta, cram, crai ]
+        }
         .combine(ch_contigs)
         .dump(tag: 'manta_input', pretty: true)
-        .set { ch_manta_input }
 
     MANTA_GERMLINE(
         ch_manta_input,
@@ -57,8 +60,6 @@ workflow BAM_VARIANT_CALLING_MANTA {
         ch_fai,
         ch_manta_config
     )
-
-    ch_versions = ch_versions.mix(MANTA_GERMLINE.out.versions.first())
 
     //
     // Reformat the inversions into single inverted sequence junctions
@@ -69,40 +70,33 @@ workflow BAM_VARIANT_CALLING_MANTA {
         ch_fasta
     )
 
-    ch_versions = ch_versions.mix(MANTA_CONVERTINVERSION.out.versions.first())
-
-    ch_svync_configs
-        .map {
-            it.find { it.toString().contains("manta") }
+    def ch_manta_svync_config = ch_svync_configs
+        .map { configs ->
+            configs.find { config -> config.toString().contains("manta") }
         }
-        .set { ch_manta_svync_config }
 
-    MANTA_CONVERTINVERSION.out.vcf
+    def ch_manta_vcfs = MANTA_CONVERTINVERSION.out.vcf
         .join(MANTA_CONVERTINVERSION.out.tbi, failOnDuplicate:true, failOnMismatch:true)
+
+    def ch_svync_input = ch_manta_vcfs
         .combine(ch_manta_svync_config)
-        .map{ meta, vcf, tbi, config ->
-            new_meta = meta + [caller:"manta"]
-            [ new_meta, vcf, tbi, config ]
-        }
         .dump(tag: 'manta_vcfs', pretty: true)
-        .set { ch_manta_vcfs }
 
     SVYNC(
-        ch_manta_vcfs
+        ch_svync_input
     )
     ch_versions = ch_versions.mix(SVYNC.out.versions.first())
 
     TABIX_TABIX(
         SVYNC.out.vcf
     )
-    ch_versions = ch_versions.mix(TABIX_TABIX.out.versions.first())
 
-    SVYNC.out.vcf
-        .join(TABIX_TABIX.out.tbi)
-        .set { ch_out_vcfs }
+    def ch_out_vcfs = SVYNC.out.vcf
+        .join(TABIX_TABIX.out.index)
 
     emit:
-    manta_vcfs  = ch_out_vcfs  // channel: [ val(meta), path(vcf), path(tbi) ]
+    raw_vcfs    = ch_manta_vcfs // channel: [ val(meta), path(vcf), path(tbi) ]
+    manta_vcfs  = ch_out_vcfs   // channel: [ val(meta), path(vcf), path(tbi) ]
 
     versions    = ch_versions
 }

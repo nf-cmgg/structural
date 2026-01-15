@@ -19,20 +19,19 @@ workflow VCF_MERGE_CALLERS_JASMINE {
 
     main:
 
-    ch_versions     = Channel.empty()
+    def ch_versions     = channel.empty()
 
-    ch_vcfs
+    def ch_jasmine_input = ch_vcfs
         .map { meta, vcf, tbi ->
-            new_meta = meta - meta.subMap("caller") + ["variant_type":val_type]
+            def new_meta = meta - meta.subMap("caller") + ["variant_type":val_type]
             [ new_meta, vcf, tbi ]
         }
         .groupTuple(size:val_callers.size())
         .tap { ch_consensus_reheader_input }
-        .map { meta, vcfs, tbis ->
+        .map { meta, vcfs, _tbis ->
             [ meta, vcfs, [], [], [] ]
         }
         .dump(tag:'jasmine_input', pretty:true)
-        .set { ch_jasmine_input }
 
     JASMINESV(
         ch_jasmine_input,
@@ -40,20 +39,18 @@ workflow VCF_MERGE_CALLERS_JASMINE {
         ch_fai,
         []
     )
-    ch_versions = ch_versions.mix(JASMINESV.out.versions.first())
 
     FIX_CALLERS(
         JASMINESV.out.vcf
     )
     ch_versions = ch_versions.mix(FIX_CALLERS.out.versions.first())
 
-    FIX_CALLERS.out.vcf
+    def ch_reheader_input = FIX_CALLERS.out.vcf
         .join(ch_consensus_reheader_input, failOnDuplicate:true, failOnMismatch:true)
-        .map { meta, vcf, vcfs, tbis ->
+        .map { meta, vcf, vcfs, _tbis ->
             [ meta, vcf, vcfs, [] ]
         }
         .dump(tag:"caller_reheader_input", pretty: true)
-        .set { ch_reheader_input }
 
     BCFTOOLS_CONSENSUS_REHEADER(
         ch_reheader_input,
@@ -70,11 +67,9 @@ workflow VCF_MERGE_CALLERS_JASMINE {
     TABIX_TABIX(
         BCFTOOLS_SORT.out.vcf
     )
-    ch_versions = ch_versions.mix(TABIX_TABIX.out.versions.first())
 
-    BCFTOOLS_SORT.out.vcf
-        .join(TABIX_TABIX.out.tbi, failOnMismatch:true, failOnDuplicate:true)
-        .set { ch_vcfs_out }
+    def ch_vcfs_out = BCFTOOLS_SORT.out.vcf
+        .join(TABIX_TABIX.out.index, failOnMismatch:true, failOnDuplicate:true)
 
     emit:
     vcfs        = ch_vcfs_out    // channel: [ val(meta), path(vcf), path(tbi) ]

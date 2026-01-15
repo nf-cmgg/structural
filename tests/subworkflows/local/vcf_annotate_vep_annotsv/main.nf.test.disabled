@@ -1,0 +1,178 @@
+nextflow_workflow {
+
+    name "Test Workflow VCF_ANNOTATE_VEP_ANNOTSV"
+    script "subworkflows/local/vcf_annotate_vep_annotsv/main.nf"
+    workflow "VCF_ANNOTATE_VEP_ANNOTSV"
+
+    tag "subworkflows"
+    tag "subworkflows_local"
+    tag "vcf_annotate_vep_annotsv"
+
+    options "-stub"
+
+    test("homo_sapiens - sv") {
+
+        when {
+            params {
+                genome = "GRCh38"
+                species = "homo_sapiens"
+                vep_cache_version = 110
+                annotsv_file_name = "annotsv_annotated"
+            }
+            workflow {
+                """
+                def meta = [id:"test", sample:"test", sex:"male", family: "test1", family_count:1, hpo:[]]
+                input[0] = Channel.of([
+                    meta + [variant_type:"sv"],
+                    file(params.sv_vcf1, checkIfExists:true),
+                    file(params.sv_tbi1, checkIfExists:true)
+                ])
+                input[1] = Channel.of([
+                    meta,
+                    []
+                ])
+                input[2] = Channel.value([
+                    [id:"fasta"],
+                    file(params.fasta, checkIfExists: true)
+                ])
+                input[3] = [[],[]]
+                input[4] = [[],[]]
+                input[5] = [[],[]]
+                input[6] = []
+                input[7] = []
+                input[8] = ["sv"]
+                input[9] = params.genome
+                input[10] = params.species
+                input[11] = params.vep_cache_version
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert workflow.success },
+                { assert snapshot(
+                    workflow.out.collectEntries { key, value ->
+                        if(key.matches("^\\d+\$") || key.matches('versions')) {
+                            return null
+                        }
+                        return [ key, value ]
+                    }.findAll { it != null }
+                ).match() }
+            )
+        }
+
+    }
+
+    test("homo_sapiens - cnv") {
+
+        when {
+            params {
+                genome = "GRCh38"
+                species = "homo_sapiens"
+                vep_cache_version = 110
+                annotsv_file_name = "annotsv_annotated"
+            }
+            workflow {
+                """
+                def meta = [id:"test", sample:"test", sex:"male", family: "test1", family_count:1, hpo:[]]
+                input[0] = Channel.of([
+                    meta + [variant_type:"cnv"],
+                    file(params.sv_vcf1, checkIfExists:true),
+                    file(params.sv_tbi1, checkIfExists:true)
+                ])
+                input[1] = Channel.of([
+                    meta,
+                    []
+                ])
+                input[2] = Channel.value([
+                    [id:"fasta"],
+                    file(params.fasta, checkIfExists: true)
+                ])
+                input[3] = [[],[]]
+                input[4] = [[],[]]
+                input[5] = [[],[]]
+                input[6] = []
+                input[7] = []
+                input[8] = ["cnv"]
+                input[9] = params.genome
+                input[10] = params.species
+                input[11] = params.vep_cache_version
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert workflow.success },
+                { assert snapshot(
+                    workflow.out.collectEntries { key, value ->
+                        if(key.matches("^\\d+\$") || key.matches('versions')) {
+                            return null
+                        }
+                        return [ key, value ]
+                    }.findAll { it != null }
+                ).match() }
+            )
+        }
+
+    }
+
+    test("homo_sapiens - sv & cnv") {
+
+        when {
+            params {
+                genome = "GRCh38"
+                species = "homo_sapiens"
+                vep_cache_version = 110
+                annotsv_file_name = "annotsv_annotated"
+            }
+            workflow {
+                """
+                def meta = [id:"test", sample:"test", sex:"male", family: "test1", family_count:1, hpo:[]]
+                input[0] = Channel.of([
+                    meta + [variant_type:"sv"],
+                    file(params.sv_vcf1, checkIfExists:true),
+                    file(params.sv_tbi1, checkIfExists:true)
+                ], [
+                    meta + [variant_type: "cnv"],
+                    file(params.cnv_vcf1, checkIfExists:true),
+                    file(params.cnv_tbi1, checkIfExists:true)
+                ])
+                input[1] = Channel.of([
+                    meta,
+                    []
+                ])
+                input[2] = Channel.value([
+                    [id:"fasta"],
+                    file(params.fasta, checkIfExists: true)
+                ])
+                input[3] = [[],[]]
+                input[4] = [[],[]]
+                input[5] = [[],[]]
+                input[6] = []
+                input[7] = []
+                input[8] = ["sv", "cnv"]
+                input[9] = params.genome
+                input[10] = params.species
+                input[11] = params.vep_cache_version
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert workflow.success },
+                { assert snapshot(
+                    workflow.out.collectEntries { key, value ->
+                        if(key.matches("^\\d+\$") || key.matches('versions')) {
+                            return null
+                        }
+                        return [ key, value ]
+                    }.findAll { it != null }
+                ).match() }
+            )
+        }
+
+    }
+}

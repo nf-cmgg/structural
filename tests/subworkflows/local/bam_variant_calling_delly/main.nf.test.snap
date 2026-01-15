@@ -1,20 +1,37 @@
 {
     "homo_sapiens": {
         "content": [
-            [
-                "chr16\t86933\tdelly_DEL_1\tT\t<DEL>\t120\tLowQual\tCALLERS=delly;CIEND=-9,9;CIPOS=-9,9;END=1349691;SVLEN=-1262758;SVTYPE=DEL\tGT:PE:SR\t1/1:0,0:0,7",
-                "chr16\t1077371\tdelly_INV_2\tT\t<INV>\t58\tLowQual\tCALLERS=delly;CIEND=-392,392;CIPOS=-392,392;END=1078501;SVLEN=1130;SVTYPE=INV\tGT:PE:SR\t0/0:19,2:0,0",
-                "chr16\t1123476\tdelly_INV_3\tA\t<INV>\t180\tPASS\tCALLERS=delly;CIEND=-3,3;CIPOS=-3,3;END=1604485;SVLEN=481009;SVTYPE=INV\tGT:PE:SR\t1/1:0,0:0,12",
-                "chr16\t1135261\tdelly_INS_4\tC\tCAAAAAGTGAATGGATAAACCAACTGTA\t299\tPASS\tCALLERS=delly;CIEND=-2,2;CIPOS=-2,2;END=1135261;SVLEN=27;SVTYPE=INS\tGT:PE:SR\t1/1:0,0:0,25"
-            ],
-            "test.svync.delly.vcf.gz.tbi",
-            3,
-            0
+            {
+                "delly_vcfs": [
+                    [
+                        {
+                            "id": "test",
+                            "sample": "test",
+                            "sex": "male",
+                            "caller": "delly"
+                        },
+                        "test.svync.delly.vcf.gz,variantsMD5:e15d4c5f477f8e86b4d077da42b9de83",
+                        "test.svync.delly.vcf.gz.tbi"
+                    ]
+                ],
+                "raw_vcfs": [
+                    [
+                        {
+                            "id": "test",
+                            "sample": "test",
+                            "sex": "male",
+                            "caller": "delly"
+                        },
+                        "test.delly.vcf.gz,variantsMD5:20ac9de57e6fd564de976eb30835c15c",
+                        "test.delly.vcf.gz.tbi"
+                    ]
+                ]
+            }
         ],
         "meta": {
-            "nf-test": "0.8.4",
-            "nextflow": "24.03.0"
+            "nf-test": "0.9.2",
+            "nextflow": "25.04.6"
         },
-        "timestamp": "2024-05-06T15:21:39.34016826"
+        "timestamp": "2025-07-22T12:16:17.594443126"
     }
 }

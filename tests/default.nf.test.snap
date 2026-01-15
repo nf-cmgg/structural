@@ -1,0 +1,219 @@
+{
+    "-profile test": {
+        "content": [
+            {
+                "BCFTOOLS_ANNOTATE": {
+                    "bcftools": 1.22
+                },
+                "BCFTOOLS_CONCAT": {
+                    "bcftools": 1.22
+                },
+                "BCFTOOLS_CONSENSUS_REHEADER": {
+                    "bcftools": 1.17
+                },
+                "BCFTOOLS_SORT": {
+                    "bcftools": 1.22
+                },
+                "BEDGOVCF": {
+                    "bedgovcf": "0.1.0",
+                    "bgzip": 1.2
+                },
+                "DELLY_CALL": {
+                    "delly": "1.3.3"
+                },
+                "EXPANSIONHUNTER": {
+                    "expansionhunter": "5.0.0",
+                    "bgzip": 1.18
+                },
+                "FIX_CALLERS": {
+                    "python": "3.14.2",
+                    "bgzip": 1.23
+                },
+                "GAWK": {
+                    "gawk": "5.3.0"
+                },
+                "JASMINESV": {
+                    "bgzip": "1.15.1",
+                    "jasminesv": "1.1.5"
+                },
+                "MANTA_CONVERTINVERSION": {
+                    "manta": "1.6.0-4-g6a11f19b-dirty",
+                    "samtools": 1.18
+                },
+                "MANTA_GERMLINE": {
+                    "manta": "1.6.0-4-g6a11f19b-dirty"
+                },
+                "PREPROCESS_GTF": {
+                    "grep": 3.11
+                },
+                "QDNASEQ_FEMALE": {
+                    "r-base": "4.4.3",
+                    "r-lsr": "0.5.2",
+                    "bioconductor-qdnaseq": "1.42.0"
+                },
+                "QDNASEQ_MALE": {
+                    "r-base": "4.4.3",
+                    "r-lsr": "0.5.2",
+                    "bioconductor-qdnaseq": "1.42.0"
+                },
+                "SAMTOOLS_CONVERT": {
+                    "samtools": "1.22.1"
+                },
+                "SMOOVE_CALL": {
+                    "smoove": "0.2.8"
+                },
+                "SVYNC": {
+                    "svync": "0.2.0"
+                },
+                "TABIX_BGZIPTABIX": {
+                    "bgzip": 1.21,
+                    "tabix": 1.21
+                },
+                "TABIX_TABIX": {
+                    "tabix": 1.21
+                },
+                "Workflow": {
+                    "nf-cmgg/structural": "v0.3.0"
+                }
+            },
+            [
+                "PosCon1",
+                "PosCon1/PosCon1.vcf.gz",
+                "PosCon1/PosCon1.vcf.gz.tbi",
+                "PosCon1/delly",
+                "PosCon1/delly/PosCon1.vcf.gz",
+                "PosCon1/delly/PosCon1.vcf.gz.tbi",
+                "PosCon1/expansionhunter",
+                "PosCon1/expansionhunter/PosCon1.vcf.gz",
+                "PosCon1/expansionhunter/PosCon1.vcf.gz.tbi",
+                "PosCon1/manta",
+                "PosCon1/manta/PosCon1.vcf.gz",
+                "PosCon1/manta/PosCon1.vcf.gz.tbi",
+                "PosCon1/qdnaseq",
+                "PosCon1/qdnaseq/PosCon1.qdnaseq.bed",
+                "PosCon1/qdnaseq/PosCon1.qdnaseq_segments.txt",
+                "PosCon1/qdnaseq/statistics.out",
+                "PosCon1/smoove",
+                "PosCon1/smoove/PosCon1.vcf.gz",
+                "PosCon1/smoove/PosCon1.vcf.gz.tbi",
+                "PosCon2",
+                "PosCon2/PosCon2.vcf.gz",
+                "PosCon2/PosCon2.vcf.gz.tbi",
+                "PosCon2/delly",
+                "PosCon2/delly/PosCon2.vcf.gz",
+                "PosCon2/delly/PosCon2.vcf.gz.tbi",
+                "PosCon2/expansionhunter",
+                "PosCon2/expansionhunter/PosCon2.vcf.gz",
+                "PosCon2/expansionhunter/PosCon2.vcf.gz.tbi",
+                "PosCon2/manta",
+                "PosCon2/manta/PosCon2.vcf.gz",
+                "PosCon2/manta/PosCon2.vcf.gz.tbi",
+                "PosCon2/qdnaseq",
+                "PosCon2/qdnaseq/PosCon2.qdnaseq.bed",
+                "PosCon2/qdnaseq/PosCon2.qdnaseq_segments.txt",
+                "PosCon2/qdnaseq/statistics.out",
+                "PosCon2/smoove",
+                "PosCon2/smoove/PosCon2.vcf.gz",
+                "PosCon2/smoove/PosCon2.vcf.gz.tbi",
+                "PosCon3",
+                "PosCon3/PosCon3.vcf.gz",
+                "PosCon3/PosCon3.vcf.gz.tbi",
+                "PosCon3/delly",
+                "PosCon3/delly/PosCon3.vcf.gz",
+                "PosCon3/delly/PosCon3.vcf.gz.tbi",
+                "PosCon3/expansionhunter",
+                "PosCon3/expansionhunter/PosCon3.vcf.gz",
+                "PosCon3/expansionhunter/PosCon3.vcf.gz.tbi",
+                "PosCon3/manta",
+                "PosCon3/manta/PosCon3.vcf.gz",
+                "PosCon3/manta/PosCon3.vcf.gz.tbi",
+                "PosCon3/qdnaseq",
+                "PosCon3/qdnaseq/PosCon3.qdnaseq.bed",
+                "PosCon3/qdnaseq/PosCon3.qdnaseq_segments.txt",
+                "PosCon3/qdnaseq/statistics.out",
+                "PosCon3/smoove",
+                "PosCon3/smoove/PosCon3.vcf.gz",
+                "PosCon3/smoove/PosCon3.vcf.gz.tbi",
+                "PosCon4",
+                "PosCon4/PosCon4.vcf.gz",
+                "PosCon4/PosCon4.vcf.gz.tbi",
+                "PosCon4/delly",
+                "PosCon4/delly/PosCon4.vcf.gz",
+                "PosCon4/delly/PosCon4.vcf.gz.tbi",
+                "PosCon4/expansionhunter",
+                "PosCon4/expansionhunter/PosCon4.vcf.gz",
+                "PosCon4/expansionhunter/PosCon4.vcf.gz.tbi",
+                "PosCon4/manta",
+                "PosCon4/manta/PosCon4.vcf.gz",
+                "PosCon4/manta/PosCon4.vcf.gz.tbi",
+                "PosCon4/qdnaseq",
+                "PosCon4/qdnaseq/PosCon4.qdnaseq.bed",
+                "PosCon4/qdnaseq/PosCon4.qdnaseq_segments.txt",
+                "PosCon4/qdnaseq/statistics.out",
+                "PosCon4/smoove",
+                "PosCon4/smoove/PosCon4.vcf.gz",
+                "PosCon4/smoove/PosCon4.vcf.gz.tbi",
+                "family_1",
+                "family_1/family_1.vcf.gz",
+                "family_1/family_1.vcf.gz.tbi",
+                "multiqc",
+                "multiqc/multiqc_data",
+                "multiqc/multiqc_data/llms-full.txt",
+                "multiqc/multiqc_data/multiqc.log",
+                "multiqc/multiqc_data/multiqc.parquet",
+                "multiqc/multiqc_data/multiqc_citations.txt",
+                "multiqc/multiqc_data/multiqc_data.json",
+                "multiqc/multiqc_data/multiqc_software_versions.txt",
+                "multiqc/multiqc_data/multiqc_sources.txt",
+                "multiqc/multiqc_report.html",
+                "pipeline_info",
+                "pipeline_info/structural_software_mqc_versions.yml",
+                "samplesheet.csv"
+            ],
+            [
+                "PosCon1.qdnaseq.bed:md5,40f61710564a6e6b2e4d11da46b1c30c",
+                "PosCon1.qdnaseq_segments.txt:md5,0bf2ea37f6d565ce85c4705821783eff",
+                "statistics.out:md5,8474a33820902d3e614b0f318260437a",
+                "PosCon2.qdnaseq.bed:md5,7835eef62087dd3d6a6c4c6bc139f295",
+                "PosCon2.qdnaseq_segments.txt:md5,d5976953f94626d6e740ce1ba7e17fd4",
+                "statistics.out:md5,9db22c9f986c7f48fced249d3b68bb74",
+                "PosCon3.qdnaseq.bed:md5,e79c2fe8a92b391dec265f855bd51af2",
+                "PosCon3.qdnaseq_segments.txt:md5,6dc853fba225fd2a6c429a3256d37e83",
+                "statistics.out:md5,0efd6968e1c9aceb84648e55e6467a26",
+                "PosCon4.qdnaseq.bed:md5,bb8478cb00ec33cf3499561b66a088b0",
+                "PosCon4.qdnaseq_segments.txt:md5,aae31a3abb1ee08edce001a0c73a9542",
+                "statistics.out:md5,f45b61e96c449e1063b1ef5033b7bf4c",
+                "multiqc_citations.txt:md5,4c806e63a283ec1b7e78cdae3a923d4f",
+                "samplesheet.csv:md5,62c45d657a5972f666db42743521ee43"
+            ],
+            [
+                "PosCon1/PosCon1.vcf.gz,variantsMD5:536cdf887d68ff667b117ebaf716b2e4",
+                "PosCon1/delly/PosCon1.vcf.gz,variantsMD5:20ac9de57e6fd564de976eb30835c15c",
+                "PosCon1/expansionhunter/PosCon1.vcf.gz,variantsMD5:aab7d1f1a0bd733971c921aaa497a3c3",
+                "PosCon1/manta/PosCon1.vcf.gz,variantsMD5:ea34aed2ce82f64ff1899b2c2d9bc5da",
+                "PosCon1/smoove/PosCon1.vcf.gz,variantsMD5:d41d8cd98f00b204e9800998ecf8427e",
+                "PosCon2/PosCon2.vcf.gz,variantsMD5:abbafbded42419e31da54835f31a002a",
+                "PosCon2/delly/PosCon2.vcf.gz,variantsMD5:cb046d37c6c796b6aaf9e3b5793ec723",
+                "PosCon2/expansionhunter/PosCon2.vcf.gz,variantsMD5:96649c806adcbe582972f575141762bc",
+                "PosCon2/manta/PosCon2.vcf.gz,variantsMD5:3f0cef0b03989a61774515c2388665a",
+                "PosCon2/smoove/PosCon2.vcf.gz,variantsMD5:d41d8cd98f00b204e9800998ecf8427e",
+                "PosCon3/PosCon3.vcf.gz,variantsMD5:d1a07a2cf16b5245b574bfaac6898ea8",
+                "PosCon3/delly/PosCon3.vcf.gz,variantsMD5:cdfb36aca0449e97c71386056070a11b",
+                "PosCon3/expansionhunter/PosCon3.vcf.gz,variantsMD5:96649c806adcbe582972f575141762bc",
+                "PosCon3/manta/PosCon3.vcf.gz,variantsMD5:e2076228968e4150616e5a4a12f2326a",
+                "PosCon3/smoove/PosCon3.vcf.gz,variantsMD5:14d9eedc4d73de8551a4f74f42f3ead1",
+                "PosCon4/PosCon4.vcf.gz,variantsMD5:6c6113d93a4f2fdf6a6dc4976c40c60c",
+                "PosCon4/delly/PosCon4.vcf.gz,variantsMD5:3a904d6467aa47798e349a12a4f748ef",
+                "PosCon4/expansionhunter/PosCon4.vcf.gz,variantsMD5:aab7d1f1a0bd733971c921aaa497a3c3",
+                "PosCon4/manta/PosCon4.vcf.gz,variantsMD5:d41d8cd98f00b204e9800998ecf8427e",
+                "PosCon4/smoove/PosCon4.vcf.gz,variantsMD5:d41d8cd98f00b204e9800998ecf8427e",
+                "family_1/family_1.vcf.gz,variantsMD5:ede21178b784ce89edaf54130f48034e"
+            ]
+        ],
+        "meta": {
+            "nf-test": "0.9.2",
+            "nextflow": "25.10.2"
+        },
+        "timestamp": "2026-01-13T15:52:36.359918616"
+    }
+}

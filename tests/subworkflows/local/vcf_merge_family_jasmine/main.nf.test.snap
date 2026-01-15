@@ -85,32 +85,44 @@
                 [
                     "fam1.sv.vcf.gz",
                     "fam1.sv.vcf.gz.tbi"
+                ],
+                [
+                    "fam2.cnv.vcf.gz",
+                    "fam2.cnv.vcf.gz.tbi"
+                ],
+                [
+                    "fam2.sv.vcf.gz",
+                    "fam2.sv.vcf.gz.tbi"
+                ]
+            ],
+            20,
+            0
+        ],
+        "meta": {
+            "nf-test": "0.9.1",
+            "nextflow": "24.10.4"
+        },
+        "timestamp": "2025-02-17T11:44:30.216210333"
+    },
+    "homo_sapiens - one family & one sample, no variant types": {
+        "content": [
+            [
+                [
+                    "PosCon3.vcf.gz",
+                    "PosCon3.vcf.gz.tbi"
+                ],
+                [
+                    "fam1.vcf.gz",
+                    "fam1.vcf.gz.tbi"
                 ]
             ],
             10,
             0
         ],
         "meta": {
-            "nf-test": "0.8.4",
-            "nextflow": "24.02.0"
+            "nf-test": "0.9.1",
+            "nextflow": "24.10.4"
         },
-        "timestamp": "2024-03-12T11:41:20.367538619"
-    },
-    "homo_sapiens - one family & one sample, no variant types": {
-        "content": [
-            [
-                [
-                    "fam1.vcf.gz",
-                    "fam1.vcf.gz.tbi"
-                ]
-            ],
-            5,
-            0
-        ],
-        "meta": {
-            "nf-test": "0.8.4",
-            "nextflow": "24.02.0"
-        },
-        "timestamp": "2024-03-12T11:42:07.437700938"
+        "timestamp": "2025-02-17T11:45:13.222685306"
     }
 }

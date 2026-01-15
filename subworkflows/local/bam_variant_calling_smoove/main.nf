@@ -5,7 +5,6 @@
 include { SMOOVE_CALL                   } from '../../../modules/nf-core/smoove/call/main'
 include { BCFTOOLS_SORT                 } from '../../../modules/nf-core/bcftools/sort/main'
 include { TABIX_TABIX                   } from '../../../modules/nf-core/tabix/tabix/main'
-include { TABIX_TABIX as TABIX_CALLER   } from '../../../modules/nf-core/tabix/tabix/main'
 include { SVYNC                         } from '../../../modules/nf-core/svync/main'
 
 workflow BAM_VARIANT_CALLING_SMOOVE {
@@ -17,18 +16,18 @@ workflow BAM_VARIANT_CALLING_SMOOVE {
 
     main:
 
-    ch_versions     = Channel.empty()
+    def ch_versions     = channel.empty()
 
     //
     // Calling variants using Smoove
     //
 
-    ch_crams
+    def ch_smoove_input = ch_crams
         .map { meta, cram, crai ->
-            [ meta, cram, crai, [] ]
+            def new_meta = meta + [caller:'smoove']
+            [ new_meta, cram, crai, [] ]
         }
         .dump(tag: 'smoove_input', pretty: true)
-        .set { ch_smoove_input }
 
     SMOOVE_CALL(
         ch_smoove_input,
@@ -43,44 +42,33 @@ workflow BAM_VARIANT_CALLING_SMOOVE {
     )
     ch_versions = ch_versions.mix(BCFTOOLS_SORT.out.versions.first())
 
-    TABIX_CALLER(
-        BCFTOOLS_SORT.out.vcf
-    )
-    ch_versions = ch_versions.mix(TABIX_CALLER.out.versions.first())
-
-    ch_svync_configs
-        .map {
-            it.find { it.toString().contains("smoove") }
+    def ch_smoove_svync_config = ch_svync_configs
+        .map { configs ->
+            configs.find { config -> config.toString().contains("smoove") }
         }
-        .set { ch_smoove_svync_config }
 
-    BCFTOOLS_SORT.out.vcf
+    def ch_smoove_vcfs = BCFTOOLS_SORT.out.vcf
+        .join(BCFTOOLS_SORT.out.tbi)
+
+    def ch_svync_input = ch_smoove_vcfs
         .combine(ch_smoove_svync_config)
-        .map(
-            { meta, vcf, config ->
-                new_meta = meta + [caller:'smoove']
-                [ new_meta, vcf, [], config ]
-            }
-        )
         .dump(tag: 'smoove_vcfs', pretty: true)
-        .set { ch_smoove_vcfs }
 
     SVYNC(
-        ch_smoove_vcfs
+        ch_svync_input
     )
     ch_versions = ch_versions.mix(SVYNC.out.versions.first())
 
     TABIX_TABIX(
         SVYNC.out.vcf
     )
-    ch_versions = ch_versions.mix(TABIX_TABIX.out.versions.first())
 
-    SVYNC.out.vcf
-        .join(TABIX_TABIX.out.tbi)
-        .set { ch_out_vcfs }
+    def ch_out_vcfs = SVYNC.out.vcf
+        .join(TABIX_TABIX.out.index)
 
     emit:
-    smoove_vcfs = ch_out_vcfs    // channel: [ val(meta), path(vcf), path(tbi) ]
+    raw_vcfs    = ch_smoove_vcfs    // channel: [ val(meta), path(vcf), path(tbi) ]
+    smoove_vcfs = ch_out_vcfs       // channel: [ val(meta), path(vcf), path(tbi) ]
 
     versions    = ch_versions
 }

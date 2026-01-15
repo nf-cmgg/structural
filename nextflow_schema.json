@@ -1,10 +1,10 @@
 {
-    "$schema": "http://json-schema.org/draft-07/schema",
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
     "$id": "https://raw.githubusercontent.com/nf-cmgg/structural/master/nextflow_schema.json",
     "title": "nf-cmgg/structural pipeline parameters",
-    "description": "A nextflow pipeline for calling structural variants",
+    "description": "A bioinformatics best-practice analysis pipeline for calling structural variants (SVs), copy number variants (CNVs) and repeat region expansions (RREs) from short DNA reads",
     "type": "object",
-    "definitions": {
+    "$defs": {
         "input_output_options": {
             "title": "Input/output options",
             "type": "object",
@@ -73,6 +73,22 @@
                     "pattern": "^\\S+\\.fai$",
                     "mimetype": "text/plain"
                 },
+                "dict": {
+                    "type": "string",
+                    "description": "The sequence dictionary of the FASTA reference file",
+                    "exists": true,
+                    "format": "file-path",
+                    "pattern": "^\\S+\\.dict$",
+                    "mimetype": "text/plain"
+                },
+                "gtf": {
+                    "type": "string",
+                    "description": "Path to GTF file for the reference genome. Gene and transcript annotations will be added when this file is provided",
+                    "exists": true,
+                    "format": "file-path",
+                    "pattern": "^\\S+\\.gtf$",
+                    "mimetype": "text/plain"
+                },
                 "expansionhunter_catalog": {
                     "type": "string",
                     "description": "Path to the expansionhunter catalog",
@@ -105,6 +121,20 @@
                     "format": "file-path",
                     "mimetype": "application/octet-stream"
                 },
+                "strvctvre_phylop": {
+                    "type": "string",
+                    "format": "file-path",
+                    "pattern": "^\\S+\\.bw$",
+                    "exists": true,
+                    "description": "Path to the StrVCTVRE phylo bigwig file"
+                },
+                "strvctvre_data": {
+                    "type": "string",
+                    "format": "directory-path",
+                    "pattern": "^\\S+$",
+                    "exists": true,
+                    "description": "Path to the StrVCTVRE data directory"
+                },
                 "blacklist": {
                     "type": "string",
                     "pattern": "^\\S+\\.bed$",
@@ -119,6 +149,12 @@
                     "fa_icon": "fas fa-ban",
                     "hidden": true,
                     "help_text": "Do not load `igenomes.config` when running the pipeline. You may choose this option if you observe clashes between custom parameters and those supplied in `igenomes.config`."
+                },
+                "igenomes_base": {
+                    "type": "string",
+                    "description": "The base path where the iGenomes references can be found",
+                    "exists": true,
+                    "format": "directory-path"
                 },
                 "genomes_base": {
                     "type": "string",
@@ -135,6 +171,11 @@
                     "default": "/conf/",
                     "description": "The config base path for the cmgg configs",
                     "format": "directory-path"
+                },
+                "genomes": {
+                    "type": "object",
+                    "description": "A map containing all references for all genomes",
+                    "hidden": true
                 }
             }
         },
@@ -183,41 +224,25 @@
                     "description": "Institutional config URL link.",
                     "hidden": true,
                     "fa_icon": "fas fa-users-cog"
-                }
-            }
-        },
-        "max_job_request_options": {
-            "title": "Max job request options",
-            "type": "object",
-            "fa_icon": "fab fa-acquisitions-incorporated",
-            "description": "Set the top limit for requested resources for any single job.",
-            "help_text": "If you are running on a smaller system, a pipeline step requesting more resources than are available may cause the Nextflow to stop the run with an error. These options allow you to cap the maximum resources requested by any single job so that the pipeline will run on your system.\n\nNote that you can not _increase_ the resources requested by any job using these options. For that you will need your own configuration file. See [the nf-core website](https://nf-co.re/usage/configuration) for details.",
-            "properties": {
-                "max_cpus": {
-                    "type": "integer",
-                    "description": "Maximum number of CPUs that can be requested for any single job.",
-                    "default": 16,
-                    "fa_icon": "fas fa-microchip",
-                    "hidden": true,
-                    "help_text": "Use to set an upper-limit for the CPU requirement for each process. Should be an integer e.g. `--max_cpus 1`"
                 },
-                "max_memory": {
+                "pipelines_testdata_base_path": {
                     "type": "string",
-                    "description": "Maximum amount of memory that can be requested for any single job.",
-                    "default": "128.GB",
-                    "fa_icon": "fas fa-memory",
-                    "pattern": "^\\d+(\\.\\d+)?\\.?\\s*(K|M|G|T)?B$",
-                    "hidden": true,
-                    "help_text": "Use to set an upper-limit for the memory requirement for each process. Should be a string in the format integer-unit e.g. `--max_memory '8.GB'`"
+                    "fa_icon": "far fa-check-circle",
+                    "description": "Base URL or local path to location of pipeline test dataset files",
+                    "default": "https://raw.githubusercontent.com/nf-core/test-datasets/",
+                    "hidden": true
                 },
-                "max_time": {
-                    "type": "string",
-                    "description": "Maximum amount of time that can be requested for any single job.",
-                    "default": "240.h",
-                    "fa_icon": "far fa-clock",
-                    "pattern": "^(\\d+\\.?\\s*(s|m|h|d|day)\\s*)+$",
-                    "hidden": true,
-                    "help_text": "Use to set an upper-limit for the time requirement for each process. Should be a string in the format integer-unit e.g. `--max_time '2.h'`"
+                "help": {
+                    "type": ["boolean", "string"],
+                    "description": "Display the help message."
+                },
+                "help_full": {
+                    "type": "boolean",
+                    "description": "Display the full detailed help message."
+                },
+                "show_hidden": {
+                    "type": "boolean",
+                    "description": "Display hidden parameters in the help message (only works when --help or --help_full are provided)."
                 }
             }
         },
@@ -228,12 +253,6 @@
             "description": "Less common options for the pipeline, typically set in a config file.",
             "help_text": "These options are common to all nf-core pipelines and allow you to customise some of the core preferences for how the pipeline runs.\n\nTypically these options would be set in a Nextflow config file loaded for all pipeline runs, such as `~/.nextflow/config`.",
             "properties": {
-                "help": {
-                    "type": "boolean",
-                    "description": "Display help text.",
-                    "fa_icon": "fas fa-question-circle",
-                    "hidden": true
-                },
                 "version": {
                     "type": "boolean",
                     "description": "Display version and exit.",
@@ -304,6 +323,14 @@
                     "default": true,
                     "fa_icon": "fas fa-check-square",
                     "hidden": true
+                },
+                "monochrome_logs": {
+                    "type": "boolean",
+                    "description": "Output monochrome logs"
+                },
+                "trace_report_suffix": {
+                    "type": "string",
+                    "hidden": true
                 }
             }
         },
@@ -317,7 +344,8 @@
                     "type": "string",
                     "default": "manta,smoove,delly,expansionhunter,wisecondorx",
                     "description": "A comma-seperated list of callers to use. Can be one or more these: smoove/delly/manta/expansionhunter/qdnaseq/wisecondorx.",
-                    "help_text": "Following keywords can also be used as shortcuts to certain callers: \n- all: Use all callers\n- sv: Use all SV callers\n- cnv: Use all CNV callers\n- rre: Use all RRE callers"
+                    "help_text": "Following keywords can also be used as shortcuts to certain callers: \n- all: Use all callers\n- sv: Use all SV callers\n- cnv: Use all CNV callers\n- rre: Use all RRE callers",
+                    "pattern": "^((manta|delly|smoove|wisecondorx|qdnaseq|expansionhunter|all|sv|cnv|rre)?,?)*(?<!,)$"
                 },
                 "output_callers": {
                     "type": "boolean",
@@ -337,14 +365,24 @@
                     "type": "boolean",
                     "description": "Run the annotation with Ensembl VEP and AnnotSV (and optionally VCFanno)."
                 },
+                "annotate_tools": {
+                    "type": "string",
+                    "description": "A comma-separated list of tools to use for annotation. Possible values: vep,svannotate,vcfanno,strvctvre. Default is all tools.",
+                    "default": "all",
+                    "pattern": "^((vep|vcfanno|svannotate|strvctvre|all)?,?)*(?<!,)$"
+                },
                 "concat_output": {
                     "type": "boolean",
                     "description": "Also output a concatenated VCF with all variant types analysed included."
                 },
-                "annotations_filter": {
+                "filter": {
                     "type": "string",
-                    "description": "The filter arguments to use after annotating.",
+                    "description": "The filter options to perform on SV and CNV VCF files as postprocessing",
                     "help_text": "A common use case for this is to filter out common variants. You can supply a VCF file with common variants to VCFanno and filter out the matching variants using this parameter"
+                },
+                "bedpe": {
+                    "type": "boolean",
+                    "description": "Output BEDPE files derived from the VCF files alongside the VCF files"
                 }
             }
         },
@@ -354,11 +392,6 @@
             "description": "Options specific for the Delly execution",
             "default": "",
             "properties": {
-                "delly_sv_types": {
-                    "type": "string",
-                    "default": "ALL",
-                    "description": "Which SV types delly should search for in the variant calling"
-                },
                 "delly_map_qual": {
                     "type": "integer",
                     "default": 1,
@@ -418,7 +451,7 @@
                 },
                 "vep_cache_version": {
                     "type": "integer",
-                    "default": 108,
+                    "default": 112,
                     "description": "The version of the VEP cache to use.",
                     "help_text": "This version should be present in the folder supplied by `--vep_cache`. This version should be the same as `--vep_version` when no VEP cache was given with `--vep_cache`"
                 },
@@ -430,7 +463,7 @@
                 },
                 "vep_version": {
                     "type": "number",
-                    "default": 109.3,
+                    "default": 112.0,
                     "description": "The version of VEP to use"
                 },
                 "species": {
@@ -440,39 +473,10 @@
                 }
             }
         },
-        "annotsv_options": {
-            "title": "AnnotSV options",
-            "type": "object",
-            "description": "Options specific to the execution of AnnotSV",
-            "default": "",
-            "properties": {
-                "annotsv_annotations": {
-                    "type": "string",
-                    "description": "The full path to the AnnotSV annotations folder. This can be a tarzipped folder.",
-                    "help_text": "When --annotate is set to true and this isn't given, the annotations will be downloaded automatically (this is not recommended though).",
-                    "exists": true,
-                    "format": "path"
-                },
-                "annotsv_candidate_genes": {
-                    "type": "string",
-                    "description": "The full path the candidate genes file for AnnotSV",
-                    "exists": true,
-                    "format": "file-path",
-                    "mimetype": "text/plain"
-                },
-                "annotsv_gene_transcripts": {
-                    "type": "string",
-                    "description": "The full path to the gene transcripts file for AnnotSV",
-                    "exists": true,
-                    "format": "file-path",
-                    "mimetype": "text/plain"
-                }
-            }
-        },
         "vcfanno_options": {
             "title": "VCFanno options",
             "type": "object",
-            "description": "Options for the execution of AnnotSV",
+            "description": "Options for the execution of VCFanno",
             "default": "",
             "properties": {
                 "vcfanno_toml": {
@@ -501,40 +505,34 @@
     },
     "allOf": [
         {
-            "$ref": "#/definitions/input_output_options"
+            "$ref": "#/$defs/input_output_options"
         },
         {
-            "$ref": "#/definitions/reference_genome_options"
+            "$ref": "#/$defs/reference_genome_options"
         },
         {
-            "$ref": "#/definitions/institutional_config_options"
+            "$ref": "#/$defs/institutional_config_options"
         },
         {
-            "$ref": "#/definitions/max_job_request_options"
+            "$ref": "#/$defs/generic_options"
         },
         {
-            "$ref": "#/definitions/generic_options"
+            "$ref": "#/$defs/pipeline_specific_options"
         },
         {
-            "$ref": "#/definitions/pipeline_specific_options"
+            "$ref": "#/$defs/delly_parameters"
         },
         {
-            "$ref": "#/definitions/delly_parameters"
+            "$ref": "#/$defs/manta_parameters"
         },
         {
-            "$ref": "#/definitions/manta_parameters"
+            "$ref": "#/$defs/qdnaseq_parameters"
         },
         {
-            "$ref": "#/definitions/qdnaseq_parameters"
+            "$ref": "#/$defs/vep_options"
         },
         {
-            "$ref": "#/definitions/vep_options"
-        },
-        {
-            "$ref": "#/definitions/annotsv_options"
-        },
-        {
-            "$ref": "#/definitions/vcfanno_options"
+            "$ref": "#/$defs/vcfanno_options"
         }
     ]
 }

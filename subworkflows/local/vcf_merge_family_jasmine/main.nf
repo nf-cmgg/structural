@@ -17,51 +17,36 @@ workflow VCF_MERGE_FAMILY_JASMINE {
 
     main:
 
-    ch_versions     = Channel.empty()
+    def ch_versions     = channel.empty()
 
-    ch_vcfs
-        .filter { it[0].family_count > 1 }
+    def ch_jasmine_input = ch_vcfs
         .map { meta, vcf, tbi ->
             def new_meta = meta - meta.subMap("sample", "sex") + ["id":meta.variant_type ? "${meta.family}.${meta.variant_type}" : meta.family]
             [ groupKey(new_meta, meta.family_count), vcf, tbi ]
         }
         .groupTuple()
-        .tap { ch_consensus_reheader_input }
-        .map { meta, vcfs, tbis ->
-            [ meta.id, meta, vcfs ]
-        }
-        .tap { ch_meta_file_list }
-        .map { id, meta, vcfs ->
-            [ "${id}_list.txt", vcfs.collect { it.baseName }.join("\n") ]
-        }
-        .collectFile()
-        .map {
-            def id = it.name.replaceAll("_list.txt\$", "")
-            [ id, it ]
-        }
-        .join(ch_meta_file_list, failOnMismatch:true, failOnDuplicate:true)
-        .map { id, file_list, meta, vcfs ->
-            [ meta, vcfs, [], [], file_list ]
-        }
-        .set { ch_jasmine_input }
+
 
     JASMINESV(
-        ch_jasmine_input,
+        ch_jasmine_input.map { meta, vcfs, _tbis ->
+            [ meta, vcfs, [], [], [] ]
+        },
         ch_fasta,
         ch_fai,
         []
     )
-    ch_versions = ch_versions.mix(JASMINESV.out.versions.first())
 
     FIX_CALLERS(
         JASMINESV.out.vcf
     )
     ch_versions = ch_versions.mix(FIX_CALLERS.out.versions.first())
 
-    FIX_CALLERS.out.vcf
-        .join(ch_consensus_reheader_input, failOnDuplicate:true, failOnMismatch:true)
+    def ch_reheader_input = FIX_CALLERS.out.vcf
+        .join(ch_jasmine_input, failOnDuplicate:true, failOnMismatch:true)
+        .map { meta, merged_vcf, vcfs, tbis ->
+            [ meta, merged_vcf, vcfs, tbis ]
+        }
         .dump(tag:"family_reheader_input", pretty: true)
-        .set { ch_reheader_input }
 
     BCFTOOLS_CONSENSUS_REHEADER(
         ch_reheader_input,
@@ -78,11 +63,13 @@ workflow VCF_MERGE_FAMILY_JASMINE {
     TABIX_TABIX(
         BCFTOOLS_SORT.out.vcf
     )
-    ch_versions = ch_versions.mix(TABIX_TABIX.out.versions.first())
 
-    BCFTOOLS_SORT.out.vcf
-        .join(TABIX_TABIX.out.tbi, failOnMismatch:true, failOnDuplicate:true)
-        .set { ch_vcfs_out }
+    def ch_vcfs_out = BCFTOOLS_SORT.out.vcf
+        .join(TABIX_TABIX.out.index, failOnMismatch:true, failOnDuplicate:true)
+        .map { meta, vcf, tbi ->
+            def new_meta = meta + [id:meta.family]
+            [ new_meta, vcf, tbi ]
+        }
 
     emit:
     vcfs        = ch_vcfs_out    // channel: [ val(meta), path(vcf), path(tbi) ]

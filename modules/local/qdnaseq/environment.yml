@@ -1,0 +1,7 @@
+channels:
+  - conda-forge
+  - bioconda
+dependencies:
+  - bioconda::bioconductor-qdnaseq=1.42.0
+  - conda-forge::r-base=4.4.3
+  - conda-forge::r-lsr=0.5.2

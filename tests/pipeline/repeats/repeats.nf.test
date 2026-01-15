@@ -24,23 +24,24 @@ nextflow_pipeline {
             assertAll(
                 { assert workflow.success },
                 { assert snapshot(
-                    workflow.stdout,
-
-                    path("$outputDir")
+                    path("${outputDir}")
                         .list()
+                        .collect { getRecursiveFileNames(it, "${outputDir}") }
+                        .flatten()
                         .findAll {
-                            !it.toString().endsWith("pipeline_info")
+                            !it.contains("pipeline_info/")
                         }
-                        .collect {
-                            it.list().collect { it.toString().split("/")[-1] }
-                        },
-                    path("$outputDir").list().collect{
-                        it.toString().split("/")[-1]
-                    }
                 ).match("expansionhunter")}
             )
         }
 
     }
 
+}
+
+def getRecursiveFileNames(fileOrDir, outputDir) {
+    if(file(fileOrDir.toString()).isDirectory()) {
+        return fileOrDir.list().collect { getRecursiveFileNames(it, outputDir) }
+    }
+    return fileOrDir.toString().replace("${outputDir}/", "")
 }

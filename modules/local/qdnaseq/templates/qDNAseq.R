@@ -122,8 +122,12 @@ write.table(std, file="statistics.out", append = TRUE, col.names = FALSE, row.na
 write.table(mad, file="statistics.out", append = TRUE, col.names = FALSE, row.names=c("mad"), dec = ",")
 write.table(aad, file="statistics.out", append = TRUE, col.names = FALSE, row.names=c("aad"), dec = ",")
 
-
-sink("versions.yml")
-cat("\\"task.process\\":\n")
-cat("    bioconductor-qdnaseq: 1.34.0\n")
-cat("    r-lsr: 0.5.2\n")
+## VERSIONS FILE
+writeLines(
+    c(
+        '"${task.process}":',
+        paste('    r-base:', strsplit(version[['version.string']], ' ')[[1]][3]),
+        paste('    r-lsr:', as.character(packageVersion('lsr'))),
+        paste('    bioconductor-qdnaseq:', as.character(packageVersion('QDNAseq')))
+    ),
+'versions.yml')

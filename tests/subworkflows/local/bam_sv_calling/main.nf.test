@@ -8,10 +8,6 @@ nextflow_workflow {
     tag "subworkflows_local"
     tag "bam_sv_calling"
 
-    options "-stub"
-
-    config "./nextflow.config"
-
     test("homo_sapiens - manta") {
 
         when {
@@ -44,10 +40,20 @@ nextflow_workflow {
             assertAll(
                 { assert workflow.success },
                 { assert snapshot(
-                    workflow.out.reports,
-                    workflow.out.vcfs[0].collect { it instanceof Map ? it : file(it).name },
-                    workflow.trace.succeeded().size(),
-                    workflow.trace.failed().size()
+                    workflow.out.collectEntries { key, value ->
+                        if(key.matches("^\\d+\$") || key == "versions") {
+                            return null
+                        }
+                        else if(key.contains("vcf")) {
+                            return [
+                                key,
+                                value.collect { meta, vcf, tbi ->
+                                    [ meta, "${file(vcf).name},variantsMD5:${path(vcf).vcf.variantsMD5}", file(tbi).name]
+                                }
+                            ]
+                        }
+                        return [key,value]
+                    }.findAll { it != null }
                 ).match() }
             )
         }
@@ -86,10 +92,20 @@ nextflow_workflow {
             assertAll(
                 { assert workflow.success },
                 { assert snapshot(
-                    workflow.out.reports,
-                    workflow.out.vcfs[0].collect { it instanceof Map ? it : file(it).name },
-                    workflow.trace.succeeded().size(),
-                    workflow.trace.failed().size()
+                    workflow.out.collectEntries { key, value ->
+                        if(key.matches("^\\d+\$") || key == "versions") {
+                            return null
+                        }
+                        else if(key.contains("vcf")) {
+                            return [
+                                key,
+                                value.collect { meta, vcf, tbi ->
+                                    [ meta, "${file(vcf).name},variantsMD5:${path(vcf).vcf.variantsMD5}", file(tbi).name]
+                                }
+                            ]
+                        }
+                        return [key,value]
+                    }.findAll { it != null }
                 ).match() }
             )
         }
@@ -128,10 +144,20 @@ nextflow_workflow {
             assertAll(
                 { assert workflow.success },
                 { assert snapshot(
-                    workflow.out.reports,
-                    workflow.out.vcfs[0].collect { it instanceof Map ? it : file(it).name },
-                    workflow.trace.succeeded().size(),
-                    workflow.trace.failed().size()
+                    workflow.out.collectEntries { key, value ->
+                        if(key.matches("^\\d+\$") || key == "versions") {
+                            return null
+                        }
+                        else if(key.contains("vcf")) {
+                            return [
+                                key,
+                                value.collect { meta, vcf, tbi ->
+                                    [ meta, "${file(vcf).name},variantsMD5:${path(vcf).vcf.variantsMD5}", file(tbi).name]
+                                }
+                            ]
+                        }
+                        return [key,value]
+                    }.findAll { it != null }
                 ).match() }
             )
         }
@@ -212,10 +238,20 @@ nextflow_workflow {
             assertAll(
                 { assert workflow.success },
                 { assert snapshot(
-                    workflow.out.reports,
-                    workflow.out.vcfs[0].collect { it instanceof Map ? it : file(it).name },
-                    workflow.trace.succeeded().size(),
-                    workflow.trace.failed().size()
+                    workflow.out.collectEntries { key, value ->
+                        if(key.matches("^\\d+\$") || key == "versions") {
+                            return null
+                        }
+                        else if(key.contains("vcf")) {
+                            return [
+                                key,
+                                value.collect { meta, vcf, tbi ->
+                                    [ meta, "${file(vcf).name},variantsMD5:${path(vcf).vcf.variantsMD5}", file(tbi).name]
+                                }
+                            ]
+                        }
+                        return [key,value]
+                    }.findAll { it != null }
                 ).match() }
             )
         }

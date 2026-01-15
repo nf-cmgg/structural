@@ -3,7 +3,7 @@
 //
 
 include { BCFTOOLS_CONCAT   } from '../../../modules/nf-core/bcftools/concat/main'
-include { TABIX_TABIX       } from '../../../modules/nf-core/tabix/tabix/main'
+include { BCFTOOLS_SORT     } from '../../../modules/nf-core/bcftools/sort/main'
 
 workflow VCF_CONCAT_BCFTOOLS {
     take:
@@ -12,21 +12,19 @@ workflow VCF_CONCAT_BCFTOOLS {
 
     main:
 
-    ch_versions = Channel.empty()
+    def ch_versions = channel.empty()
 
-    ch_vcfs
+    def ch_concat_input = ch_vcfs
         .groupTuple(size:val_count_types)
-        .set { ch_concat_input }
 
     BCFTOOLS_CONCAT(ch_concat_input)
     ch_versions = ch_versions.mix(BCFTOOLS_CONCAT.out.versions.first())
 
-    TABIX_TABIX(BCFTOOLS_CONCAT.out.vcf)
-    ch_versions = ch_versions.mix(TABIX_TABIX.out.versions.first())
+    BCFTOOLS_SORT(BCFTOOLS_CONCAT.out.vcf)
+    ch_versions = ch_versions.mix(BCFTOOLS_SORT.out.versions.first())
 
-    BCFTOOLS_CONCAT.out.vcf
-        .join(TABIX_TABIX.out.tbi, failOnDuplicate:true, failOnMismatch:true)
-        .set { ch_concat_vcfs }
+    def ch_concat_vcfs = BCFTOOLS_SORT.out.vcf
+        .join(BCFTOOLS_SORT.out.tbi, failOnDuplicate:true, failOnMismatch:true)
 
     emit:
     vcfs            = ch_concat_vcfs  // channel: [ val(meta), path(vcf), path(tbi) ]

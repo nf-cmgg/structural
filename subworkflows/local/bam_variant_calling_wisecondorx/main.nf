@@ -15,14 +15,13 @@ workflow BAM_VARIANT_CALLING_WISECONDORX {
 
     main:
 
-    ch_versions = Channel.empty()
+    def ch_versions = channel.empty()
 
-    ch_crams
+    def ch_caller_crams = ch_crams
         .map { meta, cram, crai ->
             def new_meta = meta + [caller:'wisecondorx']
             [ new_meta, cram, crai ]
         }
-        .set { ch_caller_crams }
 
     WISECONDORX_CONVERT(
         ch_caller_crams,
@@ -38,36 +37,31 @@ workflow BAM_VARIANT_CALLING_WISECONDORX {
     )
     ch_versions = ch_versions.mix(WISECONDORX_PREDICT.out.versions.first())
 
-    ch_bedgovcf_configs
-        .map {
-            it.find { it.toString().contains("wisecondorx") }
+    def ch_wisecondorx_bedgovcf_config = ch_bedgovcf_configs
+        .map { configs ->
+            configs.find { config -> config.toString().contains("wisecondorx") }
         }
-        .set { ch_wisecondorx_bedgovcf_config }
 
-    WISECONDORX_PREDICT.out.aberrations_bed
+    def ch_bedgovcf_input = WISECONDORX_PREDICT.out.aberrations_bed
         .combine(ch_wisecondorx_bedgovcf_config)
         .map { meta, bed, config ->
             [ meta, bed, config]
         }
-        .set { ch_bedgovcf_input }
 
     BEDGOVCF(
         ch_bedgovcf_input,
         ch_fai
     )
-    ch_versions = ch_versions.mix(BEDGOVCF.out.versions.first())
 
-    BEDGOVCF.out.vcf
+    def ch_vcf = BEDGOVCF.out.vcf
         .map { meta, vcf ->
             def new_meta = meta - meta.subMap("caller")
             [ new_meta, vcf ]
         }
-        .set { ch_vcf }
 
     TABIX_TABIX(
         BEDGOVCF.out.vcf
     )
-    ch_versions = ch_versions.mix(TABIX_TABIX.out.versions.first())
 
     emit:
     aberrations_bed = WISECONDORX_PREDICT.out.aberrations_bed   // channel: [ val(meta), path(bed) ]
@@ -80,4 +74,3 @@ workflow BAM_VARIANT_CALLING_WISECONDORX {
 
     versions        = ch_versions                               // channel: path(versions.yml)
 }
-

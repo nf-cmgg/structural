@@ -8,8 +8,6 @@ nextflow_workflow {
     tag "subworkflows_local"
     tag "vcf_merge_callers_jasmine"
 
-    config "./nextflow.config"
-
     test("homo_sapiens - multiple callers") {
 
         when {

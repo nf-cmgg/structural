@@ -9,6 +9,7 @@ include { TABIX_TABIX                       } from '../../../modules/nf-core/tab
 include { BAM_VARIANT_CALLING_QDNASEQ       } from '../bam_variant_calling_qdnaseq/main'
 include { BAM_VARIANT_CALLING_WISECONDORX   } from '../bam_variant_calling_wisecondorx/main'
 include { VCF_MERGE_CALLERS_JASMINE         } from '../vcf_merge_callers_jasmine/main'
+include { QDNASEQ } from '../../../modules/local/qdnaseq/main.nf'
 
 workflow BAM_CNV_CALLING {
     take:
@@ -24,10 +25,11 @@ workflow BAM_CNV_CALLING {
 
     main:
 
-    ch_versions     = Channel.empty()
-    ch_reports      = Channel.empty()
-    ch_called_vcfs  = Channel.empty()
+    def ch_versions     = channel.empty()
+    def ch_reports      = channel.empty()
+    def ch_called_vcfs  = channel.empty()
 
+    def ch_qdnaseq_out  = channel.empty()
     if("qdnaseq" in val_callers) {
         BAM_VARIANT_CALLING_QDNASEQ(
             ch_crams,
@@ -39,8 +41,12 @@ workflow BAM_CNV_CALLING {
         )
         ch_versions = ch_versions.mix(BAM_VARIANT_CALLING_QDNASEQ.out.versions)
         ch_called_vcfs = ch_called_vcfs.mix(BAM_VARIANT_CALLING_QDNASEQ.out.vcf)
+        ch_qdnaseq_out = BAM_VARIANT_CALLING_QDNASEQ.out.beds
+            .mix(BAM_VARIANT_CALLING_QDNASEQ.out.segments)
+            .mix(BAM_VARIANT_CALLING_QDNASEQ.out.statistics)
     }
 
+    def ch_wisecondorx_out = channel.empty()
     if("wisecondorx" in val_callers) {
         BAM_VARIANT_CALLING_WISECONDORX(
             ch_crams,
@@ -52,37 +58,43 @@ workflow BAM_CNV_CALLING {
         )
         ch_versions = ch_versions.mix(BAM_VARIANT_CALLING_WISECONDORX.out.versions)
         ch_called_vcfs = ch_called_vcfs.mix(BAM_VARIANT_CALLING_WISECONDORX.out.vcf)
+        ch_wisecondorx_out = BAM_VARIANT_CALLING_WISECONDORX.out.aberrations_bed
+            .mix(BAM_VARIANT_CALLING_WISECONDORX.out.bins_bed)
+            .mix(BAM_VARIANT_CALLING_WISECONDORX.out.chr_plots)
+            .mix(BAM_VARIANT_CALLING_WISECONDORX.out.chr_statistics)
+            .mix(BAM_VARIANT_CALLING_WISECONDORX.out.genome_plot)
+            .mix(BAM_VARIANT_CALLING_WISECONDORX.out.segments_bed)
     }
 
+    def ch_merged_vcfs = channel.empty()
     if(val_callers.size() > 1) {
         VCF_MERGE_CALLERS_JASMINE(
-            ch_called_vcfs.map { it + [[]] },
+            ch_called_vcfs.map { meta, vcf -> [meta, vcf, []] },
             ch_fasta,
             ch_fai,
             val_callers,
             "cnv"
         )
         ch_versions = ch_versions.mix(VCF_MERGE_CALLERS_JASMINE.out.versions)
-        VCF_MERGE_CALLERS_JASMINE.out.vcfs
-            .set { ch_merged_vcfs }
+        ch_merged_vcfs = VCF_MERGE_CALLERS_JASMINE.out.vcfs
 
     } else {
         TABIX_TABIX(
             ch_called_vcfs
         )
-        ch_versions = ch_versions.mix(TABIX_TABIX.out.versions.first())
 
-        ch_called_vcfs
-            .join(TABIX_TABIX.out.tbi, failOnDuplicate:true, failOnMismatch:true)
+        ch_merged_vcfs = ch_called_vcfs
+            .join(TABIX_TABIX.out.index, failOnDuplicate:true, failOnMismatch:true)
             .map { meta, vcf, tbi ->
                 def new_meta = meta - meta.subMap("caller") + [variant_type:"cnv"]
                 [ new_meta, vcf, tbi ]
             }
-            .set { ch_merged_vcfs }
     }
 
 
     emit:
+    wisecondorx         = ch_wisecondorx_out
+    qdnaseq             = ch_qdnaseq_out
     versions            = ch_versions
     reports             = ch_reports
     vcfs                = ch_merged_vcfs

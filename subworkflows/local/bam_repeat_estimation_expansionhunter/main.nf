@@ -15,14 +15,13 @@ workflow BAM_REPEAT_ESTIMATION_EXPANSIONHUNTER {
 
     main:
 
-    ch_versions = Channel.empty()
+    def ch_versions = channel.empty()
 
-    ch_crams
+    def ch_expansionhunter_input = ch_crams
         .map { meta, cram, crai ->
-            def new_meta = meta + ["variant_type":"repeats"]
+            def new_meta = meta + [variant_type:"repeats", caller:'expansionhunter']
             [ new_meta, cram, crai ]
         }
-        .set { ch_expansionhunter_input }
 
     EXPANSIONHUNTER(
         ch_expansionhunter_input,
@@ -32,7 +31,7 @@ workflow BAM_REPEAT_ESTIMATION_EXPANSIONHUNTER {
     )
     ch_versions = ch_versions.mix(EXPANSIONHUNTER.out.versions.first())
 
-    Channel.of(
+    def ch_ref_header = channel.of(
         '##INFO=<ID=REF,Number=1,Type=Integer,Description="Count of reads mapping across this breakend">',
         '##INFO=<ID=RU,Number=1,Type=String,Description="The repeat unit of the STR">',
         '##INFO=<ID=REPREF,Number=1,Type=Integer,Description="How many repeats are in the reference">',
@@ -49,31 +48,34 @@ workflow BAM_REPEAT_ESTIMATION_EXPANSIONHUNTER {
         '##FORMAT=<ID=ADIR,Number=1,Type=String,Description="The amount of in-repeat reads that are consistent with the repeat allele">'
         )
         .collectFile(name:'header.txt', newLine:true)
-        .set { ch_ref_header }
+        .collect()
 
-    EXPANSIONHUNTER.out.vcf
-        .combine(ch_ref_header)
-        .map { meta, vcf, ref_header ->
-            [ meta, vcf, [], [], [], ref_header]
+    def ch_expansionhunter_vcfs = EXPANSIONHUNTER.out.vcf
+        .join(EXPANSIONHUNTER.out.tbi, failOnDuplicate:true, failOnMismatch:true)
+
+    def ch_annotate_input = ch_expansionhunter_vcfs
+        .map { meta, vcf, tbi ->
+            [ meta, vcf, tbi, [], [] ]
         }
-        .set { ch_annotate_input }
 
     BCFTOOLS_ANNOTATE(
-        ch_annotate_input
+        ch_annotate_input,
+        [],
+        ch_ref_header,
+        []
     )
     ch_versions = ch_versions.mix(BCFTOOLS_ANNOTATE.out.versions.first())
 
     TABIX_TABIX(
         BCFTOOLS_ANNOTATE.out.vcf
     )
-    ch_versions = ch_versions.mix(TABIX_TABIX.out.versions.first())
 
-    BCFTOOLS_ANNOTATE.out.vcf
-        .join(TABIX_TABIX.out.tbi, failOnDuplicate:true, failOnMismatch:true)
-        .set { ch_vcfs }
+    def ch_vcfs = BCFTOOLS_ANNOTATE.out.vcf
+        .join(TABIX_TABIX.out.index, failOnDuplicate:true, failOnMismatch:true)
 
     emit:
-    vcfs                = ch_vcfs    // channel: [ val(meta), path(vcf), path(tbi) ]
+    caller_vcfs = ch_expansionhunter_vcfs   // channel: [ val(meta), path(vcf), path(tbi) ]
+    vcfs        = ch_vcfs                   // channel: [ val(meta), path(vcf), path(tbi) ]
 
-    versions            = ch_versions
+    versions    = ch_versions
 }

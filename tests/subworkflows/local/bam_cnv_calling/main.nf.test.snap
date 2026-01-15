@@ -38,7 +38,7 @@
                 "test.qdnaseq.vcf.gz",
                 "test.qdnaseq.vcf.gz.tbi"
             ],
-            6,
+            5,
             0
         ],
         "meta": {
@@ -62,7 +62,7 @@
                 "test.cnv.vcf.gz",
                 "test.cnv.vcf.gz.tbi"
             ],
-            14,
+            13,
             0
         ],
         "meta": {

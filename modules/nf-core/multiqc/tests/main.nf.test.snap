@@ -1,41 +1,61 @@
 {
-    "multiqc_versions_single": {
+    "sarscov2 single-end [fastqc]": {
         "content": [
-            [
-                "versions.yml:md5,21f35ee29416b9b3073c28733efe4b7d"
-            ]
+            {
+                "versions": [
+                    [
+                        "MULTIQC",
+                        "multiqc",
+                        "1.33"
+                    ]
+                ]
+            }
         ],
         "meta": {
-            "nf-test": "0.8.4",
-            "nextflow": "23.10.1"
+            "nf-test": "0.9.3",
+            "nextflow": "25.10.2"
         },
-        "timestamp": "2024-02-29T08:48:55.657331"
+        "timestamp": "2025-12-09T10:10:43.020315838"
     },
-    "multiqc_stub": {
+    "sarscov2 single-end [fastqc] - stub": {
         "content": [
             [
                 "multiqc_report.html",
                 "multiqc_data",
                 "multiqc_plots",
-                "versions.yml:md5,21f35ee29416b9b3073c28733efe4b7d"
+                {
+                    "versions": [
+                        [
+                            "MULTIQC",
+                            "multiqc",
+                            "1.33"
+                        ]
+                    ]
+                }
             ]
         ],
         "meta": {
-            "nf-test": "0.8.4",
-            "nextflow": "23.10.1"
+            "nf-test": "0.9.3",
+            "nextflow": "25.10.2"
         },
-        "timestamp": "2024-02-29T08:49:49.071937"
+        "timestamp": "2025-12-09T10:11:14.131950776"
     },
-    "multiqc_versions_config": {
+    "sarscov2 single-end [fastqc] [config]": {
         "content": [
-            [
-                "versions.yml:md5,21f35ee29416b9b3073c28733efe4b7d"
-            ]
+            {
+                "versions": [
+                    [
+                        "MULTIQC",
+                        "multiqc",
+                        "1.33"
+                    ]
+                ]
+            }
         ],
         "meta": {
-            "nf-test": "0.8.4",
-            "nextflow": "23.10.1"
+            "nf-test": "0.9.3",
+            "nextflow": "25.10.2"
         },
-        "timestamp": "2024-02-29T08:49:25.457567"
+        "timestamp": "2025-12-09T10:11:07.15692209"
     }
 }

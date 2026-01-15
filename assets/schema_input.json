@@ -1,5 +1,5 @@
 {
-    "$schema": "http://json-schema.org/draft-07/schema",
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
     "$id": "https://raw.githubusercontent.com/nf-cmgg/structural/master/assets/schema_input.json",
     "title": "nf-cmgg/structural pipeline - params.input schema",
     "description": "Schema for the file provided with params.input",
@@ -28,12 +28,6 @@
             "crai": {
                 "type": "string",
                 "pattern": "^\\S+\\.(crai|bai|csi)$",
-                "format": "file-path",
-                "exists": true
-            },
-            "small_variants": {
-                "type": "string",
-                "pattern": "^\\S+\\.vcf(\\.gz)?$",
                 "format": "file-path",
                 "exists": true
             },

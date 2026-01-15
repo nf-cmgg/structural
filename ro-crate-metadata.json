@@ -21,8 +21,8 @@
         {
             "@id": "./",
             "@type": "Dataset",
-            "creativeWorkStatus": "Stable",
-            "datePublished": "2026-01-12T13:16:21+00:00",
+            "creativeWorkStatus": "InProgress",
+            "datePublished": "2026-01-15T12:31:07+00:00",
             "description": "# nf-cmgg/structural\n\n[![Open in GitHub Codespaces](https://img.shields.io/badge/Open_In_GitHub_Codespaces-black?labelColor=grey&logo=github)](https://github.com/codespaces/new/nf-cmgg/structural)\n[![GitHub Actions CI Status](https://github.com/nf-cmgg/structural/actions/workflows/nf-test.yml/badge.svg)](https://github.com/nf-cmgg/structural/actions/workflows/nf-test.yml)\n[![GitHub Actions Linting Status](https://github.com/nf-cmgg/structural/actions/workflows/linting.yml/badge.svg)](https://github.com/nf-cmgg/structural/actions/workflows/linting.yml)[![Cite with Zenodo](http://img.shields.io/badge/DOI-10.5281/zenodo.XXXXXXX-1073c8?labelColor=000000)](https://doi.org/10.5281/zenodo.XXXXXXX)\n[![nf-test](https://img.shields.io/badge/unit_tests-nf--test-337ab7.svg)](https://www.nf-test.com)\n\n[![Nextflow](https://img.shields.io/badge/version-%E2%89%A525.10.0-green?style=flat&logo=nextflow&logoColor=white&color=%230DC09D&link=https%3A%2F%2Fnextflow.io)](https://www.nextflow.io/)\n[![nf-core template version](https://img.shields.io/badge/nf--core_template-3.5.1-green?style=flat&logo=nfcore&logoColor=white&color=%2324B064&link=https%3A%2F%2Fnf-co.re)](https://github.com/nf-core/tools/releases/tag/3.5.1)\n[![run with conda](http://img.shields.io/badge/run%20with-conda-3EB049?labelColor=000000&logo=anaconda)](https://docs.conda.io/en/latest/)\n[![run with docker](https://img.shields.io/badge/run%20with-docker-0db7ed?labelColor=000000&logo=docker)](https://www.docker.com/)\n[![run with singularity](https://img.shields.io/badge/run%20with-singularity-1d355c.svg?labelColor=000000)](https://sylabs.io/docs/)\n[![Launch on Seqera Platform](https://img.shields.io/badge/Launch%20%F0%9F%9A%80-Seqera%20Platform-%234256e7)](https://cloud.seqera.io/launch?pipeline=https://github.com/nf-cmgg/structural)\n\n## Introduction\n\n**nf-cmgg/structural** is a bioinformatics best-practice analysis pipeline for calling structural variants (SVs), copy number variants (CNVs) and repeat region expansions (RREs) from short DNA reads. The pipeline handles the calling of the variants and postprocessing (filtering, annotating...)\n\nPlease have a look at the [documentation](https://nf-cmgg.github.io/structural/latest/) on how to run the pipeline\n",
             "hasPart": [
                 {
@@ -105,7 +105,7 @@
             },
             "mentions": [
                 {
-                    "@id": "#2f814c85-34cc-4c25-9f4f-8d4360a75481"
+                    "@id": "#697cb7f7-f800-4243-b5ee-16ce54ee00de"
                 }
             ],
             "name": "nf-cmgg/structural"
@@ -138,7 +138,7 @@
                 }
             ],
             "dateCreated": "",
-            "dateModified": "2026-01-12T14:16:21Z",
+            "dateModified": "2026-01-15T13:31:07Z",
             "dct:conformsTo": "https://bioschemas.org/profiles/ComputationalWorkflow/1.0-RELEASE/",
             "image": {
                 "@id": "docs/images/metro_map.png"
@@ -149,6 +149,11 @@
             ],
             "license": [
                 "MIT"
+            ],
+            "maintainer": [
+                {
+                    "@id": "https://orcid.org/0009-0003-5619-1555"
+                }
             ],
             "name": [
                 "nf-cmgg/structural"
@@ -161,10 +166,10 @@
             },
             "url": [
                 "https://github.com/nf-cmgg/structural",
-                "https://nf-co.re/nf-cmgg/structural/0.3.0/"
+                "https://nf-co.re/nf-cmgg/structural/dev/"
             ],
             "version": [
-                "0.3.0"
+                "0.4.0dev"
             ]
         },
         {
@@ -188,11 +193,11 @@
             "name": "Workflow diagram"
         },
         {
-            "@id": "#2f814c85-34cc-4c25-9f4f-8d4360a75481",
+            "@id": "#697cb7f7-f800-4243-b5ee-16ce54ee00de",
             "@type": "TestSuite",
             "instance": [
                 {
-                    "@id": "#759b1356-71e9-4b82-98bc-d955936bd906"
+                    "@id": "#caaeaa83-0a7f-402d-bec4-177c9e77477e"
                 }
             ],
             "mainEntity": {
@@ -201,7 +206,7 @@
             "name": "Test suite for nf-cmgg/structural"
         },
         {
-            "@id": "#759b1356-71e9-4b82-98bc-d955936bd906",
+            "@id": "#caaeaa83-0a7f-402d-bec4-177c9e77477e",
             "@type": "TestInstance",
             "name": "GitHub Actions workflow for testing nf-cmgg/structural",
             "resource": "repos/nf-cmgg/structural/actions/workflows/nf-test.yml",
@@ -337,7 +342,7 @@
         {
             "@id": "https://orcid.org/0009-0003-5619-1555",
             "@type": "Person",
-            "email": "101190534+nvnieuwk@users.noreply.github.com",
+            "email": "nicolas.vannieuwkerke@ugent.be",
             "name": "Nicolas Vannieuwkerke"
         }
     ]

@@ -14,9 +14,6 @@ workflow BAM_REPEAT_ESTIMATION_EXPANSIONHUNTER {
         ch_catalogue    // channel: [mandatory] [ meta, catalogue ] => The expansionhunter catalogue
 
     main:
-
-    def ch_versions = channel.empty()
-
     def ch_expansionhunter_input = ch_crams
         .map { meta, cram, crai ->
             def new_meta = meta + [variant_type:"repeats", caller:'expansionhunter']
@@ -29,7 +26,6 @@ workflow BAM_REPEAT_ESTIMATION_EXPANSIONHUNTER {
         ch_fai,
         ch_catalogue
     )
-    ch_versions = ch_versions.mix(EXPANSIONHUNTER.out.versions.first())
 
     def ch_ref_header = channel.of(
         '##INFO=<ID=REF,Number=1,Type=Integer,Description="Count of reads mapping across this breakend">',
@@ -64,7 +60,6 @@ workflow BAM_REPEAT_ESTIMATION_EXPANSIONHUNTER {
         ch_ref_header,
         []
     )
-    ch_versions = ch_versions.mix(BCFTOOLS_ANNOTATE.out.versions.first())
 
     TABIX_TABIX(
         BCFTOOLS_ANNOTATE.out.vcf
@@ -76,6 +71,4 @@ workflow BAM_REPEAT_ESTIMATION_EXPANSIONHUNTER {
     emit:
     caller_vcfs = ch_expansionhunter_vcfs   // channel: [ val(meta), path(vcf), path(tbi) ]
     vcfs        = ch_vcfs                   // channel: [ val(meta), path(vcf), path(tbi) ]
-
-    versions    = ch_versions
 }

@@ -29,12 +29,10 @@ workflow BAM_VARIANT_CALLING_MANTA {
         [],
         false
     )
-    ch_versions = ch_versions.mix(GAWK.out.versions)
 
     TABIX_BGZIPTABIX(
         GAWK.out.output
     )
-    ch_versions = ch_versions.mix(TABIX_BGZIPTABIX.out.versions)
 
     def ch_contigs = TABIX_BGZIPTABIX.out.gz_index
         .map { _meta, bed_gz, tbi ->

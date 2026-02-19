@@ -18,9 +18,6 @@ workflow BAM_VARIANT_CALLING_QDNASEQ {
         ch_bedgovcf_configs     // channel: [mandatory] [ configs ] => A list of bedgovcf configs
 
     main:
-
-    def ch_versions     = channel.empty()
-
     def ch_caller_crams = ch_crams
         .map { meta, cram, crai ->
             def new_meta = meta + [caller:'qdnaseq']
@@ -29,10 +26,8 @@ workflow BAM_VARIANT_CALLING_QDNASEQ {
 
     SAMTOOLS_CONVERT(
         ch_caller_crams,
-        ch_fasta,
-        ch_fai
+        ch_fasta.join(ch_fai).collect()
     )
-    ch_versions = ch_versions.mix(SAMTOOLS_CONVERT.out.versions.first())
 
     def ch_qdnaseq_input = SAMTOOLS_CONVERT.out.bam
         .join(SAMTOOLS_CONVERT.out.bai, failOnDuplicate:true, failOnMismatch:true)
@@ -65,7 +60,6 @@ workflow BAM_VARIANT_CALLING_QDNASEQ {
         [],
         false
     )
-    ch_versions = ch_versions.mix(GAWK.out.versions.first())
 
     def ch_qdnaseq_bedgovcf_config = ch_bedgovcf_configs
         .map { configs ->
@@ -94,6 +88,4 @@ workflow BAM_VARIANT_CALLING_QDNASEQ {
     segments    = ch_qdnaseq_segments   // channel: [ val(meta), path(bed) ]
     statistics  = ch_qdnaseq_statistics // channel: [ val(meta), path(stats) ]
     vcf         = ch_vcf                // channel: [ val(meta), path(vcf) ]
-
-    versions    = ch_versions
 }

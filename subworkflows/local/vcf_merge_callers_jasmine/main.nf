@@ -11,11 +11,11 @@ include { FIX_CALLERS                 } from '../../../modules/local/fix_callers
 
 workflow VCF_MERGE_CALLERS_JASMINE {
     take:
-        ch_vcfs     // channel: [mandatory] [ meta, vcf, tbi ] => The bgzipped called VCFs
-        ch_fasta    // channel: [mandatory] [ meta, fasta ] => The fasta reference file
-        ch_fai      // channel: [mandatory] [ meta, fai ] => The index of the fasta reference file
-        val_callers // value:   [mandatory] => The callers used
-        val_type    // value:   [mandatory] => The type of variants
+    ch_vcfs     // channel: [mandatory] [ meta, vcf, tbi ] => The bgzipped called VCFs
+    ch_fasta    // channel: [mandatory] [ meta, fasta ] => The fasta reference file
+    ch_fai      // channel: [mandatory] [ meta, fai ] => The index of the fasta reference file
+    val_callers // value:   [mandatory] => The callers used
+    val_type    // value:   [mandatory] => The type of variants
 
     main:
 
@@ -62,7 +62,6 @@ workflow VCF_MERGE_CALLERS_JASMINE {
     BCFTOOLS_SORT(
         BCFTOOLS_CONSENSUS_REHEADER.out.vcf
     )
-    ch_versions = ch_versions.mix(BCFTOOLS_SORT.out.versions.first())
 
     TABIX_TABIX(
         BCFTOOLS_SORT.out.vcf

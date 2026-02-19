@@ -40,7 +40,6 @@ workflow BAM_VARIANT_CALLING_SMOOVE {
     BCFTOOLS_SORT(
         SMOOVE_CALL.out.vcf
     )
-    ch_versions = ch_versions.mix(BCFTOOLS_SORT.out.versions.first())
 
     def ch_smoove_svync_config = ch_svync_configs
         .map { configs ->

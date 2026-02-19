@@ -50,12 +50,10 @@ workflow BAM_VARIANT_CALLING_DELLY {
     BCFTOOLS_CONCAT(
         ch_concat_input
     )
-    ch_versions = ch_versions.mix(BCFTOOLS_CONCAT.out.versions.first())
 
     BCFTOOLS_SORT(
         BCFTOOLS_CONCAT.out.vcf
     )
-    ch_versions = ch_versions.mix(BCFTOOLS_SORT.out.versions.first())
 
     def ch_delly_svync_config = ch_svync_configs
         .map { configs ->

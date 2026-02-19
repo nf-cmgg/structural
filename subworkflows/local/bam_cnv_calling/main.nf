@@ -39,7 +39,6 @@ workflow BAM_CNV_CALLING {
             ch_qdnaseq_female,
             ch_bedgovcf_configs
         )
-        ch_versions = ch_versions.mix(BAM_VARIANT_CALLING_QDNASEQ.out.versions)
         ch_called_vcfs = ch_called_vcfs.mix(BAM_VARIANT_CALLING_QDNASEQ.out.vcf)
         ch_qdnaseq_out = BAM_VARIANT_CALLING_QDNASEQ.out.beds
             .mix(BAM_VARIANT_CALLING_QDNASEQ.out.segments)

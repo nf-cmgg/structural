@@ -58,7 +58,6 @@ workflow VCF_MERGE_FAMILY_JASMINE {
     BCFTOOLS_SORT(
         BCFTOOLS_CONSENSUS_REHEADER.out.vcf
     )
-    ch_versions = ch_versions.mix(BCFTOOLS_SORT.out.versions.first())
 
     TABIX_TABIX(
         BCFTOOLS_SORT.out.vcf

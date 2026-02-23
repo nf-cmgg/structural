@@ -19,8 +19,6 @@ workflow VCF_MERGE_CALLERS_JASMINE {
 
     main:
 
-    def ch_versions     = channel.empty()
-
     def ch_jasmine_input = ch_vcfs
         .map { meta, vcf, tbi ->
             def new_meta = meta - meta.subMap("caller") + ["variant_type":val_type]
@@ -43,7 +41,6 @@ workflow VCF_MERGE_CALLERS_JASMINE {
     FIX_CALLERS(
         JASMINESV.out.vcf
     )
-    ch_versions = ch_versions.mix(FIX_CALLERS.out.versions.first())
 
     def ch_reheader_input = FIX_CALLERS.out.vcf
         .join(ch_consensus_reheader_input, failOnDuplicate:true, failOnMismatch:true)
@@ -57,7 +54,6 @@ workflow VCF_MERGE_CALLERS_JASMINE {
         ch_fai,
         []
     )
-    ch_versions = ch_versions.mix(BCFTOOLS_CONSENSUS_REHEADER.out.versions.first())
 
     BCFTOOLS_SORT(
         BCFTOOLS_CONSENSUS_REHEADER.out.vcf
@@ -72,6 +68,4 @@ workflow VCF_MERGE_CALLERS_JASMINE {
 
     emit:
     vcfs        = ch_vcfs_out    // channel: [ val(meta), path(vcf), path(tbi) ]
-
-    versions    = ch_versions
 }

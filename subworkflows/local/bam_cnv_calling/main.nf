@@ -24,8 +24,6 @@ workflow BAM_CNV_CALLING {
         val_callers                 // value:   [mandatory] => List of all CNV callers to use
 
     main:
-
-    def ch_versions     = channel.empty()
     def ch_reports      = channel.empty()
     def ch_called_vcfs  = channel.empty()
 
@@ -55,7 +53,6 @@ workflow BAM_CNV_CALLING {
             ch_blacklist,
             ch_bedgovcf_configs
         )
-        ch_versions = ch_versions.mix(BAM_VARIANT_CALLING_WISECONDORX.out.versions)
         ch_called_vcfs = ch_called_vcfs.mix(BAM_VARIANT_CALLING_WISECONDORX.out.vcf)
         ch_wisecondorx_out = BAM_VARIANT_CALLING_WISECONDORX.out.aberrations_bed
             .mix(BAM_VARIANT_CALLING_WISECONDORX.out.bins_bed)
@@ -74,7 +71,6 @@ workflow BAM_CNV_CALLING {
             val_callers,
             "cnv"
         )
-        ch_versions = ch_versions.mix(VCF_MERGE_CALLERS_JASMINE.out.versions)
         ch_merged_vcfs = VCF_MERGE_CALLERS_JASMINE.out.vcfs
 
     } else {
@@ -94,7 +90,6 @@ workflow BAM_CNV_CALLING {
     emit:
     wisecondorx         = ch_wisecondorx_out
     qdnaseq             = ch_qdnaseq_out
-    versions            = ch_versions
     reports             = ch_reports
     vcfs                = ch_merged_vcfs
 }

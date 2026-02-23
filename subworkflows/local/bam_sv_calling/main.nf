@@ -19,8 +19,6 @@ workflow BAM_SV_CALLING {
         val_callers         // value:   [mandatory] => List of all SV callers to use
 
     main:
-
-    def ch_versions     = channel.empty()
     def ch_reports      = channel.empty()
     def ch_called_vcfs  = channel.empty()
     def ch_raw_vcfs     = channel.empty()
@@ -40,7 +38,6 @@ workflow BAM_SV_CALLING {
 
         ch_raw_vcfs     = ch_raw_vcfs.mix(BAM_VARIANT_CALLING_MANTA.out.raw_vcfs)
         ch_called_vcfs  = ch_called_vcfs.mix(BAM_VARIANT_CALLING_MANTA.out.manta_vcfs)
-        ch_versions     = ch_versions.mix(BAM_VARIANT_CALLING_MANTA.out.versions)
     }
 
     //
@@ -57,7 +54,6 @@ workflow BAM_SV_CALLING {
 
         ch_raw_vcfs     = ch_raw_vcfs.mix(BAM_VARIANT_CALLING_DELLY.out.raw_vcfs)
         ch_called_vcfs  = ch_called_vcfs.mix(BAM_VARIANT_CALLING_DELLY.out.delly_vcfs)
-        ch_versions     = ch_versions.mix(BAM_VARIANT_CALLING_DELLY.out.versions)
     }
 
     //
@@ -74,7 +70,6 @@ workflow BAM_SV_CALLING {
 
         ch_raw_vcfs     = ch_raw_vcfs.mix(BAM_VARIANT_CALLING_SMOOVE.out.raw_vcfs)
         ch_called_vcfs  = ch_called_vcfs.mix(BAM_VARIANT_CALLING_SMOOVE.out.smoove_vcfs)
-        ch_versions     = ch_versions.mix(BAM_VARIANT_CALLING_SMOOVE.out.versions)
     }
 
     def ch_merged_vcfs = channel.empty()
@@ -86,7 +81,6 @@ workflow BAM_SV_CALLING {
             val_callers,
             "sv"
         )
-        ch_versions = ch_versions.mix(VCF_MERGE_CALLERS_JASMINE.out.versions)
         ch_merged_vcfs = VCF_MERGE_CALLERS_JASMINE.out.vcfs
     } else {
         ch_merged_vcfs = ch_called_vcfs
@@ -100,6 +94,5 @@ workflow BAM_SV_CALLING {
     caller_vcfs         = ch_raw_vcfs       // channel: [ val(meta), path(vcf), path(tbi)]
     vcfs                = ch_merged_vcfs    // channel: [ val(meta), path(vcf), path(tbi) ]
 
-    versions            = ch_versions
     reports             = ch_reports
 }

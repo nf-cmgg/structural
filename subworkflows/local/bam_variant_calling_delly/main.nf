@@ -16,8 +16,6 @@ workflow BAM_VARIANT_CALLING_DELLY {
 
     main:
 
-    def ch_versions     = channel.empty()
-
     //
     // Calling variants using Delly
     //
@@ -37,7 +35,6 @@ workflow BAM_VARIANT_CALLING_DELLY {
         ch_fasta,
         ch_fai
     )
-    ch_versions = ch_versions.mix(DELLY_CALL.out.versions.first())
 
     def ch_concat_input = DELLY_CALL.out.bcf
         .join(DELLY_CALL.out.csi, failOnDuplicate:true, failOnMismatch:true)
@@ -70,7 +67,6 @@ workflow BAM_VARIANT_CALLING_DELLY {
     SVYNC(
         ch_svync_input
     )
-    ch_versions = ch_versions.mix(SVYNC.out.versions.first())
 
     def ch_out_vcfs = SVYNC.out.vcf
         .join(SVYNC.out.tbi, failOnDuplicate:true, failOnMismatch:true)
@@ -78,6 +74,4 @@ workflow BAM_VARIANT_CALLING_DELLY {
     emit:
     raw_vcfs    = ch_delly_vcfs // channel: [ val(meta), path(vcf), path(tbi) ]
     delly_vcfs  = ch_out_vcfs   // channel: [ val(meta), path(vcf), path(tbi) ]
-
-    versions    = ch_versions
 }

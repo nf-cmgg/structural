@@ -12,7 +12,8 @@ process FIX_CALLERS {
 
     output:
     tuple val(meta), path("*.vcf.gz")  , emit: vcf
-    path "versions.yml"                , emit: versions
+    tuple val("${task.process}"), val('python'), eval("python --version |& sed '1!d; s/^Python //g'"), emit: versions_python, topic: versions
+    tuple val("${task.process}"), val('bgzip'), eval("bgzip --version |& sed -n '1s/bgzip (htslib) //p'"), emit: versions_bgzip, topic: versions
 
     script:
     def prefix = task.ext.prefix ?: "${meta.id}"
@@ -23,12 +24,6 @@ process FIX_CALLERS {
     """
     fix_callers.py $vcf ${prefix}.vcf
     bgzip ${prefix}.vcf
-
-    cat <<-END_VERSIONS > versions.yml
-    "${task.process}":
-        python: \$(python --version | sed s'/Python //')
-        bgzip: \$(bgzip --version | head -1 | sed s'/bgzip (htslib) //')
-    END_VERSIONS
     """
 
     stub:
@@ -39,11 +34,5 @@ process FIX_CALLERS {
     }
     """
     echo "" | gzip > ${prefix}.vcf.gz
-
-    cat <<-END_VERSIONS > versions.yml
-    "${task.process}":
-        python: \$(python --version | sed s'/Python //')
-        bgzip: \$(bgzip --version | head -1 | sed s'/bgzip (htslib) //')
-    END_VERSIONS
     """
 }

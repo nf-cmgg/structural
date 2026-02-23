@@ -26,7 +26,7 @@ workflow BAM_VARIANT_CALLING_QDNASEQ {
 
     SAMTOOLS_CONVERT(
         ch_caller_crams,
-        ch_fasta.join(ch_fai).collect()
+        ch_fasta.join(ch_fai, failOnMismatch:true, failOnDuplicate:true).collect()
     )
 
     def ch_qdnaseq_input = SAMTOOLS_CONVERT.out.bam

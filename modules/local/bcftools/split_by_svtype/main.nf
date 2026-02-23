@@ -13,6 +13,7 @@ process BCFTOOLS_SPLIT_BY_SVTYPE {
     output:
     tuple val(meta), path("*.{vcf,vcf.gz,bcf,bcf.gz}"), emit: split_vcfs
     tuple val(meta), path("*.txt")                    , emit: header
+    tuple val("${task.process}"), val('bcftools'), eval("bcftools --version |& sed '1!d; s/^.*bcftools //'"), emit: versions_bcftools, topic: versions
     path "versions.yml"                               , emit: versions
 
     script:
@@ -47,11 +48,6 @@ process BCFTOOLS_SPLIT_BY_SVTYPE {
     bcftools view -h ${vcf} | grep -E '(##INFO|##FORMAT|##ALT|##FILTER)' > ${prefix}.header.txt
 
     ${check_variants.join("\n")}
-
-    cat <<-END_VERSIONS > versions.yml
-    "${task.process}":
-        bcftools: \$( bcftools --version |& sed '1!d; s/^.*bcftools //' )
-    END_VERSIONS
     """
 
     stub:
@@ -72,10 +68,5 @@ process BCFTOOLS_SPLIT_BY_SVTYPE {
     echo "" | gzip > ${prefix}.other.${extension}
 
     touch ${prefix}.header.txt
-
-    cat <<-END_VERSIONS > versions.yml
-    "${task.process}":
-        bcftools: \$( bcftools --version |& sed '1!d; s/^.*bcftools //' )
-    END_VERSIONS
     """
 }

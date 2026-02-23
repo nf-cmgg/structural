@@ -26,7 +26,6 @@ workflow VCF_ANNOTATE {
     tools                                // list:    [optional]  => The tools used for annotation (default: all tools)
 
     main:
-    def ch_versions = channel.empty()
     def ch_reports = channel.empty()
 
     def ch_vep = vcfs
@@ -80,7 +79,6 @@ workflow VCF_ANNOTATE {
             strvctvre_phylop,
             strvctvre_data
         )
-        ch_versions = ch_versions.mix(STRVCTVRE_STRVCTVRE.out.versions.first())
 
         TABIX_BGZIPTABIX(
             STRVCTVRE_STRVCTVRE.out.vcf
@@ -90,6 +88,5 @@ workflow VCF_ANNOTATE {
 
     emit:
     vcfs = ch_strvctvre
-    versions = ch_versions
     reports = ch_reports
 }

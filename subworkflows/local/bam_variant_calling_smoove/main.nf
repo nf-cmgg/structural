@@ -16,8 +16,6 @@ workflow BAM_VARIANT_CALLING_SMOOVE {
 
     main:
 
-    def ch_versions     = channel.empty()
-
     //
     // Calling variants using Smoove
     //
@@ -34,8 +32,6 @@ workflow BAM_VARIANT_CALLING_SMOOVE {
         ch_fasta,
         ch_fai
     )
-
-    ch_versions = ch_versions.mix(SMOOVE_CALL.out.versions.first())
 
     BCFTOOLS_SORT(
         SMOOVE_CALL.out.vcf
@@ -56,7 +52,6 @@ workflow BAM_VARIANT_CALLING_SMOOVE {
     SVYNC(
         ch_svync_input
     )
-    ch_versions = ch_versions.mix(SVYNC.out.versions.first())
 
     TABIX_TABIX(
         SVYNC.out.vcf
@@ -68,6 +63,4 @@ workflow BAM_VARIANT_CALLING_SMOOVE {
     emit:
     raw_vcfs    = ch_smoove_vcfs    // channel: [ val(meta), path(vcf), path(tbi) ]
     smoove_vcfs = ch_out_vcfs       // channel: [ val(meta), path(vcf), path(tbi) ]
-
-    versions    = ch_versions
 }

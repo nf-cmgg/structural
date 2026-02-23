@@ -18,8 +18,6 @@ workflow BAM_VARIANT_CALLING_MANTA {
 
     main:
 
-    def ch_versions     = channel.empty()
-
     //
     // Create a contigs BED file
     //
@@ -29,12 +27,10 @@ workflow BAM_VARIANT_CALLING_MANTA {
         [],
         false
     )
-    ch_versions = ch_versions.mix(GAWK.out.versions)
 
     TABIX_BGZIPTABIX(
         GAWK.out.output
     )
-    ch_versions = ch_versions.mix(TABIX_BGZIPTABIX.out.versions)
 
     def ch_contigs = TABIX_BGZIPTABIX.out.gz_index
         .map { _meta, bed_gz, tbi ->
@@ -85,7 +81,6 @@ workflow BAM_VARIANT_CALLING_MANTA {
     SVYNC(
         ch_svync_input
     )
-    ch_versions = ch_versions.mix(SVYNC.out.versions.first())
 
     TABIX_TABIX(
         SVYNC.out.vcf
@@ -97,6 +92,4 @@ workflow BAM_VARIANT_CALLING_MANTA {
     emit:
     raw_vcfs    = ch_manta_vcfs // channel: [ val(meta), path(vcf), path(tbi) ]
     manta_vcfs  = ch_out_vcfs   // channel: [ val(meta), path(vcf), path(tbi) ]
-
-    versions    = ch_versions
 }

@@ -17,11 +17,11 @@
             5,
             0
         ],
+        "timestamp": "2024-03-11T13:42:50.111774064",
         "meta": {
             "nf-test": "0.8.4",
             "nextflow": "24.02.0"
-        },
-        "timestamp": "2024-03-11T13:42:50.111774064"
+        }
     },
     "homo_sapiens - qdnaseq": {
         "content": [
@@ -41,11 +41,11 @@
             5,
             0
         ],
+        "timestamp": "2026-02-23T14:37:38.390307784",
         "meta": {
-            "nf-test": "0.8.4",
-            "nextflow": "24.02.0"
-        },
-        "timestamp": "2024-03-11T13:42:28.521257286"
+            "nf-test": "0.9.4",
+            "nextflow": "25.10.4"
+        }
     },
     "homo_sapiens - all cnv callers": {
         "content": [
@@ -65,10 +65,10 @@
             13,
             0
         ],
+        "timestamp": "2026-02-23T14:38:14.157675225",
         "meta": {
-            "nf-test": "0.8.4",
-            "nextflow": "24.02.0"
-        },
-        "timestamp": "2024-03-11T13:43:33.765890721"
+            "nf-test": "0.9.4",
+            "nextflow": "25.10.4"
+        }
     }
 }

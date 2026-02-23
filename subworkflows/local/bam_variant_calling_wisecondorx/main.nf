@@ -15,8 +15,6 @@ workflow BAM_VARIANT_CALLING_WISECONDORX {
 
     main:
 
-    def ch_versions = channel.empty()
-
     def ch_caller_crams = ch_crams
         .map { meta, cram, crai ->
             def new_meta = meta + [caller:'wisecondorx']
@@ -28,14 +26,12 @@ workflow BAM_VARIANT_CALLING_WISECONDORX {
         ch_fasta,
         ch_fai
     )
-    ch_versions = ch_versions.mix(WISECONDORX_CONVERT.out.versions.first())
 
     WISECONDORX_PREDICT(
         WISECONDORX_CONVERT.out.npz,
         ch_ref,
         ch_blacklist
     )
-    ch_versions = ch_versions.mix(WISECONDORX_PREDICT.out.versions.first())
 
     def ch_wisecondorx_bedgovcf_config = ch_bedgovcf_configs
         .map { configs ->
@@ -71,6 +67,4 @@ workflow BAM_VARIANT_CALLING_WISECONDORX {
     chr_plots       = WISECONDORX_PREDICT.out.chr_plots         // channel: [ val(meta), [ path(png), path(png), ... ] ]
     genome_plot     = WISECONDORX_PREDICT.out.genome_plot       // channel: [ val(meta), path(png) ]
     vcf             = ch_vcf                                    // channel: [ val(meta), path(vcf) ]
-
-    versions        = ch_versions                               // channel: path(versions.yml)
 }

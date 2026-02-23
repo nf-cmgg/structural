@@ -38,10 +38,8 @@ include { VCF_MERGE_FAMILY_JASMINE              } from '../subworkflows/local/vc
 include { SAMTOOLS_FAIDX                    } from '../modules/nf-core/samtools/faidx/main'
 include { GATK4_CREATESEQUENCEDICTIONARY    } from '../modules/nf-core/gatk4/createsequencedictionary/main'
 include { PREPROCESS_GTF                    } from '../modules/local/preprocess_gtf/main'
-include { BWA_INDEX                         } from '../modules/nf-core/bwa/index/main'
 include { ENSEMBLVEP_DOWNLOAD               } from '../modules/nf-core/ensemblvep/download/main'
 include { UNTAR as UNTAR_ANNOTSV            } from '../modules/nf-core/untar/main'
-include { UNTAR as UNTAR_BWA                } from '../modules/nf-core/untar/main'
 include { NGSBITS_SAMPLEGENDER              } from '../modules/nf-core/ngsbits/samplegender/main'
 include { BCFTOOLS_FILTER                   } from '../modules/nf-core/bcftools/filter/main'
 include { SVTOOLS_VCFTOBEDPE                } from '../modules/nf-core/svtools/vcftobedpe/main'
@@ -104,7 +102,6 @@ workflow STRUCTURAL {
 
     main:
 
-    def ch_versions         = channel.empty()
     def ch_reports          = channel.empty()
     def ch_caller_vcfs      = channel.empty()
     def ch_multiqc_files    = channel.empty()
@@ -116,7 +113,7 @@ workflow STRUCTURAL {
     // Create input channels from parameters
     //
 
-    def ch_fasta                    = channel.fromPath(fasta).collect { fasta_file -> [[id:'fasta'], fasta_file ] }
+    def ch_fasta                    = channel.fromPath(fasta).collect { fasta_file -> [[id:'reference'], fasta_file ] }
     // def ch_annotsv_candidate_genes  = annotsv_candidate_genes ?  channel.fromPath(annotsv_candidate_genes).collect { genes_file -> [[], genes_file] } : [[],[]]
     // def ch_annotsv_gene_transcripts = annotsv_gene_transcripts ? channel.fromPath(annotsv_gene_transcripts).collect { transcripts_file -> [[], transcripts_file] } : [[],[]]
     def ch_vcfanno_lua              = vcfanno_lua ?              channel.fromPath(vcfanno_lua).collect() : []
@@ -202,12 +199,10 @@ workflow STRUCTURAL {
             ch_fasta,
             [[], []]
         )
-
-        ch_versions = ch_versions.mix(SAMTOOLS_FAIDX.out.versions)
-        ch_fai      = SAMTOOLS_FAIDX.out.fai.collect { fai_file -> [[id:'fai'], fai_file] }
+        ch_fai      = SAMTOOLS_FAIDX.out.fai.collect { fai_file -> [[id:'reference'], fai_file] }
     }
     else {
-        ch_fai = channel.fromPath(fai).collect { fai_file -> [[id:'fai'], fai_file] }
+        ch_fai = channel.fromPath(fai).collect { fai_file -> [[id:'reference'], fai_file] }
     }
 
     def ch_dict = channel.empty()
@@ -216,32 +211,27 @@ workflow STRUCTURAL {
         GATK4_CREATESEQUENCEDICTIONARY(
             ch_fasta
         )
-        ch_versions = ch_versions.mix(GATK4_CREATESEQUENCEDICTIONARY.out.versions)
-
         ch_dict = GATK4_CREATESEQUENCEDICTIONARY.out.dict.collect()
     }
     else if(dict) {
-        ch_dict = channel.fromPath(dict).collect { dict_file -> [[id:'dict'], dict_file] }
+        ch_dict = channel.fromPath(dict).collect { dict_file -> [[id:'reference'], dict_file] }
     }
 
     def ch_preprocessed_gtf = channel.empty()
     // Sanitize GTF file to adhere to the extremely strict GTF parsing in SVAnnotate
     if (gtf) {
-        ch_sanitize_input = channel.fromPath(gtf).collect { gtf_file -> [[id:'gtf'], gtf_file] }
+        ch_sanitize_input = channel.fromPath(gtf).collect { gtf_file -> [[id:'reference'], gtf_file] }
         PREPROCESS_GTF(
             ch_sanitize_input
         )
-        ch_versions = ch_versions.mix(PREPROCESS_GTF.out.versions)
-
         ch_preprocessed_gtf = PREPROCESS_GTF.out.gtf.collect()
     }
 
     def ch_vep_cache = channel.empty()
     if(!vep_cache && annotate && callers.intersect(annotationCallers)) {
         ENSEMBLVEP_DOWNLOAD(
-            channel.of([[id:"vep_cache"], vep_assembly, species, vep_cache_version]).collect()
+            channel.of([[id:"reference"], vep_assembly, species, vep_cache_version]).collect()
         )
-
         ch_vep_cache = ENSEMBLVEP_DOWNLOAD.out.cache.collect { annotations -> annotations[1] }
     }
     else if (vep_cache && annotate && callers.intersect(annotationCallers)) {
@@ -257,8 +247,6 @@ workflow STRUCTURAL {
         ch_fasta,
         ch_fai
     )
-    ch_versions = ch_versions.mix(BAM_PREPARE_SAMTOOLS.out.versions)
-
     def ch_input_no_sex = BAM_PREPARE_SAMTOOLS.out.crams
 
     //
@@ -279,7 +267,6 @@ workflow STRUCTURAL {
             ch_fai,
             "xy"
         )
-        ch_versions = ch_versions.mix(NGSBITS_SAMPLEGENDER.out.versions.first())
 
         ch_inputs = NGSBITS_SAMPLEGENDER.out.tsv
             .join(ch_samplegender_input.no_sex, failOnDuplicate:true, failOnMismatch:true)
@@ -312,7 +299,6 @@ workflow STRUCTURAL {
         )
 
         ch_caller_vcfs = ch_caller_vcfs.mix(BAM_SV_CALLING.out.caller_vcfs)
-        ch_versions = ch_versions.mix(BAM_SV_CALLING.out.versions)
         ch_reports  = ch_reports.mix(BAM_SV_CALLING.out.reports)
         ch_annotation_input = ch_annotation_input.mix(BAM_SV_CALLING.out.vcfs)
 
@@ -340,8 +326,6 @@ workflow STRUCTURAL {
             ch_bedgovcf_configs,
             cnv_callers_to_use
         )
-
-        ch_versions         = ch_versions.mix(BAM_CNV_CALLING.out.versions)
         ch_annotation_input = ch_annotation_input.mix(BAM_CNV_CALLING.out.vcfs)
         ch_wisecondorx_out  = BAM_CNV_CALLING.out.wisecondorx
         ch_qdnaseq_out      = BAM_CNV_CALLING.out.qdnaseq
@@ -372,7 +356,6 @@ workflow STRUCTURAL {
             val_default_vcfanno_tomls,
             annotate_tools
         )
-        ch_versions = ch_versions.mix(VCF_ANNOTATE.out.versions)
         ch_reports  = ch_reports.mix(VCF_ANNOTATE.out.reports)
         ch_annotation_output = VCF_ANNOTATE.out.vcfs
     }
@@ -383,7 +366,6 @@ workflow STRUCTURAL {
             ch_annotation_output
         )
         ch_outputs = BCFTOOLS_FILTER.out.vcf.join(BCFTOOLS_FILTER.out.tbi, failOnMismatch:true, failOnDuplicate:true)
-        ch_versions = ch_versions.mix(BCFTOOLS_FILTER.out.versions)
     }
 
     //
@@ -400,9 +382,7 @@ workflow STRUCTURAL {
             ch_fai,
             ch_catalog
         )
-
         ch_caller_vcfs  = ch_caller_vcfs.mix(BAM_REPEAT_ESTIMATION_EXPANSIONHUNTER.out.caller_vcfs)
-        ch_versions     = ch_versions.mix(BAM_REPEAT_ESTIMATION_EXPANSIONHUNTER.out.versions)
         ch_outputs      = ch_outputs.mix(BAM_REPEAT_ESTIMATION_EXPANSIONHUNTER.out.vcfs)
 
     }
@@ -423,8 +403,6 @@ workflow STRUCTURAL {
             ch_concat_input,
             count_types
         )
-        ch_versions = ch_versions.mix(VCF_CONCAT_BCFTOOLS.out.versions)
-
         ch_concat_vcfs = VCF_CONCAT_BCFTOOLS.out.vcfs
     } else {
         ch_concat_vcfs = ch_outputs
@@ -464,7 +442,6 @@ workflow STRUCTURAL {
         SVTOOLS_VCFTOBEDPE(
             ch_vcftobedpe_input
         )
-        ch_versions = ch_versions.mix(SVTOOLS_VCFTOBEDPE.out.versions)
         ch_bedpe = SVTOOLS_VCFTOBEDPE.out.bedpe
     }
 
@@ -489,7 +466,7 @@ workflow STRUCTURAL {
             "${process}:\n${tool_versions.join('\n')}"
         }
 
-    softwareVersionsToYAML(ch_versions.mix(topic_versions.versions_file))
+    softwareVersionsToYAML(topic_versions.versions_file)
         .mix(topic_versions_string)
         .collectFile(
             storeDir: "${outdir}/pipeline_info",
@@ -548,7 +525,6 @@ workflow STRUCTURAL {
     bedpe           = ch_bedpe                    // channel: [ val(meta), path(bedpe) ]
     multiqc_report  = MULTIQC.out.report.toList() // channel: /path/to/multiqc_report.html
     multiqc_data    = MULTIQC.out.data            // channel: /path/to/multiqc_data
-    versions        = ch_versions                 // channel: [ path(versions.yml) ]
 }
 
 

@@ -14,7 +14,7 @@ process BCFTOOLS_CONSENSUS_REHEADER {
 
     output:
     tuple val(meta), path("*.${extension}"), emit: vcf
-    path "versions.yml"                    , emit: versions
+    tuple val("${task.process}"), val('bcftools'), eval("bcftools --version |& sed '1!d; s/^.*bcftools //'"), emit: versions_bcftools, topic: versions
 
     script:
     def args    = task.ext.args ?: ''
@@ -68,11 +68,6 @@ process BCFTOOLS_CONSENSUS_REHEADER {
         | bcftools view \\
         $args2 \\
         --output ${prefix}.${extension}
-
-    cat <<-END_VERSIONS > versions.yml
-    "${task.process}":
-        bcftools: \$( bcftools --version |& sed '1!d; s/^.*bcftools //' )
-    END_VERSIONS
     """
 
     stub:
@@ -86,10 +81,5 @@ process BCFTOOLS_CONSENSUS_REHEADER {
                     "vcf"
     """
     echo "" | gzip > ${prefix}.${extension}
-
-    cat <<-END_VERSIONS > versions.yml
-    "${task.process}":
-        bcftools: \$( bcftools --version |& sed '1!d; s/^.*bcftools //' )
-    END_VERSIONS
     """
 }

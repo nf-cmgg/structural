@@ -154,16 +154,14 @@ output {
     }
     sample_vcfs {
         path { meta, vcf, tbi ->
-            def base = "${meta.id}/${meta.id}${meta.variant_type ? '.' + meta.variant_type : ''}"
-            vcf >> "${base}.vcf.gz"
-            tbi >> "${base}.vcf.gz.tbi"
+            vcf >> "${meta.id}/${meta.id}${meta.variant_type ? '.' + meta.variant_type : ''}" + ".vcf.gz"
+            tbi >> "${meta.id}/${meta.id}${meta.variant_type ? '.' + meta.variant_type : ''}" + ".vcf.gz.tbi"
         }
     }
     family_vcfs {
         path { meta, vcf, tbi ->
-            def base = "${meta.id}/${meta.id}${meta.variant_type ? '.' + meta.variant_type : ''}"
-            vcf >> "${base}.vcf.gz"
-            tbi >> "${base}.vcf.gz.tbi"
+            vcf >> "${meta.id}/${meta.id}${meta.variant_type ? '.' + meta.variant_type : ''}" + ".vcf.gz"
+            tbi >> "${meta.id}/${meta.id}${meta.variant_type ? '.' + meta.variant_type : ''}" + ".vcf.gz.tbi"
         }
     }
     qdnaseq_out {
@@ -186,8 +184,7 @@ output {
     }
     bedpe {
         path { meta, bedpe ->
-            def base = "${meta.id}/${meta.id}${meta.variant_type ? '.' + meta.variant_type : ''}"
-            bedpe >> "${base}.bedpe"
+            bedpe >> "${meta.id}/${meta.id}${meta.variant_type ? '.' + meta.variant_type : ''}" + ".bedpe"
         }
     }
     multiqc {

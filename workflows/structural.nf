@@ -200,7 +200,8 @@ workflow STRUCTURAL {
     if(!fai){
         SAMTOOLS_FAIDX(
             ch_fasta,
-            [[], []]
+            [[], []],
+            false
         )
 
         ch_versions = ch_versions.mix(SAMTOOLS_FAIDX.out.versions)

@@ -27,7 +27,7 @@ nextflow_pipeline {
                     path("$outputDir")
                         .list()
                         .findAll { !it.toString().endsWith("pipeline_info") }
-                        .collect { getRecursiveFileNames(it, "${outputDir}") }
+                        .collect { Utils.getRecursiveFileNames(it, "${outputDir}") }
                         .flatten()
                 ).match("all")}
             )
@@ -55,7 +55,7 @@ nextflow_pipeline {
                     path("$outputDir")
                         .list()
                         .findAll { !it.toString().endsWith("pipeline_info") }
-                        .collect { getRecursiveFileNames(it, "${outputDir}") }
+                        .collect { Utils.getRecursiveFileNames(it, "${outputDir}") }
                         .flatten()
                 ).match("concat")}
             )
@@ -83,7 +83,7 @@ nextflow_pipeline {
                     path("$outputDir")
                         .list()
                         .findAll { !it.toString().endsWith("pipeline_info") }
-                        .collect { getRecursiveFileNames(it, "${outputDir}") }
+                        .collect { Utils.getRecursiveFileNames(it, "${outputDir}") }
                         .flatten()
                 ).match("output callers")}
             )
@@ -91,11 +91,4 @@ nextflow_pipeline {
 
     }
 
-}
-
-def getRecursiveFileNames(fileOrDir, outputDir) {
-    if(file(fileOrDir.toString()).isDirectory()) {
-        return fileOrDir.list().collect { getRecursiveFileNames(it, outputDir) }
-    }
-    return fileOrDir.toString().replace("${outputDir}/", "")
 }

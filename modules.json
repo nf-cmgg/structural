@@ -99,7 +99,7 @@
                     },
                     "samtools/faidx": {
                         "branch": "master",
-                        "git_sha": "b2e78932ef01165fd85829513eaca29eff8e640a",
+                        "git_sha": "156feda0cb6589cd29c04902004fa3b53bc00205",
                         "installed_by": ["modules"]
                     },
                     "samtools/index": {

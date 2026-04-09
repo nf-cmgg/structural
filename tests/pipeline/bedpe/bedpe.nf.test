@@ -27,7 +27,7 @@ nextflow_pipeline {
                 { assert snapshot(
                     path("${outputDir}")
                         .list()
-                        .collect { getRecursiveFileNames(it, "${outputDir}") }
+                        .collect { Utils.getRecursiveFileNames(it, "${outputDir}") }
                         .flatten()
                         .findAll {
                             !it.contains("pipeline_info/")
@@ -79,7 +79,7 @@ nextflow_pipeline {
                 { assert snapshot(
                     path("${outputDir}")
                         .list()
-                        .collect { getRecursiveFileNames(it, "${outputDir}") }
+                        .collect { Utils.getRecursiveFileNames(it, "${outputDir}") }
                         .flatten()
                         .findAll {
                             !it.contains("pipeline_info/")
@@ -90,11 +90,4 @@ nextflow_pipeline {
 
     }
 
-}
-
-def getRecursiveFileNames(fileOrDir, outputDir) {
-    if(file(fileOrDir.toString()).isDirectory()) {
-        return fileOrDir.list().collect { getRecursiveFileNames(it, outputDir) }
-    }
-    return fileOrDir.toString().replace("${outputDir}/", "")
 }

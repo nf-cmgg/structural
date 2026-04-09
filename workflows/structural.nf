@@ -196,8 +196,8 @@ workflow STRUCTURAL {
     def ch_fai = channel.empty()
     if(!fai){
         SAMTOOLS_FAIDX(
-            ch_fasta,
-            [[], []]
+            ch_fasta.map { meta, f -> [ meta, f, [] ]},
+            false
         )
         ch_fai      = SAMTOOLS_FAIDX.out.fai.collect { fai_file -> [[id:'reference'], fai_file] }
     }

@@ -1,15 +1,14 @@
 import java.nio.file.Path
-import groovy.transform.CompileStatic
-import nextflow.Nextflow
+import groovy.transform.CompileDynamic
 
 /**
  * Utility functions for testing.
  */
-@CompileStatic
+@CompileDynamic
 class Utils {
 
     static String getRecursiveFileNames(Path fileOrDir, String outputDir) {
-        if (Nextflow.file(fileOrDir.toString()).directory) {
+        if (Path.of(fileOrDir.toString()).toFile().directory()) {
             return fileOrDir.list().collect { file -> getRecursiveFileNames(file, outputDir) }
         }
         return fileOrDir.toString().replace("${outputDir}/", '')

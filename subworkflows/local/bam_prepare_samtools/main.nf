@@ -13,9 +13,6 @@ workflow BAM_PREPARE_SAMTOOLS {
         ch_fai                  // channel: [mandatory] [ meta, fai ] => The index of the fasta reference file
 
     main:
-
-    def ch_versions     = channel.empty()
-
     def ch_merge_input = ch_crams
         .groupTuple() // no size needed here as no process has been run before this
         .branch { meta, cram, crai ->
@@ -27,9 +24,7 @@ workflow BAM_PREPARE_SAMTOOLS {
 
     SAMTOOLS_MERGE(
         ch_merge_input.multiple,
-        ch_fasta,
-        ch_fai,
-        [[:],[]]
+        ch_fasta.join(ch_fai).collect { meta, fasta, fai -> [ meta, fasta, fai, []]}
     )
 
     def ch_index_input = ch_merge_input.single
@@ -43,7 +38,6 @@ workflow BAM_PREPARE_SAMTOOLS {
     SAMTOOLS_INDEX(
         ch_index_input.no_index
     )
-    ch_versions = ch_versions.mix(SAMTOOLS_INDEX.out.versions.first())
 
     def ch_crams_ready = ch_index_input.no_index
         .join(SAMTOOLS_INDEX.out.crai, failOnMismatch:true, failOnDuplicate:true)
@@ -51,6 +45,4 @@ workflow BAM_PREPARE_SAMTOOLS {
 
     emit:
     crams    = ch_crams_ready // channel: [ val(meta), path(cram), path(crai) ]
-
-    versions = ch_versions
 }

@@ -12,18 +12,13 @@ process PREPROCESS_GTF {
 
     output:
     tuple val(meta), path("*.sanitized.gtf"), emit: gtf
-    path "versions.yml"                     , emit: versions
+    tuple val("${task.process}"), val('python'), eval("python --version |& sed '1!d; s/^Python //g'"), emit: versions_python, topic: versions
 
     script:
     def prefix  = task.ext.prefix ?: "${gtf.baseName}"
 
     """
     preprocess_gtf.py $gtf ${prefix}.sanitized.gtf
-
-    cat <<-END_VERSIONS > versions.yml
-    "${task.process}":
-        grep: \$(echo \$(grep --version) | sed -e 's/grep (GNU grep) //;s/ Copyright.*//')
-    END_VERSIONS
     """
 
     stub:
@@ -31,10 +26,5 @@ process PREPROCESS_GTF {
 
     """
     touch ${prefix}.sanitized.gtf
-
-    cat <<-END_VERSIONS > versions.yml
-    "${task.process}":
-        grep: \$(echo \$(grep --version) | sed -e 's/grep (GNU grep) //;s/ Copyright.*//')
-    END_VERSIONS
     """
 }

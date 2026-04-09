@@ -3,11 +3,10 @@
 //
 
 // Import subworkflows
-include { BAM_VARIANT_CALLING_MANTA                     } from '../bam_variant_calling_manta/main'
-include { BAM_VARIANT_CALLING_DELLY                     } from '../bam_variant_calling_delly/main'
-include { BAM_VARIANT_CALLING_SMOOVE                    } from '../bam_variant_calling_smoove/main'
-// include { BAM_VARIANT_CALLING_GRIDSS                    } from '../bam_variant_calling_gridss/main'
-include { VCF_MERGE_CALLERS_JASMINE                             } from '../vcf_merge_callers_jasmine/main'
+include { BAM_VARIANT_CALLING_MANTA  } from '../bam_variant_calling_manta/main'
+include { BAM_VARIANT_CALLING_DELLY  } from '../bam_variant_calling_delly/main'
+include { BAM_VARIANT_CALLING_SMOOVE } from '../bam_variant_calling_smoove/main'
+include { VCF_MERGE_CALLERS_JASMINE  } from '../vcf_merge_callers_jasmine/main'
 
 
 workflow BAM_SV_CALLING {
@@ -20,8 +19,6 @@ workflow BAM_SV_CALLING {
         val_callers         // value:   [mandatory] => List of all SV callers to use
 
     main:
-
-    def ch_versions     = channel.empty()
     def ch_reports      = channel.empty()
     def ch_called_vcfs  = channel.empty()
     def ch_raw_vcfs     = channel.empty()
@@ -41,7 +38,6 @@ workflow BAM_SV_CALLING {
 
         ch_raw_vcfs     = ch_raw_vcfs.mix(BAM_VARIANT_CALLING_MANTA.out.raw_vcfs)
         ch_called_vcfs  = ch_called_vcfs.mix(BAM_VARIANT_CALLING_MANTA.out.manta_vcfs)
-        ch_versions     = ch_versions.mix(BAM_VARIANT_CALLING_MANTA.out.versions)
     }
 
     //
@@ -58,7 +54,6 @@ workflow BAM_SV_CALLING {
 
         ch_raw_vcfs     = ch_raw_vcfs.mix(BAM_VARIANT_CALLING_DELLY.out.raw_vcfs)
         ch_called_vcfs  = ch_called_vcfs.mix(BAM_VARIANT_CALLING_DELLY.out.delly_vcfs)
-        ch_versions     = ch_versions.mix(BAM_VARIANT_CALLING_DELLY.out.versions)
     }
 
     //
@@ -75,31 +70,7 @@ workflow BAM_SV_CALLING {
 
         ch_raw_vcfs     = ch_raw_vcfs.mix(BAM_VARIANT_CALLING_SMOOVE.out.raw_vcfs)
         ch_called_vcfs  = ch_called_vcfs.mix(BAM_VARIANT_CALLING_SMOOVE.out.smoove_vcfs)
-        ch_versions     = ch_versions.mix(BAM_VARIANT_CALLING_SMOOVE.out.versions)
     }
-
-    //
-    // Calling variants using Gridss
-    //
-
-    // TODO reactivate gridss once breakend to breakpoint conversion has been added to svync
-    // if("gridss" in val_callers){
-    //     BAM_VARIANT_CALLING_GRIDSS(
-    //         ch_crams,
-    //         ch_fasta,
-    //         ch_fai,
-    //         ch_bwa_index
-    //     )
-
-    //     ch_called_vcfs  = ch_called_vcfs.mix(BAM_VARIANT_CALLING_GRIDSS.out.gridss_vcfs)
-    //     ch_versions     = ch_versions.mix(BAM_VARIANT_CALLING_GRIDSS.out.versions)
-    // }
-
-    //
-    // Calling variants using Scramble (I don't know if calling variants is the correct term here)
-    //
-
-    // Scramble is unfinished. It needs a lot of improvements if we were to add it
 
     def ch_merged_vcfs = channel.empty()
     if(val_callers.size() > 1) {
@@ -110,7 +81,6 @@ workflow BAM_SV_CALLING {
             val_callers,
             "sv"
         )
-        ch_versions = ch_versions.mix(VCF_MERGE_CALLERS_JASMINE.out.versions)
         ch_merged_vcfs = VCF_MERGE_CALLERS_JASMINE.out.vcfs
     } else {
         ch_merged_vcfs = ch_called_vcfs
@@ -124,6 +94,5 @@ workflow BAM_SV_CALLING {
     caller_vcfs         = ch_raw_vcfs       // channel: [ val(meta), path(vcf), path(tbi)]
     vcfs                = ch_merged_vcfs    // channel: [ val(meta), path(vcf), path(tbi) ]
 
-    versions            = ch_versions
     reports             = ch_reports
 }

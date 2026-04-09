@@ -26,7 +26,6 @@ workflow VCF_ANNOTATE {
     tools                                // list:    [optional]  => The tools used for annotation (default: all tools)
 
     main:
-    def ch_versions = channel.empty()
     def ch_reports = channel.empty()
 
     def ch_vep = vcfs
@@ -53,7 +52,6 @@ workflow VCF_ANNOTATE {
             vcfanno_toml,
             vcfanno_default_tomls
         )
-        ch_versions = ch_versions.mix(VCF_ANNOTATE_VCFANNO.out.versions)
         ch_vcfanno = VCF_ANNOTATE_VCFANNO.out.vcfs
     }
 
@@ -71,7 +69,6 @@ workflow VCF_ANNOTATE {
             dict,
             gtf
         )
-        ch_versions = ch_versions.mix(GATK4_SVANNOTATE.out.versions.first())
         ch_svannotate = GATK4_SVANNOTATE.out.vcf.join(GATK4_SVANNOTATE.out.tbi, failOnMismatch:true, failOnDuplicate:true)
     }
 
@@ -82,18 +79,14 @@ workflow VCF_ANNOTATE {
             strvctvre_phylop,
             strvctvre_data
         )
-        ch_versions = ch_versions.mix(STRVCTVRE_STRVCTVRE.out.versions.first())
 
         TABIX_BGZIPTABIX(
             STRVCTVRE_STRVCTVRE.out.vcf
         )
-        ch_versions = ch_versions.mix(TABIX_BGZIPTABIX.out.versions.first())
-
         ch_strvctvre = TABIX_BGZIPTABIX.out.gz_index
     }
 
     emit:
     vcfs = ch_strvctvre
-    versions = ch_versions
     reports = ch_reports
 }

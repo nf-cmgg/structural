@@ -2,7 +2,7 @@ Changes in component 'nf-core/samtools/convert'
 Changes in 'samtools/convert/main.nf':
 --- modules/nf-core/samtools/convert/main.nf
 +++ modules/nf-core/samtools/convert/main.nf
-@@ -46,7 +46,7 @@
+@@ -40,7 +40,7 @@
      stub:
      def prefix = task.ext.prefix ?: "${meta.id}"
      def output_extension = input.getExtension() == "bam" ? "cram" : "bam"

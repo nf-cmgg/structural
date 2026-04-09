@@ -14,8 +14,6 @@ workflow VCF_ANNOTATE_VCFANNO {
         default_vcfanno_tomls                   // list:    [mandatory] => A list of default vcfanno configs to be concatenated with the input TOML
 
     main:
-
-    def ch_versions = channel.empty()
     def ch_annotated_vcfs = channel.empty()
 
     def val_toml = create_vcfanno_toml(val_vcfanno_resources, vcfanno_toml, default_vcfanno_tomls)
@@ -30,8 +28,6 @@ workflow VCF_ANNOTATE_VCFANNO {
             ch_vcfanno_lua,
             val_vcfanno_resources ? channel.fromList(val_vcfanno_resources).collect() : []
         )
-        ch_versions = ch_versions.mix(VCFANNO.out.versions.first())
-
         ch_annotated_vcfs = VCFANNO.out.vcf.join(VCFANNO.out.tbi, failOnDuplicate:true, failOnMismatch:true)
     } else {
         // If no TOML is provided, skip VCFANNO and just pass the input VCFs to output
@@ -40,7 +36,6 @@ workflow VCF_ANNOTATE_VCFANNO {
 
     emit:
     vcfs            = ch_annotated_vcfs  // channel: [ val(meta), path(vcf), path(tbi) ]
-    versions        = ch_versions
 }
 
 def create_vcfanno_toml(vcfanno_resources, input_vcfanno_toml, List<Path> vcfanno_defaults) {

@@ -24,11 +24,11 @@ nextflow_workflow {
                     file(params.crai1, checkIfExists: true)
                 ])
                 input[1] = Channel.value([
-                    [id:"fasta"],
+                    [id:"reference"],
                     file(params.fasta, checkIfExists: true)
                 ])
                 input[2] = Channel.value([
-                    [id:"fai"],
+                    [id:"reference"],
                     file(params.fai, checkIfExists: true)
                 ])
                 input[3] = [[],[]]
@@ -69,11 +69,11 @@ nextflow_workflow {
                     file(params.crai1, checkIfExists: true)
                 ])
                 input[1] = Channel.value([
-                    [id:"fasta"],
+                    [id:"reference"],
                     file(params.fasta, checkIfExists: true)
                 ])
                 input[2] = Channel.value([
-                    [id:"fai"],
+                    [id:"reference"],
                     file(params.fai, checkIfExists: true)
                 ])
                 input[3] = [[],[]]
@@ -114,11 +114,11 @@ nextflow_workflow {
                     file(params.crai1, checkIfExists: true)
                 ])
                 input[1] = Channel.value([
-                    [id:"fasta"],
+                    [id:"reference"],
                     file(params.fasta, checkIfExists: true)
                 ])
                 input[2] = Channel.value([
-                    [id:"fai"],
+                    [id:"reference"],
                     file(params.fai, checkIfExists: true)
                 ])
                 input[3] = [[],[]]

@@ -8,7 +8,8 @@ import groovy.transform.CompileDynamic
 class Utils {
 
     static String getRecursiveFileNames(Path fileOrDir, String outputDir) {
-        if (Path.of(fileOrDir.toString()).toFile().directory()) {
+        /* groovylint-disable-next-line UnnecessaryGetter */
+        if (Path.of(fileOrDir.toString()).toFile().isDirectory()) {
             return fileOrDir.list().collect { file -> getRecursiveFileNames(file, outputDir) }
         }
         return fileOrDir.toString().replace("${outputDir}/", '')

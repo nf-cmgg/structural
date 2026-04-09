@@ -199,8 +199,7 @@ workflow STRUCTURAL {
     def ch_fai = channel.empty()
     if(!fai){
         SAMTOOLS_FAIDX(
-            ch_fasta,
-            [[], []],
+            ch_fasta.map { meta, f -> [ meta, f, [] ]},
             false
         )
 

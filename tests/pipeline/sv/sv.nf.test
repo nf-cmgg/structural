@@ -67,10 +67,3 @@ nextflow_pipeline {
     }
 
 }
-
-def Utils.getRecursiveFileNames(fileOrDir, outputDir) {
-    if(file(fileOrDir.toString()).isDirectory()) {
-        return fileOrDir.list().collect { Utils.getRecursiveFileNames(it, outputDir) }
-    }
-    return fileOrDir.toString().replace("${outputDir}/", "")
-}

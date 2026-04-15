@@ -1,23 +1,25 @@
+nextflow.preview.types = true
+
 process WISECONDORX_CONVERT {
-    tag "$meta.id"
+    tag "${meta.id}"
     label 'process_low'
 
     conda "${moduleDir}/environment.yml"
-    container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
-        'https://depot.galaxyproject.org/singularity/wisecondorx:1.2.9--pyhdfd78af_0':
-        'biocontainers/wisecondorx:1.2.9--pyhdfd78af_0' }"
+    container "${workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container
+        ? 'https://depot.galaxyproject.org/singularity/wisecondorx:1.2.9--pyhdfd78af_0'
+        : 'biocontainers/wisecondorx:1.2.9--pyhdfd78af_0'}"
 
     input:
-    tuple val(meta), path(bam), path(bai)
-    tuple val(meta2), path(fasta)
-    tuple val(meta3), path(fasta_fai)
+    tuple(meta: Map, bam: Path, bai: Path)
+    tuple(meta2: Map, fasta: Path)
+    tuple(meta3: Map, fasta_fai: Path)
 
     output:
-    tuple val(meta), path("*.npz"), emit: npz
-    tuple val("${task.process}"), val('wisecondorx'), eval("pip list |& sed -n 's/wisecondorx *//p'"), emit: versions_wisecondorx, topic: versions
+    npz = tuple(meta, file("*.npz"))
+    versions_wisecondorx = tuple("${task.process}", 'wisecondorx', eval("pip list |& sed -n 's/wisecondorx *//p'"))
 
-    when:
-    task.ext.when == null || task.ext.when
+    topic:
+    tuple("${task.process}", 'wisecondorx', eval("pip list |& sed -n 's/wisecondorx *//p'")) >> 'versions'
 
     script:
     def args = task.ext.args ?: ''

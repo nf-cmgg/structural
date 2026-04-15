@@ -1,5 +1,7 @@
+nextflow.preview.types = true
+
 process BCFTOOLS_SORT {
-    tag "${meta.id}"
+    tag "${input.id}"
     label 'process_medium'
 
     conda "${moduleDir}/environment.yml"
@@ -8,20 +10,21 @@ process BCFTOOLS_SORT {
         : 'community.wave.seqera.io/library/bcftools_htslib:0a3fa2654b52006f'}"
 
     input:
-    tuple val(meta), path(vcf)
+    input: BcftoolsSortInput
 
     output:
-    tuple val(meta), path("*.{vcf,vcf.gz,bcf,bcf.gz}"), emit: vcf
-    tuple val(meta), path("*.tbi"), emit: tbi, optional: true
-    tuple val(meta), path("*.csi"), emit: csi, optional: true
-    tuple val("${task.process}"), val('bcftools'), eval("bcftools --version | sed '1!d; s/^.*bcftools //'"), topic: versions, emit: versions_bcftools
+    input + record(
+        vcf: file("*.{vcf,vcf.gz,bcf,bcf.gz}"),
+        tbi: file("*.tbi", optional: true),
+        csi: file("*.csi", optional: true)
+    )
 
-    when:
-    task.ext.when == null || task.ext.when
+    topic:
+    tuple("${task.process}", 'bcftools', eval("bcftools --version | sed '1!d; s/^.*bcftools //'")) >> 'versions'
 
     script:
     def args = task.ext.args ?: '--output-type z'
-    def prefix = task.ext.prefix ?: "${meta.id}"
+    def prefix = task.ext.prefix ?: "${input.id}"
     def extension = args.contains("--output-type b") || args.contains("-Ob")
         ? "bcf.gz"
         : args.contains("--output-type u") || args.contains("-Ou")
@@ -39,12 +42,12 @@ process BCFTOOLS_SORT {
         --temp-dir . \\
         ${max_memory} \\
         ${args} \\
-        ${vcf}
+        ${input.vcf}
     """
 
     stub:
     def args = task.ext.args ?: '--output-type z'
-    def prefix = task.ext.prefix ?: "${meta.id}"
+    def prefix = task.ext.prefix ?: "${input.id}"
 
     def extension = args.contains("--output-type b") || args.contains("-Ob")
         ? "bcf.gz"
@@ -63,10 +66,15 @@ process BCFTOOLS_SORT {
                 ? "csi"
                 : ""
     def create_cmd = extension.endsWith(".gz") ? "echo '' | gzip >" : "touch"
-    def create_index = extension.endsWith(".gz") && index.matches("csi|tbi") ? "touch ${prefix}.${extension}.${index}" : ""
+    def create_index = extension.endsWith(".gz") && index ==~ "csi|tbi" ? "touch ${prefix}.${extension}.${index}" : ""
 
     """
     ${create_cmd} ${prefix}.${extension}
     ${create_index}
     """
+}
+
+record BcftoolsSortInput {
+    id: String
+    vcf: Path
 }

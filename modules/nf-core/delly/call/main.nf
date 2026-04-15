@@ -1,52 +1,50 @@
+nextflow.preview.types = true
+
 process DELLY_CALL {
-    tag "$meta.id"
+    tag "${input.id}"
     label 'process_medium'
 
     conda "${moduleDir}/environment.yml"
-    container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
-        'https://depot.galaxyproject.org/singularity/delly:1.3.3--h4d20210_0' :
-        'biocontainers/delly:1.3.3--h4d20210_0' }"
+    container "${workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container
+        ? 'https://depot.galaxyproject.org/singularity/delly:1.3.3--h4d20210_0'
+        : 'biocontainers/delly:1.3.3--h4d20210_0'}"
 
     input:
-    tuple val(meta), path(input), path(input_index), path(vcf), path(vcf_index), path(exclude_bed)
-    tuple val(meta2), path(fasta)
-    tuple val(meta3), path(fai)
+    input: DellyCallInput
 
     output:
-    tuple val(meta), path("*.{bcf,vcf.gz}")  , emit: bcf
-    tuple val(meta), path("*.{csi,tbi}")     , emit: csi
-    tuple val("${task.process}"), val('delly'), eval("delly --version |& sed -n '1s/Delly version: *v//p'"), emit: versions_delly, topic: versions
+    input + record(bcf: file("*.{bcf,vcf.gz}"), csi: file("*.{csi,tbi}"))
 
-    when:
-    task.ext.when == null || task.ext.when
+    topic:
+    tuple("${task.process}", 'delly', eval("delly --version |& sed -n '1s/Delly version: *v//p'")) >> 'versions'
 
     script:
     def args = task.ext.args ?: ''
     def args2 = task.ext.args2 ?: ''
-    def prefix = task.ext.prefix ?: "${meta.id}"
+    def prefix = task.ext.prefix ?: "${input.id}"
     def suffix = task.ext.suffix ?: "bcf"
 
-    def exclude = exclude_bed ? "--exclude ${exclude_bed}" : ""
+    def exclude = input.exclude_bed ? "--exclude ${input.exclude_bed}" : ""
 
     def bcf_output = suffix == "bcf" ? "--outfile ${prefix}.bcf" : ""
     def vcf_output = suffix == "vcf" ? "| bgzip ${args2} --threads ${task.cpus} --stdout > ${prefix}.vcf.gz && tabix ${prefix}.vcf.gz" : ""
 
-    def genotype = vcf ? "--vcffile ${vcf}" : ""
+    def genotype = input.vcf ? "--vcffile ${input.vcf}" : ""
 
     """
     delly \\
         call \\
         ${args} \\
         ${bcf_output} \\
-        --genome ${fasta} \\
+        --genome ${input.fasta} \\
         ${genotype} \\
         ${exclude} \\
-        ${input} \\
+        ${input.input} \\
         ${vcf_output}
     """
 
     stub:
-    def prefix = task.ext.prefix ?: "${meta.id}"
+    def prefix = task.ext.prefix ?: "${input.id}"
     def suffix = task.ext.suffix ?: "bcf"
 
     def bcf_output = suffix == "bcf" ? "touch ${prefix}.bcf && touch ${prefix}.bcf.csi" : ""
@@ -56,4 +54,15 @@ process DELLY_CALL {
     ${bcf_output}
     ${vcf_output}
     """
+}
+
+record DellyCallInput {
+    id: String
+    input: Path
+    input_index: Path
+    fasta: Path
+    fai: Path
+    vcf: Path?
+    vcf_index: Path?
+    exclude_bed: Path?
 }

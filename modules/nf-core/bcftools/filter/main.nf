@@ -1,3 +1,5 @@
+nextflow.preview.types = true
+
 process BCFTOOLS_FILTER {
     tag "${meta.id}"
     label 'process_medium'
@@ -8,16 +10,16 @@ process BCFTOOLS_FILTER {
         : 'community.wave.seqera.io/library/bcftools_htslib:0a3fa2654b52006f'}"
 
     input:
-    tuple val(meta), path(vcf), path(tbi)
+    tuple(meta: Map, vcf: Path, tbi: Path)
 
     output:
-    tuple val(meta), path("*.${extension}"), emit: vcf
-    tuple val(meta), path("*.tbi"), emit: tbi, optional: true
-    tuple val(meta), path("*.csi"), emit: csi, optional: true
-    tuple val("${task.process}"), val('bcftools'), eval("bcftools --version | sed '1!d; s/^.*bcftools //'"), topic: versions, emit: versions_bcftools
+    vcf = tuple(meta, file("*.${extension}"))
+    tbi = tuple(meta, file("*.tbi", optional: true))
+    csi = tuple(meta, file("*.csi", optional: true))
+    versions_bcftools = tuple("${task.process}", 'bcftools', eval("bcftools --version | sed '1!d; s/^.*bcftools //'"))
 
-    when:
-    task.ext.when == null || task.ext.when
+    topic:
+    tuple("${task.process}", 'bcftools', eval("bcftools --version | sed '1!d; s/^.*bcftools //'")) >> 'versions'
 
     script:
     def args = task.ext.args ?: ''
@@ -65,7 +67,7 @@ process BCFTOOLS_FILTER {
                 ? "csi"
                 : ""
     def create_cmd = extension.endsWith(".gz") ? "echo '' | gzip >" : "touch"
-    def create_index = extension.endsWith(".gz") && index.matches("csi|tbi") ? "touch ${prefix}.${extension}.${index}" : ""
+    def create_index = extension.endsWith(".gz") && index ==~ "csi|tbi" ? "touch ${prefix}.${extension}.${index}" : ""
 
     if ("${vcf}" == "${prefix}.${extension}") {
         error("Input and output names are the same, set prefix in module configuration to disambiguate!")

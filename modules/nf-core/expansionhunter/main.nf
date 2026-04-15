@@ -1,28 +1,31 @@
+nextflow.preview.types = true
+
 process EXPANSIONHUNTER {
-    tag "$meta.id"
+    tag "${meta.id}"
     label 'process_low'
 
     conda "${moduleDir}/environment.yml"
-    container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
-        'https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/14/14e1d96665f934a98e569fc5a6fa237f98d3753eee2b6f60d0aea8ff9d44f406/data' :
-        'community.wave.seqera.io/library/expansionhunter:5.0.0--389ada7e191a4fba' }"
+    container "${workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container
+        ? 'https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/14/14e1d96665f934a98e569fc5a6fa237f98d3753eee2b6f60d0aea8ff9d44f406/data'
+        : 'community.wave.seqera.io/library/expansionhunter:5.0.0--389ada7e191a4fba'}"
 
     input:
-    tuple val(meta), path(bam), path(bai)
-    tuple val(meta2), path(fasta)
-    tuple val(meta3), path(fasta_fai)
-    tuple val(meta4), path(variant_catalog)
+    tuple(meta: Map, bam: Path, bai: Path)
+    tuple(meta2: Map, fasta: Path)
+    tuple(meta3: Map, fasta_fai: Path)
+    tuple(meta4: Map, variant_catalog: Path)
 
     output:
-    tuple val(meta), path("*.vcf.gz")        , emit: vcf
-    tuple val(meta), path("*.vcf.gz.tbi")    , emit: tbi
-    tuple val(meta), path("*.json.gz")       , emit: json
-    tuple val(meta), path("*_realigned.bam") , emit: bam
-    tuple val("${task.process}"), val('expansionhunter'), eval("ExpansionHunter --version | head -1 | sed -n 's/^.*ExpansionHunter v//; s/]//p'"), topic: versions, emit: versions_expansionhunter
-    tuple val("${task.process}"), val('bgzip'), eval("bgzip --version | sed '1!d;s/.* //'"), topic: versions, emit: versions_bgzip
+    vcf = tuple(meta, file("*.vcf.gz"))
+    tbi = tuple(meta, file("*.vcf.gz.tbi"))
+    json = tuple(meta, file("*.json.gz"))
+    bam = tuple(meta, file("*_realigned.bam"))
+    versions_expansionhunter = tuple("${task.process}", 'expansionhunter', eval("ExpansionHunter --version | head -1 | sed -n 's/^.*ExpansionHunter v//; s/]//p'"))
+    versions_bgzip = tuple("${task.process}", 'bgzip', eval("bgzip --version | sed '1!d;s/.* //'"))
 
-    when:
-    task.ext.when == null || task.ext.when
+    topic:
+    tuple("${task.process}", 'expansionhunter', eval("ExpansionHunter --version | head -1 | sed -n 's/^.*ExpansionHunter v//; s/]//p'")) >> 'versions'
+    tuple("${task.process}", 'bgzip', eval("bgzip --version | sed '1!d;s/.* //'")) >> 'versions'
 
     script:
     def args = task.ext.args ?: ''

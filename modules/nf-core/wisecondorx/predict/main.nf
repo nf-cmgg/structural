@@ -1,28 +1,30 @@
+nextflow.preview.types = true
+
 process WISECONDORX_PREDICT {
-    tag "$meta.id"
+    tag "${meta.id}"
     label 'process_low'
 
     conda "${moduleDir}/environment.yml"
-    container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
-        'https://depot.galaxyproject.org/singularity/wisecondorx:1.2.9--pyhdfd78af_0':
-        'biocontainers/wisecondorx:1.2.9--pyhdfd78af_0' }"
+    container "${workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container
+        ? 'https://depot.galaxyproject.org/singularity/wisecondorx:1.2.9--pyhdfd78af_0'
+        : 'biocontainers/wisecondorx:1.2.9--pyhdfd78af_0'}"
 
     input:
-    tuple val(meta), path(npz)
-    tuple val(meta2), path(reference)
-    tuple val(meta3), path(blacklist)
+    tuple(meta: Map, npz: Path)
+    tuple(meta2: Map, reference: Path)
+    tuple(meta3: Map, blacklist: Path)
 
     output:
-    tuple val(meta), path("*_aberrations.bed")      , emit: aberrations_bed, optional:true
-    tuple val(meta), path("*_bins.bed")             , emit: bins_bed, optional:true
-    tuple val(meta), path("*_segments.bed")         , emit: segments_bed, optional:true
-    tuple val(meta), path("*_statistics.txt")       , emit: chr_statistics, optional:true
-    tuple val(meta), path("[!genome_wide]*.png")    , emit: chr_plots, optional:true
-    tuple val(meta), path("genome_wide.png")        , emit: genome_plot, optional:true
-    tuple val("${task.process}"), val('wisecondorx'), eval("pip list |& sed -n 's/wisecondorx *//p'"), emit: versions_wisecondorx, topic: versions
+    aberrations_bed = tuple(meta, file("*_aberrations.bed", optional: true))
+    bins_bed = tuple(meta, file("*_bins.bed", optional: true))
+    segments_bed = tuple(meta, file("*_segments.bed", optional: true))
+    chr_statistics = tuple(meta, file("*_statistics.txt", optional: true))
+    chr_plots = tuple(meta, file("[!genome_wide]*.png", optional: true))
+    genome_plot = tuple(meta, file("genome_wide.png", optional: true))
+    versions_wisecondorx = tuple("${task.process}", 'wisecondorx', eval("pip list |& sed -n 's/wisecondorx *//p'"))
 
-    when:
-    task.ext.when == null || task.ext.when
+    topic:
+    tuple("${task.process}", 'wisecondorx', eval("pip list |& sed -n 's/wisecondorx *//p'")) >> 'versions'
 
     script:
     def args = task.ext.args ?: '--bed --plot'

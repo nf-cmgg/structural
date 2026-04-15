@@ -23,6 +23,9 @@ workflow VCF_MERGE_FAMILY_JASMINE {
             [ groupKey(new_meta, meta.family_count), vcf, tbi ]
         }
         .groupTuple()
+        .map { meta, vcfs, tbis ->
+            [ meta.target, vcfs, tbis ]
+        }
 
 
     JASMINESV(
@@ -55,12 +58,7 @@ workflow VCF_MERGE_FAMILY_JASMINE {
         BCFTOOLS_CONSENSUS_REHEADER.out.vcf
     )
 
-    TABIX_TABIX(
-        BCFTOOLS_SORT.out.vcf
-    )
-
-    def ch_vcfs_out = BCFTOOLS_SORT.out.vcf
-        .join(TABIX_TABIX.out.index, failOnMismatch:true, failOnDuplicate:true)
+    def ch_vcfs_out = BCFTOOLS_SORT.out
         .map { meta, vcf, tbi ->
             def new_meta = meta + [id:meta.family]
             [ new_meta, vcf, tbi ]

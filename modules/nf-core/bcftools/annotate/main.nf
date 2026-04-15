@@ -1,3 +1,5 @@
+nextflow.preview.types = true
+
 process BCFTOOLS_ANNOTATE {
     tag "${meta.id}"
     label 'process_low'
@@ -8,19 +10,18 @@ process BCFTOOLS_ANNOTATE {
         : 'community.wave.seqera.io/library/bcftools_htslib:0a3fa2654b52006f'}"
 
     input:
-    tuple val(meta), path(input), path(index), path(annotations), path(annotations_index)
-    path columns
-    path header_lines
-    path rename_chrs
+    tuple(meta: Map, input: Path, index: Path, annotations: Path, annotations_index: Path)
+    columns: Path
+    header_lines: Path
+    rename_chrs: Path
 
     output:
-    tuple val(meta), path("${prefix}.${extension}"), emit: vcf
-    tuple val(meta), path("${prefix}.${extension}.tbi"), emit: tbi, optional: true
-    tuple val(meta), path("${prefix}.${extension}.csi"), emit: csi, optional: true
-    tuple val("${task.process}"), val('bcftools'), eval("bcftools --version | sed '1!d; s/^.*bcftools //'"), topic: versions, emit: versions_bcftools
+    vcf = tuple(meta, file("${prefix}.${extension}"))
+    tbi = tuple(meta, file("${prefix}.${extension}.tbi", optional: true))
+    csi = tuple(meta, file("${prefix}.${extension}.csi", optional: true))
 
-    when:
-    task.ext.when == null || task.ext.when
+    topic:
+    tuple("${task.process}", 'bcftools', eval("bcftools --version | sed '1!d; s/^.*bcftools //'")) >> 'versions'
 
     script:
     def args = task.ext.args ?: ''
@@ -72,7 +73,7 @@ process BCFTOOLS_ANNOTATE {
             ? "csi"
             : args.contains("--write-index") || args.contains("-W") ? "csi" : ""
     def create_cmd = extension.endsWith(".gz") ? "echo '' | gzip >" : "touch"
-    def create_index = extension.endsWith(".gz") && index_extension.matches("csi|tbi") ? "touch ${prefix}.${extension}.${index_extension}" : ""
+    def create_index = extension.endsWith(".gz") && index_extension ==~ "csi|tbi" ? "touch ${prefix}.${extension}.${index_extension}" : ""
 
     if ("${input}" == "${prefix}.${extension}") {
         error("Input and output names are the same, set prefix in module configuration to disambiguate!")

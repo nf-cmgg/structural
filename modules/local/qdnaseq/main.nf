@@ -1,25 +1,29 @@
+nextflow.preview.types = true
+
 process QDNASEQ {
-    tag "$meta.id"
+    tag "${meta.id}"
     label 'process_low'
 
     conda "${moduleDir}/environment.yml"
-    container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
-        'https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/77/77b057272e6af69070dc1ee73d0a39d144e6641c0f4e625673de979b21b7bfd0/data':
-        'community.wave.seqera.io/library/bioconductor-qdnaseq_r-base_r-lsr:0304e1e0cbed3eab' }"
+    container "${workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container
+        ? 'https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/77/77b057272e6af69070dc1ee73d0a39d144e6641c0f4e625673de979b21b7bfd0/data'
+        : 'community.wave.seqera.io/library/bioconductor-qdnaseq_r-base_r-lsr:0304e1e0cbed3eab'}"
 
     input:
-    tuple val(meta), path(bam), path(bai)
-    tuple val(meta2), path(annotations)
+    tuple(meta: Map, bam: Path, bai: Path)
+    tuple(meta2: Map, annotations: Path)
 
     output:
-    tuple val(meta), path("*.bed")              , emit: bed
-    tuple val(meta), path("*.cna")              , emit: cna
-    tuple val(meta), path("*_segments.txt")     , emit: segments
-    tuple val(meta), path("statistics.out")     , emit: statistics
-    path "versions.yml"                         , emit: versions, topic: versions
+    bed = tuple(meta, file("*.bed"))
+    cna = tuple(meta, file("*.cna"))
+    segments = tuple(meta, file("*_segments.txt"))
+    statistics = tuple(meta, file("statistics.out"))
+
+    topic:
+    file("versions.yml") >> 'versions'
 
     script:
-    template "qDNAseq.R"
+    template("qDNAseq.R")
 
     stub:
     def prefix = task.ext.prefix ?: "${meta.id}"

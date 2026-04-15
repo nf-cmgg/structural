@@ -1,29 +1,31 @@
+nextflow.preview.types = true
+
 process SVTOOLS_VCFTOBEDPE {
-    tag "$meta.id"
+    tag "${meta.id}"
     label 'process_single'
 
     conda "${moduleDir}/environment.yml"
-    container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
-        'https://depot.galaxyproject.org/singularity/svtools:0.5.1--py_0':
-        'biocontainers/svtools:0.5.1--py_0' }"
+    container "${workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container
+        ? 'https://depot.galaxyproject.org/singularity/svtools:0.5.1--py_0'
+        : 'biocontainers/svtools:0.5.1--py_0'}"
 
     input:
-    tuple val(meta), path(vcf)
+    tuple(meta: Map, vcf: Path)
 
     output:
-    tuple val(meta), path("*.bedpe"), emit: bedpe
-    tuple val("${task.process}"), val('svtools'), eval("svtools --version |& sed 's/svtools //'"), emit: versions_svtools, topic: versions
+    bedpe = tuple(meta, file("*.bedpe"))
+    versions_svtools = tuple("${task.process}", 'svtools', eval("svtools --version |& sed 's/svtools //'"))
 
-    when:
-    task.ext.when == null || task.ext.when
+    topic:
+    tuple("${task.process}", 'svtools', eval("svtools --version |& sed 's/svtools //'")) >> 'versions'
 
     script:
-    def args   = task.ext.args ?: ""
+    def args = task.ext.args ?: ""
     def prefix = task.ext.prefix ?: "${meta.id}"
     """
     svtools vcftobedpe \\
-        $args \\
-        --input $vcf \\
+        ${args} \\
+        --input ${vcf} \\
         --output ${prefix}.bedpe \\
         --tempdir ./tmp
     """

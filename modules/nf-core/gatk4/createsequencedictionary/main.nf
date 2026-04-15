@@ -1,3 +1,5 @@
+nextflow.preview.types = true
+
 process GATK4_CREATESEQUENCEDICTIONARY {
     tag "${fasta}"
     label 'process_single'
@@ -8,14 +10,14 @@ process GATK4_CREATESEQUENCEDICTIONARY {
         : 'community.wave.seqera.io/library/gatk4_gcnvkernel:edb12e4f0bf02cd3'}"
 
     input:
-    tuple val(meta), path(fasta)
+    tuple(meta: Map, fasta: Path)
 
     output:
-    tuple val(meta), path('*.dict'), emit: dict
-    tuple val("${task.process}"), val('gatk4'), eval("gatk --version | sed -n '/GATK.*v/s/.*v//p'"), topic: versions, emit: versions_gatk4
+    dict = tuple(meta, file('*.dict'))
+    versions_gatk4 = tuple("${task.process}", 'gatk4', eval("gatk --version | sed -n '/GATK.*v/s/.*v//p'"))
 
-    when:
-    task.ext.when == null || task.ext.when
+    topic:
+    tuple("${task.process}", 'gatk4', eval("gatk --version | sed -n '/GATK.*v/s/.*v//p'")) >> 'versions'
 
     script:
     def args = task.ext.args ?: ''
@@ -25,7 +27,7 @@ process GATK4_CREATESEQUENCEDICTIONARY {
         log.info('[GATK CreateSequenceDictionary] Available memory not known - defaulting to 6GB. Specify process memory requirements to change this.')
     }
     else {
-        avail_mem = (task.memory.mega * 0.8).intValue()
+        avail_mem = (task.memory.toMega() * 0.8).intValue()
     }
     """
     gatk --java-options "-Xmx${avail_mem}M -XX:-UsePerfData" \\

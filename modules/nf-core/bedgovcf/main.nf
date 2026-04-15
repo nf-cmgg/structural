@@ -1,23 +1,26 @@
+nextflow.preview.types = true
+
 process BEDGOVCF {
-    tag "$meta.id"
+    tag "${meta.id}"
     label 'process_low'
 
     conda "${moduleDir}/environment.yml"
-    container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
-        'https://depot.galaxyproject.org/singularity/bedgovcf:0.1.1--h9ee0642_1':
-        'biocontainers/bedgovcf:0.1.1--h9ee0642_1' }"
+    container "${workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container
+        ? 'https://depot.galaxyproject.org/singularity/bedgovcf:0.1.1--h9ee0642_1'
+        : 'biocontainers/bedgovcf:0.1.1--h9ee0642_1'}"
 
     input:
-    tuple val(meta), path(bed), path(config)
-    tuple val(meta2), path(fai)
+    tuple(meta: Map, bed: Path, config: Path)
+    tuple(meta2: Map, fai: Path)
 
     output:
-    tuple val(meta), path("*.vcf.gz"), emit: vcf
-    tuple val("${task.process}"), val("bedgovcf"), eval("bedgovcf --version 2>&1 | sed 's/^bedgovcf version //'"), emit: versions_bedgovcf, topic: versions
-    tuple val("${task.process}"), val("bgzip"), eval('bgzip --version | head -1 | sed "s/bgzip (htslib) //"')    , emit: versions_bgzip, topic: versions
+    vcf = tuple(meta, file("*.vcf.gz"))
+    versions_bedgovcf = tuple("${task.process}", "bedgovcf", eval("bedgovcf --version 2>&1 | sed 's/^bedgovcf version //'"))
+    versions_bgzip = tuple("${task.process}", "bgzip", eval('bgzip --version | head -1 | sed "s/bgzip (htslib) //"'))
 
-    when:
-    task.ext.when == null || task.ext.when
+    topic:
+    tuple("${task.process}", "bedgovcf", eval("bedgovcf --version 2>&1 | sed 's/^bedgovcf version //'")) >> 'versions'
+    tuple("${task.process}", "bgzip", eval('bgzip --version | head -1 | sed "s/bgzip (htslib) //"')) >> 'versions'
 
     script:
     def args = task.ext.args ?: ''
@@ -25,11 +28,11 @@ process BEDGOVCF {
     def prefix = task.ext.prefix ?: "${meta.id}"
     """
     bedgovcf \\
-        $args \\
-        --bed $bed \\
-        --fai $fai \\
-        --config $config \\
-        | bgzip --stdout --threads $task.cpus $args2 > ${prefix}.vcf.gz
+        ${args} \\
+        --bed ${bed} \\
+        --fai ${fai} \\
+        --config ${config} \\
+        | bgzip --stdout --threads ${task.cpus} ${args2} > ${prefix}.vcf.gz
     """
 
     stub:

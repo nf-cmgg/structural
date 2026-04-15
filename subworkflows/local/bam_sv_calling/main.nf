@@ -44,12 +44,16 @@ workflow BAM_SV_CALLING {
     // Calling variants using Delly
     //
 
+    def ch_delly_input = ch_crams
+        .combine(ch_fasta.map { _meta, fasta -> fasta })
+        .combine(ch_fai.map { _meta, fai -> fai })
+        .map { meta, cram, crai, fasta, fai ->
+            record(id: meta.id, input: cram, input_index: crai, meta: meta, fasta: fasta, fai: fai)
+        }
+
     if("delly" in val_callers){
         BAM_VARIANT_CALLING_DELLY(
-            ch_crams,
-            ch_fasta,
-            ch_fai,
-            ch_svync_configs
+            ch_delly_input,
         )
 
         ch_raw_vcfs     = ch_raw_vcfs.mix(BAM_VARIANT_CALLING_DELLY.out.raw_vcfs)

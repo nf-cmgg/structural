@@ -1,3 +1,5 @@
+nextflow.preview.types = true
+
 process ENSEMBLVEP_VEP {
     tag "${meta.id}"
     label 'process_medium'
@@ -8,26 +10,29 @@ process ENSEMBLVEP_VEP {
         : 'community.wave.seqera.io/library/ensembl-vep_perl-math-cdf:1e13f65f931a6954'}"
 
     input:
-    tuple val(meta), path(vcf), path(custom_extra_files)
-    val genome
-    val species
-    val cache_version
-    path cache
-    tuple val(meta2), path(fasta)
-    path extra_files
+    tuple(meta: Map, vcf: Path, custom_extra_files: Path)
+    genome: String
+    species: String
+    cache_version: Integer
+    cache: Path
+    tuple(meta2: Map, fasta: Path)
+    extra_files: Path
 
     output:
-    tuple val(meta), path("${prefix}.vcf.gz"), emit: vcf, optional: true
-    tuple val(meta), path("${prefix}.vcf.gz.tbi"), emit: tbi, optional: true
-    tuple val(meta), path("${prefix}.tab.gz"), emit: tab, optional: true
-    tuple val(meta), path("${prefix}.json.gz"), emit: json, optional: true
-    tuple val(meta), val("${task.process}"), val('ensemblvep'), path("*.html"), topic: multiqc_files, emit: report, optional: true
-    tuple val("${task.process}"), val('ensemblvep'), eval("vep --help | sed -n '/ensembl-vep/s/.*: //p'"), topic: versions, emit: versions_ensemblvep
-    tuple val("${task.process}"), val('tabix'), eval("tabix -h 2>&1 | grep -oP 'Version:\\s*\\K[^\\s]+'"), topic: versions, emit: versions_tabix
-    tuple val("${task.process}"), val('perl-math-cdf'), eval("perl -MMath::CDF -e 'print \\\$Math::CDF::VERSION'"), topic: versions, emit: versions_perlmathcdf
+    vcf = tuple(meta, file("${prefix}.vcf.gz", optional: true))
+    tbi = tuple(meta, file("${prefix}.vcf.gz.tbi", optional: true))
+    tab = tuple(meta, file("${prefix}.tab.gz", optional: true))
+    json = tuple(meta, file("${prefix}.json.gz", optional: true))
+    report = tuple(meta, "${task.process}", 'ensemblvep', file("*.html", optional: true))
+    versions_ensemblvep = tuple("${task.process}", 'ensemblvep', eval("vep --help | sed -n '/ensembl-vep/s/.*: //p'"))
+    versions_tabix = tuple("${task.process}", 'tabix', eval("tabix -h 2>&1 | grep -oP 'Version:\\s*\\K[^\\s]+'"))
+    versions_perlmathcdf = tuple("${task.process}", 'perl-math-cdf', eval("perl -MMath::CDF -e 'print \\\$Math::CDF::VERSION'"))
 
-    when:
-    task.ext.when == null || task.ext.when
+    topic:
+    tuple(meta, "${task.process}", 'ensemblvep', file("*.html", optional: true)) >> 'multiqc_files'
+    tuple("${task.process}", 'ensemblvep', eval("vep --help | sed -n '/ensembl-vep/s/.*: //p'")) >> 'versions'
+    tuple("${task.process}", 'tabix', eval("tabix -h 2>&1 | grep -oP 'Version:\\s*\\K[^\\s]+'")) >> 'versions'
+    tuple("${task.process}", 'perl-math-cdf', eval("perl -MMath::CDF -e 'print \\\$Math::CDF::VERSION'")) >> 'versions'
 
     script:
     def args = task.ext.args ?: ''

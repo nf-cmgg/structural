@@ -1,3 +1,5 @@
+nextflow.preview.types = true
+
 process ENSEMBLVEP_DOWNLOAD {
     tag "${meta.id}"
     label 'process_medium'
@@ -8,15 +10,16 @@ process ENSEMBLVEP_DOWNLOAD {
         : 'community.wave.seqera.io/library/ensembl-vep_perl-math-cdf:1e13f65f931a6954'}"
 
     input:
-    tuple val(meta), val(assembly), val(species), val(cache_version)
+    tuple(meta: Map, assembly: String, species: String, cache_version: String)
 
     output:
-    tuple val(meta), path(prefix), emit: cache
-    tuple val("${task.process}"), val('ensemblvep'), eval("vep --help | sed -n '/ensembl-vep/s/.*: //p'"), topic: versions, emit: versions_ensemblvep
-    tuple val("${task.process}"), val('perl-math-cdf'), eval("perl -MMath::CDF -e 'print \$Math::CDF::VERSION'"), topic: versions, emit: versions_perlmathcdf
+    cache = tuple(meta, file(prefix))
+    versions_ensemblvep = tuple("${task.process}", 'ensemblvep', eval("vep --help | sed -n '/ensembl-vep/s/.*: //p'"))
+    versions_perlmathcdf = tuple("${task.process}", 'perl-math-cdf', eval("perl -MMath::CDF -e 'print \$Math::CDF::VERSION'"))
 
-    when:
-    task.ext.when == null || task.ext.when
+    topic:
+    tuple("${task.process}", 'ensemblvep', eval("vep --help | sed -n '/ensembl-vep/s/.*: //p'")) >> 'versions'
+    tuple("${task.process}", 'perl-math-cdf', eval("perl -MMath::CDF -e 'print \$Math::CDF::VERSION'")) >> 'versions'
 
     script:
     def args = task.ext.args ?: ''

@@ -1,29 +1,36 @@
+nextflow.preview.types = true
+
 process BCFTOOLS_SPLIT_BY_SVTYPE {
-    tag "$meta.id"
+    tag "${meta.id}"
     label 'process_low'
 
     conda "${moduleDir}/environment.yml"
-    container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
-        'https://depot.galaxyproject.org/singularity/bcftools:1.17--haef29d1_0':
-        'biocontainers/bcftools:1.17--haef29d1_0' }"
+    container "${workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container
+        ? 'https://depot.galaxyproject.org/singularity/bcftools:1.17--haef29d1_0'
+        : 'biocontainers/bcftools:1.17--haef29d1_0'}"
 
     input:
-    tuple val(meta), path(vcf), path(tbi)
+    tuple(meta: Map, vcf: Path, tbi: Path)
 
     output:
-    tuple val(meta), path("*.{vcf,vcf.gz,bcf,bcf.gz}"), emit: split_vcfs
-    tuple val(meta), path("*.txt")                    , emit: header
-    tuple val("${task.process}"), val('bcftools'), eval("bcftools --version |& sed '1!d; s/^.*bcftools //'"), emit: versions_bcftools, topic: versions
-    path "versions.yml"                               , emit: versions
+    split_vcfs = tuple(meta, file("*.{vcf,vcf.gz,bcf,bcf.gz}"))
+    header = tuple(meta, file("*.txt"))
+
+    topic:
+    tuple("${task.process}", 'bcftools', eval("bcftools --version |& sed '1!d; s/^.*bcftools //'")) >> 'versions'
 
     script:
-    def args    = task.ext.args ?: ''
-    def prefix  = task.ext.prefix ?: "${meta.id}"
-    def extension = args.contains("--output-type b") || args.contains("-Ob") ? "bcf.gz" :
-                    args.contains("--output-type u") || args.contains("-Ou") ? "bcf" :
-                    args.contains("--output-type z") || args.contains("-Oz") ? "vcf.gz" :
-                    args.contains("--output-type v") || args.contains("-Ov") ? "vcf" :
-                    "vcf"
+    def args = task.ext.args ?: ''
+    def prefix = task.ext.prefix ?: "${meta.id}"
+    def extension = args.contains("--output-type b") || args.contains("-Ob")
+        ? "bcf.gz"
+        : args.contains("--output-type u") || args.contains("-Ou")
+            ? "bcf"
+            : args.contains("--output-type z") || args.contains("-Oz")
+                ? "vcf.gz"
+                : args.contains("--output-type v") || args.contains("-Ov")
+                    ? "vcf"
+                    : "vcf"
 
     def types = ["del", "ins", "inv", "tra", "bnd", "dup", "other"]
     def check_variants = types.collect { type ->
@@ -53,11 +60,15 @@ process BCFTOOLS_SPLIT_BY_SVTYPE {
     stub:
     def args = task.ext.args ?: ''
     def prefix = task.ext.prefix ?: "${meta.id}"
-    def extension = args.contains("--output-type b") || args.contains("-Ob") ? "bcf.gz" :
-                    args.contains("--output-type u") || args.contains("-Ou") ? "bcf" :
-                    args.contains("--output-type z") || args.contains("-Oz") ? "vcf.gz" :
-                    args.contains("--output-type v") || args.contains("-Ov") ? "vcf" :
-                    "vcf"
+    def extension = args.contains("--output-type b") || args.contains("-Ob")
+        ? "bcf.gz"
+        : args.contains("--output-type u") || args.contains("-Ou")
+            ? "bcf"
+            : args.contains("--output-type z") || args.contains("-Oz")
+                ? "vcf.gz"
+                : args.contains("--output-type v") || args.contains("-Ov")
+                    ? "vcf"
+                    : "vcf"
     """
     echo "" | gzip > ${prefix}.del.${extension}
     echo "" | gzip > ${prefix}.ins.${extension}

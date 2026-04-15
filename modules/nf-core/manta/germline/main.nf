@@ -1,48 +1,49 @@
+nextflow.preview.types = true
+
 process MANTA_GERMLINE {
-    tag "$meta.id"
+    tag "${meta.id}"
     label 'process_medium'
     label 'error_retry'
 
     conda "${moduleDir}/environment.yml"
-    container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
-        'https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/f6/f696c93e6209e33ac0d15f1ecfa799bc67329eec07b0569e065ea8b220b53953/data' :
-        'community.wave.seqera.io/library/manta_python:0eb71149179b3920' }"
+    container "${workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container
+        ? 'https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/f6/f696c93e6209e33ac0d15f1ecfa799bc67329eec07b0569e065ea8b220b53953/data'
+        : 'community.wave.seqera.io/library/manta_python:0eb71149179b3920'}"
 
     input:
-    //Matching the target bed with the input sample allows to parallelize the same sample run across different intervals or a single bed file
-    tuple val(meta), path(input), path(index), path(target_bed), path(target_bed_tbi)
-    tuple val(meta2), path(fasta)
-    tuple val(meta3), path(fai)
-    path(config)
+    tuple(meta: Map, input: List<Path>, index: List<Path>, target_bed: Path, target_bed_tbi: Path)
+    tuple(meta2: Map, fasta: Path)
+    tuple(meta3: Map, fai: Path)
+    config: Path
 
     output:
-    tuple val(meta), path("*candidate_small_indels.vcf.gz")                     , emit: candidate_small_indels_vcf
-    tuple val(meta), path("*candidate_small_indels.vcf.gz.tbi")                 , emit: candidate_small_indels_vcf_tbi
-    tuple val(meta), path("*candidate_sv.vcf.gz")                               , emit: candidate_sv_vcf
-    tuple val(meta), path("*candidate_sv.vcf.gz.tbi")                           , emit: candidate_sv_vcf_tbi
-    tuple val(meta), path("*diploid_sv.vcf.gz")                                 , emit: diploid_sv_vcf
-    tuple val(meta), path("*diploid_sv.vcf.gz.tbi")                             , emit: diploid_sv_vcf_tbi
-    tuple val("${task.process}"), val("manta"), eval("configManta.py --version"), topic: versions, emit: versions_manta
+    candidate_small_indels_vcf = tuple(meta, file("*candidate_small_indels.vcf.gz"))
+    candidate_small_indels_vcf_tbi = tuple(meta, file("*candidate_small_indels.vcf.gz.tbi"))
+    candidate_sv_vcf = tuple(meta, file("*candidate_sv.vcf.gz"))
+    candidate_sv_vcf_tbi = tuple(meta, file("*candidate_sv.vcf.gz.tbi"))
+    diploid_sv_vcf = tuple(meta, file("*diploid_sv.vcf.gz"))
+    diploid_sv_vcf_tbi = tuple(meta, file("*diploid_sv.vcf.gz.tbi"))
+    versions_manta = tuple("${task.process}", "manta", eval("configManta.py --version"))
 
-    when:
-    task.ext.when == null || task.ext.when
+    topic:
+    tuple("${task.process}", "manta", eval("configManta.py --version")) >> 'versions'
 
     script:
     def args = task.ext.args ?: ''
     def prefix = task.ext.prefix ?: "${meta.id}"
-    def input_files = input.collect{ bam -> "--bam ${bam}"}.join(' ')
-    def options_manta = target_bed ? "--callRegions $target_bed" : ""
+    def input_files = input.collect { bam -> "--bam ${bam}" }.join(' ')
+    def options_manta = target_bed ? "--callRegions ${target_bed}" : ""
     def config_option = config ? "--config ${config}" : ""
     """
     configManta.py \\
         ${input_files} \\
         ${config_option} \\
-        --reference $fasta \\
+        --reference ${fasta} \\
         --runDir manta \\
-        $options_manta \\
-        $args
+        ${options_manta} \\
+        ${args}
 
-    python manta/runWorkflow.py -m local -j $task.cpus
+    python manta/runWorkflow.py -m local -j ${task.cpus}
 
     mv manta/results/variants/candidateSmallIndels.vcf.gz \\
         ${prefix}.candidate_small_indels.vcf.gz

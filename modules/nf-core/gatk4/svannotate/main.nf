@@ -1,3 +1,5 @@
+nextflow.preview.types = true
+
 process GATK4_SVANNOTATE {
     tag "${meta.id}"
     label 'process_low'
@@ -8,19 +10,19 @@ process GATK4_SVANNOTATE {
         : 'community.wave.seqera.io/library/gatk4_gcnvkernel:edb12e4f0bf02cd3'}"
 
     input:
-    tuple val(meta), path(vcf), path(tbi), path(bed), path(non_coding_bed)
-    tuple val(meta2), path(fasta)
-    tuple val(meta3), path(fasta_fai)
-    tuple val(meta4), path(dict)
-    tuple val(meta5), path(gtf)
+    tuple(meta: Map, vcf: Path, tbi: Path, bed: Path, non_coding_bed: Path)
+    tuple(meta2: Map, fasta: Path)
+    tuple(meta3: Map, fasta_fai: Path)
+    tuple(meta4: Map, dict: Path)
+    tuple(meta5: Map, gtf: Path)
 
     output:
-    tuple val(meta), path("*.vcf.gz"), emit: vcf
-    tuple val(meta), path("*.vcf.gz.tbi"), emit: tbi
-    tuple val("${task.process}"), val('gatk4'), eval("gatk --version | sed -n '/GATK.*v/s/.*v//p'"), topic: versions, emit: versions_gatk4
+    vcf = tuple(meta, file("*.vcf.gz"))
+    tbi = tuple(meta, file("*.vcf.gz.tbi"))
+    versions_gatk4 = tuple("${task.process}", 'gatk4', eval("gatk --version | sed -n '/GATK.*v/s/.*v//p'"))
 
-    when:
-    task.ext.when == null || task.ext.when
+    topic:
+    tuple("${task.process}", 'gatk4', eval("gatk --version | sed -n '/GATK.*v/s/.*v//p'")) >> 'versions'
 
     script:
     def args = task.ext.args ?: ''
@@ -36,7 +38,7 @@ process GATK4_SVANNOTATE {
         log.info('[GATK SVAnnotate] Available memory not known - defaulting to 3GB. Specify process memory requirements to change this.')
     }
     else {
-        avail_mem = (task.memory.mega * 0.8).intValue()
+        avail_mem = (task.memory.toMega() * 0.8).intValue()
     }
     """
     gatk --java-options "-Xmx${avail_mem}M -XX:-UsePerfData" \\

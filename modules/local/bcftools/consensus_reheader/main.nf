@@ -1,38 +1,47 @@
+nextflow.preview.types = true
+
 process BCFTOOLS_CONSENSUS_REHEADER {
-    tag "$meta.id"
+    tag "${meta.id}"
     label 'process_low'
 
     conda "${moduleDir}/environment.yml"
-    container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
-        'https://depot.galaxyproject.org/singularity/bcftools:1.17--haef29d1_0':
-        'biocontainers/bcftools:1.17--haef29d1_0' }"
+    container "${workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container
+        ? 'https://depot.galaxyproject.org/singularity/bcftools:1.17--haef29d1_0'
+        : 'biocontainers/bcftools:1.17--haef29d1_0'}"
 
     input:
-    tuple val(meta), path(merged_vcf), path(single_vcfs), path(single_tbis)
-    tuple val(meta2), path(fai)
-    val(additional_headers)
+    tuple(meta: Map, merged_vcf: Path, single_vcfs: Path, single_tbis: Path)
+    tuple(meta2: Map, fai: Path)
+    additional_headers: List<String>
 
     output:
-    tuple val(meta), path("*.${extension}"), emit: vcf
-    tuple val("${task.process}"), val('bcftools'), eval("bcftools --version |& sed '1!d; s/^.*bcftools //'"), emit: versions_bcftools, topic: versions
+    vcf = tuple(meta, file("*.${extension}"))
+
+    topic:
+    tuple("${task.process}", 'bcftools', eval("bcftools --version |& sed '1!d; s/^.*bcftools //'")) >> 'versions'
 
     script:
-    def args    = task.ext.args ?: ''
-    def prefix  = task.ext.prefix ?: "${meta.id}"
-    def fai_argument      = fai ? "--fai $fai" : ""
-    def add_additional = additional_headers ?
-    """
+    def args = task.ext.args ?: ''
+    def prefix = task.ext.prefix ?: "${meta.id}"
+    def fai_argument = fai ? "--fai ${fai}" : ""
+    def add_additional = additional_headers
+        ? """
     cat <<-EOF >> ${prefix}.temp.txt
     ${additional_headers.join("\n    ")}
     EOF
-    """ : ""
+    """
+        : ""
 
     def args2 = task.ext.args2 ?: '--output-type z'
-    extension = args2.contains("--output-type b") || args2.contains("-Ob") ? "bcf.gz" :
-                    args2.contains("--output-type u") || args2.contains("-Ou") ? "bcf" :
-                    args2.contains("--output-type z") || args2.contains("-Oz") ? "vcf.gz" :
-                    args2.contains("--output-type v") || args2.contains("-Ov") ? "vcf" :
-                    "vcf"
+    extension = args2.contains("--output-type b") || args2.contains("-Ob")
+        ? "bcf.gz"
+        : args2.contains("--output-type u") || args2.contains("-Ou")
+            ? "bcf"
+            : args2.contains("--output-type z") || args2.contains("-Oz")
+                ? "vcf.gz"
+                : args2.contains("--output-type v") || args2.contains("-Ov")
+                    ? "vcf"
+                    : "vcf"
     """
     touch ${prefix}.temp.txt
     for FILE in ${merged_vcf} ${single_vcfs};
@@ -60,13 +69,13 @@ process BCFTOOLS_CONSENSUS_REHEADER {
 
     bcftools \\
         reheader \\
-        $fai_argument \\
+        ${fai_argument} \\
         --header ${prefix}.header.vcf \\
-        $args \\
-        --threads $task.cpus \\
-        $merged_vcf \\
+        ${args} \\
+        --threads ${task.cpus} \\
+        ${merged_vcf} \\
         | bcftools view \\
-        $args2 \\
+        ${args2} \\
         --output ${prefix}.${extension}
     """
 
@@ -74,11 +83,15 @@ process BCFTOOLS_CONSENSUS_REHEADER {
     def args2 = task.ext.args2 ?: '--output-type z'
     def prefix = task.ext.prefix ?: "${meta.id}"
 
-    extension = args2.contains("--output-type b") || args2.contains("-Ob") ? "bcf.gz" :
-                    args2.contains("--output-type u") || args2.contains("-Ou") ? "bcf" :
-                    args2.contains("--output-type z") || args2.contains("-Oz") ? "vcf.gz" :
-                    args2.contains("--output-type v") || args2.contains("-Ov") ? "vcf" :
-                    "vcf"
+    extension = args2.contains("--output-type b") || args2.contains("-Ob")
+        ? "bcf.gz"
+        : args2.contains("--output-type u") || args2.contains("-Ou")
+            ? "bcf"
+            : args2.contains("--output-type z") || args2.contains("-Oz")
+                ? "vcf.gz"
+                : args2.contains("--output-type v") || args2.contains("-Ov")
+                    ? "vcf"
+                    : "vcf"
     """
     echo "" | gzip > ${prefix}.${extension}
     """

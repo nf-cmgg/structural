@@ -24,19 +24,6 @@ include { getGenomeAttribute      } from './subworkflows/local/utils_nfcore_stru
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
 
-params.fasta                    = getGenomeAttribute('fasta')
-params.fai                      = getGenomeAttribute('fai')
-params.dict                     = getGenomeAttribute('dict')
-params.gtf                      = getGenomeAttribute('gtf')
-params.vep_cache                = getGenomeAttribute('vep_cache')
-params.expansionhunter_catalog  = getGenomeAttribute('expansionhunter_catalog')
-params.qdnaseq_male             = getGenomeAttribute("qdnaseq_male_${params.qdnaseq_bin_size.toInteger() / 1000}kbp".toString())
-params.qdnaseq_female           = getGenomeAttribute("qdnaseq_female_${params.qdnaseq_bin_size.toInteger() / 1000}kbp".toString())
-params.wisecondorx_reference    = getGenomeAttribute('wisecondorx_reference')
-params.strvctvre_phylop         = getGenomeAttribute('strvctvre_phylop')
-params.strvctvre_data           = getGenomeAttribute('strvctvre_data')
-
-
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     NAMED WORKFLOWS FOR PIPELINE
@@ -47,6 +34,206 @@ params.strvctvre_data           = getGenomeAttribute('strvctvre_data')
     RUN MAIN WORKFLOW
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
+
+params {
+
+    // Path to comma-separated file containing information about the samples in the experiment.
+    input: String
+
+    // The output directory where the results will be saved. You have to use absolute paths to storage on Cloud infrastructure.
+    outdir: String
+
+    // Email address for completion summary.
+    email: String
+
+    // MultiQC report title. Printed as page header, used for filename if not otherwise specified.
+    multiqc_title: String
+
+    // Name of iGenomes reference.
+    genome: String
+
+    // Path to FASTA genome file.
+    fasta: String = getGenomeAttribute('fasta')
+
+    // The index of the FASTA reference file
+    fai: String = getGenomeAttribute('fai')
+
+    // The sequence dictionary of the FASTA reference file
+    dict: String = getGenomeAttribute('dict')
+
+    // Path to GTF file for the reference genome. Gene and transcript annotations will be added when this file is provided
+    gtf: String = getGenomeAttribute('gtf')
+
+    // Path to the expansionhunter catalog
+    expansionhunter_catalog: String = getGenomeAttribute('expansionhunter_catalog')
+
+    // Path to the male qdnaseq reference file
+    qdnaseq_male: String = getGenomeAttribute("qdnaseq_male_${params.qdnaseq_bin_size.toInteger() / 1000}kbp".toString())
+
+    // Path to the female qdnaseq reference file
+    qdnaseq_female: String = getGenomeAttribute("qdnaseq_female_${params.qdnaseq_bin_size.toInteger() / 1000}kbp".toString())
+
+    // Path to the wisecondorx reference file
+    wisecondorx_reference: String? = getGenomeAttribute('wisecondorx_reference')
+
+    // Path to the StrVCTVRE phylo bigwig file
+    strvctvre_phylop: String? = getGenomeAttribute('strvctvre_phylop')
+
+    // Path to the StrVCTVRE data directory
+    strvctvre_data: String? = getGenomeAttribute('strvctvre_data')
+
+    // Path to the blacklist BED file
+    blacklist: String
+
+    // Do not load the iGenomes reference config.
+    igenomes_ignore: Boolean
+
+    // The base path where the iGenomes references can be found
+    igenomes_base: String
+
+    // The base path where the references can be found
+    genomes_base: String
+
+    // Whether or not to use the references found in the `--genomes_base` folder
+    genomes_ignore: Boolean
+
+    // The config base path for the cmgg configs
+    cmgg_config_base: String = '/conf/'
+
+    // A map containing all references for all genomes
+    genomes
+
+    // Git commit id for Institutional configs.
+    custom_config_version: String = 'master'
+
+    // Base directory for Institutional configs.
+    custom_config_base: String = 'https://raw.githubusercontent.com/nf-core/configs/master'
+
+    // Institutional config name.
+    config_profile_name: String
+
+    // Institutional config description.
+    config_profile_description: String
+
+    // Institutional config contact information.
+    config_profile_contact: String
+
+    // Institutional config URL link.
+    config_profile_url: String
+
+    // Base URL or local path to location of pipeline test dataset files
+    pipelines_testdata_base_path: String = 'https://raw.githubusercontent.com/nf-core/test-datasets/'
+
+    // Display the help message.
+    help
+
+    // Display the full detailed help message.
+    help_full: Boolean
+
+    // Display hidden parameters in the help message (only works when --help or --help_full are provided).
+    show_hidden: Boolean
+
+    // Display version and exit.
+    version: Boolean
+
+    // Method used to save pipeline results to output directory.
+    publish_dir_mode: String = 'copy'
+
+    // Email address for completion summary, only when pipeline fails.
+    email_on_fail: String
+
+    // Send plain-text email instead of HTML.
+    plaintext_email: Boolean
+
+    // File size limit when attaching MultiQC reports to summary emails.
+    max_multiqc_email_size: String = '25.MB'
+
+    // Incoming hook URL for messaging service
+    hook_url: String
+
+    // Custom config file to supply to MultiQC.
+    multiqc_config: String
+
+    // Custom logo file to supply to MultiQC. File name must also be set in the MultiQC config file
+    multiqc_logo: String
+
+    // Custom MultiQC yaml file containing HTML including a methods description.
+    multiqc_methods_description: String
+
+    // Boolean whether to validate parameters against the schema at runtime
+    validate_params: Boolean = true
+
+    // Output monochrome logs
+    monochrome_logs: Boolean
+
+    trace_report_suffix: String
+
+    // A comma-seperated list of callers to use. Can be one or more these: smoove/delly/manta/expansionhunter/qdnaseq/wisecondorx.
+    callers: String = 'manta,smoove,delly,expansionhunter,wisecondorx'
+
+    // Output the VCF files from different callers. Warning: This produces a lot of additional output and should only be used for testing purposes
+    output_callers: Boolean
+
+    // The minimum amount of SV callers that should detect a variant. All variants that have a lower amount of callers supporting it, will be removed. (Only used when more than one caller is given)
+    sv_callers_support: Integer = 1
+
+    // The minimum amount of CNV callers that should detect a variant. All variants that have a lower amount of callers supporting it, will be removed. (Only used when more than one caller is given)
+    cnv_callers_support: Integer = 1
+
+    // Run the annotation with Ensembl VEP and AnnotSV (and optionally VCFanno).
+    annotate: Boolean
+
+    // A comma-separated list of tools to use for annotation. Possible values: vep,svannotate,vcfanno,strvctvre. Default is all tools.
+    annotate_tools: String = 'all'
+
+    // Also output a concatenated VCF with all variant types analysed included.
+    concat_output: Boolean
+
+    // The filter options to perform on SV and CNV VCF files as postprocessing
+    filter: String
+
+    // Output BEDPE files derived from the VCF files alongside the VCF files
+    bedpe: Boolean
+
+    // The mapping quality to use for delly
+    delly_map_qual: Integer = 1
+
+    // The minimum clique size to use for delly
+    delly_min_clique_size: Integer = 2
+
+    // A config file to supply to manta
+    manta_config: String
+
+    // The bin size to use for qdnaseq.
+    qdnaseq_bin_size: Integer = 100000
+
+    // The minimum value of the absolute cnv ratio for a variant to be considered a CNV.
+    qdnaseq_cnv_ratio: Float = 0.5
+
+    // The genome assembly to download the cache of.
+    vep_assembly: String = 'GRCh38'
+
+    // The version of the VEP cache to use.
+    vep_cache_version: Integer = 112
+
+    // The path to the VEP cache folder
+    vep_cache: String = getGenomeAttribute('vep_cache')
+
+    // The version of VEP to use
+    vep_version: Float = 112.0
+
+    // The species used for the analysis. Should be all lowercase and spaces should be underscorses.
+    species: String = 'homo_sapiens'
+
+    // The full path to the VCFanno config TOML file. This file will be used to dynamically overwrite default configs for this pipeline run
+    vcfanno_toml: String
+
+    // The full path to a lua script for VCFanno
+    vcfanno_lua: String
+
+    // A comma-delimited list of files referenced in the VCFanno config and their indices.
+    vcfanno_resources: String
+}
 
 workflow {
 

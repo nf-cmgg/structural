@@ -1,18 +1,16 @@
+nextflow.preview.types = true
 //
 // Run Delly
 //
 
-include { DELLY_CALL        } from '../../../modules/nf-core/delly/call/main'
-include { BCFTOOLS_CONCAT   } from '../../../modules/nf-core/bcftools/concat/main'
+include { DELLY_CALL; DellyCallInput  } from '../../../modules/nf-core/delly/call/main'
+include { BCFTOOLS_CONCAT; BcftoolsConcatInput } from '../../../modules/nf-core/bcftools/concat/main'
 include { BCFTOOLS_SORT     } from '../../../modules/nf-core/bcftools/sort/main'
-include { SVYNC             } from '../../../modules/nf-core/svync/main'
+include { SVYNC; SvyncInput } from '../../../modules/nf-core/svync/main'
 
 workflow BAM_VARIANT_CALLING_DELLY {
     take:
-        ch_crams            // channel: [mandatory] [ meta, cram, crai ] => The aligned CRAMs per sample with the regions they should be called on
-        ch_fasta            // channel: [mandatory] [ meta, fasta ] => The fasta reference file
-        ch_fai              // channel: [mandatory] [ meta, fai ] => The index of the fasta reference file
-        ch_svync_configs    // channel: [mandatory] [ configs ] => A list of svync config files
+    ch_input: Channel<DellyCallInput> // The aligned CRAMs per sample with the regions they should be called on
 
     main:
 
@@ -20,58 +18,61 @@ workflow BAM_VARIANT_CALLING_DELLY {
     // Calling variants using Delly
     //
 
-    def sv_types = ["DEL", "INS", "INV", "DUP", "BND"]
-
-    def ch_delly_input = ch_crams
-        .combine(sv_types)
-        .map { meta, cram, crai, sv_type ->
-            def new_meta = meta + [caller:'delly', sv_type:sv_type]
-            [ new_meta, cram, crai, [], [], [] ]
+    def ch_delly_input: Channel<DellyCallInput> = ch_input
+        .combine(channel.of("DEL", "INS", "INV", "DUP", "BND"))
+        .map { rec, sv_type ->
+            rec + record(sv_type: sv_type)
         }
-        .dump(tag: 'delly_input', pretty: true)
 
-    DELLY_CALL(
-        ch_delly_input,
-        ch_fasta,
-        ch_fai
+    def delly_out = DELLY_CALL(
+        ch_delly_input
     )
 
-    def ch_concat_input = DELLY_CALL.out.bcf
-        .join(DELLY_CALL.out.csi, failOnDuplicate:true, failOnMismatch:true)
-        .map { meta, bcf, csi ->
-            def new_meta = meta - meta.subMap("sv_type")
-            [ new_meta, bcf, csi ]
+    def ch_concat_input: Channel<BcftoolsConcatInput> = delly_out
+        .map { rec: Record ->
+            tuple(rec.id, 5, rec)
         }
-        .groupTuple(size:5)
+        .groupBy()
+        .map { _id, recs ->
+            // Workaround for TaskPath issue: https://github.com/nextflow-io/nextflow/issues/7032
+            def vcfs = []
+            def tbis = []
+            recs.each { r ->
+                vcfs << r.bcf.toRealPath()
+                tbis << r.csi.toRealPath()
+            }
+            def first_rec = recs.toList().first()
+            first_rec + record(
+                vcfs: vcfs,
+                tbis: tbis,
+                input: first_rec.input.toRealPath(),
+                input_index: first_rec.input_index.toRealPath(),
+                fasta: first_rec.fasta.toRealPath(),
+                fai: first_rec.fai.toRealPath(),
+            )
+        }
 
-    BCFTOOLS_CONCAT(
+    def concat_out = BCFTOOLS_CONCAT(
         ch_concat_input
     )
 
-    BCFTOOLS_SORT(
-        BCFTOOLS_CONCAT.out.vcf
+    def sort_out = BCFTOOLS_SORT(
+        concat_out.map { rec ->
+            rec + record(
+                vcfs: rec.vcfs,
+                tbis: rec.tbis,
+            )
+        }
     )
 
-    def ch_delly_svync_config = ch_svync_configs
-        .map { configs ->
-            configs.find { config -> config.toString().contains("delly") }
-        }
+    def ch_svync_input: Channel<SvyncInput> = sort_out
+        .combine(config:file("${projectDir}/assets/svync/delly.yaml"))
 
-    def ch_delly_vcfs = BCFTOOLS_SORT.out.vcf
-        .join(BCFTOOLS_SORT.out.tbi, failOnDuplicate:true, failOnMismatch:true)
-
-    def ch_svync_input = ch_delly_vcfs
-        .combine(ch_delly_svync_config)
-        .dump(tag: 'delly_vcfs', pretty: true)
-
-    SVYNC(
+    def svync_out = SVYNC(
         ch_svync_input
     )
 
-    def ch_out_vcfs = SVYNC.out.vcf
-        .join(SVYNC.out.tbi, failOnDuplicate:true, failOnMismatch:true)
-
     emit:
-    raw_vcfs    = ch_delly_vcfs // channel: [ val(meta), path(vcf), path(tbi) ]
-    delly_vcfs  = ch_out_vcfs   // channel: [ val(meta), path(vcf), path(tbi) ]
+    raw_vcfs    = sort_out // channel: [ val(meta), path(vcf), path(tbi) ]
+    delly_vcfs  = svync_out   // channel: [ val(meta), path(vcf), path(tbi) ]
 }

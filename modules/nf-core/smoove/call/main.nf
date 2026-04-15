@@ -1,23 +1,25 @@
+nextflow.preview.types = true
+
 process SMOOVE_CALL {
-    tag "$meta.id"
+    tag "${meta.id}"
     label 'process_high'
 
     conda "${moduleDir}/environment.yml"
-    container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
-        'https://depot.galaxyproject.org/singularity/smoove:0.2.8--h9ee0642_1' :
-        'biocontainers/smoove:0.2.8--h9ee0642_1' }"
+    container "${workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container
+        ? 'https://depot.galaxyproject.org/singularity/smoove:0.2.8--h9ee0642_1'
+        : 'biocontainers/smoove:0.2.8--h9ee0642_1'}"
 
     input:
-    tuple val(meta), path(input), path(index), path(exclude_beds)
-    tuple val(meta2), path(fasta)
-    tuple val(meta3), path(fai)
+    tuple(meta: Map, input: Path, index: Path, exclude_beds: Path)
+    tuple(meta2: Map, fasta: Path)
+    tuple(meta3: Map, fai: Path)
 
     output:
-    tuple val(meta), path("*.vcf.gz"), emit: vcf
-    tuple val("${task.process}"), val('smoove'), eval("smoove -v |& sed -n 's/smoove version: *//p'"), emit: versions_smoove, topic: versions
+    vcf = tuple(meta, file("*.vcf.gz"))
+    versions_smoove = tuple("${task.process}", 'smoove', eval("smoove -v |& sed -n 's/smoove version: *//p'"))
 
-    when:
-    task.ext.when == null || task.ext.when
+    topic:
+    tuple("${task.process}", 'smoove', eval("smoove -v |& sed -n 's/smoove version: *//p'")) >> 'versions'
 
     script:
     def args = task.ext.args ?: ''

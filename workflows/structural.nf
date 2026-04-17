@@ -113,9 +113,8 @@ workflow STRUCTURAL {
     // Create input channels from parameters
     //
 
-    def ch_fasta                    = channel.fromPath(fasta).collect { fasta_file -> [[id:'reference'], fasta_file ] }
-    // def ch_annotsv_candidate_genes  = annotsv_candidate_genes ?  channel.fromPath(annotsv_candidate_genes).collect { genes_file -> [[], genes_file] } : [[],[]]
-    // def ch_annotsv_gene_transcripts = annotsv_gene_transcripts ? channel.fromPath(annotsv_gene_transcripts).collect { transcripts_file -> [[], transcripts_file] } : [[],[]]
+    def ch_fasta                    = fasta ?                    channel.fromPath(fasta).collect { fasta_file -> [[id:'reference'], fasta_file ] } :
+                                                                    error("The 'fasta' parameter is required. Please provide a reference fasta file using the 'fasta' parameter.")
     def ch_vcfanno_lua              = vcfanno_lua ?              channel.fromPath(vcfanno_lua).collect() : []
     def ch_catalog                  = expansionhunter_catalog ?  channel.fromPath(expansionhunter_catalog).collect { catalog_file -> [[id:'catalog'], catalog_file] } : [[],[]]
     def ch_qdnaseq_male             = qdnaseq_male ?             channel.fromPath(qdnaseq_male).collect { qdnaseq_file -> [[id:'qdnaseq_male'], qdnaseq_file] } : [[],[]]

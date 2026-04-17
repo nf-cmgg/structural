@@ -154,18 +154,7 @@
                 "igenomes_base": {
                     "type": "string",
                     "description": "The base path where the iGenomes references can be found",
-                    "exists": true,
                     "format": "directory-path"
-                },
-                "genomes_base": {
-                    "type": "string",
-                    "description": "The base path where the references can be found",
-                    "exists": true,
-                    "format": "directory-path"
-                },
-                "genomes_ignore": {
-                    "type": "boolean",
-                    "description": "Whether or not to use the references found in the `--genomes_base` folder"
                 },
                 "cmgg_config_base": {
                     "type": "string",
@@ -190,14 +179,14 @@
                 "custom_config_version": {
                     "type": "string",
                     "description": "Git commit id for Institutional configs.",
-                    "default": "master",
+                    "default": "main",
                     "hidden": true,
                     "fa_icon": "fas fa-users-cog"
                 },
                 "custom_config_base": {
                     "type": "string",
                     "description": "Base directory for Institutional configs.",
-                    "default": "https://raw.githubusercontent.com/nf-core/configs/master",
+                    "default": "https://raw.githubusercontent.com/nf-cmgg/configs/main",
                     "hidden": true,
                     "help_text": "If you're running offline, Nextflow will not be able to fetch the institutional config files from the internet. If you don't need them, then this is not a problem. If you do need them, you should download the files from the repo and tell Nextflow where to find them with this parameter.",
                     "fa_icon": "fas fa-users-cog"

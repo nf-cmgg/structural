@@ -9,6 +9,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### `Changes`
 
+1. Removed `--genomes_base` and `--genomes_ignore`. Updated the existing `--igenomes_base` and `--igenomes_ignore` parameters to now work with the CMGG references structure by default. This change has mainly been done to stay in line with the other `nf-cmgg` pipelines.
+
 ### `Fixed`
 
 ## v0.3.0 - [15 Jan 2026] - Fantastic Frituur

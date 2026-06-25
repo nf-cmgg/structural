@@ -1,4 +1,6 @@
 Changes in component 'nf-core/expansionhunter'
+'modules/nf-core/expansionhunter/meta.yml' is unchanged
+'modules/nf-core/expansionhunter/environment.yml' is unchanged
 Changes in 'expansionhunter/main.nf':
 --- modules/nf-core/expansionhunter/main.nf
 +++ modules/nf-core/expansionhunter/main.nf
@@ -10,7 +12,7 @@ Changes in 'expansionhunter/main.nf':
      tuple val(meta), path("*.json.gz")       , emit: json
      tuple val(meta), path("*_realigned.bam") , emit: bam
      tuple val("${task.process}"), val('expansionhunter'), eval("ExpansionHunter --version | head -1 | sed -n 's/^.*ExpansionHunter v//; s/]//p'"), topic: versions, emit: versions_expansionhunter
-@@ -37,6 +38,7 @@
+@@ -38,6 +39,7 @@
          --variant-catalog ${variant_catalog}
  
      bgzip --threads ${task.cpus} ${args2} ${prefix}.vcf
@@ -18,7 +20,7 @@ Changes in 'expansionhunter/main.nf':
      bgzip --threads ${task.cpus} ${args2} ${prefix}.json
  
      """
-@@ -45,6 +47,7 @@
+@@ -46,6 +48,7 @@
      def prefix = task.ext.prefix ?: "${meta.id}"
      """
      echo "" | gzip > ${prefix}.vcf.gz
@@ -27,8 +29,6 @@ Changes in 'expansionhunter/main.nf':
      touch ${prefix}_realigned.bam
  
 
-'modules/nf-core/expansionhunter/environment.yml' is unchanged
-'modules/nf-core/expansionhunter/meta.yml' is unchanged
 'modules/nf-core/expansionhunter/tests/main.nf.test' is unchanged
 'modules/nf-core/expansionhunter/tests/main.nf.test.snap' is unchanged
 ************************************************************

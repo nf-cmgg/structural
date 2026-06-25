@@ -4,4 +4,4 @@ contact_links:
     about: Please join the nf-core community here
   - name: "Slack #structural channel"
     url: https://nfcore.slack.com/channels/structural
-    about: Discussion about the nf-core/structural pipeline
+    about: Discussion about the nf-cmgg/structural pipeline

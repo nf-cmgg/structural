@@ -11,6 +11,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### `Fixed`
 
+1. Added threading to the `EXPANSIONHUNTER` process
+
 ## v0.3.0 - [15 Jan 2026] - Fantastic Frituur
 
 ### `Added`

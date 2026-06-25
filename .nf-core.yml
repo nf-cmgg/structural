@@ -24,7 +24,7 @@ lint:
     - assets/email_template.html
     - docs/README.md
     - .prettierignore
-  included_configs: false
+    - .gitattributes
   multiqc_config: false
   nextflow_config:
     - manifest.name

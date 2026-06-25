@@ -1,0 +1,14 @@
+[workspace]
+authors = ["Nicolas Vannieuwkerke <nicolas.vannieuwkerke@ugent.be>"]
+channels = ["conda-forge", "bioconda"]
+name = "structural"
+platforms = ["linux-64", "osx-64", "osx-arm64"]
+version = "0.1.0"
+
+[tasks]
+
+[dependencies]
+nextflow = ">=26.4.1,<27"
+nf-test = ">=0.9.5,<0.10"
+prek = ">=0.3.13,<0.4"
+nf-core = ">=4.0.2,<5"

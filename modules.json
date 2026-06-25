@@ -47,7 +47,7 @@
                     },
                     "expansionhunter": {
                         "branch": "master",
-                        "git_sha": "2ad28db4a5a82972c1210dfa7c85f035bb80c4de",
+                        "git_sha": "0adfbfad03ff9af0d9fb437f0f2e1140e1c59316",
                         "installed_by": ["modules"],
                         "patch": "modules/nf-core/expansionhunter/expansionhunter.diff"
                     },

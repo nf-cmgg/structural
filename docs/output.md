@@ -141,7 +141,7 @@ RRE calling runs all selected callers individually and merges the calls after. O
 
 </details>
 
-There are a number of regions in the human genome consisting of repetitions of short unit sequence (commonly a trimer). Such repeat regions can expand to a size much larger than the read length and thereby cause a disease. Fragile X Syndrome, ALS, and Huntington's Disease are well known examples. [ExpansionHunter](https://github.com/Illumina/ExpansionHunter) aims to estimate sizes of such repeats by performing a targeted search through a BAM/CRAM file for reads that span, flank, and are fully contained in each repeat.
+There are a number of regions in the human genome consisting of repetitions of short unit sequence (commonly a trimer). Such repeat regions can expand to a size much larger than the read length and thereby cause a disease. Fragile X Syndrome, ALS, and Huntington's Disease are well known examples. [ExpansionHunter](https://github.com/Illumina/ExpansionHunter) aims to estimate sizes of such repeats by performing a targeted search through a BAM/CRAM file for reads that span, flank, and are fully contained in each repeat. ExpansionHunter's output is then annotated with [Stranger](https://github.com/Clinical-Genomics/stranger), which attaches pathogenicity classification (`STR_STATUS`, normal/pathologic thresholds) from the variant catalog.
 
 ### SV annotation
 

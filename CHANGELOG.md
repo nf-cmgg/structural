@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### `Added`
 
+1. Added `Stranger` annotation of `ExpansionHunter` output in the repeat expansion workflow.
+
 ### `Changes`
 
 ### `Fixed`

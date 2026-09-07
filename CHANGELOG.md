@@ -9,6 +9,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### `Changes`
 
+1. Changed from `delly_call` to `delly_sr`. Delly v2.6.0
+2. Removed the SV type parallelization (`--svtype`) and `BCFTOOLS_CONCAT` from the delly flow. Delly v2 parallelizes within a single run via `--threads`, and writes BCFs without a sample column for SV types that yield no calls, which `bcftools concat` rejects.
+
 ### `Fixed`
 
 1. Added threading to the `EXPANSIONHUNTER` process

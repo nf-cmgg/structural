@@ -2,10 +2,9 @@
 // Run Delly
 //
 
-include { DELLY_CALL        } from '../../../modules/nf-core/delly/call/main'
-include { BCFTOOLS_CONCAT   } from '../../../modules/nf-core/bcftools/concat/main'
-include { BCFTOOLS_SORT     } from '../../../modules/nf-core/bcftools/sort/main'
-include { SVYNC             } from '../../../modules/nf-core/svync/main'
+include { DELLY_SR      } from '../../../modules/nf-core/delly/sr/main'
+include { BCFTOOLS_SORT } from '../../../modules/nf-core/bcftools/sort/main'
+include { SVYNC         } from '../../../modules/nf-core/svync/main'
 
 workflow BAM_VARIANT_CALLING_DELLY {
     take:
@@ -20,36 +19,22 @@ workflow BAM_VARIANT_CALLING_DELLY {
     // Calling variants using Delly
     //
 
-    def sv_types = ["DEL", "INS", "INV", "DUP", "BND"]
-
     def ch_delly_input = ch_crams
-        .combine(sv_types)
-        .map { meta, cram, crai, sv_type ->
-            def new_meta = meta + [caller:'delly', sv_type:sv_type]
+        .map { meta, cram, crai ->
+            def new_meta = meta + [caller:'delly']
             [ new_meta, cram, crai, [], [], [] ]
         }
         .dump(tag: 'delly_input', pretty: true)
 
-    DELLY_CALL(
+    DELLY_SR(
         ch_delly_input,
         ch_fasta,
-        ch_fai
-    )
-
-    def ch_concat_input = DELLY_CALL.out.bcf
-        .join(DELLY_CALL.out.csi, failOnDuplicate:true, failOnMismatch:true)
-        .map { meta, bcf, csi ->
-            def new_meta = meta - meta.subMap("sv_type")
-            [ new_meta, bcf, csi ]
-        }
-        .groupTuple(size:5)
-
-    BCFTOOLS_CONCAT(
-        ch_concat_input
+        ch_fai,
+        "bcf"
     )
 
     BCFTOOLS_SORT(
-        BCFTOOLS_CONCAT.out.vcf
+        DELLY_SR.out.bcf
     )
 
     def ch_delly_svync_config = ch_svync_configs

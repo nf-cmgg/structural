@@ -117,6 +117,11 @@
                         "git_sha": "fdcc3976e728b5d6ffc3f15979905829531e6072",
                         "installed_by": ["modules"]
                     },
+                    "stranger": {
+                        "branch": "master",
+                        "git_sha": "90e0aedba7e6b6cd6a0a7edc612c3f54f0caa663",
+                        "installed_by": ["modules"]
+                    },
                     "strvctvre/strvctvre": {
                         "branch": "master",
                         "git_sha": "fdcc3976e728b5d6ffc3f15979905829531e6072",

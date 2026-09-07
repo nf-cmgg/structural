@@ -30,9 +30,9 @@
                         "git_sha": "5cb9a8694da0a0e550921636bb60bc8c56445fd7",
                         "installed_by": ["modules"]
                     },
-                    "delly/call": {
+                    "delly/sr": {
                         "branch": "master",
-                        "git_sha": "fdcc3976e728b5d6ffc3f15979905829531e6072",
+                        "git_sha": "6b87364d2e54b9136e0e57de28bd56b5010d47ff",
                         "installed_by": ["modules"]
                     },
                     "ensemblvep/download": {

@@ -38,7 +38,11 @@ nextflow_workflow {
             assertAll(
                 { assert workflow.success },
                 { assert snapshot(
-                    path(workflow.out.vcfs[0][1]).linesGzip[-4..-1],
+                    path(workflow.out.vcfs[0][1]).linesGzip[-4..-1].collect { line -> 
+                        def f = line.split("\t")
+                        f[7] = (f[7].split(";") as List).sort().join(";")
+                        f.join("\t")
+                    }, 
                     file(workflow.out.vcfs[0][2]).name,
                     workflow.trace.succeeded().size(),
                     workflow.trace.failed().size()

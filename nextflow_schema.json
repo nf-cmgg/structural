@@ -343,9 +343,9 @@
                 "callers": {
                     "type": "string",
                     "default": "manta,smoove,delly,expansionhunter,wisecondorx",
-                    "description": "A comma-seperated list of callers to use. Can be one or more these: smoove/delly/manta/expansionhunter/qdnaseq/wisecondorx.",
+                    "description": "A comma-seperated list of callers to use. Can be one or more these: smoove/delly/manta/expansionhunter/qdnaseq/wisecondorx/smncopynumbercaller.",
                     "help_text": "Following keywords can also be used as shortcuts to certain callers: \n- all: Use all callers\n- sv: Use all SV callers\n- cnv: Use all CNV callers\n- rre: Use all RRE callers",
-                    "pattern": "^((manta|delly|smoove|wisecondorx|qdnaseq|expansionhunter|all|sv|cnv|rre)?,?)*(?<!,)$"
+                    "pattern": "^((manta|delly|smoove|wisecondorx|qdnaseq|expansionhunter|smncopynumbercaller|all|sv|cnv|rre)?,?)*(?<!,)$"
                 },
                 "output_callers": {
                     "type": "boolean",

@@ -22,6 +22,7 @@ include { BAM_PREPARE_SAMTOOLS                  } from '../subworkflows/local/ba
 include { BAM_SV_CALLING                        } from '../subworkflows/local/bam_sv_calling/main'
 include { BAM_CNV_CALLING                       } from '../subworkflows/local/bam_cnv_calling/main'
 include { BAM_REPEAT_ESTIMATION_EXPANSIONHUNTER } from '../subworkflows/local/bam_repeat_estimation_expansionhunter/main'
+include { BAM_VARIANT_CALLING_SMNCOPYNUMBERCALLER } from '../subworkflows/local/bam_variant_calling_smncopynumbercaller/main'
 include { VCF_ANNOTATE                          } from '../subworkflows/local/vcf_annotate/main'
 include { VCF_CONCAT_BCFTOOLS                   } from '../subworkflows/local/vcf_concat_bcftools/main'
 include { VCF_MERGE_FAMILY_JASMINE              } from '../subworkflows/local/vcf_merge_family_jasmine/main'
@@ -311,6 +312,7 @@ workflow STRUCTURAL {
 
     def ch_wisecondorx_out = channel.empty()
     def ch_qdnaseq_out = channel.empty()
+    def ch_smncopynumbercaller_out = channel.empty()
     if(cnv_callers_to_use){
 
         count_types += 1
@@ -388,6 +390,20 @@ workflow STRUCTURAL {
 
     }
 
+    //
+    // Estimate SMN copy number
+    //
+    if(callers.intersect(smnCallers)){
+
+
+        BAM_VARIANT_CALLING_SMNCOPYNUMBERCALLER(
+            ch_inputs,
+            ch_fasta,
+            ch_fai
+        )
+        ch_smncopynumbercaller_out  = BAM_VARIANT_CALLING_SMNCOPYNUMBERCALLER.out.caller_out
+
+    }
     //
     // Concatenate the VCF files from different types of analysis
     //
@@ -522,6 +538,7 @@ workflow STRUCTURAL {
     sample_vcfs     = ch_concat_vcfs              // channel: [ val(meta), path(vcf), path(tbi) ]
     family_vcfs     = ch_family_vcfs              // channel: [ val(meta), path(vcf), path(tbi) ]
     qdnaseq_out     = ch_qdnaseq_out              // channel: [ val(meta), path(file) ]
+    smncopynumbercaller_out = ch_smncopynumbercaller_out // channel: [ val(meta), path(file) ]
     wisecondorx_out = ch_wisecondorx_out          // channel: [ val(meta), path(file) ]
     bedpe           = ch_bedpe                    // channel: [ val(meta), path(bedpe) ]
     multiqc_report  = MULTIQC.out.report.toList() // channel: /path/to/multiqc_report.html

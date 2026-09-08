@@ -133,14 +133,15 @@ workflow {
     )
 
     publish:
-    caller_vcfs     = STRUCTURAL.out.caller_vcfs
-    sample_vcfs     = STRUCTURAL.out.sample_vcfs
-    family_vcfs     = STRUCTURAL.out.family_vcfs
-    qdnaseq_out     = STRUCTURAL.out.qdnaseq_out
-    wisecondorx_out = STRUCTURAL.out.wisecondorx_out
-    bedpe           = STRUCTURAL.out.bedpe
-    multiqc         = STRUCTURAL.out.multiqc_report
-    multiqc_data    = STRUCTURAL.out.multiqc_data
+    caller_vcfs             = STRUCTURAL.out.caller_vcfs
+    sample_vcfs             = STRUCTURAL.out.sample_vcfs
+    family_vcfs             = STRUCTURAL.out.family_vcfs
+    qdnaseq_out             = STRUCTURAL.out.qdnaseq_out
+    smncopynumbercaller_out = STRUCTURAL.out.smncopynumbercaller_out
+    wisecondorx_out         = STRUCTURAL.out.wisecondorx_out
+    bedpe                   = STRUCTURAL.out.bedpe
+    multiqc                 = STRUCTURAL.out.multiqc_report
+    multiqc_data            = STRUCTURAL.out.multiqc_data
 
 }
 
@@ -170,6 +171,10 @@ output {
             // bed_qdnaseq >> bed_qdnaseq.name == "statistics.out" ?
             //     "${meta.id}/${meta.id}.qdnaseq.statistics.out" :
             //     "${meta.id}/${base_suffix}"
+        }
+    }
+    smncopynumbercaller_out {
+        path { meta, _file -> "$meta.id/smncopynumbercaller/"
         }
     }
     wisecondorx_out {

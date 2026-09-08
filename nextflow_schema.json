@@ -543,6 +543,9 @@
             "$ref": "#/$defs/qdnaseq_parameters"
         },
         {
+            "$ref": "#/$defs/smncopynumbercaller_parameters"
+        },
+        {
             "$ref": "#/$defs/vep_options"
         },
         {

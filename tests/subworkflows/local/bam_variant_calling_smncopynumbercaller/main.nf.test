@@ -1,0 +1,46 @@
+nextflow_workflow {
+
+    name "Test Workflow BAM_VARIANT_CALLING_SMNCOPYNUMBERCALLER"
+    script "subworkflows/local/bam_variant_calling_smncopynumbercaller/main.nf"
+    workflow "BAM_VARIANT_CALLING_SMNCOPYNUMBERCALLER"
+
+    tag "subworkflows"
+    tag "subworkflows_local"
+    tag "bam_variant_calling_smncopynumbercaller"
+
+// onlu stub test as SMNCopyNumberCaller only works on chr5 which arent present in the test CRAM files
+    test("homo_sapiens -stub") { 
+        options '-stub' 
+        when {
+            workflow {
+                """
+                input[0] = Channel.of([
+                    [id:"test", sample:"test"],
+                    file(params.cram1, checkIfExists: true),
+                    file(params.crai1, checkIfExists: true)
+                ])
+                input[1] = Channel.value([
+                    [id:"reference"],
+                    file(params.fasta, checkIfExists: true)
+                ])
+                input[2] = Channel.value([ 
+                    [id:"reference"],
+                    file(params.fai,   checkIfExists: true) ])
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert workflow.success },
+                { assert snapshot(
+                    workflow.out.caller_out.collect { meta, f -> [ meta, file(f).name ] },
+                    workflow.trace.succeeded().size(),
+                    workflow.trace.failed().size()
+                ).match() }
+            )
+        }
+
+    }
+
+}

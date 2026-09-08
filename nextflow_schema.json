@@ -404,6 +404,20 @@
                 }
             }
         },
+        "smncopynumbercaller_parameters": {
+            "title": "SMNCopyNumberCaller parameters",
+            "type": "object",
+            "description": "Options specific for the SMNCopyNumberCaller execution",
+            "default": "",
+            "properties": {
+                "smncopynumbercaller_genome": {
+                    "type": "integer",
+                    "default": 38,
+                    "enum": [19, 37, 38],
+                    "description": "The genome build to use for SMNCopyNumberCaller"
+                }
+            }
+        },
         "manta_parameters": {
             "title": "Manta parameters",
             "type": "object",

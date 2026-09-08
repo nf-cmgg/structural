@@ -142,8 +142,9 @@ workflow STRUCTURAL {
     def svCallers = ["delly", "manta", "smoove"] //, "gridss"
     def cnvCallers = ["qdnaseq", "wisecondorx"]
     def repeatsCallers = ["expansionhunter"]
+    def smnCallers = ["smncopynumbercaller"]
 
-    def allCallers = svCallers + cnvCallers + repeatsCallers
+    def allCallers = svCallers + cnvCallers + repeatsCallers + smnCallers
     def annotationCallers = svCallers + cnvCallers
 
     // Callers that need the sex

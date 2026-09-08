@@ -174,7 +174,7 @@ output {
         }
     }
     smncopynumbercaller_out {
-        path { meta, _file -> "$meta.id/smncopynumbercaller/"
+        path { meta, smn_file -> smn_file >> "$meta.id/smncopynumbercaller/"
         }
     }
     wisecondorx_out {

@@ -76,6 +76,10 @@
 
   > Lennart Raman, Annelies Dheedene, Matthias De Smet, Jo Van Dorpe, Björn Menten, WisecondorX: improved copy number detection for routine shallow whole-genome sequencing, Nucleic Acids Research, Volume 47, Issue 4, 28 February 2019, Pages 1605–1614, https://doi.org/10.1093/nar/gky1263
 
+- [SMNCopyNumberCaller](https://www.nature.com/articles/s41436-020-0754-0)
+
+  > Chen, X., Sanchis-Juan, A., French, C.E. et al. Spinal muscular atrophy diagnosis and carrier screening from genome sequencing data. Genet Med 22, 945–953 (2020). https://doi.org/10.1038/s41436-020-0754-0
+
 ## Software packaging/containerisation tools
 
 - [Anaconda](https://anaconda.com)

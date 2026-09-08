@@ -143,6 +143,28 @@ RRE calling runs all selected callers individually and merges the calls after. O
 
 There are a number of regions in the human genome consisting of repetitions of short unit sequence (commonly a trimer). Such repeat regions can expand to a size much larger than the read length and thereby cause a disease. Fragile X Syndrome, ALS, and Huntington's Disease are well known examples. [ExpansionHunter](https://github.com/Illumina/ExpansionHunter) aims to estimate sizes of such repeats by performing a targeted search through a BAM/CRAM file for reads that span, flank, and are fully contained in each repeat.
 
+### SMN copy number calling
+
+#### [SMNCopyNumberCaller](https://github.com/Illumina/SMNCopyNumberCaller)
+
+<details markdown="1">
+<summary>Output files</summary>
+
+- `sampleID/smncopynumbercaller/`
+  - `sampleID.smncopynumbercaller.tsv`: tab-separated copy number calls for SMN1 and SMN2, one row per sample.
+  - `sampleID.smncopynumbercaller.json`: run metrics and the raw per-site evidence behind the calls.
+
+</details>
+
+Spinal muscular atrophy (SMA) is caused by loss of functional *SMN1*. *SMN1* and *SMN2* are
+near-identical paralogs on chromosome 5q13, which makes them hard to distinguish with standard
+alignment-based callers. [SMNCopyNumberCaller](https://github.com/Illumina/SMNCopyNumberCaller)
+resolves them by comparing read depth and allele fractions at the small number of sites that
+differ between the two genes, and reports an integer copy number for each.
+
+Unlike the other callers in this pipeline, SMNCopyNumberCaller produces no VCF, its output is a
+TSV and a JSON, published as-is and not merged with the other callers' calls.
+
 ### SV annotation
 
 <details markdown="1">

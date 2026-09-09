@@ -191,30 +191,30 @@
                 "samplesheet.csv:md5,62c45d657a5972f666db42743521ee43"
             ],
             [
-                "PosCon1/PosCon1.vcf.gz,variantsMD5:9f2da611a6293fb31e13b7159519a200",
+                "PosCon1/PosCon1.vcf.gz,variantsMD5:10144e5abba6e1889e38c1de21cb9982",
                 "PosCon1/delly/PosCon1.vcf.gz,variantsMD5:4777cb8ca34aae98752137f897e993d",
                 "PosCon1/expansionhunter/PosCon1.vcf.gz,variantsMD5:aab7d1f1a0bd733971c921aaa497a3c3",
                 "PosCon1/manta/PosCon1.vcf.gz,variantsMD5:ea34aed2ce82f64ff1899b2c2d9bc5da",
                 "PosCon1/smoove/PosCon1.vcf.gz,variantsMD5:d41d8cd98f00b204e9800998ecf8427e",
-                "PosCon2/PosCon2.vcf.gz,variantsMD5:bbeadc291efad523079a15cd1a8046a5",
+                "PosCon2/PosCon2.vcf.gz,variantsMD5:3e9434c03803737859d627113551d25",
                 "PosCon2/delly/PosCon2.vcf.gz,variantsMD5:cd3aaac9a5ba54ca9490dc199b7c2937",
                 "PosCon2/expansionhunter/PosCon2.vcf.gz,variantsMD5:96649c806adcbe582972f575141762bc",
                 "PosCon2/manta/PosCon2.vcf.gz,variantsMD5:3f0cef0b03989a61774515c2388665a",
                 "PosCon2/smoove/PosCon2.vcf.gz,variantsMD5:d41d8cd98f00b204e9800998ecf8427e",
-                "PosCon3/PosCon3.vcf.gz,variantsMD5:9d91c3f41820344ab4f2db1bac2af624",
+                "PosCon3/PosCon3.vcf.gz,variantsMD5:b989bee1a8277898513735087fdf95d6",
                 "PosCon3/delly/PosCon3.vcf.gz,variantsMD5:1bd106f3abb07c35f0b296b1eae5a3d6",
                 "PosCon3/expansionhunter/PosCon3.vcf.gz,variantsMD5:96649c806adcbe582972f575141762bc",
                 "PosCon3/manta/PosCon3.vcf.gz,variantsMD5:e2076228968e4150616e5a4a12f2326a",
                 "PosCon3/smoove/PosCon3.vcf.gz,variantsMD5:14d9eedc4d73de8551a4f74f42f3ead1",
-                "PosCon4/PosCon4.vcf.gz,variantsMD5:73f816091e05d14c7f40c0c5192ddb4f",
+                "PosCon4/PosCon4.vcf.gz,variantsMD5:7cfed6818c5aa4c6a1c6f4a806812755",
                 "PosCon4/delly/PosCon4.vcf.gz,variantsMD5:992d7fdabeb8fc3d2cdaeafe99f4673e",
                 "PosCon4/expansionhunter/PosCon4.vcf.gz,variantsMD5:aab7d1f1a0bd733971c921aaa497a3c3",
                 "PosCon4/manta/PosCon4.vcf.gz,variantsMD5:d41d8cd98f00b204e9800998ecf8427e",
                 "PosCon4/smoove/PosCon4.vcf.gz,variantsMD5:d41d8cd98f00b204e9800998ecf8427e",
-                "family_1/family_1.vcf.gz,variantsMD5:9754d7e1dc7372627a8b5be17068da13"
+                "family_1/family_1.vcf.gz,variantsMD5:1095a676b1e03160e31c43dc70a8f724"
             ]
         ],
-        "timestamp": "2026-09-07T14:46:23.728582",
+        "timestamp": "2026-09-09T10:35:21.773807",
         "meta": {
             "nf-test": "0.9.5",
             "nextflow": "25.10.4"

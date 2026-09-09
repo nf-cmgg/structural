@@ -23,6 +23,7 @@
 - [DELLY](https://academic.oup.com/bioinformatics/article/28/18/i333/245403)
 
   > Tobias Rausch, Thomas Zichner, Andreas Schlattl, Adrian M. Stütz, Vladimir Benes, Jan O. Korbel, DELLY: structural variant discovery by integrated paired-end and split-read analysis, Bioinformatics, Volume 28, Issue 18, September 2012, Pages i333–i339, https://doi.org/10.1093/bioinformatics/bts378
+  > Now using Delly v2.6.0
 
 - [EnsemblVEP](https://pubmed.ncbi.nlm.nih.gov/27268795/)
 

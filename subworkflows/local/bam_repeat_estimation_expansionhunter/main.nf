@@ -4,7 +4,7 @@
 
 include { EXPANSIONHUNTER   } from '../../../modules/nf-core/expansionhunter/main'
 include { BCFTOOLS_ANNOTATE } from '../../../modules/nf-core/bcftools/annotate/main'
-include { TABIX_TABIX       } from '../../../modules/nf-core/tabix/tabix/main'
+include { STRANGER          } from '../../../modules/nf-core/stranger/main'
 
 workflow BAM_REPEAT_ESTIMATION_EXPANSIONHUNTER {
     take:
@@ -61,12 +61,13 @@ workflow BAM_REPEAT_ESTIMATION_EXPANSIONHUNTER {
         []
     )
 
-    TABIX_TABIX(
-        BCFTOOLS_ANNOTATE.out.vcf
+    STRANGER(
+        BCFTOOLS_ANNOTATE.out.vcf,
+        ch_catalogue
     )
 
-    def ch_vcfs = BCFTOOLS_ANNOTATE.out.vcf
-        .join(TABIX_TABIX.out.index, failOnDuplicate:true, failOnMismatch:true)
+    def ch_vcfs = STRANGER.out.vcf
+        .join(STRANGER.out.tbi, failOnDuplicate:true, failOnMismatch:true)
 
     emit:
     caller_vcfs = ch_expansionhunter_vcfs   // channel: [ val(meta), path(vcf), path(tbi) ]

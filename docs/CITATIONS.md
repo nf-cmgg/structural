@@ -63,6 +63,8 @@
 
 - [smoove](https://github.com/brentp/smoove)
 
+- [Stranger](https://github.com/Clinical-Genomics/stranger)
+
 - [svync](https://github.com/nvnieuwk/svync)
 
 - [Tabix](https://academic.oup.com/bioinformatics/article/27/5/718/262743)

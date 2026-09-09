@@ -2,19 +2,19 @@
     "homo_sapiens": {
         "content": [
             [
-                "chrX\t12000\t.\tT\t.\t.\tLowDepth\tEND=50000;REPREF=9500;RL=38000;RU=CAGG;VARID=CNBP;REPID=CNBP\tGT:SO:REPCN:REPCI:ADSP:ADFL:ADIR:LC\t.:.:.:.:.:.:.:0",
-                "chrX\t12000\t.\tT\t.\t.\tLowDepth\tEND=123456;REPREF=18576;RL=111456;RU=GGCCCC;VARID=C9ORF72;REPID=C9ORF72\tGT:SO:REPCN:REPCI:ADSP:ADFL:ADIR:LC\t.:.:.:.:.:.:.:0",
-                "chrX\t14586\t.\tG\t.\t.\tLowDepth\tEND=35698;REPREF=5278;RL=21112;RU=CAGA;VARID=CNBP_CAGA;REPID=CNBP_CAGA\tGT:SO:REPCN:REPCI:ADSP:ADFL:ADIR:LC\t.:.:.:.:.:.:.:0",
-                "chrX\t15000\t.\tA\t.\t.\tLowDepth\tEND=45826;REPREF=15413;RL=30826;RU=CA;VARID=CNBP_CA;REPID=CNBP_CA\tGT:SO:REPCN:REPCI:ADSP:ADFL:ADIR:LC\t.:.:.:.:.:.:.:0"
+                "chrX\t12000\t.\tT\t.\t.\tLowDepth\tDisease=DM2;END=50000;InheritanceMode=AD;REPID=CNBP;REPREF=9500;RL=38000;RU=CAGG;RankScore=1:10;STR_NORMAL_MAX=30;STR_PATHOLOGIC_MIN=75;STR_STATUS=normal;SourceDisplay=Test fixture;SourceId=test;VARID=CNBP\tGT:SO:REPCN:REPCI:ADSP:ADFL:ADIR:LC\t.:.:.:.:.:.:.:0",
+                "chrX\t12000\t.\tT\t.\t.\tLowDepth\tDisease=ALS-FTD;END=123456;InheritanceMode=AD;REPID=C9ORF72;REPREF=18576;RL=111456;RU=GGCCCC;RankScore=1:10;STR_NORMAL_MAX=30;STR_PATHOLOGIC_MIN=60;STR_STATUS=normal;SourceDisplay=Test fixture;SourceId=test;VARID=C9ORF72\tGT:SO:REPCN:REPCI:ADSP:ADFL:ADIR:LC\t.:.:.:.:.:.:.:0",
+                "chrX\t14586\t.\tG\t.\t.\tLowDepth\tEND=35698;REPID=CNBP_CAGA;REPREF=5278;RL=21112;RU=CAGA;VARID=CNBP_CAGA\tGT:SO:REPCN:REPCI:ADSP:ADFL:ADIR:LC\t.:.:.:.:.:.:.:0",
+                "chrX\t15000\t.\tA\t.\t.\tLowDepth\tEND=45826;REPID=CNBP_CA;REPREF=15413;RL=30826;RU=CA;VARID=CNBP_CA\tGT:SO:REPCN:REPCI:ADSP:ADFL:ADIR:LC\t.:.:.:.:.:.:.:0"
             ],
-            "test.expansionhunter.vcf.gz.tbi",
+            "test.stranger.vcf.gz.tbi",
             3,
             0
         ],
+        "timestamp": "2026-09-08T13:31:11.344258",
         "meta": {
-            "nf-test": "0.8.4",
-            "nextflow": "24.03.0"
-        },
-        "timestamp": "2024-05-06T15:05:05.525988275"
+            "nf-test": "0.9.5",
+            "nextflow": "25.10.4"
+        }
     }
 }

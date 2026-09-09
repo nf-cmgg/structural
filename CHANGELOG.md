@@ -7,6 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### `Added`
 
+1. Added `SMNCopyNumberCaller` module to the pipeline
 ### `Changes`
 
 1. Changed from `delly_call` to `delly_sr`. Delly v2.6.0

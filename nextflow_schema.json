@@ -343,9 +343,9 @@
                 "callers": {
                     "type": "string",
                     "default": "manta,smoove,delly,expansionhunter,wisecondorx",
-                    "description": "A comma-seperated list of callers to use. Can be one or more these: smoove/delly/manta/expansionhunter/qdnaseq/wisecondorx.",
+                    "description": "A comma-seperated list of callers to use. Can be one or more these: smoove/delly/manta/expansionhunter/qdnaseq/wisecondorx/smncopynumbercaller.",
                     "help_text": "Following keywords can also be used as shortcuts to certain callers: \n- all: Use all callers\n- sv: Use all SV callers\n- cnv: Use all CNV callers\n- rre: Use all RRE callers",
-                    "pattern": "^((manta|delly|smoove|wisecondorx|qdnaseq|expansionhunter|all|sv|cnv|rre)?,?)*(?<!,)$"
+                    "pattern": "^((manta|delly|smoove|wisecondorx|qdnaseq|expansionhunter|smncopynumbercaller|all|sv|cnv|rre)?,?)*(?<!,)$"
                 },
                 "output_callers": {
                     "type": "boolean",
@@ -401,6 +401,20 @@
                     "type": "integer",
                     "default": 2,
                     "description": "The minimum clique size to use for delly"
+                }
+            }
+        },
+        "smncopynumbercaller_parameters": {
+            "title": "SMNCopyNumberCaller parameters",
+            "type": "object",
+            "description": "Options specific for the SMNCopyNumberCaller execution",
+            "default": "",
+            "properties": {
+                "smncopynumbercaller_genome": {
+                    "type": "integer",
+                    "default": 38,
+                    "enum": [19, 37, 38],
+                    "description": "The genome build to use for SMNCopyNumberCaller"
                 }
             }
         },
@@ -527,6 +541,9 @@
         },
         {
             "$ref": "#/$defs/qdnaseq_parameters"
+        },
+        {
+            "$ref": "#/$defs/smncopynumbercaller_parameters"
         },
         {
             "$ref": "#/$defs/vep_options"

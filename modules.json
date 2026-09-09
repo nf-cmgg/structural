@@ -112,6 +112,11 @@
                         "git_sha": "b2e78932ef01165fd85829513eaca29eff8e640a",
                         "installed_by": ["modules"]
                     },
+                    "smncopynumbercaller": {
+                        "branch": "master",
+                        "git_sha": "3c11702264e47ce04ec5e2e57683f0b695ed9f66",
+                        "installed_by": ["modules"]
+                    },
                     "smoove/call": {
                         "branch": "master",
                         "git_sha": "fdcc3976e728b5d6ffc3f15979905829531e6072",

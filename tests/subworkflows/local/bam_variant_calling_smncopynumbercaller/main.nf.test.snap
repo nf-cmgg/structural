@@ -1,0 +1,31 @@
+{
+    "homo_sapiens -stub": {
+        "content": [
+            [
+                [
+                    {
+                        "id": "test",
+                        "sample": "test",
+                        "caller": "smncopynumbercaller"
+                    },
+                    "test.json"
+                ],
+                [
+                    {
+                        "id": "test",
+                        "sample": "test",
+                        "caller": "smncopynumbercaller"
+                    },
+                    "test.tsv"
+                ]
+            ],
+            1,
+            0
+        ],
+        "timestamp": "2026-09-08T11:51:53.444263",
+        "meta": {
+            "nf-test": "0.9.5",
+            "nextflow": "25.10.4"
+        }
+    }
+}

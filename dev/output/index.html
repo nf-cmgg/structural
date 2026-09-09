@@ -1011,7 +1011,7 @@
 <li><code>sampleID/sampleID.expansionhunter.vcf.gz.tbi</code>: tabix index for the vcf format file with RRE calls for ExpansionHunter.</li>
 </ul>
 </details>
-<p>There are a number of regions in the human genome consisting of repetitions of short unit sequence (commonly a trimer). Such repeat regions can expand to a size much larger than the read length and thereby cause a disease. Fragile X Syndrome, ALS, and Huntington's Disease are well known examples. <a href="https://github.com/Illumina/ExpansionHunter">ExpansionHunter</a> aims to estimate sizes of such repeats by performing a targeted search through a BAM/CRAM file for reads that span, flank, and are fully contained in each repeat.</p>
+<p>There are a number of regions in the human genome consisting of repetitions of short unit sequence (commonly a trimer). Such repeat regions can expand to a size much larger than the read length and thereby cause a disease. Fragile X Syndrome, ALS, and Huntington's Disease are well known examples. <a href="https://github.com/Illumina/ExpansionHunter">ExpansionHunter</a> aims to estimate sizes of such repeats by performing a targeted search through a BAM/CRAM file for reads that span, flank, and are fully contained in each repeat. ExpansionHunter's output is then annotated with <a href="https://github.com/Clinical-Genomics/stranger">Stranger</a>, which attaches pathogenicity classification (<code>STR_STATUS</code>, normal/pathologic thresholds) from the variant catalog.</p>
 <h3 id="sv-annotation">SV annotation</h3>
 <details>
 <summary>Output files</summary>
